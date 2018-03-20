@@ -9,23 +9,23 @@ class TestGLHE(unittest.TestCase):
 
         json_blob = {"name": "Basic GLHE",
                      "paths": [
-                        {"name": "path 1",
-                         "boreholes": [
-                            {"name": "borehole 1",
-                             "depth": 50,
-                             "diameter": 0.1524,
-                             "grout": {
-                                "conductivity": 0.75,
-                                "density": 1000,
-                                "specific heat": 1000},
-                             "pipe": {
-                                "outer diameter": 0.0334,
-                                "inner diameter": 0.0269,
-                                "conductivity": 0.4,
-                                "density": 950,
-                                "specific heat": 1000},
-                             "segments": 10,
-                             "type": "simple"}]}],
+                         {"name": "path 1",
+                             "boreholes": [
+                                 {"name": "borehole 1",
+                                  "depth": 50,
+                                  "diameter": 0.1524,
+                                  "grout": {
+                                      "conductivity": 0.75,
+                                      "density": 1000,
+                                      "specific heat": 1000},
+                                  "pipe": {
+                                      "outer diameter": 0.0334,
+                                      "inner diameter": 0.0269,
+                                      "conductivity": 0.4,
+                                      "density": 950,
+                                      "specific heat": 1000},
+                                  "segments": 10,
+                                  "type": "simple"}]}],
                      "fluid": {
                          "type": "water",
                          "concentration": 100},
