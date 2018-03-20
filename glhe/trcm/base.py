@@ -9,4 +9,3 @@ class TRCMBase(object):
     @abc.abstractmethod
     def get_outlet_temps(self, t_in_1, t_in_2, mdot):
         pass
-
