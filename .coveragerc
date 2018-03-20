@@ -1,0 +1,6 @@
+[run]
+source =
+        glhe/
+        tests/
+omit =
+        /usr/*

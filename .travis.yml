@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - "3.6"
+
+cache: pip
+
+env:
+  matrix:
+    - TOX_ENV=python
+    - TOX_ENV=flake8
+
+install:
+  - pip install -r requirements.txt
+  - pip install --upgrade pip
+  - pip install tox coveralls
+
+script:
+  - tox -e $TOX_ENV
+
+after_success: test $TOX_ENV = "python" && coveralls
