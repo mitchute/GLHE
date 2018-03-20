@@ -3,7 +3,7 @@ import unittest
 from glhe.borehole.simpleHX import BoreholeSimpleHX
 
 
-class TestBoreholeCounterFlowHX(unittest.TestCase):
+class TestBoreholeSimpleHX(unittest.TestCase):
 
     def test_a(self):
         tst = BoreholeSimpleHX(None)

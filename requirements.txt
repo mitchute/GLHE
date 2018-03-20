@@ -1,2 +1,3 @@
 CoolProp
 coverage
+nose
