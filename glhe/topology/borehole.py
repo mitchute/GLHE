@@ -1,6 +1,3 @@
-from glhe.topology.segment import Segment
-
-
 class Borehole(object):
 
     def __init__(self, inputs):
