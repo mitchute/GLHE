@@ -1,10 +1,10 @@
-from glhe.trcm.base import TRCMBase
+from glhe.borehole.base import BoreholeBase
 
 
-class TRCMSimpleHX(TRCMBase):
+class BoreholeSimpleHX(BoreholeBase):
 
     def __init__(self, fluid, effectiveness=0.5):
-        TRCMBase.__init__(self, fluid)
+        BoreholeBase.__init__(self, fluid)
         self._fluid = fluid
         self._effectiveness = effectiveness
 

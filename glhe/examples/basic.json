@@ -1,0 +1,14 @@
+{
+  "name": "Basic GLHE",
+  "paths": [
+    {
+      "name": "path 1",
+      "boreholes": [
+        {
+          "name": "borehole 1",
+          "depth": 50
+        }
+      ]
+    }
+  ]
+}

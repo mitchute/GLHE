@@ -1,7 +1,7 @@
 import abc
 
 
-class TRCMBase(object):
+class BoreholeBase(object):
 
     def __init__(self, fluid):
         pass
