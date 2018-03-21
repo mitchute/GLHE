@@ -1,5 +1,5 @@
 from glhe.borehole.simpleHX import BoreholeSimpleHX
-from glhe.topology.type import SegmentType
+from glhe.topology.segment_types import SegmentType
 
 
 class Segment(object):

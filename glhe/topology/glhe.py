@@ -15,6 +15,8 @@ class GLHE(object):
         for path in inputs["paths"]:
             self._paths.append(Path(path))
 
+        self._fluid = inputs["fluid"]
+
     def set_path_flow_rates(self, plant_mass_flow_rate):
         for path in self._paths:
             path.flow_resistance()

@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.topology.segment import Segment
-from glhe.topology.type import SegmentType
+from glhe.topology.segment_types import SegmentType
 
 
 class TestSegment(unittest.TestCase):
