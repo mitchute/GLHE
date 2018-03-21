@@ -37,6 +37,8 @@ class TestFluid(unittest.TestCase):
         self.assertEqual(tst_PG._max_concentration, 60)
         self.assertEqual(tst_PG._props_str, "INCOMP::MPG[0.5]")
 
+        self.assertRaises(ValueError, lambda: Fluid("Not A Fluid"))
+
     def test_dens(self):
         """
         Tests fluid density calculation routine

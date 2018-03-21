@@ -20,7 +20,7 @@ class Fluid(object):
         elif self._fluid_name == "PG":
             self._type = FluidType.PROPYLENE_GLYCOL
         else:
-            self._type = fluid_name
+            raise ValueError("'{}' is not supported".format(fluid_name))
 
         self._min_temperature = -200
         self._max_temperature = 200
@@ -50,8 +50,6 @@ class Fluid(object):
             self._max_temperature = 100
             self._min_concentration = 0
             self._max_concentration = 60
-        else:
-            self._props_str = fluid_name
 
     def cp(self, temperature):
         """
