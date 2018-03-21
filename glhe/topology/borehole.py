@@ -1,3 +1,5 @@
+import numpy as np
+
 from glhe.properties.base import PropertiesBase
 from glhe.properties.pipe import Pipe
 from glhe.topology.segment import Segment
@@ -31,5 +33,25 @@ class Borehole(object):
         pass
 
     @staticmethod
-    def friction_factor():
-        pass
+    def friction_factor(re):
+        """
+        Calculates the friction factor in smooth tubes
+
+        Petukov, B.S. 1970. 'Heat transfer and friction in turbulent pipe flow with variable physical properties.'
+        In Advances in Heat Transfer, ed. T.F. Irvine and J.P. Hartnett, Vol. 6. New York Academic Press.
+        """
+
+        # limits picked be within about 1% of actual values
+        lower_limit = 1500
+        upper_limit = 5000
+
+        if re < lower_limit:
+            return 64.0 / re  # pure laminar flow
+        elif lower_limit <= re < upper_limit:
+            f_low = 64.0 / re  # pure laminar flow
+            # pure turbulent flow
+            f_high = (0.79 * np.log(re) - 1.64) ** (-2.0)
+            sf = 1 / (1 + np.exp(-(re - 3000.0) / 450.0))  # smoothing function
+            return (1 - sf) * f_low + sf * f_high
+        else:
+            return (0.79 * np.log(re) - 1.64) ** (-2.0)  # pure turbulent flow

@@ -5,7 +5,7 @@ from glhe.topology.path import Path
 
 class TestPath(unittest.TestCase):
 
-    def test_a(self):
+    def test_init(self):
 
         json_blob = {"name": "path 1",
                      "boreholes": [

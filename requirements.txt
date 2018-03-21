@@ -1,3 +1,4 @@
 CoolProp
 coverage
 nose
+numpy
