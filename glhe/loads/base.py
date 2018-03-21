@@ -12,7 +12,6 @@ class LoadAggregationBase(object):
     def store_load(self, load, time):
         pass
 
-    # pragma: no cover
     @abc.abstractmethod
     def get_load(self, time):
         pass
