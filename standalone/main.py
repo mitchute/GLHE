@@ -10,4 +10,4 @@ if __name__ == '__main__':
 
     d = json.loads(json_blob)
     g = GLHE(d)
-    g.simulate()
+    g.simulate(10, 1, 300)
