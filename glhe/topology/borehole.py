@@ -10,6 +10,8 @@ class Borehole(object):
     _count = 0
 
     def __init__(self, inputs):
+
+        # Get inputs from json blob
         self._name = inputs["name"]
         self._depth = inputs["depth"]
         self._diameter = inputs["diameter"]
@@ -22,14 +24,22 @@ class Borehole(object):
                           inner_diameter=inputs["pipe"]["inner diameter"],
                           outer_diameter=inputs["pipe"]["outer diameter"])
 
-        self._bh_num = Borehole._count
-        Borehole._count += 1
-
         self._segments = []
         for segment in range(inputs["segments"]):
             self._segments.append(Segment(segment_type=inputs["type"]))
 
-    def flow_resistance(self):
+        # constant parameters in pressure drop equation
+        self.const_flow_resistance = self._depth / self._diameter
+
+        self._mass_flow_rate = 0
+
+        # Track bh number
+        self._bh_num = Borehole._count
+        Borehole._count += 1
+
+    def flow_resistance(self, mass_flow_rate):
+        # need to finish computing the flow resisitance
+        # and figure out how to use global fluid props
         pass
 
     @staticmethod
@@ -55,3 +65,8 @@ class Borehole(object):
             return (1 - sf) * f_low + sf * f_high
         else:
             return (0.79 * np.log(re) - 1.64) ** (-2.0)  # pure turbulent flow
+
+    def set_flow_rate(self, mass_flow_rate):
+        self._mass_flow_rate = mass_flow_rate
+        for segment in self._segments:
+            segment.set_flow_rate(mass_flow_rate)
