@@ -1,3 +1,5 @@
+from math import pi
+
 import numpy as np
 
 from glhe.properties.base import PropertiesBase
@@ -28,9 +30,14 @@ class Borehole(object):
         for segment in range(inputs["segments"]):
             self._segments.append(Segment(segment_type=inputs["type"]))
 
+        # COMPUTE CONSTANTS
         # constant parameters in pressure drop equation
         self.const_flow_resistance = self._depth / self._diameter
 
+        # pipe inside cross-sectional area
+        self._area_i_cr = pi * self._diameter ** 2.0 / 4.0
+
+        # Initialize other parameters
         self._mass_flow_rate = 0
 
         # Track bh number
@@ -38,9 +45,16 @@ class Borehole(object):
         Borehole._count += 1
 
     def flow_resistance(self, mass_flow_rate):
-        # need to finish computing the flow resisitance
-        # and figure out how to use global fluid props
-        pass
+        rho_f = 1000 # Delete me later once I figure out the fluids issue
+        vol_flow_rate = mass_flow_rate / rho_f
+        mean_velocity = vol_flow_rate / self._area_i_cr
+        visc = 0.001 # Delete me
+
+        reynolds = rho_f * mean_velocity * self._diameter / visc
+
+        f = self.friction_factor(reynolds)
+
+        return self.const_flow_resistance * f * rho_f * mean_velocity ** 2.0
 
     @staticmethod
     def friction_factor(re):

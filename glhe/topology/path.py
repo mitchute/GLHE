@@ -26,10 +26,10 @@ class Path(object):
         self._path_num = Path._count
         Path._count += 1
 
-    def flow_resistance(self):
+    def flow_resistance(self, mass_flow_rate):
         sum_resistance = 0
         for borehole in self._boreholes:
-            sum_resistance += borehole.flow_resistance()
+            sum_resistance += borehole.flow_resistance(mass_flow_rate)
         return sum_resistance
 
     def set_flow_rate(self, mass_flow_fraction, mass_flow_rate):
@@ -37,4 +37,3 @@ class Path(object):
         self.mass_flow_rate = mass_flow_rate
         for bh in self._boreholes:
             bh.set_flow_rate(mass_flow_rate)
-
