@@ -45,10 +45,10 @@ class Borehole(object):
         Borehole._count += 1
 
     def flow_resistance(self, mass_flow_rate):
-        rho_f = 1000 # Delete me later once I figure out the fluids issue
+        rho_f = 1000  # Delete me later once I figure out the fluids issue
         vol_flow_rate = mass_flow_rate / rho_f
         mean_velocity = vol_flow_rate / self._area_i_cr
-        visc = 0.001 # Delete me
+        visc = 0.001  # Delete me
 
         reynolds = rho_f * mean_velocity * self._diameter / visc
 
