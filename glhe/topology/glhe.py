@@ -1,6 +1,7 @@
 from glhe.topology.path import Path
 from glhe.properties.fluid import Fluid
 
+
 class GLHE(object):
 
     _count = 0
