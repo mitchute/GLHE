@@ -7,9 +7,9 @@ class Fluid(object):
 
     _pressure = 120000
 
-    def __init__(self, fluid_name, concentration=0):
-        self._fluid_name = fluid_name.upper()
-        self._concentration = concentration / 100
+    def __init__(self, inputs):
+        self._fluid_name = inputs["type"].upper()
+        self._concentration = inputs["concentration"] / 100
 
         if self._fluid_name == "WATER":
             self._type = FluidType.WATER
@@ -20,7 +20,7 @@ class Fluid(object):
         elif self._fluid_name == "PG":
             self._type = FluidType.PROPYLENE_GLYCOL
         else:
-            raise ValueError("'{}' is not supported".format(fluid_name))
+            raise ValueError("'{}' is not supported".format(self._fluid_name))
 
         self._min_temperature = -200
         self._max_temperature = 200

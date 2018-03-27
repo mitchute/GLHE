@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 
+from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
 
 json_blob = {"name": "borehole 1",
@@ -25,27 +26,23 @@ class TestBorehole(unittest.TestCase):
 
     def test_init(self):
 
-        tst = Borehole(json_blob)
+        tst = Borehole(json_blob, {"type": "water", "concentration": 0})
         self.assertEqual(tst._name, json_blob["name"])
         self.assertEqual(tst._depth, json_blob["depth"])
         self.assertEqual(tst._diameter, json_blob["diameter"])
-        self.assertEqual(tst._grout._conductivity,
-                         json_blob["grout"]["conductivity"])
+        self.assertEqual(tst._grout._conductivity, json_blob["grout"]["conductivity"])
         self.assertEqual(tst._grout._density, json_blob["grout"]["density"])
-        self.assertEqual(tst._grout._specific_heat,
-                         json_blob["grout"]["specific heat"])
-        self.assertEqual(tst._pipe._specific_heat,
-                         json_blob["pipe"]["specific heat"])
+        self.assertEqual(tst._grout._specific_heat, json_blob["grout"]["specific heat"])
+        self.assertEqual(tst._pipe._specific_heat, json_blob["pipe"]["specific heat"])
         self.assertEqual(tst._pipe._density, json_blob["pipe"]["density"])
-        self.assertEqual(tst._pipe._conductivity,
-                         json_blob["pipe"]["conductivity"])
+        self.assertEqual(tst._pipe._conductivity, json_blob["pipe"]["conductivity"])
 
     def test_friction_factor(self):
         """
         Test the smooth tube friction factor calculations
         """
 
-        tst = Borehole(json_blob)
+        tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
 
         tolerance = 0.00001
 

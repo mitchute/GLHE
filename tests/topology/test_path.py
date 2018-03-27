@@ -25,7 +25,7 @@ class TestPath(unittest.TestCase):
                           "segments": 10,
                           "type": "simple"}]}
 
-        tst = Path(json_blob)
+        tst = Path(json_blob, {"type": "water", "concentration": 0})
         self.assertEqual(tst._name, json_blob["name"])
         self.assertEqual(len(tst._boreholes), 1)
 
@@ -33,17 +33,10 @@ class TestPath(unittest.TestCase):
 
         self.assertEqual(tst_bh._name, json_blob["boreholes"][0]["name"])
         self.assertEqual(tst_bh._depth, json_blob["boreholes"][0]["depth"])
-        self.assertEqual(tst_bh._diameter,
-                         json_blob["boreholes"][0]["diameter"])
-        self.assertEqual(tst_bh._grout._conductivity,
-                         json_blob["boreholes"][0]["grout"]["conductivity"])
-        self.assertEqual(tst_bh._grout._density,
-                         json_blob["boreholes"][0]["grout"]["density"])
-        self.assertEqual(tst_bh._grout._specific_heat,
-                         json_blob["boreholes"][0]["grout"]["specific heat"])
-        self.assertEqual(tst_bh._pipe._specific_heat,
-                         json_blob["boreholes"][0]["pipe"]["specific heat"])
-        self.assertEqual(tst_bh._pipe._density,
-                         json_blob["boreholes"][0]["pipe"]["density"])
-        self.assertEqual(tst_bh._pipe._conductivity,
-                         json_blob["boreholes"][0]["pipe"]["conductivity"])
+        self.assertEqual(tst_bh._diameter, json_blob["boreholes"][0]["diameter"])
+        self.assertEqual(tst_bh._grout._conductivity, json_blob["boreholes"][0]["grout"]["conductivity"])
+        self.assertEqual(tst_bh._grout._density, json_blob["boreholes"][0]["grout"]["density"])
+        self.assertEqual(tst_bh._grout._specific_heat, json_blob["boreholes"][0]["grout"]["specific heat"])
+        self.assertEqual(tst_bh._pipe._specific_heat, json_blob["boreholes"][0]["pipe"]["specific heat"])
+        self.assertEqual(tst_bh._pipe._density, json_blob["boreholes"][0]["pipe"]["density"])
+        self.assertEqual(tst_bh._pipe._conductivity, json_blob["boreholes"][0]["pipe"]["conductivity"])

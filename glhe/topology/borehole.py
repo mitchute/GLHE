@@ -11,7 +11,7 @@ class Borehole(object):
 
     _count = 0
 
-    def __init__(self, inputs):
+    def __init__(self, inputs, fluid_instance):
 
         # Get inputs from json blob
         self._name = inputs["name"]
@@ -26,9 +26,12 @@ class Borehole(object):
                           inner_diameter=inputs["pipe"]["inner diameter"],
                           outer_diameter=inputs["pipe"]["outer diameter"])
 
+        # Pass fluid instance through for usage
+        self._fluid = fluid_instance
+
         self._segments = []
         for segment in range(inputs["segments"]):
-            self._segments.append(Segment(segment_type=inputs["type"]))
+            self._segments.append(Segment(segment_type=inputs["type"], fluid_instance=self._fluid))
 
         # COMPUTE CONSTANTS
         # constant parameters in pressure drop equation

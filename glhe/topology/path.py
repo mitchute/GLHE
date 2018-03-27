@@ -5,14 +5,17 @@ class Path(object):
 
     _count = 0
 
-    def __init__(self, inputs):
+    def __init__(self, inputs, fluid_instance):
 
         # Get inputs from json blob
         self._name = inputs["name"]
         self._boreholes = []
 
+        # Pass fluid instance through for usage
+        self._fluid = fluid_instance
+
         for borehole in inputs["boreholes"]:
-            self._boreholes.append(Borehole(borehole))
+            self._boreholes.append(Borehole(borehole, fluid_instance=self._fluid))
 
         self.mass_flow_fraction = 0
         self.mass_flow_rate = 0

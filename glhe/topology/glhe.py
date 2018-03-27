@@ -1,5 +1,5 @@
 from glhe.topology.path import Path
-
+from glhe.properties.fluid import Fluid
 
 class GLHE(object):
 
@@ -14,10 +14,12 @@ class GLHE(object):
         self._glhe_num = GLHE._count
         GLHE._count += 1
 
-        for path in inputs["paths"]:
-            self._paths.append(Path(path))
+        # Fluid instance
+        self._fluid = Fluid(inputs["fluid"])
 
-        self._fluid = inputs["fluid"]
+        # Initialize all paths
+        for path in inputs["paths"]:
+            self._paths.append(Path(path, fluid_instance=self._fluid))
 
         # initialize flow distribution based on constants in delta p calculation
         path_const_flow_resist = []
