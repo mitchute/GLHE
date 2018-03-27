@@ -18,7 +18,7 @@ class GLHE(object):
         # Fluid instance
         self._fluid = Fluid(inputs["fluid"])
 
-        # Initialize all paths
+        # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
             self._paths.append(Path(path, fluid_instance=self._fluid))
 
@@ -29,6 +29,7 @@ class GLHE(object):
             path_const_flow_resist[-1] += path.const_flow_resistance
 
         tot_const_flow_resistance = sum(path_const_flow_resist)
+
         for path in self._paths:
             path.mass_flow_fraction = path.const_flow_resistance / tot_const_flow_resistance
 
