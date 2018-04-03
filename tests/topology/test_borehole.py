@@ -80,3 +80,9 @@ class TestBorehole(unittest.TestCase):
         tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
         tolerance = 1
         self.assertAlmostEqual(tst.get_flow_resistance(), 115301, delta=tolerance)
+
+    def test_set_flow_rate(self):
+        tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
+        tst.set_flow_rate(1)
+        tolerance = 0.001
+        self.assertAlmostEqual(tst._mass_flow_rate, 1.0, delta=tolerance)

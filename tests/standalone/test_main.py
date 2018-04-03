@@ -3,7 +3,7 @@ import unittest
 from glhe.topology.glhe import GLHE
 
 
-class TestGLHE(unittest.TestCase):
+class TestGLHEIntegration(unittest.TestCase):
 
     def test_init(self):
 
@@ -35,7 +35,4 @@ class TestGLHE(unittest.TestCase):
                          "specific heat": 1700}}
 
         tst = GLHE(json_blob)
-        self.assertEqual(tst._name, json_blob["name"])
-
-        tst.set_flow_rates(1)
-        self.assertAlmostEqual(tst._delta_p_path, 115312.5, delta=1)
+        self.assertEqual(tst.simulate(20, 1, 300), None)
