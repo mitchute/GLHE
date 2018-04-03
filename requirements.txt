@@ -2,3 +2,4 @@ CoolProp
 coverage
 nose
 numpy
+scipy
