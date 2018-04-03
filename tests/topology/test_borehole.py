@@ -75,3 +75,8 @@ class TestBorehole(unittest.TestCase):
 
         re = 25000
         self.assertEqual(tst.friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
+
+    def test_get_flow_resistance(self):
+        tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
+        tolerance = 1
+        self.assertAlmostEqual(tst.get_flow_resistance(), 115301, delta=tolerance)

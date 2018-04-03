@@ -77,5 +77,3 @@ class Borehole(object):
         velocity = mass_flow_rate / (self._fluid.dens * self._area_i_cr)
         reynolds_no = self._fluid.dens * self._pipe.inner_diameter * velocity / self._fluid.visc
         self._friction_factor = self.friction_factor(reynolds_no)
-        for segment in self._segments:
-            segment.set_flow_rate(mass_flow_rate)
