@@ -26,38 +26,27 @@ class Borehole(object):
                           inner_diameter=inputs["pipe"]["inner diameter"],
                           outer_diameter=inputs["pipe"]["outer diameter"])
 
-        # Pass fluid instance through for usage
+        # Keep reference to fluid instance for usage
         self._fluid = fluid_instance
 
+        # Initialize segments
         self._segments = []
         for segment in range(inputs["segments"]):
             self._segments.append(Segment(segment_type=inputs["type"], fluid_instance=self._fluid))
-
-        # COMPUTE CONSTANTS
-        # constant parameters in pressure drop equation
-        self.const_flow_resistance = self._depth / self._diameter
 
         # pipe inside cross-sectional area
         self._area_i_cr = pi * self._diameter ** 2.0 / 4.0
 
         # Initialize other parameters
         self._mass_flow_rate = 0
+        self._friction_factor = 0.02
 
         # Track bh number
         self._bh_num = Borehole._count
         Borehole._count += 1
 
-    def flow_resistance(self, mass_flow_rate):
-        rho_f = 1000  # Delete me later once I figure out the fluids issue
-        vol_flow_rate = mass_flow_rate / rho_f
-        mean_velocity = vol_flow_rate / self._area_i_cr
-        visc = 0.001  # Delete me
-
-        reynolds = rho_f * mean_velocity * self._diameter / visc
-
-        f = self.friction_factor(reynolds)
-
-        return self.const_flow_resistance * f * rho_f * mean_velocity ** 2.0
+    def get_flow_resistance(self):
+        return 8.0 * self._friction_factor * (2 * self._depth) / (pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
 
     @staticmethod
     def friction_factor(re):
@@ -85,5 +74,8 @@ class Borehole(object):
 
     def set_flow_rate(self, mass_flow_rate):
         self._mass_flow_rate = mass_flow_rate
+        velocity = mass_flow_rate / (self._fluid.dens * self._area_i_cr)
+        reynolds_no = self._fluid.dens * self._pipe.inner_diameter * velocity / self._fluid.visc
+        self._friction_factor = self.friction_factor(reynolds_no)
         for segment in self._segments:
             segment.set_flow_rate(mass_flow_rate)

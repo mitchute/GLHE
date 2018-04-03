@@ -16,6 +16,7 @@ class Segment(object):
         # Keep reference to fluid instance here for usage
         self._fluid = fluid_instance
 
+        # Initialize other parameters
         self._mass_flow_rate = 0
 
         # Track segment number

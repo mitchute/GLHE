@@ -9,34 +9,29 @@ class Path(object):
 
         # Get inputs from json blob
         self._name = inputs["name"]
-        self._boreholes = []
 
-        # Pass fluid instance through for usage
+        # Keep reference to fluid instance for usage
         self._fluid = fluid_instance
 
+        # Initialize boreholes
+        self._boreholes = []
         for borehole in inputs["boreholes"]:
             self._boreholes.append(Borehole(borehole, fluid_instance=self._fluid))
 
-        self.mass_flow_fraction = 0
-        self.mass_flow_rate = 0
+        # Initialize other parameters
+        self._mass_flow_rate = 0
 
-        # Get constant part of pipe pressure loss equation
-        self.const_flow_resistance = 0
-        for bh in self._boreholes:
-            self.const_flow_resistance += bh.const_flow_resistance
-
-        # track path number
+        # Track path number
         self._path_num = Path._count
         Path._count += 1
 
-    def flow_resistance(self, mass_flow_rate):
+    def get_flow_resistance(self):
         sum_resistance = 0
         for borehole in self._boreholes:
-            sum_resistance += borehole.flow_resistance(mass_flow_rate)
+            sum_resistance += borehole.get_flow_resistance()
         return sum_resistance
 
-    def set_flow_rate(self, mass_flow_fraction, mass_flow_rate):
-        self.mass_flow_fraction = mass_flow_fraction
-        self.mass_flow_rate = mass_flow_rate
+    def set_mass_flow_rate(self, mass_flow_rate):
+        self._mass_flow_rate = mass_flow_rate
         for bh in self._boreholes:
             bh.set_flow_rate(mass_flow_rate)

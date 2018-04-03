@@ -1,5 +1,10 @@
-from glhe.topology.path import Path
+from math import sqrt
+
 from glhe.properties.fluid import Fluid
+from glhe.topology.path import Path
+
+from scipy.optimize import minimize
+from numpy import array
 
 
 class GLHE(object):
@@ -12,36 +17,37 @@ class GLHE(object):
         self._name = inputs["name"]
         self._paths = []
 
-        self._glhe_num = GLHE._count
-        GLHE._count += 1
-
         # Fluid instance
         self._fluid = Fluid(inputs["fluid"])
+
+        # Initialize other parameters
+        self._delta_p_path = 100000
 
         # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
             self._paths.append(Path(path, fluid_instance=self._fluid))
 
-        # initialize flow distribution based on constants in delta p calculation
-        path_const_flow_resist = []
-        for path in self._paths:
-            path_const_flow_resist.append(0)
-            path_const_flow_resist[-1] += path.const_flow_resistance
-
-        tot_const_flow_resistance = sum(path_const_flow_resist)
-
-        for path in self._paths:
-            path.mass_flow_fraction = path.const_flow_resistance / tot_const_flow_resistance
+        # Track GLHE num
+        self._glhe_num = GLHE._count
+        GLHE._count += 1
 
     def set_flow_rates(self, plant_mass_flow_rate):
-        path_delta_p = []
+        path_flow_resistance = []
         for path in self._paths:
-            path_delta_p.append(1 / path.flow_resistance(path.mass_flow_fraction * plant_mass_flow_rate))
+            path_flow_resistance.append(path.get_flow_resistance())
 
-        delta_p_tot = pow(sum(path_delta_p), -1)
+        self._delta_p_path = minimize(self.calc_total_mass_flow_from_delta_p, x0=array([self._delta_p_path]),
+                                      args=(path_flow_resistance, plant_mass_flow_rate), method='Nelder-Mead',
+                                      options={"maxiter": 10}).x[0]
 
         for i, path in enumerate(self._paths):
-            path.set_flow_rate(path_delta_p[i] / delta_p_tot, path.mass_flow_fraction * plant_mass_flow_rate)
+            path.set_mass_flow_rate(sqrt(self._delta_p_path / path_flow_resistance[i]))
+
+    def calc_total_mass_flow_from_delta_p(self, delta_p, path_flow_resistance, plant_mass_flow_rate):
+        path_mass_flow = []
+        for i, _ in enumerate(self._paths):
+            path_mass_flow.append(sqrt(delta_p / path_flow_resistance[i]))
+        return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
     def simulate(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
         self.set_flow_rates(plant_mass_flow_rate)
