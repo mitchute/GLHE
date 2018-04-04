@@ -3,8 +3,8 @@ from math import sqrt
 from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
 
-from scipy.optimize import minimize
-from numpy import array
+from scipy.optimize import minimize_scalar
+from numpy import array, nan
 
 
 class GLHE(object):
@@ -32,21 +32,20 @@ class GLHE(object):
         GLHE._count += 1
 
     def set_flow_rates(self, plant_mass_flow_rate):
-        path_flow_resistance = []
         for path in self._paths:
-            path_flow_resistance.append(path.get_flow_resistance())
+            path.set_flow_resistance()
 
-        self._delta_p_path = minimize(self.calc_total_mass_flow_from_delta_p, x0=array([self._delta_p_path]),
-                                      args=(path_flow_resistance, plant_mass_flow_rate), method='Nelder-Mead',
-                                      options={"maxiter": 10}).x[0]
+        self._delta_p_path = minimize_scalar(self.calc_total_mass_flow_from_delta_p, args=plant_mass_flow_rate,
+                                             method='Golden', bracket=(0, self._delta_p_path), bounds=(0, 10e7),
+                                             tol=0.01).x
 
         for i, path in enumerate(self._paths):
-            path.set_mass_flow_rate(sqrt(self._delta_p_path / path_flow_resistance[i]))
+            path.set_mass_flow_rate(sqrt(self._delta_p_path / path.flow_resistance))
 
-    def calc_total_mass_flow_from_delta_p(self, delta_p, path_flow_resistance, plant_mass_flow_rate):
+    def calc_total_mass_flow_from_delta_p(self, delta_p, plant_mass_flow_rate):
         path_mass_flow = []
-        for i, _ in enumerate(self._paths):
-            path_mass_flow.append(sqrt(delta_p / path_flow_resistance[i]))
+        for i, path in enumerate(self._paths):
+            path_mass_flow.append(sqrt(delta_p / path.flow_resistance))
         return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
     def simulate(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):

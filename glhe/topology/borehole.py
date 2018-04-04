@@ -38,18 +38,18 @@ class Borehole(object):
         self._area_i_cr = pi * self._diameter ** 2.0 / 4.0
 
         # Initialize other parameters
-        self._mass_flow_rate = 0
-        self._friction_factor = 0.02
+        self.mass_flow_rate = 0
+        self.friction_factor = 0.02
 
         # Track bh number
         self._bh_num = Borehole._count
         Borehole._count += 1
 
     def get_flow_resistance(self):
-        return 8.0 * self._friction_factor * (2 * self._depth) / (pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
+        return 8.0 * self.friction_factor * (2 * self._depth) / (pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
 
     @staticmethod
-    def friction_factor(re):
+    def calc_friction_factor(re):
         """
         Calculates the friction factor in smooth tubes
 
@@ -73,7 +73,7 @@ class Borehole(object):
             return (0.79 * np.log(re) - 1.64) ** (-2.0)  # pure turbulent flow
 
     def set_flow_rate(self, mass_flow_rate):
-        self._mass_flow_rate = mass_flow_rate
+        self.mass_flow_rate = mass_flow_rate
         velocity = mass_flow_rate / (self._fluid.dens * self._area_i_cr)
         reynolds_no = self._fluid.dens * self._pipe.inner_diameter * velocity / self._fluid.visc
-        self._friction_factor = self.friction_factor(reynolds_no)
+        self.calc_friction_factor = self.calc_friction_factor(reynolds_no)

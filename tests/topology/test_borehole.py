@@ -37,7 +37,7 @@ class TestBorehole(unittest.TestCase):
         self.assertEqual(tst._pipe._density, json_blob["pipe"]["density"])
         self.assertEqual(tst._pipe._conductivity, json_blob["pipe"]["conductivity"])
 
-    def test_friction_factor(self):
+    def test_calc_friction_factor(self):
         """
         Test the smooth tube friction factor calculations
         """
@@ -48,33 +48,33 @@ class TestBorehole(unittest.TestCase):
 
         # laminar tests
         re = 100
-        self.assertEqual(tst.friction_factor(re), 64.0 / re)
+        self.assertEqual(tst.calc_friction_factor(re), 64.0 / re)
 
         re = 1000
-        self.assertEqual(tst.friction_factor(re), 64.0 / re)
+        self.assertEqual(tst.calc_friction_factor(re), 64.0 / re)
 
         re = 1400
-        self.assertEqual(tst.friction_factor(re), 64.0 / re)
+        self.assertEqual(tst.calc_friction_factor(re), 64.0 / re)
 
         # transitional tests
         re = 2000
-        self.assertAlmostEqual(tst.friction_factor(re), 0.034003503, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.034003503, delta=tolerance)
 
         re = 3000
-        self.assertAlmostEqual(tst.friction_factor(re), 0.033446219, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.033446219, delta=tolerance)
 
         re = 4000
-        self.assertAlmostEqual(tst.friction_factor(re), 0.03895358, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.03895358, delta=tolerance)
 
         # turbulent tests
         re = 5000
-        self.assertEqual(tst.friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
+        self.assertEqual(tst.calc_friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
 
         re = 15000
-        self.assertEqual(tst.friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
+        self.assertEqual(tst.calc_friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
 
         re = 25000
-        self.assertEqual(tst.friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
+        self.assertEqual(tst.calc_friction_factor(re), (0.79 * np.log(re) - 1.64) ** (-2.0))
 
     def test_get_flow_resistance(self):
         tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
@@ -85,4 +85,4 @@ class TestBorehole(unittest.TestCase):
         tst = Borehole(json_blob, Fluid({"type": "water", "concentration": 0}))
         tst.set_flow_rate(1)
         tolerance = 0.001
-        self.assertAlmostEqual(tst._mass_flow_rate, 1.0, delta=tolerance)
+        self.assertAlmostEqual(tst.mass_flow_rate, 1.0, delta=tolerance)
