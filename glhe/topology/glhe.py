@@ -4,7 +4,6 @@ from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
 
 from scipy.optimize import minimize_scalar
-from numpy import array, nan
 
 
 class GLHE(object):
