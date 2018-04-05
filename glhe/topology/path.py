@@ -35,3 +35,6 @@ class Path(object):
         self.mass_flow_rate = mass_flow_rate
         for bh in self._boreholes:
             bh.set_flow_rate(mass_flow_rate)
+
+    def simulate(self, inlet_temperature):
+        pass

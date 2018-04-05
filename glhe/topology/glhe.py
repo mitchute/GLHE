@@ -1,9 +1,10 @@
 from math import sqrt
 
+from numpy import mean
+from scipy.optimize import minimize_scalar
+
 from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
-
-from scipy.optimize import minimize_scalar
 
 
 class GLHE(object):
@@ -21,6 +22,8 @@ class GLHE(object):
 
         # Initialize other parameters
         self._delta_p_path = 100000
+        self._inlet_temp = 20
+        self._outlet_temp = 20
 
         # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
@@ -48,5 +51,11 @@ class GLHE(object):
         return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
     def simulate(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
+        self._inlet_temp = plant_inlet_temperature
+        self._fluid.update(mean(self._inlet_temp, self._outlet_temp))
         self.set_flow_rates(plant_mass_flow_rate)
+
+        for path in self._paths:
+            path.simulate(self._inlet_temp)
+
         pass
