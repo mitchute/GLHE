@@ -7,5 +7,5 @@ class Base(object):
         pass
 
     @abc.abstractmethod
-    def get_load(self, time):
+    def get_load(self):
         pass

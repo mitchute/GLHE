@@ -8,5 +8,5 @@ class Fixed(Base):
 
         self.load = load
 
-    def get_load(self, time):
+    def get_load(self, time=0):
         return self.load

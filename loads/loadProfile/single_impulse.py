@@ -11,4 +11,7 @@ class SingleImpulse(Base):
         self.end_time = end_time
 
     def get_load(self, time):
-        pass
+        if self.start_time <= time < self.end_time:
+            return self.load
+        else:
+            return 0
