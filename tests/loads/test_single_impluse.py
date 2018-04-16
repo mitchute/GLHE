@@ -3,9 +3,9 @@ import unittest
 from loads.loadProfile.single_impulse import SingleImpulse
 
 
-class TestSingleImpluse(unittest.TestCase):
+class TestSingleImpulse(unittest.TestCase):
 
-    def test_init(self):
+    def test_get_load(self):
         tst = SingleImpulse(1, 0, 10)
         self.assertEqual(tst.get_load(0), 1)
         self.assertEqual(tst.get_load(5), 1)
