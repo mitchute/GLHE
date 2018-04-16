@@ -8,4 +8,4 @@ class Base(object):
 
     @abc.abstractmethod
     def get_load(self, time):
-        pass # pragma: no cover
+        pass  # pragma: no cover
