@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 
 from loads.loadProfile.base import Base
@@ -75,7 +74,7 @@ class Asymmetric(SyntheticBase):
                   'c': 80,
                   'd': 0.01,
                   'e': 0.95,
-                  'f': 4/3,
+                  'f': 4 / 3,
                   'g': 2190}
         SyntheticBase.__init__(self, **kwargs)
 
