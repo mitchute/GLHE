@@ -1,3 +1,5 @@
+from abc import ABCMeta
+
 import numpy as np
 
 from loads.loadProfile.base import Base
@@ -16,6 +18,8 @@ class SyntheticBase(Base):
 
     ** Equation is referenced here, but it has typos
     """
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, a=0, b=0, c=0, d=0, e=0, f=0, g=0):
         Base.__init__(self)
