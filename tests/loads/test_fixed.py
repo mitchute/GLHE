@@ -1,6 +1,6 @@
 import unittest
 
-from loads.loadProfile.fixed import Fixed
+from loads.profiles.fixed import Fixed
 
 
 class TestFixed(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 
-from loads.loadProfile.single_impulse import SingleImpulse
+from loads.profiles.single_impulse import SingleImpulse
 
 
 class TestSingleImpulse(unittest.TestCase):

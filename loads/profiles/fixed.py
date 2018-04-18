@@ -1,4 +1,4 @@
-from loads.loadProfile.base import Base
+from loads.profiles.base import Base
 
 
 class Fixed(Base):

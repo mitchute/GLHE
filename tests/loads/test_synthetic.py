@@ -1,7 +1,7 @@
 import unittest
 
 
-from loads.loadProfile.synthetic import Asymmetric, Symmetric
+from loads.profiles.synthetic import Asymmetric, Symmetric
 
 
 class TestAsymmetric(unittest.TestCase):
