@@ -1,19 +1,15 @@
 import abc
 
+from collections import deque
 
-class BaseBin(object):
+
+class BaseMethod(object):
 
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-
-        self._energy = 0
-        self._width = 0
+        self.loads = deque()
 
     @abc.abstractmethod
-    def pop_one_impulse(self, timestep):
-        pass
-
-    @abc.abstractmethod
-    def add_impulse(self, timestep):
+    def add_load(self, load):
         pass

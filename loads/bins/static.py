@@ -1,14 +1,11 @@
-from loads.bins.base import BaseBin
+from loads.bins.base import BaseMethod
 
 
-class StaticBin(BaseBin):
+class StaticBin(BaseMethod):
 
     def __init__(self):
-        BaseBin.__init__(self)
+        BaseMethod.__init__(self)
         pass
 
-    def pop_one_impulse(self, timestep):
-        pass
-
-    def add_impulse(self, timestep):
+    def add_load(self, load):
         pass

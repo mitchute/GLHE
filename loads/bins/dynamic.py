@@ -1,14 +1,28 @@
-from loads.bins.base import BaseBin
+from loads.bins.bin import BaseBin
+from loads.bins.base import BaseMethod
 
 
-class DynamicBin(BaseBin):
+class DynamicBin(BaseMethod):
 
-    def __init__(self):
-        BaseBin.__init__(self)
-        pass
+    def __init__(self, depth=16, exp_rate=2, width=5, start_width=None, end_width=None):
+        BaseMethod.__init__(self)
 
-    def pop_one_impulse(self, timestep):
-        pass
+        if start_width is None and end_width is None:
+            for i in range(depth):
+                for _ in range(width):
+                    self.loads.append(BaseBin(width=pow(exp_rate, i)))
+        else:
+            for i in range(depth):
+                width = int((1 - i / depth) * (start_width - end_width) + end_width)
+                for _ in range(width):
+                    self.loads.append(BaseBin(width=pow(exp_rate, i)))
 
-    def add_impulse(self, timestep):
-        pass
+    def add_load(self, load):
+
+        for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
+            left_bin = self.loads[i - 1]
+            delta = left_bin.energy / left_bin.width
+            cur_bin.energy += delta
+            left_bin.energy -= delta
+
+        self.loads[0].energy += load
