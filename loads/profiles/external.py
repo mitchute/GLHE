@@ -21,7 +21,7 @@ class External(Base):
 
     def get_load(self, time=0):
 
-        if time < self._max_time:
+        if time <= self._max_time:
             return self._interp_loads(time)
         else:
             return self._interp_loads(time % self._max_time)
