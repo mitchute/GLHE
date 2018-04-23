@@ -57,5 +57,3 @@ class GLHE(object):
 
         for path in self._paths:
             path.simulate(self._inlet_temp)
-
-        pass
