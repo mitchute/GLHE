@@ -22,4 +22,3 @@ if __name__ == '__main__':
     d2.add_load(13)
     d2.add_load(14)
     d2.add_load(15)
-

@@ -31,12 +31,12 @@ class StaticMethod(BaseMethod):
         # aggregate within each sub-list, except the last one, which is allowed to grow as needed
         for i, width in enumerate(self.bin_widths[:-1]):
             len_bin = len(d[width])
-            if len_bin < int(self.min_bin_nums[i] + self.bin_widths[i+1] / self.bin_widths[i]):
+            if len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
                 # nothing to do here
                 pass
             else:
                 # merge the bins within this sub-list
-                merge_on_obj_index = self.min_bin_nums[i+1]
+                merge_on_obj_index = self.min_bin_nums[i + 1]
                 merge_obj_index_start = merge_on_obj_index + 1
                 merge_on_obj = d[width][merge_on_obj_index]
                 indices_to_pop = []
