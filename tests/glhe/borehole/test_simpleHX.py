@@ -5,7 +5,7 @@ from glhe.borehole.simpleHX import BoreholeSimpleHX
 
 class TestBoreholeSimpleHX(unittest.TestCase):
 
-    def test_a(self):
+    def test_get_outlet_temps(self):
         tst = BoreholeSimpleHX(None)
         t1, t2 = tst.get_outlet_temps(20, 30, 1)
         self.assertAlmostEqual(t1, 25, 3)
