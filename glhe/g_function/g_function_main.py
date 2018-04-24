@@ -24,4 +24,3 @@ class GFunction(object):
 
     def simulate(self):
         self._agg.loads[0].get_load
-
