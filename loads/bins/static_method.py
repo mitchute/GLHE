@@ -6,11 +6,18 @@ from loads.bins.base_method import BaseMethod
 
 class StaticMethod(BaseMethod):
 
-    def __init__(self, min_bin_nums, bin_widths):
+    def __init__(self, min_bin_nums=None, bin_widths=None):
         BaseMethod.__init__(self)
 
-        self.min_bin_nums = min_bin_nums
-        self.bin_widths = bin_widths
+        if min_bin_nums is None:
+            self.min_bin_nums = [24, 10, 20, 40]
+        else:
+            self.min_bin_nums = min_bin_nums
+
+        if bin_widths is None:
+            self.bin_widths = [1, 24, 96, 384, 1536]
+        else:
+            self.bin_widths = bin_widths
 
     def add_load(self, load):
         self.loads.appendleft(StaticBin(energy=load, width=self.bin_widths[0]))
