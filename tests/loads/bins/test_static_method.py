@@ -85,3 +85,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[3].energy, 15)
         self.assertEqual(tst.loads[4].energy, 11)
         self.assertEqual(tst.loads[5].energy, 10)
+
+        tst = StaticMethod()
+        tst.add_load(1)
+        self.assertEqual(tst.loads[0].energy, 1)
