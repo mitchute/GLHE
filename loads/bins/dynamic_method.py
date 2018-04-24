@@ -1,8 +1,8 @@
-from loads.bins.bin import BaseBin
-from loads.bins.base import BaseMethod
+from loads.bins.base_bin import BaseBin
+from loads.bins.base_method import BaseMethod
 
 
-class DynamicBin(BaseMethod):
+class DynamicMethod(BaseMethod):
 
     def __init__(self, depth=16, exp_rate=2, width=5, start_width=None, end_width=None):
         BaseMethod.__init__(self)

@@ -12,4 +12,4 @@ class BaseMethod(object):
 
     @abc.abstractmethod
     def add_load(self, load):
-        pass
+        pass  # pragma: no cover

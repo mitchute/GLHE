@@ -1,7 +1,7 @@
-from loads.bins.base import BaseMethod
+from loads.bins.base_method import BaseMethod
 
 
-class StaticBin(BaseMethod):
+class StaticMethod(BaseMethod):
 
     def __init__(self):
         BaseMethod.__init__(self)

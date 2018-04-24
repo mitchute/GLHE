@@ -1,6 +1,6 @@
-from loads.bins.dynamic import DynamicBin
+from loads.bins.dynamic_method import DynamicMethod
 
 if __name__ == '__main__':
 
-    d = DynamicBin()
+    d = DynamicMethod()
     d.add_load(1)
