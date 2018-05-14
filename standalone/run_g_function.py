@@ -1,4 +1,4 @@
-from glhe.g_function.g_function_main import GFunction
+from glhe.gFunction.main import GFunction
 
 
 if __name__ == '__main__':

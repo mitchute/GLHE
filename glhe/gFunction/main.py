@@ -25,4 +25,5 @@ class GFunction(object):
         self._profile_name = profile.upper()
 
     def simulate(self):
-        a = self._agg.loads[0].get_load()
+        # a = self._agg.loads[0].get_load()
+        pass
