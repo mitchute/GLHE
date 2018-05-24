@@ -3,3 +3,4 @@ coverage
 nose
 numpy
 scipy
+tox

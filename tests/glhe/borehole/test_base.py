@@ -7,7 +7,7 @@ from glhe.borehole.simpleHX import BoreholeSimpleHX
 class TestBoreholeSimpleHX(unittest.TestCase):
 
     def test_abstract_instantiation_fails(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(Exception):
             BoreholeBase(None)
 
     def test_get_outlet_temps(self):
