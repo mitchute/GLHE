@@ -14,7 +14,7 @@ class Fluid(object):
 
     def __init__(self, inputs):
         self._fluid_name = inputs["type"].upper()
-        self._concentration = inputs["concentration"] / 100
+        self._concentration = inputs["concentration"] / 100.0
 
         if self._fluid_name == "WATER":
             self._type = FluidType.WATER

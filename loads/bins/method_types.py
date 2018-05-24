@@ -1,7 +1,7 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class MethodType(Enum):
-    DYNAMIC = auto()
-    STATIC = auto()
-    NOAGG = auto()
+    DYNAMIC = 1
+    STATIC = 2
+    NOAGG = 3

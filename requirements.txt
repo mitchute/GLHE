@@ -1,5 +1,6 @@
-CoolProp
+coolprop
 coverage
 nose
 numpy
 scipy
+tox
