@@ -1,9 +1,9 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class ProfileType(Enum):
-    EXTERNAL = auto()
-    FIXED = auto()
-    SINGLE_IMPULSE = auto()
-    SINUSOID = auto()
-    SYNTHETIC = auto()
+    EXTERNAL = 1
+    FIXED = 2
+    SINGLE_IMPULSE = 3
+    SINUSOID = 4
+    SYNTHETIC = 5

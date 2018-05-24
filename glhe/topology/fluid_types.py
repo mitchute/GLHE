@@ -1,8 +1,8 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class FluidType(Enum):
-    WATER = auto()
-    ETHYL_ALCOHOL = auto()
-    ETHYLENE_GLYCOL = auto()
-    PROPYLENE_GLYCOL = auto()
+    WATER = 1
+    ETHYL_ALCOHOL = 2
+    ETHYLENE_GLYCOL = 3
+    PROPYLENE_GLYCOL = 4

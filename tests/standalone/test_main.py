@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.topology.glhe import GLHE
+from glhe.topology.full_ground_loop import GLHE
 
 
 class TestGLHEIntegration(unittest.TestCase):

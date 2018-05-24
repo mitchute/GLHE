@@ -1,5 +1,5 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class SegmentType(Enum):
-    SIMPLE = auto()
+    SIMPLE = 1
