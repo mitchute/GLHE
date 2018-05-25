@@ -4,3 +4,5 @@ nose
 numpy
 scipy
 tox
+six
+enum34
