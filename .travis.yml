@@ -1,16 +1,16 @@
 language: python
 
+python: 3.5
+
 cache:
     pip: true
     directories:
     - .tox
 
-matrix:
-    include:
-      - python: 3.5
-          env:
-            - TOX_ENV=py35
-            - TOX_ENV=flake8
+env:
+  matrix:
+    - TOX_ENV=py35
+    - TOX_ENV=flake8
 
 install:
   - pip install --upgrade pip
