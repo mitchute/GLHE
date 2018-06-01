@@ -1,7 +1,7 @@
 import json
 import sys
 
-from glhe.topology.glhe import GLHE
+from glhe.topology.full_ground_loop import GLHE
 
 if __name__ == '__main__':
 
