@@ -7,4 +7,4 @@ class TestFixed(unittest.TestCase):
 
     def test_get_load(self):
         tst = Fixed(1)
-        self.assertEqual(tst.get_load(), 1)
+        self.assertEqual(tst.get_value(), 1)

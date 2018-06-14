@@ -44,7 +44,7 @@ class SyntheticBase(Base):
         term_2 = 0.0
         for i in range(1, 4):
             term_2 += (np.cos(i * np.pi * self._c / 84) - 1) * \
-                (np.sin(i * np.pi * (t - self._b) / 84)) / (i * np.pi)
+                      (np.sin(i * np.pi * (t - self._b) / 84)) / (i * np.pi)
 
         result = term_1 + term_2
 
@@ -63,7 +63,7 @@ class SyntheticBase(Base):
         else:
             return -1
 
-    def get_load(self, time):
+    def get_value(self, time):
         q_1 = self.q_1(time)
         q_2 = self.q_2(time)
         floor = self.floor(time)

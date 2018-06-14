@@ -14,14 +14,14 @@ class External(Base):
         path = os.path.normpath(os.path.join(os.getcwd(), path))
 
         # noinspection PyTypeChecker
-        self.loads = np.genfromtxt(path, delimiter=',', skip_header=1, usecols=1)
-        x_range = np.arange(len(self.loads)) * 3600
+        self.values = np.genfromtxt(path, delimiter=',', skip_header=1, usecols=1)
+        x_range = np.arange(len(self.values)) * 3600
         self._max_time = x_range[-1]
-        self._interp_loads = interp1d(x_range, self.loads)
+        self._interp_values = interp1d(x_range, self.values)
 
-    def get_load(self, time=0):
+    def get_value(self, time=0):
 
         if time <= self._max_time:
-            return self._interp_loads(time)
+            return self._interp_values(time)
         else:
-            return self._interp_loads(time % self._max_time)
+            return self._interp_values(time % self._max_time)
