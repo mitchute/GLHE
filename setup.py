@@ -13,8 +13,8 @@ setup(
     tests_require=['nose'],
     entry_points={
         'console_scripts': [
-            'run_with_g_functions=glhe.standalone.run_g_function:main',
-            'generate_g_functions=glhe.standalone.generate_g_functions:main'
+            'run_with_g_functions=standalone.run_g_function:main',
+            'generate_g_functions=standalone.generate_g_functions:main'
         ],
     }
 )
