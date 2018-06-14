@@ -57,4 +57,4 @@ class GLHE(SimulationEntryPoint):
         self.set_flow_rates(plant_mass_flow_rate)
 
         for path in self._paths:
-            path.simulate_time_step(self._inlet_temp)
+            path.simulate(self._inlet_temp)
