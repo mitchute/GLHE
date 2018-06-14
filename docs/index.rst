@@ -13,6 +13,14 @@ Hey, here's the documentation
    :caption: Contents:
 
    aggregation/index
+   borehole/index
+   examples/index
+   gFunction/index
+   groundTemps/index
+   interface/index
+   profiles/index
+   properties/index
+   topology/index
 
 
 Indices and tables
