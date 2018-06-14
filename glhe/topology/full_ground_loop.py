@@ -3,11 +3,12 @@ from math import sqrt
 from numpy import mean
 from scipy.optimize import minimize_scalar
 
+from glhe.base import SimulationEntryPoint
 from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
 
 
-class GLHE(object):
+class GLHE(SimulationEntryPoint):
 
     _count = 0
 
