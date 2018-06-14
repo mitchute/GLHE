@@ -29,7 +29,7 @@ def main():
         response = g.simulate_time_step(glhe_entering_fluid_temperature, mass_flow_rate, time_step)
 
         # update from the plant current conditions in preparation for the next time step
-        current_load = load_profile.get_load(time)
+        current_load = load_profile.get_value(time)
         glhe_entering_fluid_temperature = response.outlet_temperature + current_load / (mass_flow_rate * cp)
 
         print(response.outlet_temperature)

@@ -1,5 +1,5 @@
-from loads.profiles.fixed import Fixed
-from loads.profiles.single_impulse import SingleImpulse
+from glhe.profiles.fixed import Fixed
+from glhe.profiles.impulse import Impulse
 
 
 def make_load_profile(inputs):
@@ -11,4 +11,4 @@ def make_load_profile(inputs):
         load_start_time = inputs['single_impulse']['start-time']
         load_end_time = inputs['single_impulse']['end-time']
         load_value = inputs['single_impulse']['load-value']
-        return SingleImpulse(load_value, load_start_time, load_end_time)
+        return Impulse(load_value, load_start_time, load_end_time)
