@@ -1,4 +1,4 @@
-from loads.profiles.base import Base
+from glhe.profiles.base import Base
 
 
 class Impulse(Base):

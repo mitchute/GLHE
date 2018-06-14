@@ -1,6 +1,6 @@
 import unittest
 
-from loads.profiles.profile_types import ProfileType
+from glhe.profiles.profile_types import ProfileType
 
 
 class TestProfileType(unittest.TestCase):

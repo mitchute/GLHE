@@ -1,6 +1,6 @@
 import unittest
 
-from loads.profiles.synthetic import Asymmetric, Symmetric
+from glhe.profiles.synthetic import Asymmetric, Symmetric
 
 
 class TestAsymmetric(unittest.TestCase):

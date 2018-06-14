@@ -1,7 +1,7 @@
 import unittest
 from math import pi
 
-from loads.profiles.sinusoid import Sinusoid
+from glhe.profiles.sinusoid import Sinusoid
 
 
 class TestSinusoid(unittest.TestCase):

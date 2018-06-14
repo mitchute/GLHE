@@ -2,7 +2,7 @@ from abc import ABCMeta
 
 import numpy as np
 
-from loads.profiles.base import Base
+from glhe.profiles.base import Base
 
 
 class SyntheticBase(Base):

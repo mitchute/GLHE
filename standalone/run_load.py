@@ -1,5 +1,5 @@
-from loads.bins.dynamic_method import DynamicMethod
-from loads.bins.static_method import StaticMethod
+from glhe.aggregation.dynamic_method import DynamicMethod
+from glhe.aggregation import StaticMethod
 
 if __name__ == '__main__':
 

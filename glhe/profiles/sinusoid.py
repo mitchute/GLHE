@@ -1,6 +1,6 @@
 from math import sin, pi
 
-from loads.profiles.base import Base
+from glhe.profiles.base import Base
 
 
 class Sinusoid(Base):

@@ -1,8 +1,8 @@
 from glhe.base import SimulationEntryPoint
-from loads.bins.dynamic_method import DynamicMethod
-from loads.bins.method_types import MethodType
-from loads.bins.no_aggregation_method import NoAggMethod
-from loads.bins.static_method import StaticMethod
+from glhe.aggregation.dynamic_method import DynamicMethod
+from glhe.aggregation import MethodType
+from glhe.aggregation import NoAggMethod
+from glhe.aggregation import StaticMethod
 
 
 class GFunction(SimulationEntryPoint):

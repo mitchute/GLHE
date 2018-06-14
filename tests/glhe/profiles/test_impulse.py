@@ -1,6 +1,6 @@
 import unittest
 
-from loads.profiles.impulse import Impulse
+from glhe.profiles.impulse import Impulse
 
 
 class TestImpulse(unittest.TestCase):

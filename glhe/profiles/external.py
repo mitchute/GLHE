@@ -3,7 +3,7 @@ import os
 import numpy as np
 from scipy.interpolate.interpolate import interp1d
 
-from loads.profiles.base import Base
+from glhe.profiles.base import Base
 
 
 class External(Base):

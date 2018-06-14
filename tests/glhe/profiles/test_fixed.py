@@ -1,6 +1,6 @@
 import unittest
 
-from loads.profiles.fixed import Fixed
+from glhe.profiles.fixed import Fixed
 
 
 class TestFixed(unittest.TestCase):

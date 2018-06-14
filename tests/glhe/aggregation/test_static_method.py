@@ -1,6 +1,6 @@
 import unittest
 
-from loads.bins.static_method import StaticMethod
+from glhe.aggregation.static_method import StaticMethod
 
 
 class TestStatic(unittest.TestCase):
