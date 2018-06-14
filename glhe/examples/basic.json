@@ -107,5 +107,21 @@
     "conductivity": 2.4234,
     "density": 2803.2,
     "specific heat": 0.836
+  },
+  "g-functions": "./glhe/examples/2x2_g_functions.csv",
+  "load-aggregation":
+  {
+    "method": "dynamic",
+    "param 1": 1
+  },
+  "simulation":
+  {
+    "time-step": 1,
+    "runtime": 2,
+    "load-profile":
+    {
+      "type": "fixed",
+      "value": 2000
+    }
   }
 }
