@@ -1,9 +1,7 @@
 import abc
 
 
-class Base(object):
-
-    __metaclass__ = abc.ABCMeta
+class Base(abc.ABC):
 
     def __init__(self):
         pass

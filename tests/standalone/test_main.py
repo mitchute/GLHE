@@ -35,4 +35,4 @@ class TestGLHEIntegration(unittest.TestCase):
                          "specific heat": 1700}}
 
         tst = GLHE(json_blob)
-        self.assertEqual(tst.simulate(20, 1, 300), None)
+        self.assertEqual(tst.simulate_time_step(20, 1, 300), None)
