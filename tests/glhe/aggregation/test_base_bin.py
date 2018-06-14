@@ -1,6 +1,6 @@
 import unittest
 
-from loads.bins.base_bin import BaseBin
+from glhe.aggregation.base_bin import BaseBin
 
 
 class TestDynamic(unittest.TestCase):

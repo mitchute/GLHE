@@ -1,6 +1,6 @@
 import unittest
 
-from loads.bins.no_aggregation_method import NoAggMethod
+from glhe.aggregation.no_aggregation_method import NoAggMethod
 
 
 class TestNoAgg(unittest.TestCase):

@@ -2,7 +2,7 @@ import json
 import sys
 
 from glhe.gFunction.main import GFunction
-from loads.profiles.factory import make_load_profile
+from glhe.profiles.factory import make_load_profile
 
 
 def main():

@@ -1,5 +1,5 @@
-from loads.bins.base_bin import BaseBin
-from loads.bins.base_method import BaseMethod
+from glhe.aggregation.base_bin import BaseBin
+from glhe.aggregation.base_method import BaseMethod
 
 
 class DynamicMethod(BaseMethod):

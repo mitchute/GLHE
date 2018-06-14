@@ -1,6 +1,6 @@
 import unittest
 
-from loads.bins.method_types import MethodType
+from glhe.aggregation.method_types import MethodType
 
 
 class TestMethodType(unittest.TestCase):

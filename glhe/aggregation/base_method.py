@@ -1,15 +1,13 @@
-import abc
+from abc import ABC, abstractmethod
 
 from collections import deque
 
 
-class BaseMethod(object):
-
-    __metaclass__ = abc.ABCMeta
+class BaseMethod(ABC):
 
     def __init__(self):
         self.loads = deque()
 
-    @abc.abstractmethod
+    @abstractmethod
     def add_load(self, load):
         pass  # pragma: no cover
