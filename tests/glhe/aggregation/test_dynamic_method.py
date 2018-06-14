@@ -1,6 +1,6 @@
 import unittest
 
-from loads.bins.dynamic_method import DynamicMethod
+from glhe.aggregation.dynamic_method import DynamicMethod
 
 
 class TestDynamic(unittest.TestCase):

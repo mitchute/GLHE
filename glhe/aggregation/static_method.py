@@ -1,7 +1,7 @@
 from collections import defaultdict, deque
 
-from loads.bins.static_bin import StaticBin
-from loads.bins.base_method import BaseMethod
+from glhe.aggregation.static_bin import StaticBin
+from glhe.aggregation.base_method import BaseMethod
 
 
 class StaticMethod(BaseMethod):
@@ -25,7 +25,7 @@ class StaticMethod(BaseMethod):
 
     def aggregate(self):
         """
-        Aggregates the current bins
+        Aggregates the current aggregation
 
         :return: none
         """
@@ -42,7 +42,7 @@ class StaticMethod(BaseMethod):
                 # nothing to do here
                 pass
             else:
-                # merge the bins within this sub-list
+                # merge the aggregation within this sub-list
                 merge_on_obj_index = self.min_bin_nums[i + 1]
                 merge_obj_index_start = merge_on_obj_index + 1
                 merge_on_obj = d[width][merge_on_obj_index]
@@ -51,7 +51,7 @@ class StaticMethod(BaseMethod):
                     merge_on_obj.merge(obj)
                     indices_to_pop.append(j + merge_obj_index_start)
 
-                # throw away unused bins
+                # throw away unused aggregation
                 for j in reversed(indices_to_pop):
                     d[width].pop(j)
 

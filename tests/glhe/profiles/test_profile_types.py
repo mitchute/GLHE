@@ -1,6 +1,6 @@
 import unittest
 
-from loads.profiles.profile_types import ProfileType
+from glhe.profiles.profile_types import ProfileType
 
 
 class TestProfileType(unittest.TestCase):
@@ -12,8 +12,8 @@ class TestProfileType(unittest.TestCase):
         tst_fixed = ProfileType.FIXED
         self.assertEqual(tst_fixed, ProfileType.FIXED)
 
-        tst_single = ProfileType.SINGLE_IMPULSE
-        self.assertEqual(tst_single, ProfileType.SINGLE_IMPULSE)
+        tst_single = ProfileType.IMPULSE
+        self.assertEqual(tst_single, ProfileType.IMPULSE)
 
         tst_sinusoid = ProfileType.SINUSOID
         self.assertEqual(tst_sinusoid, ProfileType.SINUSOID)
