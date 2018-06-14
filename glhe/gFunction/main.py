@@ -1,29 +1,42 @@
-from glhe.base import SimulationEntryPoint
-from glhe.aggregation.dynamic_method import DynamicMethod
-from glhe.aggregation import MethodType
-from glhe.aggregation import NoAggMethod
-from glhe.aggregation import StaticMethod
+import csv
+
+from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import TimeStepSimulationResponse
+from glhe.properties.base import PropertiesBase
 
 
 class GFunction(SimulationEntryPoint):
+    def __init__(self, inputs):
+        self.inputs = inputs
 
-    def __init__(self, agg_method='DYNAMIC', profile='FIXED'):
+        # g-function properties
+        g_functions = []
+        with(open(inputs['g-functions']['file'])) as f:
+            csv_file = csv.reader(f)
+            for row in csv_file:
+                g_functions.append((row[0], row[1]))
+        self.g_functions = g_functions
+        self.average_depth = inputs['g-functions']['average-depth']
 
-        self._agg_method_name = agg_method.upper()
-        self._profile_name = profile.upper()
+        # soil properties
+        soil = PropertiesBase(
+            conductivity=inputs['soil']['conductivity'],
+            density=inputs['soil']['density'],
+            specific_heat=inputs['soil']['specific heat']
+        )
+        self.soil_diffusivity = soil.diffusivity()
 
-        if self._agg_method_name == 'DYNAMIC':
-            self._agg_method = MethodType.DYNAMIC
-            self._agg = DynamicMethod()
-        elif self._agg_method_name == 'STATIC':
-            self._agg_type = MethodType.STATIC
-            self._agg = StaticMethod()
-        elif self._agg_method_name == 'NONE':
-            self._agg_type = MethodType.NOAGG
-            self._agg = NoAggMethod()
-        else:
-            raise ValueError("'{}' is not supported".format(self._agg_method_name))
+        # initialize time here
+        self.current_time = 0
+        # self.load_aggregation = load_agg_factory()
 
-    def simulate(self, temp, flow, time):
-        # a = self._agg.loads[0].get_load()
+    def _get_g_function(self, time):
         pass
+
+    def simulate_time_step(self, inlet_temperature, flow, time_step):
+        self.current_time += time_step
+        outlet_temperature = inlet_temperature
+        # calculate total heat transfer
+        # self.load_aggregation.store_load(q)
+        # a = self._agg.loads[0].get_load()  # save load to history
+        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature)

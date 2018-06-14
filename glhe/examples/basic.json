@@ -8,20 +8,18 @@
           "name": "borehole 1",
           "depth": 100,
           "diameter": 0.1099,
-          "grout":
-            {
+          "grout": {
             "conductivity": 0.744,
             "density": 1500,
             "specific heat": 2.6
-            },
-          "pipe":
-            {
-              "outer diameter": 0.0334,
-              "inner diameter": 0.0269,
-              "conductivity": 0.389,
-              "density": 950,
-              "specific heat": 1.623
-            },
+          },
+          "pipe": {
+            "outer diameter": 0.0334,
+            "inner diameter": 0.0269,
+            "conductivity": 0.389,
+            "density": 950,
+            "specific heat": 1.623
+          },
           "segments": 10,
           "type": "simple"
         },
@@ -29,20 +27,18 @@
           "name": "borehole 2",
           "depth": 100,
           "diameter": 0.1099,
-          "grout":
-            {
+          "grout": {
             "conductivity": 0.744,
             "density": 1500,
             "specific heat": 2.6
-            },
-          "pipe":
-            {
-              "outer diameter": 0.0334,
-              "inner diameter": 0.0269,
-              "conductivity": 0.389,
-              "density": 950,
-              "specific heat": 1.623
-            },
+          },
+          "pipe": {
+            "outer diameter": 0.0334,
+            "inner diameter": 0.0269,
+            "conductivity": 0.389,
+            "density": 950,
+            "specific heat": 1.623
+          },
           "segments": 10,
           "type": "simple"
         }
@@ -55,20 +51,18 @@
           "name": "borehole 3",
           "depth": 100,
           "diameter": 0.1099,
-          "grout":
-            {
+          "grout": {
             "conductivity": 0.744,
             "density": 1500,
             "specific heat": 2.6
-            },
-          "pipe":
-            {
-              "outer diameter": 0.0334,
-              "inner diameter": 0.0269,
-              "conductivity": 0.389,
-              "density": 950,
-              "specific heat": 1.623
-            },
+          },
+          "pipe": {
+            "outer diameter": 0.0334,
+            "inner diameter": 0.0269,
+            "conductivity": 0.389,
+            "density": 950,
+            "specific heat": 1.623
+          },
           "segments": 10,
           "type": "simple"
         },
@@ -76,52 +70,58 @@
           "name": "borehole 4",
           "depth": 100,
           "diameter": 0.1099,
-          "grout":
-            {
+          "grout": {
             "conductivity": 0.744,
             "density": 1500,
             "specific heat": 2.6
-            },
-          "pipe":
-            {
-              "outer diameter": 0.0334,
-              "inner diameter": 0.0269,
-              "conductivity": 0.389,
-              "density": 950,
-              "specific heat": 1.623
-            },
+          },
+          "pipe": {
+            "outer diameter": 0.0334,
+            "inner diameter": 0.0269,
+            "conductivity": 0.389,
+            "density": 950,
+            "specific heat": 1.623
+          },
           "segments": 10,
           "type": "simple"
         }
       ]
     }
   ],
-  "fluid":
-    {
-      "type": "water",
-      "concentration": 100
-    },
-  "soil":
-  {
+  "fluid": {
+    "type": "water",
+    "concentration": 100
+  },
+  "soil": {
     "name": "Average Rock",
     "conductivity": 2.4234,
     "density": 2803.2,
     "specific heat": 0.836
   },
-  "g-functions": "./glhe/examples/2x2_g_functions.csv",
-  "load-aggregation":
-  {
-    "method": "dynamic",
-    "param 1": 1
+  "g-functions": {
+    "file": "./glhe/examples/2x2_g_functions.csv",
+    "average-depth": 100
   },
-  "simulation":
-  {
+  "load-aggregation": {
+    "method": "dynamic",
+    "dynamic": {
+      "param 1": 1
+    }
+  },
+  "simulation": {
     "time-step": 1,
     "runtime": 2,
-    "load-profile":
-    {
+    "initial-fluid-temperature": 21,
+    "load-profile": {
       "type": "fixed",
-      "value": 2000
+      "fixed": {
+        "value": 2000
+      },
+      "single-impulse": {
+        "start-time": 100,
+        "end-time": 200,
+        "value": 3000
+      }
     }
   }
 }

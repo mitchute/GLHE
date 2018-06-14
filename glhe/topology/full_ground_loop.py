@@ -3,7 +3,7 @@ from math import sqrt
 from numpy import mean
 from scipy.optimize import minimize_scalar
 
-from glhe.base import SimulationEntryPoint
+from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
 
@@ -51,7 +51,7 @@ class GLHE(SimulationEntryPoint):
             path_mass_flow.append(sqrt(delta_p / path.flow_resistance))
         return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
-    def simulate(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
+    def simulate_time_step(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
         self._inlet_temp = plant_inlet_temperature
         self._fluid.update(mean([self._inlet_temp, self._outlet_temp]))
         self.set_flow_rates(plant_mass_flow_rate)
