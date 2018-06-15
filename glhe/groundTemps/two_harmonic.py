@@ -54,6 +54,4 @@ class TwoHarmonic(BaseGroundTemp):
 
         summation = exp(term1) * self._amplitude_1 * cos(term2) + exp(term3) * self._amplitude_2 * cos(term4)
 
-        retVal = self._ave_ground_temp - summation
-
-        return retVal
+        return self._ave_ground_temp - summation
