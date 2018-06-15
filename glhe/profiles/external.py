@@ -1,6 +1,6 @@
 import os
 
-import numpy as np
+import pandas as pd
 from scipy.interpolate.interpolate import interp1d
 
 from glhe.profiles.base import Base
@@ -13,15 +13,13 @@ class External(Base):
 
         path = os.path.normpath(os.path.join(os.getcwd(), path))
 
-        # noinspection PyTypeChecker
-        self.values = np.genfromtxt(path, delimiter=',', skip_header=1, usecols=1)
-        x_range = np.arange(len(self.values)) * 3600
+        df = pd.read_csv(path, index_col=0, parse_dates=True)
+        delta_t = df.index.to_series().diff().dt.total_seconds()
+        delta_t[0] = 0
+        x_range = delta_t.cumsum().tolist()
         self._max_time = x_range[-1]
-        self._interp_values = interp1d(x_range, self.values)
+        y_vals = df.iloc[:, 0].tolist()
+        self._interp_values = interp1d(x_range, y_vals)
 
     def get_value(self, time=0):
-
-        if time <= self._max_time:
-            return self._interp_values(time)
-        else:
-            return self._interp_values(time % self._max_time)
+        return self._interp_values(time % self._max_time)

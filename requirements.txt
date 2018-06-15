@@ -5,3 +5,4 @@ numpy
 scipy
 sphinx
 tox
+pandas
