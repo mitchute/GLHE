@@ -92,4 +92,4 @@ class Synthetic(SyntheticBase):
                       'g': 0}
             SyntheticBase.__init__(self, **kwargs)
         else:
-            raise ValueError("'{type}' Synthetic object not supported. Check input.")
+            raise ValueError("'{}' Synthetic object not supported. Check input.".format(type))

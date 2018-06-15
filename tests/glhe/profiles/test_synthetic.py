@@ -14,3 +14,8 @@ class TestSynthetic(unittest.TestCase):
         tst = Synthetic('symmetric', 1000)
         self.assertAlmostEqual(tst.get_value(0), -0.01, delta=tol)
         self.assertAlmostEqual(tst.get_value(2190), -0.01, delta=tol)
+
+        with self.assertRaises(Exception) as context:
+            type = 'bob'
+            Synthetic(type, 1000)
+        self.assertTrue("'{}' Synthetic object not supported. Check input.".format(type) in str(context.exception))
