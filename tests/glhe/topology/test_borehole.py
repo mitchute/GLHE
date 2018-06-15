@@ -25,7 +25,6 @@ json_blob = {"name": "borehole 1",
 class TestBorehole(unittest.TestCase):
 
     def test_init(self):
-
         tst = Borehole(json_blob, {"type": "water", "concentration": 0})
         self.assertEqual(tst._name, json_blob["name"])
         self.assertEqual(tst._depth, json_blob["depth"])

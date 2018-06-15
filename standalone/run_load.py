@@ -1,8 +1,7 @@
-from glhe.aggregation.dynamic_method import DynamicMethod
 from glhe.aggregation import StaticMethod
+from glhe.aggregation.dynamic_method import DynamicMethod
 
 if __name__ == '__main__':
-
     d1 = DynamicMethod()
     d1.add_load(1)
 

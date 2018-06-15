@@ -8,7 +8,6 @@ from glhe.topology.segment import Segment
 
 
 class Borehole(object):
-
     _count = 0
 
     def __init__(self, inputs, fluid_instance):
@@ -46,7 +45,8 @@ class Borehole(object):
         Borehole._count += 1
 
     def get_flow_resistance(self):
-        return 8.0 * self.friction_factor * (2 * self._depth) / (pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
+        return 8.0 * self.friction_factor * (2 * self._depth) / (
+                    pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
 
     @staticmethod
     def calc_friction_factor(re):

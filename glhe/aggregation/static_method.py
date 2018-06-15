@@ -1,7 +1,7 @@
 from collections import defaultdict, deque
 
-from glhe.aggregation.static_bin import StaticBin
 from glhe.aggregation.base_method import BaseMethod
+from glhe.aggregation.static_bin import StaticBin
 
 
 class StaticMethod(BaseMethod):

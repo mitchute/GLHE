@@ -9,7 +9,6 @@ from glhe.topology.path import Path
 
 
 class GLHE(SimulationEntryPoint):
-
     _count = 0
 
     def __init__(self, inputs):

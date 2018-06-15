@@ -7,7 +7,6 @@ from glhe.topology.fluid_types import FluidType
 class TestFluid(unittest.TestCase):
 
     def test_init(self):
-
         tst_w = Fluid({"type": "water", "concentration": 0})
         self.assertEqual(tst_w._type, FluidType.WATER)
         self.assertEqual(tst_w._min_temperature, 0)

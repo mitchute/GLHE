@@ -3,11 +3,9 @@ from glhe.topology.segment_types import SegmentType
 
 
 class Segment(object):
-
     _count = 0
 
     def __init__(self, segment_type, fluid_instance):
-
         # Initialize segment
         if segment_type == "simple":
             self._type = SegmentType.SIMPLE
