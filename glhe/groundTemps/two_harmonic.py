@@ -45,12 +45,12 @@ class TwoHarmonic(BaseGroundTemp):
         n = 1
         term1 = -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
         term2 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_1) \
-                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))  # noqa: E127
 
         n = 2
         term3 = -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
         term4 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_2) \
-                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))  # noqa: E127
 
         summation = exp(term1) * self._amplitude_1 * cos(term2) + exp(term3) * self._amplitude_2 * cos(term4)
 
