@@ -121,6 +121,18 @@
         "start-time": 100,
         "end-time": 200,
         "value": 3000
+      },
+      "external": {
+        "path": "./glhe/profiles/external_data"
+      },
+      "sinusoid": {
+        "amplitude": 1000,
+        "offset": 0,
+        "period": 0
+      },
+      "synthetic": {
+        "type": "symmetric",
+        "amplitude": 1000
       }
     }
   }

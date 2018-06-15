@@ -71,25 +71,25 @@ class SyntheticBase(Base):
         return (q_1 * q_2) + pow(-1.0, floor) * np.abs(q_1 * q_2) + self._d * pow(-1.0, floor) * sig_num
 
 
-class Asymmetric(SyntheticBase):
-    def __init__(self, amplitude):
-        kwargs = {'a': amplitude,
-                  'b': 1000,
-                  'c': 80,
-                  'd': 0.01,
-                  'e': 0.95,
-                  'f': 4 / 3,
-                  'g': 2190}
-        SyntheticBase.__init__(self, **kwargs)
-
-
-class Symmetric(SyntheticBase):
-    def __init__(self, amplitude):
-        kwargs = {'a': amplitude,
-                  'b': 2190,
-                  'c': 80,
-                  'd': 0.01,
-                  'e': 0.95,
-                  'f': 2,
-                  'g': 0}
-        SyntheticBase.__init__(self, **kwargs)
+class Synthetic(SyntheticBase):
+    def __init__(self, type, amplitude):
+        if type == 'asymmetric':
+            kwargs = {'a': amplitude,
+                      'b': 1000,
+                      'c': 80,
+                      'd': 0.01,
+                      'e': 0.95,
+                      'f': 4 / 3,
+                      'g': 2190}
+            SyntheticBase.__init__(self, **kwargs)
+        elif type == 'symmetric':
+            kwargs = {'a': amplitude,
+                      'b': 2190,
+                      'c': 80,
+                      'd': 0.01,
+                      'e': 0.95,
+                      'f': 2,
+                      'g': 0}
+            SyntheticBase.__init__(self, **kwargs)
+        else:
+            raise ValueError("'{type}' Synthetic object not supported. Check input.")

@@ -1,8 +1,7 @@
 from math import cos, exp, sqrt, pi
 
-from glhe.groundTemps.base import BaseGroundTemp
-
 from glhe.globals.constants import SEC_IN_DAY, DAYS_IN_YEAR
+from glhe.groundTemps.base import BaseGroundTemp
 
 
 class TwoHarmonic(BaseGroundTemp):
@@ -39,7 +38,6 @@ class TwoHarmonic(BaseGroundTemp):
         self._soil_diffusivity = soil_diffusivity
 
     def get_temp(self, time, depth):
-
         time_in_days = time / SEC_IN_DAY
 
         n = 1
