@@ -6,7 +6,7 @@ from glhe.profiles.sinusoid import Sinusoid
 
 class TestSinusoid(unittest.TestCase):
 
-    def test_get_load(self):
+    def test_get_value(self):
         tol = 1e-10
 
         tst = Sinusoid(1, 0, 2 * pi)
