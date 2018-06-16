@@ -2,15 +2,17 @@ from abc import ABC, abstractmethod
 
 
 class BaseGroundTemp(ABC):
+    """
+    Abstract base class for ground temperature objects
+    """
 
     @abstractmethod
     def get_temp(self, time, depth):
         """
-        Abstract getter method for ground temperatures
+         Getter method for ground temperatures
 
         :param time: time for ground temperature [s]
         :param depth: depth for ground temperature [m]
-        :return:
+        :return: ground temperature [C]
         """
-
         pass  # pragma: no cover

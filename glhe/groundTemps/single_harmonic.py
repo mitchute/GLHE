@@ -8,6 +8,9 @@ class SingleHarmonic(BaseGroundTemp):
     """
     Single harmonic ground temperature model.
 
+    .. math::
+        a^2 + b^2 = c^2
+
     Kusuda, T., and P. R. Achenbach. 1965. Earth temperatures and thermal diffusivity at selected
     stations in the United States. ASHRAE Transactions 71(1): 61-74.
     """
