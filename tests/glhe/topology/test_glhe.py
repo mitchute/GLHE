@@ -99,13 +99,13 @@ class TestGLHE(unittest.TestCase):
                          {
                              "type": "water",
                              "concentration": 100
-                         },
+                         },  # noqa: E123
                      "soil":
                          {
                              "conductivity": 2.5,
                              "density": 1500,
                              "specific heat": 1700
-                         }
+                         }  # noqa: E123
                      }
 
         tst = GLHE(json_blob)
