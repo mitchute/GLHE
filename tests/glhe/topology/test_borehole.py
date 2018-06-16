@@ -46,7 +46,7 @@ class TestBorehole(unittest.TestCase):
         tolerance = 0.00001
 
         # laminar tests
-        re = 100
+        re = 100  # noqa: E123
         self.assertEqual(tst.calc_friction_factor(re), 64.0 / re)
 
         re = 1000
