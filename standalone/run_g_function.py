@@ -6,7 +6,6 @@ from glhe.profiles.factory import make_load_profile
 
 
 def main():
-
     with open(sys.argv[1]) as f:
         json_blob = f.read()
     d = json.loads(json_blob)

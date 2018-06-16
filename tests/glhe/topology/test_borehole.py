@@ -25,7 +25,6 @@ json_blob = {"name": "borehole 1",
 class TestBorehole(unittest.TestCase):
 
     def test_init(self):
-
         tst = Borehole(json_blob, {"type": "water", "concentration": 0})
         self.assertEqual(tst._name, json_blob["name"])
         self.assertEqual(tst._depth, json_blob["depth"])
@@ -47,7 +46,7 @@ class TestBorehole(unittest.TestCase):
         tolerance = 0.00001
 
         # laminar tests
-        re = 100
+        re = 100  # noqa: E126
         self.assertEqual(tst.calc_friction_factor(re), 64.0 / re)
 
         re = 1000

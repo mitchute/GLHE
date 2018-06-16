@@ -4,7 +4,6 @@ import sys
 from glhe.topology.full_ground_loop import GLHE
 
 if __name__ == '__main__':
-
     with open(sys.argv[1]) as f:
         json_blob = f.read()
 

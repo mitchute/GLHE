@@ -2,7 +2,6 @@ from glhe.topology.borehole import Borehole
 
 
 class Path(object):
-
     _count = 0
 
     def __init__(self, inputs, fluid_instance):

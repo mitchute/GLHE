@@ -1,10 +1,9 @@
-from glhe.topology.fluid_types import FluidType
-
 from CoolProp.CoolProp import PropsSI
+
+from glhe.topology.fluid_types import FluidType
 
 
 class Fluid(object):
-
     pressure = 120000
     cp = 0
     dens = 0
