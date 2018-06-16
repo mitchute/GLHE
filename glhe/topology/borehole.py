@@ -45,8 +45,9 @@ class Borehole(object):
         Borehole._count += 1
 
     def get_flow_resistance(self):
-        return 8.0 * self.friction_factor * (2 * self._depth) / (
-                    pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
+        numerator = 8.0 * self.friction_factor * (2 * self._depth)
+        denominator = (pow(self._pipe.inner_diameter, 5) * self._fluid.dens * pow(pi, 2))
+        return numerator / denominator
 
     @staticmethod
     def calc_friction_factor(re):
