@@ -1,0 +1,13 @@
+# Use the latest build image to get access to the most Python versions
+build:
+    image: latest
+
+# Must use 3.4+ to get the ABC modules
+python:
+    version: 3.5
+
+# Don't build any extra formats
+formats: []
+
+# You could potentially use a separate requirements file for doc-building - one that doesn't have CoolProp
+requirements_file: requirements/docs.txt
