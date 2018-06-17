@@ -31,7 +31,8 @@ class GFunction(SimulationEntryPoint):
         # self.load_aggregation = load_agg_factory()
 
     def _get_g_function(self, time):
-        pass
+        # don't cover this until it's actually implemented
+        pass  # pragma: no cover
 
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
