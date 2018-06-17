@@ -24,13 +24,12 @@ class GFunction(SimulationEntryPoint):
             density=inputs['soil']['density'],
             specific_heat=inputs['soil']['specific heat']
         )
-        self.soil_diffusivity = soil.diffusivity()
 
         # initialize time here
         self.current_time = 0
         # self.load_aggregation = load_agg_factory()
 
-    def _get_g_function(self, time):
+    def get_g_function(self, time):
         # don't cover this until it's actually implemented
         pass  # pragma: no cover
 

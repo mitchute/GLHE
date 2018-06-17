@@ -29,12 +29,12 @@ class TestBorehole(unittest.TestCase):
         self.assertEqual(tst._name, json_blob["name"])
         self.assertEqual(tst._depth, json_blob["depth"])
         self.assertEqual(tst._diameter, json_blob["diameter"])
-        self.assertEqual(tst._grout._conductivity, json_blob["grout"]["conductivity"])
-        self.assertEqual(tst._grout._density, json_blob["grout"]["density"])
-        self.assertEqual(tst._grout._specific_heat, json_blob["grout"]["specific heat"])
-        self.assertEqual(tst._pipe._specific_heat, json_blob["pipe"]["specific heat"])
-        self.assertEqual(tst._pipe._density, json_blob["pipe"]["density"])
-        self.assertEqual(tst._pipe._conductivity, json_blob["pipe"]["conductivity"])
+        self.assertEqual(tst._grout.conductivity, json_blob["grout"]["conductivity"])
+        self.assertEqual(tst._grout.density, json_blob["grout"]["density"])
+        self.assertEqual(tst._grout.specific_heat, json_blob["grout"]["specific heat"])
+        self.assertEqual(tst._pipe.specific_heat, json_blob["pipe"]["specific heat"])
+        self.assertEqual(tst._pipe.density, json_blob["pipe"]["density"])
+        self.assertEqual(tst._pipe.conductivity, json_blob["pipe"]["conductivity"])
 
     def test_calc_friction_factor(self):
         """
