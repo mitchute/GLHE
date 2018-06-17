@@ -1,11 +1,9 @@
-import os
-import tempfile
 import unittest
 
+from glhe.profiles.external import External
 from glhe.profiles.factory import make_load_profile
 from glhe.profiles.fixed import Fixed
 from glhe.profiles.impulse import Impulse
-from glhe.profiles.external import External
 from glhe.profiles.sinusoid import Sinusoid
 from glhe.profiles.synthetic import Synthetic
 
