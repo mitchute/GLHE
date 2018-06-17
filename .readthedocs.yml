@@ -10,4 +10,4 @@ python:
 formats: []
 
 # You could potentially use a separate requirements file for doc-building - one that doesn't have CoolProp
-requirements_file: requirements/docs.txt
+requirements_file: requirements.txt
