@@ -19,7 +19,7 @@ class GFunction(SimulationEntryPoint):
         self.average_depth = inputs['g-functions']['average-depth']
 
         # soil properties
-        soil = PropertiesBase(
+        self.soil = PropertiesBase(
             conductivity=inputs['soil']['conductivity'],
             density=inputs['soil']['density'],
             specific_heat=inputs['soil']['specific heat']

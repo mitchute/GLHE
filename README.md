@@ -1,5 +1,9 @@
 # GLHE
 
+## Documentation [![Documentation Status](https://readthedocs.org/projects/glhe/badge/?version=latest)](https://glhe.readthedocs.io/en/latest/?badge=latest)
+
+Docs are hosted [here](https://glhe.readthedocs.io/en/latest/) by [ReadTheDocs](https://readthedocs.org/)
+
 ## Testing [![Build Status](https://travis-ci.org/mitchute/GLHE.svg?branch=master)](https://travis-ci.org/mitchute/GLHE)
 
 Tests are run by [Travis-ci.org](https://travis-ci.org/mitchute/GLHE)
