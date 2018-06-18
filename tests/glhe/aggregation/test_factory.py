@@ -22,3 +22,7 @@ class TestFactory(unittest.TestCase):
         inputs = {'type': 'none'}
         agg_method = load_agg_factory(inputs=inputs)
         self.assertIsInstance(agg_method, NoAggMethod)
+
+    def test_error(self):
+        inputs = {'type': 'bob'}
+        self.assertRaises(ValueError, lambda: load_agg_factory(inputs=inputs))
