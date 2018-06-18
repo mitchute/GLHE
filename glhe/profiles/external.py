@@ -15,6 +15,7 @@ class External(Base):
 
         df = pd.read_csv(path, index_col=0, parse_dates=True)
         delta_t = df.index.to_series().diff().dt.total_seconds()
+        delta_t.is_copy = False
         delta_t[0] = 0
         x_range = delta_t.cumsum().tolist()
         self._max_time = x_range[-1]

@@ -3,6 +3,7 @@ import csv
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
+from glhe.aggregation.factory import load_agg_factory
 
 
 class GFunction(SimulationEntryPoint):
@@ -17,8 +18,6 @@ class GFunction(SimulationEntryPoint):
                 g_functions.append((row[0], row[1]))
         self.g_functions = g_functions
         self.average_depth = inputs['g-functions']['average-depth']
-
-        # soil properties
         self.soil = PropertiesBase(
             conductivity=inputs['soil']['conductivity'],
             density=inputs['soil']['density'],
@@ -27,7 +26,7 @@ class GFunction(SimulationEntryPoint):
 
         # initialize time here
         self.current_time = 0
-        # self.load_aggregation = load_agg_factory()
+        self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
 
     def get_g_function(self, time):
         # don't cover this until it's actually implemented

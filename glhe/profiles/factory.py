@@ -27,3 +27,5 @@ def make_load_profile(inputs):
         type = inputs['synthetic']['type']
         amplitude = inputs['synthetic']['amplitude']
         return Synthetic(type, amplitude)
+    else:
+        raise ValueError("'{}' load profile type is not supported".format(load_profile_type))
