@@ -39,3 +39,7 @@ class TestFactory(unittest.TestCase):
         inputs = {'type': 'synthetic', 'synthetic': {'type': 'symmetric', 'amplitude': 2}}
         profile = make_load_profile(inputs=inputs)
         self.assertIsInstance(profile, Synthetic)
+
+    def test_error(self):
+        inputs = {'type': 'bob'}
+        self.assertRaises(ValueError, lambda: make_load_profile(inputs=inputs))
