@@ -6,10 +6,10 @@ from glhe.aggregation.no_aggregation_method import NoAggMethod
 def load_agg_factory(inputs):
     load_agg_type = inputs['type']
     if load_agg_type == 'static':
-        return StaticMethod
+        return StaticMethod()
     elif load_agg_type == 'dynamic':
-        return DynamicMethod
+        return DynamicMethod()
     elif load_agg_type == 'none':
-        return NoAggMethod
+        return NoAggMethod()
     else:
         raise ValueError("'{}' aggregation type is not supported")
