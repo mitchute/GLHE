@@ -103,7 +103,7 @@
     "average-depth": 100
   },
   "load-aggregation": {
-    "method": "dynamic",
+    "type": "dynamic",
     "dynamic": {
       "param 1": 1
     }
