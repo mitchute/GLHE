@@ -32,6 +32,21 @@ class GFunction(SimulationEntryPoint):
         # don't cover this until it's actually implemented
         pass  # pragma: no cover
 
+    def interp_g_function(self, non_dimensional_time):
+        """
+        Interpolate logarithmically for g-function value
+
+        Malayappan, V. and J.D. Spitler. 2013. Limitations of Using Uniform Heat Flux Assumptions in
+        Sizing Vertical Borehole Heat Exchanger Fields. Proceedings of Clima 2013. June 16-19. Prague.
+
+        :param non_dimensional_time: the non-dimensional time t/ts to which the g-functions are mapped
+        :return: g-function value
+        """
+
+        
+
+        return 0
+
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
         outlet_temperature = inlet_temperature

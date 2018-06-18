@@ -19,8 +19,8 @@ class External(Base):
         delta_t[0] = 0
         x_range = delta_t.cumsum().tolist()
         self._max_time = x_range[-1]
-        y_vals = df.iloc[:, 0].tolist()
-        self._interp_values = interp1d(x_range, y_vals)
+        y_range = df.iloc[:, 0].tolist()
+        self._interp_values = interp1d(x_range, y_range)
 
     def get_value(self, time=0):
         return self._interp_values(time % self._max_time)
