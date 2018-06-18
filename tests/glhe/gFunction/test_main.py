@@ -24,6 +24,9 @@ class TestGFunction(unittest.TestCase):
                 'conductivity': 1,
                 'density': 2,
                 'specific heat': 3,
+            },
+            'load-aggregation': {
+                'type': 'dynamic'
             }
         }
         return GFunction(inputs=input_structure)
