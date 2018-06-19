@@ -2,40 +2,38 @@ import unittest
 
 from numpy import log
 
-from glhe.topology.pipe import Pipe
 from glhe.properties.fluid import Fluid
-
-json_blob = {"name": "borehole 1",
-             "depth": 50,
-             "diameter": 0.1524,
-             "grout":
-                 {"conductivity": 0.75,
-                  "density": 1000,
-                  "specific heat": 1000},
-             "pipe":
-                 {"outer diameter": 0.0334,
-                  "inner diameter": 0.0269,
-                  "conductivity": 0.4,
-                  "density": 950,
-                  "specific heat": 1000},
-             "segments": 10,
-             "type": "simple"}
+from glhe.topology.pipe import Pipe
 
 
 class TestPipe(unittest.TestCase):
 
+    @staticmethod
+    def add_instance():
+        inputs = {"pipe": {
+            "outer diameter": 0.0334,
+            "inner diameter": 0.0269,
+            "conductivity": 0.389,
+            "density": 950,
+            "specific heat": 1.623
+        }}
+
+        fluid = Fluid({"type": "water"})
+
+        return Pipe(inputs=inputs, fluid=fluid)
+
     def test_init(self):
-        tst = Pipe(1, 2, 3)
-        self.assertEqual(tst.conductivity, 1)
-        self.assertEqual(tst.density, 2)
-        self.assertEqual(tst.specific_heat, 3)
+        tst = self.add_instance()
+        self.assertEqual(tst.conductivity, 0.389)
+        self.assertEqual(tst.density, 950)
+        self.assertEqual(tst.specific_heat, 1.623)
 
     def test_calc_friction_factor(self):
         """
         Test the smooth tube friction factor calculations
         """
 
-        tst = Pipe(json_blob, Fluid({"type": "water", "concentration": 0}))
+        tst = self.add_instance()
 
         tolerance = 0.00001
 

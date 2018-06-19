@@ -8,6 +8,7 @@
           "name": "borehole 1",
           "depth": 100,
           "diameter": 0.1099,
+          "shank-spacing": 0.0521,
           "grout": {
             "conductivity": 0.744,
             "density": 1500,
@@ -27,6 +28,7 @@
           "name": "borehole 2",
           "depth": 100,
           "diameter": 0.1099,
+          "shank-spacing": 0.0521,
           "grout": {
             "conductivity": 0.744,
             "density": 1500,
@@ -51,6 +53,7 @@
           "name": "borehole 3",
           "depth": 100,
           "diameter": 0.1099,
+          "shank-spacing": 0.0521,
           "grout": {
             "conductivity": 0.744,
             "density": 1500,
@@ -70,6 +73,7 @@
           "name": "borehole 4",
           "depth": 100,
           "diameter": 0.1099,
+          "shank-spacing": 0.0521,
           "grout": {
             "conductivity": 0.744,
             "density": 1500,
@@ -93,10 +97,10 @@
     "concentration": 100
   },
   "soil": {
-    "name": "Average Rock",
+    "name": "Some Rock",
     "conductivity": 2.4234,
-    "density": 2803.2,
-    "specific heat": 0.836
+    "density": 1500,
+    "specific heat": 1466
   },
   "g-functions": {
     "file": "./glhe/examples/2x2_g_functions.csv",

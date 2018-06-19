@@ -5,24 +5,26 @@ from glhe.topology.fluid_types import FluidType
 
 class Fluid(object):
     pressure = 120000
-    cp = 0
-    dens = 0
-    cond = 0
-    pr = 0
-    visc = 0
+    specific_heat = 0
+    density = 0
+    conductivity = 0
+    prandtl = 0
+    viscosity = 0
 
     def __init__(self, inputs):
         self._fluid_name = inputs["type"].upper()
-        self._concentration = inputs["concentration"] / 100.0
 
         if self._fluid_name == "WATER":
             self._type = FluidType.WATER
         elif self._fluid_name == "EA":
             self._type = FluidType.ETHYL_ALCOHOL
+            self._concentration = inputs["concentration"] / 100.0
         elif self._fluid_name == "EG":
             self._type = FluidType.ETHYLENE_GLYCOL
+            self._concentration = inputs["concentration"] / 100.0
         elif self._fluid_name == "PG":
             self._type = FluidType.PROPYLENE_GLYCOL
+            self._concentration = inputs["concentration"] / 100.0
         else:
             raise ValueError("'{}' is not supported".format(self._fluid_name))
 
@@ -59,11 +61,11 @@ class Fluid(object):
         self.update(20)
 
     def update(self, temperature):
-        Fluid.cond = self.calc_cond(temperature)
-        Fluid.cp = self.calc_cp(temperature)
-        Fluid.dens = self.calc_dens(temperature)
-        Fluid.pr = self.calc_pr(temperature)
-        Fluid.visc = self.calc_visc(temperature)
+        Fluid.conductivity = self.calc_cond(temperature)
+        Fluid.specific_heat = self.calc_cp(temperature)
+        Fluid.density = self.calc_dens(temperature)
+        Fluid.prandtl = self.calc_pr(temperature)
+        Fluid.viscosity = self.calc_visc(temperature)
 
     def calc_cond(self, temperature):
         """

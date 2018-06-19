@@ -4,18 +4,18 @@ from glhe.topology.borehole import Borehole
 class Path(object):
     _count = 0
 
-    def __init__(self, inputs, fluid_instance):
+    def __init__(self, inputs, fluid, soil):
 
         # Get inputs from json blob
         self._name = inputs["name"]
 
         # Keep reference to fluid instance for usage
-        self._fluid = fluid_instance
+        self._fluid = fluid
 
         # Initialize boreholes
         self._boreholes = []
         for borehole in inputs["boreholes"]:
-            self._boreholes.append(Borehole(borehole, fluid_instance=self._fluid))
+            self._boreholes.append(Borehole(borehole, fluid=fluid, soil=soil))
 
         # Initialize other parameters
         self.mass_flow_rate = 0
