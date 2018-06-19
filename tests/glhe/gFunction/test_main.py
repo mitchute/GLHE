@@ -43,3 +43,10 @@ class TestGFunction(unittest.TestCase):
         response = g.simulate_time_step(inlet_temperature=20.0, flow=1.0, time_step=15)
         self.assertIsInstance(response, TimeStepSimulationResponse)
         self.assertAlmostEqual(response.outlet_temperature, 20.0, 2)
+
+    def test_g_function(self):
+        g = self.add_instance()
+        self.assertEqual(g.g_function(0.5), 0.5)
+        self.assertEqual(g.g_function(1.5), 1.5)
+        self.assertEqual(g.g_function(2.5), 2.5)
+        self.assertEqual(g.g_function(3.5), 3.5)
