@@ -1,3 +1,5 @@
+from math import log
+
 from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
@@ -13,7 +15,7 @@ class GFunction(SimulationEntryPoint):
 
         # g-function properties
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
-        self.g_function = interp1d(g_functions[:, 0], g_functions[:, 1], fill_value='extrapolate')
+        self._g_function = interp1d(g_functions[:, 0], g_functions[:, 1], fill_value='extrapolate')
         self.average_depth = inputs['g-functions']['average-depth']
         self.soil = PropertiesBase(
             conductivity=inputs['soil']['conductivity'],
@@ -24,6 +26,11 @@ class GFunction(SimulationEntryPoint):
         # initialize time here
         self.current_time = 0
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
+        self.t_s = self.average_depth ** 2 / (9 * self.soil.diffusivity)
+
+    def get_g_func(self, time):
+        lntts = log(time / self.t_s)
+        return self._g_function(lntts)
 
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
