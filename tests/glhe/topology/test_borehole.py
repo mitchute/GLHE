@@ -4394,7 +4394,8 @@ class TestBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(), 0.04812, delta=tolerance)
 
-    # def test_calc_bh_resistance(self):
-    #     tolerance = 0.00001
-    #     tst = self.add_instance()
-    #     self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(), 0.36818, delta=tolerance)
+    def test_calc_bh_resistance(self):
+        tolerance = 0.00001
+        tst = self.add_instance()
+        tst.mass_flow_rate = 0.5
+        self.assertAlmostEqual(tst.calc_bh_resistance(), 0.21629, delta=tolerance)

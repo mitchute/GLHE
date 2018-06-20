@@ -29,12 +29,7 @@ class TestPipe(unittest.TestCase):
         self.assertEqual(tst.specific_heat, 1.623)
 
     def test_calc_friction_factor(self):
-        """
-        Test the smooth tube friction factor calculations
-        """
-
         tst = self.add_instance()
-
         tolerance = 0.00001
 
         # laminar tests
@@ -66,3 +61,22 @@ class TestPipe(unittest.TestCase):
 
         re = 25000
         self.assertEqual(tst.calc_friction_factor(re), (0.79 * log(re) - 1.64) ** (-2.0))
+
+    def test_calc_conduction_resistance(self):
+        tst = self.add_instance()
+        tolerance = 0.00001
+        self.assertAlmostEqual(tst.calc_conduction_resistance(), 0.088549, delta=tolerance)
+
+    def test_calc_convection_resistance(self):
+        tst = self.add_instance()
+        tolerance = 0.00001
+        self.assertAlmostEqual(tst.calc_convection_resistance(0), 0.13273, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_convection_resistance(0.07), 0.02645, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_convection_resistance(2), 0.00094, delta=tolerance)
+
+    def test_calc_resistance(self):
+        tst = self.add_instance()
+        tolerance = 0.00001
+        self.assertAlmostEqual(tst.calc_resistance(0), 0.22128, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resistance(0.07), 0.11500, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resistance(2), 0.08948, delta=tolerance)

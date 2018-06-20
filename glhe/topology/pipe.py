@@ -75,19 +75,14 @@ class Pipe(PropertiesBase):
             nu_low = 4.01  # laminar
             f = self.calc_friction_factor(re)  # turbulent
             pr = self._fluid.prandtl
-            nu_high = (f / 8) * (re - 1000) * pr / \
-                      (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
+            nu_high = (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
             sigma = 1 / (1 + exp(-(re - 3000) / 150))  # smoothing function
-
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             f = self.calc_friction_factor(re)
             pr = self._fluid.prandtl
-            nu = (f / 8) * (re - 1000) * pr / \
-                 (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
-
-        h = nu * self._fluid.conductivity / self.inner_diameter
-        return 1 / (h * PI * self.inner_diameter)
+            nu = (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
+        return 1 / (nu * PI * self._fluid.conductivity)
 
     def calc_resistance(self, mass_flow_rate):
         """

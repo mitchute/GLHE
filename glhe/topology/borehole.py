@@ -151,7 +151,7 @@ class Borehole(object):
             self.calc_bh_total_internal_resistance()
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self._depth / (self._fluid.cp * self.mass_flow_rate)) ** 2
+        pt_2 = (self._depth / (self._fluid.specific_heat * self.mass_flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh = self.resist_bh_ave + resist_short_circuiting
