@@ -73,7 +73,7 @@ class Borehole(object):
         Equation 13
         """
 
-        self.beta = 2 * PI * self._grout.conductivity * self._pipe.calc_resistance(self.mass_flow_rate)
+        self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
 
         final_term_1 = log(self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
         num_final_term_2 = self.theta_3 ** 2 * (1 - (4 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4)) ** 2
@@ -97,7 +97,7 @@ class Borehole(object):
         Equation 26
         """
 
-        self.beta = 2 * PI * self._grout.conductivity * self._pipe.calc_resistance(self.mass_flow_rate)
+        self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
 
         final_term_1_num = (1 + self.theta_1 ** 2) ** self.sigma
         final_term_1_den = self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma
@@ -124,8 +124,7 @@ class Borehole(object):
         Equation 3
         """
 
-        self.resist_bh_grout = self.calc_bh_average_resistance() - self._pipe.calc_resistance(self.mass_flow_rate) / 2.0
-
+        self.resist_bh_grout = self.calc_bh_average_resistance() - self._pipe.resist_pipe / 2.0
         return self.resist_bh_grout
 
     def calc_bh_resistance(self):

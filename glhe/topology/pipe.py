@@ -19,6 +19,7 @@ class Pipe(PropertiesBase):
         self._fluid = fluid
 
         self.friction_factor = 0.02
+        self.resist_pipe = 0
 
     def calc_friction_factor(self, re):
         """
@@ -98,4 +99,5 @@ class Pipe(PropertiesBase):
         Equation 3
         """
 
-        return self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
+        self.resist_pipe = self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
+        return self.resist_pipe
