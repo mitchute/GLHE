@@ -76,12 +76,12 @@ class Borehole(object):
         self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
 
         final_term_1 = log(self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
-        num_final_term_2 = self.theta_3 ** 2 * (1 - (4 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4)) ** 2
-        den_final_term_2_pt_1 = (1 + self.beta) / (1 - self.beta)
-        den_final_term_2_pt_2 = self.theta_3 ** 2 * (
-                1 + (16 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4) ** 2)
-        den_final_term_2 = den_final_term_2_pt_1 + den_final_term_2_pt_2
-        final_term_2 = num_final_term_2 / den_final_term_2
+
+        term_2_num = self.theta_3 ** 2 * (1 - (4 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4)) ** 2
+        term_2_den_pt_1 = (1 + self.beta) / (1 - self.beta)
+        term_2_den_pt_2 = self.theta_3 ** 2 * (1 + (16 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4) ** 2)
+        term_2_den = term_2_den_pt_1 + term_2_den_pt_2
+        final_term_2 = term_2_num / term_2_den
 
         self.resist_bh_ave = (1 / (4 * PI * self._grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
 
@@ -99,16 +99,16 @@ class Borehole(object):
 
         self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
 
-        final_term_1_num = (1 + self.theta_1 ** 2) ** self.sigma
-        final_term_1_den = self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma
-        final_term_1 = log(final_term_1_num / final_term_1_den)
+        term_1_num = (1 + self.theta_1 ** 2) ** self.sigma
+        term_1_den = self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma
+        final_term_1 = log(term_1_num / term_1_den)
 
         term_2_num = self.theta_3 ** 2 * (1 - self.theta_1 ** 4 + 4 * self.sigma * self.theta_1 ** 2) ** 2
         term_2_den_pt_1 = (1 + self.beta) / (1 - self.beta) * (1 - self.theta_1 ** 4) ** 2
         term_2_den_pt_2 = self.theta_3 ** 2 * (1 - self.theta_1 ** 4) ** 2
         term_2_den_pt_3 = 8 * self.sigma * self.theta_1 ** 2 * self.theta_3 ** 2 * (1 + self.theta_1 ** 4)
-        den_term_2 = term_2_den_pt_1 - term_2_den_pt_2 + term_2_den_pt_3
-        final_term_2 = term_2_num / den_term_2
+        term_2_den = term_2_den_pt_1 - term_2_den_pt_2 + term_2_den_pt_3
+        final_term_2 = term_2_num / term_2_den
 
         self.resist_bh_total_internal = 1 / (PI * self._grout.conductivity) * (self.beta + final_term_1 - final_term_2)
 
