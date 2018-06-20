@@ -2,6 +2,7 @@ from numpy import log, exp
 
 from glhe.globals.constants import PI
 from glhe.properties.base import PropertiesBase
+from glhe.globals.functions import smoothing_function
 
 
 class Pipe(PropertiesBase):
@@ -34,15 +35,15 @@ class Pipe(PropertiesBase):
         upper_limit = 5000
 
         if re < lower_limit:
-            self.friction_factor = 64.0 / re  # pure laminar flow
+            self.friction_factor = self.laminar_friction_factor(re)
         elif lower_limit <= re < upper_limit:
-            f_low = 64.0 / re  # pure laminar flow
+            f_low = self.laminar_friction_factor(re)
             # pure turbulent flow
-            f_high = (0.79 * log(re) - 1.64) ** (-2.0)
-            sf = 1 / (1 + exp(-(re - 3000.0) / 450.0))  # smoothing function
-            self.friction_factor = (1 - sf) * f_low + sf * f_high
+            f_high = self.turbulent_friction_factor(re)
+            sigma = smoothing_function(re, a=3000, b=450)
+            self.friction_factor = (1 - sigma) * f_low + sigma * f_high
         else:
-            self.friction_factor = (0.79 * log(re) - 1.64) ** (-2.0)  # pure turbulent flow
+            self.friction_factor = self.turbulent_friction_factor(re)
 
         return self.friction_factor
 
@@ -70,18 +71,14 @@ class Pipe(PropertiesBase):
         re = 4 * mass_flow_rate / (self._fluid.viscosity * PI * self.inner_diameter)
 
         if re < lower_limit:
-            nu = 4.01  # laminar mean(4.36, 3.66)
+            nu = self._laminar_nusselt()
         elif lower_limit <= re < upper_limit:
-            nu_low = 4.01  # laminar
-            f = self.calc_friction_factor(re)  # turbulent
-            pr = self._fluid.prandtl
-            nu_high = (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
-            sigma = 1 / (1 + exp(-(re - 3000) / 150))  # smoothing function
+            nu_low = self._laminar_nusselt()
+            nu_high = self._turbulent_nusselt(re)
+            sigma = smoothing_function(re, a=3000, b=150)
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
-            f = self.calc_friction_factor(re)
-            pr = self._fluid.prandtl
-            nu = (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
+            nu = self._turbulent_nusselt(re)
         return 1 / (nu * PI * self._fluid.conductivity)
 
     def calc_resistance(self, mass_flow_rate):
@@ -96,3 +93,46 @@ class Pipe(PropertiesBase):
 
         self.resist_pipe = self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
         return self.resist_pipe
+
+    def _laminar_nusselt(self):
+        """
+        Laminar Nusselt number for smooth pipes
+
+        mean(4.36, 3.66)
+        :return: Nusselt number
+        """
+        return  4.01
+
+    def _turbulent_nusselt(self, re):
+        """
+        Turbulent Nusselt number for smooth pipes
+
+        Gneilinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
+        International Chemical Engineering 16(1976), pp. 359-368.
+
+        :param re: Reynolds number
+        :return: Nusselt number
+        """
+
+        f = self.calc_friction_factor(re)
+        pr = self._fluid.prandtl
+        return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
+
+    def laminar_friction_factor(self, re):
+        """
+        Laminar friction factor
+
+        :param re: Reynolds number
+        :return: friction factor
+        """
+
+        return 64.0 / re
+
+    def turbulent_friction_factor(self, re):
+        """
+
+        :param re:
+        :return:
+        """
+
+        return (0.79 * log(re) - 1.64) ** (-2.0)
