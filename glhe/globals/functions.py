@@ -14,3 +14,14 @@ def smoothing_function(x, a, b):
     """
 
     return 1 / (1 + exp(-(x - a) / b))
+
+
+def temp_in_kelvin(x):
+    """
+    Converts Celsius to Kelvin
+
+    :param x: temperature in Celsius
+    :return: temperature in Kelvin
+    """
+
+    return x + 273.15
