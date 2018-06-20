@@ -47,10 +47,10 @@ class TestBorehole(unittest.TestCase):
         self.assertEqual(tst._pipe.density, 950)
         self.assertEqual(tst._pipe.conductivity, 0.4)
 
-    # def test_get_flow_resistance(self):
-    #     tst = self.add_instance()
-    #     tolerance = 1
-    #     self.assertAlmostEqual(tst.get_flow_resistance(), 115301, delta=tolerance)
+    def test_get_flow_resistance(self):
+        tst = self.add_instance()
+        tolerance = 1
+        self.assertAlmostEqual(tst.get_flow_resistance(), 115301, delta=tolerance)
 
     def test_set_flow_rate(self):
         tst = self.add_instance()

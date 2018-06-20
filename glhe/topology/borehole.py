@@ -49,8 +49,9 @@ class Borehole(object):
         self.theta_1 = self.shank_space / (2 * self._radius)
         self.theta_2 = self._radius / self._pipe.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
-        self.sigma = (self._grout.conductivity - self._soil.conductivity) / (
-                self._grout.conductivity + self._soil.conductivity)
+        sigma_num = self._grout.conductivity - self._soil.conductivity
+        sigma_den = self._grout.conductivity + self._soil.conductivity
+        self.sigma = sigma_num / sigma_den
         self.beta = None
 
         # Track bh number
@@ -74,18 +75,14 @@ class Borehole(object):
 
         self.beta = 2 * PI * self._grout.conductivity * self._pipe.calc_resistance(self.mass_flow_rate)
 
-        final_term_1 = log(
-            self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
-        num_final_term_2 = self.theta_3 ** 2 * \
-                           (1 - (4 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4)) ** 2
+        final_term_1 = log(self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
+        num_final_term_2 = self.theta_3 ** 2 * (1 - (4 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4)) ** 2
         den_final_term_2_pt_1 = (1 + self.beta) / (1 - self.beta)
-        den_final_term_2_pt_2 = self.theta_3 ** 2 * \
-                                (1 + (16 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4) ** 2)
+        den_final_term_2_pt_2 = self.theta_3 ** 2 * (1 + (16 * self.sigma * self.theta_1 ** 4) / (1 - self.theta_1 ** 4) ** 2)
         den_final_term_2 = den_final_term_2_pt_1 + den_final_term_2_pt_2
         final_term_2 = num_final_term_2 / den_final_term_2
 
-        self.resist_bh_ave = (1 / (4 * PI * self._grout.conductivity)
-                              ) * (self.beta + final_term_1 - final_term_2)
+        self.resist_bh_ave = (1 / (4 * PI * self._grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
 
         return self.resist_bh_ave
 
@@ -101,8 +98,7 @@ class Borehole(object):
 
         self.beta = 2 * PI * self._grout.conductivity * self._pipe.calc_resistance(self.mass_flow_rate)
 
-        final_term_1 = log(
-            ((1 + self.theta_1 ** 2) ** self.sigma) / (self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma))
+        final_term_1 = log(((1 + self.theta_1 ** 2) ** self.sigma) / (self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma))
         num_term_2 = self.theta_3 ** 2 * (1 - self.theta_1 ** 4 + 4 * self.sigma * self.theta_1 ** 2) ** 2
         den_term_2_pt_1 = (1 + self.beta) / (1 - self.beta) * (1 - self.theta_1 ** 4) ** 2
         den_term_2_pt_2 = self.theta_3 ** 2 * (1 - self.theta_1 ** 4) ** 2
@@ -152,8 +148,7 @@ class Borehole(object):
             self.calc_bh_average_resistance()
             self.calc_bh_total_internal_resistance()
 
-        resist_short_circuiting = (1 / (3 * self.resist_bh_total_internal)) * (
-                self._depth / (self._fluid.cp * self.mass_flow_rate)) ** 2
+        resist_short_circuiting = (1 / (3 * self.resist_bh_total_internal)) * (self._depth / (self._fluid.cp * self.mass_flow_rate)) ** 2
 
         self.resist_bh = self.resist_bh_ave + resist_short_circuiting
 
