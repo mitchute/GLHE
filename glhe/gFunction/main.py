@@ -29,6 +29,13 @@ class GFunction(SimulationEntryPoint):
         self.t_s = self.average_depth ** 2 / (9 * self.soil.diffusivity)
 
     def get_g_func(self, time):
+        """
+        Retrieves the interpolated g-function value
+
+        :param time: time [s]
+        :return: g-function value
+        """
+
         lntts = log(time / self.t_s)
         return self._g_function(lntts)
 

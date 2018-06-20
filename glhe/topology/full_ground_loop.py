@@ -27,7 +27,7 @@ class GLHE(SimulationEntryPoint):
 
         # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
-            self._paths.append(Path(path, fluid_instance=self._fluid))
+            self._paths.append(Path(path, fluid=self._fluid, soil=inputs["soil"]))
 
         # Track GLHE num
         self._glhe_num = GLHE._count
