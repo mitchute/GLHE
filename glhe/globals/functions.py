@@ -1,5 +1,6 @@
 from math import exp
 
+
 def smoothing_function(x, a, b):
     """
     Sigmoid smoothing function
