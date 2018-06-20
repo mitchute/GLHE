@@ -65,40 +65,6 @@ class TestBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.mass_flow_rate, 1.0, delta=tolerance)
 
     def test_calc_bh_total_internal_resistance(self):
-        # inputs = {
-        #     "Name": "BH 1",
-        #     "Location": [0, 0],
-        #     "Depth": 76.2,
-        #     "radius": 0.048,
-        #     "shank-spacing": 0.032,
-        #     "Pipe":
-        #         {
-        #             "Outside Diameter": 0.032,
-        #             "Wall Thickness": 0.00243,
-        #             "conductivity": 0.389,
-        #             "Density": 800,
-        #             "Specific Heat": 1000
-        #         },
-        #     "Fluid":
-        #         {
-        #             "Type": "Water",
-        #             "Concentration": 100,
-        #             "Flow Rate": 0.5
-        #         },
-        #     "soil":
-        #         {
-        #             "conductivity": 4.0,
-        #             "Density": 1500,
-        #             "Specific Heat": 1663.8,
-        #             "Temperature": 13.0
-        #         },
-        #     "grout":
-        #         {
-        #             "conductivity": 0.6,
-        #             "Density": 1000,
-        #             "Specific Heat": 1000
-        #         }
-        # }
 
         tolerance = 0.00001
 
@@ -2264,40 +2230,6 @@ class TestBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(), 0.45299, delta=tolerance)
 
     def test_calc_bh_grout_resistance(self):
-        # inputs = {
-        #     "Name": "BH 1",
-        #     "Location": [0, 0],
-        #     "Depth": 76.2,
-        #     "radius": 0.048,
-        #     "shank-spacing": 0.032,
-        #     "Pipe":
-        #         {
-        #             "Outside Diameter": 0.032,
-        #             "Wall Thickness": 0.00243,
-        #             "conductivity": 0.389,
-        #             "Density": 800,
-        #             "Specific Heat": 1000
-        #         },
-        #     "Fluid":
-        #         {
-        #             "Type": "Water",
-        #             "Concentration": 100,
-        #             "Flow Rate": 0.5
-        #         },
-        #     "soil":
-        #         {
-        #             "conductivity": 4.0,
-        #             "Density": 1500,
-        #             "Specific Heat": 1663.8,
-        #             "Temperature": 13.0
-        #         },
-        #     "grout":
-        #         {
-        #             "conductivity": 0.6,
-        #             "Density": 1000,
-        #             "Specific Heat": 1000
-        #         }
-        # }
 
         tolerance = 0.00001
 
@@ -4463,44 +4395,6 @@ class TestBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(), 0.04812, delta=tolerance)
 
     # def test_calc_bh_resistance(self):
-    #     inputs = {
-    #         "Name": "BH 1",
-    #         "Location": [0, 0],
-    #         "Depth": 76.2,
-    #         "radius": 0.048,
-    #         "shank-spacing": 0.032,
-    #         "Pipe":
-    #             {
-    #                 "Outside Diameter": 0.032,
-    #                 "Wall Thickness": 0.00243,
-    #                 "conductivity": 0.389,
-    #                 "Density": 800,
-    #                 "Specific Heat": 1000
-    #             },
-    #         "Fluid":
-    #             {
-    #                 "Type": "Water",
-    #                 "Concentration": 100,
-    #                 "Flow Rate": 0.5
-    #             },
-    #         "soil":
-    #             {
-    #                 "conductivity": 4.0,
-    #                 "Density": 1500,
-    #                 "Specific Heat": 1663.8,
-    #                 "Temperature": 13.0
-    #             },
-    #         "grout":
-    #             {
-    #                 "conductivity": 0.6,
-    #                 "Density": 1000,
-    #                 "Specific Heat": 1000
-    #             }
-    #     }
-    #
     #     tolerance = 0.00001
-    #
-    #     tst = self.add_instance(my_inputs=inputs)
-    #
-    #     self.assertAlmostEqual(
-    #         tst.calc_bh_total_internal_resistance(), 0.36818, delta=tolerance)
+    #     tst = self.add_instance()
+    #     self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(), 0.36818, delta=tolerance)
