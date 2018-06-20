@@ -2,6 +2,7 @@ import unittest
 
 from glhe.globals.functions import smoothing_function
 
+
 class TestFunctions(unittest.TestCase):
 
     def test_smoothing_function(self):

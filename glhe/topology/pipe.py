@@ -1,8 +1,8 @@
-from numpy import log, exp
+from numpy import log
 
 from glhe.globals.constants import PI
-from glhe.properties.base import PropertiesBase
 from glhe.globals.functions import smoothing_function
+from glhe.properties.base import PropertiesBase
 
 
 class Pipe(PropertiesBase):
@@ -101,7 +101,7 @@ class Pipe(PropertiesBase):
         mean(4.36, 3.66)
         :return: Nusselt number
         """
-        return  4.01
+        return 4.01
 
     def _turbulent_nusselt(self, re):
         """
