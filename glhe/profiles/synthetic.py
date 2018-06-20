@@ -21,15 +21,15 @@ class SyntheticBase(Base):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, a=0, b=0, c=0, d=0, e=0, f=0, g=0):
+    def __init__(self, inputs):
         Base.__init__(self)
-        self._a = a
-        self._b = b
-        self._c = c
-        self._d = d
-        self._e = e
-        self._f = f
-        self._g = g
+        self._a = inputs["a"]
+        self._b = inputs["b"]
+        self._c = inputs["c"]
+        self._d = inputs["d"]
+        self._e = inputs["e"]
+        self._f = inputs["f"]
+        self._g = inputs["g"]
 
     def q_1(self, t):
         term_1 = self._a * np.sin(np.pi * (t - self._b) / 12)
@@ -74,22 +74,22 @@ class SyntheticBase(Base):
 class Synthetic(SyntheticBase):
     def __init__(self, type, amplitude):
         if type == 'asymmetric':
-            kwargs = {'a': amplitude,
+            inputs = {'a': amplitude,
                       'b': 1000,
                       'c': 80,
                       'd': 0.01,
                       'e': 0.95,
                       'f': 4 / 3,
                       'g': 2190}
-            SyntheticBase.__init__(self, **kwargs)
+            SyntheticBase.__init__(self, inputs)
         elif type == 'symmetric':
-            kwargs = {'a': amplitude,
+            inputs = {'a': amplitude,
                       'b': 2190,
                       'c': 80,
                       'd': 0.01,
                       'e': 0.95,
                       'f': 2,
                       'g': 0}
-            SyntheticBase.__init__(self, **kwargs)
+            SyntheticBase.__init__(self, inputs)
         else:
             raise ValueError("'{}' Synthetic object not supported. Check input.".format(type))

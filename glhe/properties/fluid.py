@@ -1,6 +1,8 @@
 from CoolProp.CoolProp import PropsSI
 
-from glhe.topology.fluid_types import FluidType
+from glhe.globals.functions import temp_in_kelvin
+from glhe.properties.fluid_property_types import FluidPropertyType
+from glhe.properties.fluid_types import FluidType
 
 
 class Fluid(object):
@@ -35,39 +37,39 @@ class Fluid(object):
 
         # Fluid definitions: http://www.coolprop.org/fluid_properties/Incompressibles.html#the-different-fluids
         if self._type == FluidType.WATER:
-            self._props_str = "WATER"
+            self._fluid_str = "WATER"
             self._min_temperature = 0
             self._max_temperature = 200
         elif self._type == FluidType.ETHYL_ALCOHOL:
-            self._props_str = "INCOMP::MEA[{0}]".format(self._concentration)
+            self._fluid_str = "INCOMP::MEA[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 40
             self._min_concentration = 0
             self._max_concentration = 60
         elif self._type == FluidType.ETHYLENE_GLYCOL:
-            self._props_str = "INCOMP::MEG[{0}]".format(self._concentration)
+            self._fluid_str = "INCOMP::MEG[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 100
             self._min_concentration = 0
             self._max_concentration = 60
         elif self._type == FluidType.PROPYLENE_GLYCOL:
-            self._props_str = "INCOMP::MPG[{0}]".format(self._concentration)
+            self._fluid_str = "INCOMP::MPG[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 100
             self._min_concentration = 0
             self._max_concentration = 60
 
         # init at 20 C
-        self.update(20)
+        self.update_properties(20)
 
-    def update(self, temperature):
-        Fluid.conductivity = self.calc_cond(temperature)
-        Fluid.specific_heat = self.calc_cp(temperature)
-        Fluid.density = self.calc_dens(temperature)
-        Fluid.prandtl = self.calc_pr(temperature)
-        Fluid.viscosity = self.calc_visc(temperature)
+    def update_properties(self, temperature):
+        Fluid.conductivity = self.calc_conductivity(temperature)
+        Fluid.specific_heat = self.calc_specific_heat(temperature)
+        Fluid.density = self.calc_density(temperature)
+        Fluid.prandtl = self.calc_prandtl(temperature)
+        Fluid.viscosity = self.calc_viscosity(temperature)
 
-    def calc_cond(self, temperature):
+    def calc_conductivity(self, temperature):
         """
         Determines the fluid conductivity as a function of temperature, in Celsius.
         Uses the CoolProp python library.
@@ -75,10 +77,9 @@ class Fluid(object):
         :returns fluid conductivity in [W/m-K]
         """
 
-        temp_in_kelvin = temperature + 273.15
-        return PropsSI('CONDUCTIVITY', 'T', temp_in_kelvin, 'P', self.pressure, self._props_str)
+        return self._calc_property(FluidPropertyType.CONDUCTIVITY, temperature)
 
-    def calc_cp(self, temperature):
+    def calc_specific_heat(self, temperature):
         """
         Determines the fluid specific heat as a function of temperature, in Celsius.
         Uses the CoolProp python library to find the fluid specific heat.
@@ -86,10 +87,9 @@ class Fluid(object):
         :returns fluid specific heat in [J/kg-K]
         """
 
-        temp_in_kelvin = temperature + 273.15
-        return PropsSI('C', 'T', temp_in_kelvin, 'P', self.pressure, self._props_str)
+        return self._calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
 
-    def calc_dens(self, temperature):
+    def calc_density(self, temperature):
         """
         Determines the fluid density as a function of temperature, in Celsius.
         Uses the CoolProp python library.
@@ -97,10 +97,9 @@ class Fluid(object):
         :returns fluid density in [kg/m3]
         """
 
-        temp_in_kelvin = temperature + 273.15
-        return PropsSI('D', 'T', temp_in_kelvin, 'P', self.pressure, self._props_str)
+        return self._calc_property(FluidPropertyType.DENSITY, temperature)
 
-    def calc_pr(self, temperature):
+    def calc_prandtl(self, temperature):
         """
         Determines the fluid Prandtl as a function of temperature, in Celsius.
         Uses the CoolProp python library.
@@ -108,10 +107,9 @@ class Fluid(object):
         :returns fluid Prandtl number
         """
 
-        temp_in_kelvin = temperature + 273.15
-        return PropsSI('PRANDTL', 'T', temp_in_kelvin, 'P', self.pressure, self._props_str)
+        return self._calc_property(FluidPropertyType.PRANDTL, temperature)
 
-    def calc_visc(self, temperature):
+    def calc_viscosity(self, temperature):
         """
         Determines the fluid viscosity as a function of temperature, in Celsius.
         Uses the CoolProp python library.
@@ -119,5 +117,20 @@ class Fluid(object):
         :returns fluid viscosity in [Pa-s]
         """
 
-        temp_in_kelvin = temperature + 273.15
-        return PropsSI('VISCOSITY', 'T', temp_in_kelvin, 'P', self.pressure, self._props_str)
+        return self._calc_property(FluidPropertyType.VISCOSITY, temperature)
+
+    def _calc_property(self, property, temperature):
+        """
+        Worker function to call the CoolProp library
+        :param property: Fluid property enum value
+        :param temperature: Fluid temperature in Celsius
+        :return: Property Value
+        """
+
+        props = {FluidPropertyType.CONDUCTIVITY: 'CONDUCTIVITY',
+                 FluidPropertyType.DENSITY: 'D',
+                 FluidPropertyType.PRANDTL: 'PRANDTL',
+                 FluidPropertyType.SPECIFIC_HEAT: 'C',
+                 FluidPropertyType.VISCOSITY: 'VISCOSITY'}
+
+        return PropsSI(props[property], 'T', temp_in_kelvin(temperature), 'P', self.pressure, self._fluid_str)

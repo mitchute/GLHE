@@ -52,7 +52,7 @@ class GLHE(SimulationEntryPoint):
 
     def simulate_time_step(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
         self._inlet_temp = plant_inlet_temperature
-        self._fluid.update(mean([self._inlet_temp, self._outlet_temp]))
+        self._fluid.update_properties(mean([self._inlet_temp, self._outlet_temp]))
         self.set_flow_rates(plant_mass_flow_rate)
 
         for path in self._paths:

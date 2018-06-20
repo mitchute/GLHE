@@ -38,18 +38,18 @@ class TwoHarmonic(BaseGroundTemp):
         self._soil_diffusivity = soil_diffusivity
 
     def get_temp(self, time, depth):
-        time_in_days = time / SEC_IN_DAY
-
-        n = 1
-        term1 = -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
-        term2 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_1) \
-                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))  # noqa: E127
-
-        n = 2
-        term3 = -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
-        term4 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_2) \
-                - depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))  # noqa: E127
-
+        term1 = self._exp_term(n=1, depth=depth)
+        term2 = self._cos_term(n=1, time=time, depth=depth)
+        term3 = self._exp_term(n=2, depth=depth)
+        term4 = self._cos_term(n=2, time=time, depth=depth)
         summation = exp(term1) * self._amplitude_1 * cos(term2) + exp(term3) * self._amplitude_2 * cos(term4)
-
         return self._ave_ground_temp - summation
+
+    def _exp_term(self, n, depth):
+        return -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+
+    def _cos_term(self, n, time, depth):
+        time_in_days = time / SEC_IN_DAY
+        term_2_pt_1 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_1)
+        term_2_pt_2 = depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+        return term_2_pt_1 - term_2_pt_2
