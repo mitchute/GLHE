@@ -27,7 +27,7 @@ class GLHE(SimulationEntryPoint):
 
         # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
-            self._paths.append(Path(path, fluid_instance=self._fluid))
+            self._paths.append(Path(path, fluid=self._fluid, soil=inputs["soil"]))
 
         # Track GLHE num
         self._glhe_num = GLHE._count
@@ -52,7 +52,7 @@ class GLHE(SimulationEntryPoint):
 
     def simulate_time_step(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
         self._inlet_temp = plant_inlet_temperature
-        self._fluid.update(mean([self._inlet_temp, self._outlet_temp]))
+        self._fluid.update_properties(mean([self._inlet_temp, self._outlet_temp]))
         self.set_flow_rates(plant_mass_flow_rate)
 
         for path in self._paths:

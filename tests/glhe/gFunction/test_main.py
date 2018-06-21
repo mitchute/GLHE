@@ -18,12 +18,12 @@ class TestGFunction(unittest.TestCase):
         input_structure = {
             'g-functions': {
                 'file': temp_g_function_file,
-                'average-depth': 20,
+                'average-depth': 90,
             },
             'soil': {
-                'conductivity': 1,
-                'density': 2,
-                'specific heat': 3,
+                'conductivity': 1.5,
+                'density': 1500,
+                'specific heat': 1000,
             },
             'load-aggregation': {
                 'type': 'dynamic'
@@ -44,9 +44,15 @@ class TestGFunction(unittest.TestCase):
         self.assertIsInstance(response, TimeStepSimulationResponse)
         self.assertAlmostEqual(response.outlet_temperature, 20.0, 2)
 
-    def test_g_function(self):
+    def test_g_function_interp(self):
         g = self.add_instance()
-        self.assertEqual(g.g_function(0.5), 0.5)
-        self.assertEqual(g.g_function(1.5), 1.5)
-        self.assertEqual(g.g_function(2.5), 2.5)
-        self.assertEqual(g.g_function(3.5), 3.5)
+        self.assertEqual(g._g_function(0.5), 0.5)
+        self.assertEqual(g._g_function(1.5), 1.5)
+        self.assertEqual(g._g_function(2.5), 2.5)
+        self.assertEqual(g._g_function(3.5), 3.5)
+
+    def test_get_g_func(self):
+        g = self.add_instance()
+        self.assertAlmostEqual(g.get_g_func(2446453645.61), 1.0, delta=0.000001)
+        self.assertAlmostEqual(g.get_g_func(6650150489.04), 2.0, delta=0.000001)
+        self.assertAlmostEqual(g.get_g_func(18076983230.9), 3.0, delta=0.000001)

@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.topology.fluid_types import FluidType
+from glhe.properties.fluid_types import FluidType
 
 
 class TestFluidType(unittest.TestCase):
