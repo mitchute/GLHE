@@ -25,7 +25,7 @@ class StaticMethod(BaseMethod):
 
     def aggregate(self):
         """
-        Aggregates the current aggregation
+        Aggregates the current load
 
         :return: none
         """
