@@ -38,6 +38,14 @@ class TwoHarmonic(BaseGroundTemp):
         self._soil_diffusivity = soil_diffusivity
 
     def get_temp(self, time, depth):
+        """
+        Computes the ground temperature using the two-harmonic model
+
+        :param time: time [s]
+        :param depth: depth below ground surface [m]
+        :return: ground temperature [C]
+        """
+
         term1 = self._exp_term(n=1, depth=depth)
         term2 = self._cos_term(n=1, time=time, depth=depth)
         term3 = self._exp_term(n=2, depth=depth)
@@ -46,9 +54,26 @@ class TwoHarmonic(BaseGroundTemp):
         return self._ave_ground_temp - summation
 
     def _exp_term(self, n, depth):
+        """
+        Exponential term in two-harmonic model
+
+        :param n: integer parameter, 1 or 2
+        :param depth: detph below ground surface [m]
+        :return: exponential term
+        """
+
         return -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
 
     def _cos_term(self, n, time, depth):
+        """
+        Cosine term in two-harmonic model
+
+        :param n: integer parameter, 1 or 2
+        :param time: time [s]
+        :param depth: depth below ground surface [m]
+        :return: cosine term
+        """
+
         time_in_days = time / SEC_IN_DAY
         term_2_pt_1 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_1)
         term_2_pt_2 = depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))

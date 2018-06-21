@@ -31,7 +31,18 @@ class SingleHarmonic(BaseGroundTemp):
         self._soil_diffusivity = soil_diffusivity
 
     def get_temp(self, time, depth):
-        term1 = -depth * sqrt(pi / (SEC_IN_YEAR * self._soil_diffusivity))
-        term2 = (2 * pi / SEC_IN_YEAR) * (time - self._phase_shift - (depth / 2) *
-                                          sqrt(SEC_IN_YEAR / (pi * self._soil_diffusivity)))
-        return self._ave_ground_temp - self._amplitude * exp(term1) * cos(term2)
+        """
+        Computes the ground temperature using the one-harmonic model
+
+        :param time: time [s]
+        :param depth: depth below ground surface [m]
+        :return: grond temperature [C]
+        """
+
+        term_1 = -depth * sqrt(pi / (SEC_IN_YEAR * self._soil_diffusivity))
+
+        term_2_pt_1 = (2 * pi / SEC_IN_YEAR)
+        term_2_pt_2 = (time - self._phase_shift - (depth / 2) * sqrt(SEC_IN_YEAR / (pi * self._soil_diffusivity)))
+        term_2 = term_2_pt_1 * term_2_pt_2
+
+        return self._ave_ground_temp - self._amplitude * exp(term_1) * cos(term_2)
