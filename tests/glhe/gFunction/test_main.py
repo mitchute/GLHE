@@ -27,8 +27,16 @@ class TestGFunction(unittest.TestCase):
             },
             'load-aggregation': {
                 'type': 'dynamic'
+            },
+            'simulation': {
+                "ground-temperature": {
+                    "type": "constant",
+                    "constant": {
+                        "temperature": 20}
+                }
             }
         }
+
         return GFunction(inputs=input_structure)
 
     def test_class_inheritance(self):

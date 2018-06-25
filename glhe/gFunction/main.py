@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI
+from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
@@ -35,6 +36,11 @@ class GFunction(SimulationEntryPoint):
 
         # response constant
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
+
+        # ground temperature model
+        gtm_inputs = inputs['simulation']['ground-temperature']
+        gtm_inputs['soil-diffusivity'] = self.soil.diffusivity
+        self.ground_temp = make_ground_temperature_model(gtm_inputs)
 
     def get_g_func(self, time):
         """

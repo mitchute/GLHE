@@ -26,7 +26,7 @@
     "concentration": 100
   },
   "g-functions": {
-    "file": "./glhe/examples/2x2_g_functions.csv",
+    "file": "../glhe/examples/2x2_g_functions.csv",
     "average-depth": 100
   },
   "load-aggregation": {
@@ -110,15 +110,30 @@
         "type": "symmetric",
         "amplitude": 1000
       }
+    },
+    "ground-temperature": {
+      "type": "constant",
+      "constant": {
+        "temperature": 20
+      },
+      "single-harmonic": {
+        "ave-temperature": 20,
+        "amplitude": 0,
+        "phase-shift": 0
+      },
+      "two-harmonic": {
+        "ave-temperature": 20,
+        "amplitude-1": 10,
+        "amplitude-2": 0,
+        "phase-shift-1": 0,
+        "phase-shift-2": 0
+      }
     }
   },
   "soil": {
     "name": "Some Rock",
     "conductivity": 2.4234,
     "density": 1500,
-    "specific heat": 1466,
-    "temperature": {
-      "type": "constant"
-    }
+    "specific heat": 1466
   }
 }
