@@ -4,6 +4,7 @@ from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
+from glhe.globals.constants import PI
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
@@ -25,8 +26,15 @@ class GFunction(SimulationEntryPoint):
 
         # initialize time here
         self.current_time = 0
+
+        # init load aggregation method
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
+
+        # time constant
         self.t_s = self.average_depth ** 2 / (9 * self.soil.diffusivity)
+
+        # response constant
+        self.c_0 = 1 / (2 * PI * self.soil.conductivity)
 
     def get_g_func(self, time):
         """
@@ -42,7 +50,10 @@ class GFunction(SimulationEntryPoint):
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
         outlet_temperature = inlet_temperature
-        # calculate total heat transfer
+        self.calculate_response()
         # self.load_aggregation.store_load(q)
         # a = self._agg.loads[0].get_load()  # save load to history
         return TimeStepSimulationResponse(outlet_temperature=outlet_temperature)
+
+    def calculate_response(self):
+        pass

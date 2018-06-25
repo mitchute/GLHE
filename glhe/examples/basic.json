@@ -116,6 +116,9 @@
     "name": "Some Rock",
     "conductivity": 2.4234,
     "density": 1500,
-    "specific heat": 1466
+    "specific heat": 1466,
+    "temperature": {
+      "type": "constant"
+    }
   }
 }
