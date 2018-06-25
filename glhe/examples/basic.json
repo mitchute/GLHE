@@ -1,106 +1,29 @@
 {
-  "name": "Basic GLHE",
-  "paths": [
+  "borehole-defs": [
     {
-      "name": "path 1",
-      "boreholes": [
-        {
-          "name": "borehole 1",
-          "depth": 100,
-          "diameter": 0.1099,
-          "shank-spacing": 0.0521,
-          "grout": {
-            "conductivity": 0.744,
-            "density": 1500,
-            "specific heat": 2.6
-          },
-          "pipe": {
-            "outer diameter": 0.0334,
-            "inner diameter": 0.0269,
-            "conductivity": 0.389,
-            "density": 950,
-            "specific heat": 1.623
-          },
-          "segments": 10,
-          "type": "simple"
-        },
-        {
-          "name": "borehole 2",
-          "depth": 100,
-          "diameter": 0.1099,
-          "shank-spacing": 0.0521,
-          "grout": {
-            "conductivity": 0.744,
-            "density": 1500,
-            "specific heat": 2.6
-          },
-          "pipe": {
-            "outer diameter": 0.0334,
-            "inner diameter": 0.0269,
-            "conductivity": 0.389,
-            "density": 950,
-            "specific heat": 1.623
-          },
-          "segments": 10,
-          "type": "simple"
-        }
-      ]
-    },
-    {
-      "name": "path 2",
-      "boreholes": [
-        {
-          "name": "borehole 3",
-          "depth": 100,
-          "diameter": 0.1099,
-          "shank-spacing": 0.0521,
-          "grout": {
-            "conductivity": 0.744,
-            "density": 1500,
-            "specific heat": 2.6
-          },
-          "pipe": {
-            "outer diameter": 0.0334,
-            "inner diameter": 0.0269,
-            "conductivity": 0.389,
-            "density": 950,
-            "specific heat": 1.623
-          },
-          "segments": 10,
-          "type": "simple"
-        },
-        {
-          "name": "borehole 4",
-          "depth": 100,
-          "diameter": 0.1099,
-          "shank-spacing": 0.0521,
-          "grout": {
-            "conductivity": 0.744,
-            "density": 1500,
-            "specific heat": 2.6
-          },
-          "pipe": {
-            "outer diameter": 0.0334,
-            "inner diameter": 0.0269,
-            "conductivity": 0.389,
-            "density": 950,
-            "specific heat": 1.623
-          },
-          "segments": 10,
-          "type": "simple"
-        }
-      ]
+      "name": "borehole type 1",
+      "depth": 100,
+      "diameter": 0.1099,
+      "shank-spacing": 0.0521,
+      "grout": {
+        "conductivity": 0.744,
+        "density": 1500,
+        "specific heat": 2.6
+      },
+      "pipe": {
+        "outer diameter": 0.0334,
+        "inner diameter": 0.0269,
+        "conductivity": 0.389,
+        "density": 950,
+        "specific heat": 1.623
+      },
+      "segments": 10,
+      "type": "simple"
     }
   ],
   "fluid": {
     "type": "water",
     "concentration": 100
-  },
-  "soil": {
-    "name": "Some Rock",
-    "conductivity": 2.4234,
-    "density": 1500,
-    "specific heat": 1466
   },
   "g-functions": {
     "file": "./glhe/examples/2x2_g_functions.csv",
@@ -112,6 +35,55 @@
       "param 1": 1
     }
   },
+  "name": "Basic GLHE",
+  "paths": [
+    {
+      "name": "path 1",
+      "boreholes": [
+        {
+          "name": "borehole 1",
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "type": "borehole type 1"
+        },
+        {
+          "name": "borehole 2",
+          "location": {
+            "x": 1,
+            "y": 0,
+            "z": 1
+          },
+          "type": "borehole type 1"
+        }
+      ]
+    },
+    {
+      "name": "path 2",
+      "boreholes": [
+        {
+          "name": "borehole 3",
+          "location": {
+            "x": 0,
+            "y": 1,
+            "z": 1
+          },
+          "type": "borehole type 1"
+        },
+        {
+          "name": "borehole 4",
+          "location": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          },
+          "type": "borehole type 1"
+        }
+      ]
+    }
+  ],
   "simulation": {
     "time-step": 1,
     "runtime": 2,
@@ -139,5 +111,11 @@
         "amplitude": 1000
       }
     }
+  },
+  "soil": {
+    "name": "Some Rock",
+    "conductivity": 2.4234,
+    "density": 1500,
+    "specific heat": 1466
   }
 }
