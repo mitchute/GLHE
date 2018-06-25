@@ -88,6 +88,14 @@
     "time-step": 1,
     "runtime": 2,
     "initial-fluid-temperature": 21,
+    "type": {
+      "direct-simulation": {
+        "param-1": 1
+      },
+      "indirect-simulation": {
+        "borehole-def"
+      }
+    }
     "load-profile": {
       "type": "fixed",
       "fixed": {

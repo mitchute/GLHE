@@ -10,6 +10,8 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
 
+from glhe.topology.borehole import Borehole
+
 
 class GFunction(SimulationEntryPoint):
     def __init__(self, inputs):
@@ -40,7 +42,11 @@ class GFunction(SimulationEntryPoint):
         # ground temperature model
         gtm_inputs = inputs['simulation']['ground-temperature']
         gtm_inputs['soil-diffusivity'] = self.soil.diffusivity
-        self.ground_temp = make_ground_temperature_model(gtm_inputs)
+        self.my_ground_temp = make_ground_temperature_model(gtm_inputs).get_temp
+
+        # init borehole
+        bh_inputs = inputs
+
 
     def get_g_func(self, time):
         """
@@ -55,11 +61,13 @@ class GFunction(SimulationEntryPoint):
 
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
+        heat_rate = 0
         outlet_temperature = inlet_temperature
-        self.calculate_response()
-        # self.load_aggregation.store_load(q)
-        # a = self._agg.loads[0].get_load()  # save load to history
-        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature)
+        if flow >= 0:
+            ground_temp = self.my_ground_temp(self.current_time)
 
-    def calculate_response(self):
-        pass
+        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature, heat_rate=heat_rate)
+
+        # self.load_aggregation.store_load(q)
+        # a = self._agg.loads[0].get_load()  # save load to history        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature)
+
