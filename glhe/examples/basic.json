@@ -29,13 +29,53 @@
     "file": "../glhe/examples/2x2_g_functions.csv",
     "average-depth": 100
   },
+  "ground-temperature": {
+    "type": "constant",
+    "constant": {
+      "temperature": 20
+    },
+    "single-harmonic": {
+      "ave-temperature": 20,
+      "amplitude": 0,
+      "phase-shift": 0
+    },
+    "two-harmonic": {
+      "ave-temperature": 20,
+      "amplitude-1": 10,
+      "amplitude-2": 0,
+      "phase-shift-1": 0,
+      "phase-shift-2": 0
+    }
+  },
   "load-aggregation": {
     "type": "dynamic",
     "dynamic": {
       "param 1": 1
     }
   },
-  "name": "Basic GLHE",
+  "load-profile": {
+    "type": "fixed",
+    "fixed": {
+      "value": 2000
+    },
+    "single-impulse": {
+      "start-time": 100,
+      "end-time": 200,
+      "value": 3000
+    },
+    "external": {
+      "path": "./glhe/profiles/external_data"
+    },
+    "sinusoid": {
+      "amplitude": 1000,
+      "offset": 0,
+      "period": 0
+    },
+    "synthetic": {
+      "type": "symmetric",
+      "amplitude": 1000
+    }
+  },
   "paths": [
     {
       "name": "path 1",
@@ -85,58 +125,10 @@
     }
   ],
   "simulation": {
+    "name": "Basic GLHE",
     "time-step": 1,
     "runtime": 2,
-    "initial-fluid-temperature": 21,
-    "type": {
-      "direct-simulation": {
-        "param-1": 1
-      },
-      "indirect-simulation": {
-        "borehole-def"
-      }
-    }
-    "load-profile": {
-      "type": "fixed",
-      "fixed": {
-        "value": 2000
-      },
-      "single-impulse": {
-        "start-time": 100,
-        "end-time": 200,
-        "value": 3000
-      },
-      "external": {
-        "path": "./glhe/profiles/external_data"
-      },
-      "sinusoid": {
-        "amplitude": 1000,
-        "offset": 0,
-        "period": 0
-      },
-      "synthetic": {
-        "type": "symmetric",
-        "amplitude": 1000
-      }
-    },
-    "ground-temperature": {
-      "type": "constant",
-      "constant": {
-        "temperature": 20
-      },
-      "single-harmonic": {
-        "ave-temperature": 20,
-        "amplitude": 0,
-        "phase-shift": 0
-      },
-      "two-harmonic": {
-        "ave-temperature": 20,
-        "amplitude-1": 10,
-        "amplitude-2": 0,
-        "phase-shift-1": 0,
-        "phase-shift-2": 0
-      }
-    }
+    "initial-fluid-temperature": 20
   },
   "soil": {
     "name": "Some Rock",
