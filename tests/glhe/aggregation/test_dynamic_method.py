@@ -14,8 +14,8 @@ class TestDynamic(unittest.TestCase):
 
     def test_add_load(self):
         tst = DynamicMethod()
-        tst.add_load(1)
+        tst.add_load(1, 1)
         self.assertEqual(tst.loads[0].energy, 1)
-        tst.add_load(0)
+        tst.add_load(0, 1)
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)

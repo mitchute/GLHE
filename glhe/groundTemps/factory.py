@@ -4,6 +4,13 @@ from glhe.groundTemps.two_harmonic import TwoHarmonic
 
 
 def make_ground_temperature_model(inputs):
+    """
+    Factory method to make ground temperature model objects
+
+    :param inputs: json blob from input file
+    :return: ground temperature model object
+    """
+
     gtm_type = inputs["type"]
     if gtm_type == "constant":
         return Constant(inputs["constant"]["temperature"])

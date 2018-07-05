@@ -18,14 +18,19 @@ class GFunction(SimulationEntryPoint):
         self.inputs = inputs
 
         # g-function properties
-        g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
-        self._g_function = interp1d(g_functions[:, 0], g_functions[:, 1], fill_value='extrapolate')
+        g_functions = genfromtxt(inputs['g-functions']['file'],
+                                 delimiter=',')
+
+        self._g_function = interp1d(g_functions[:, 0],
+                                    g_functions[:, 1], 
+                                    fill_value='extrapolate')
+
         self.average_depth = inputs['g-functions']['average-depth']
+
         self.soil = PropertiesBase(
             conductivity=inputs['soil']['conductivity'],
             density=inputs['soil']['density'],
-            specific_heat=inputs['soil']['specific heat']
-        )
+            specific_heat=inputs['soil']['specific heat'])
 
         # initialize time here
         self.current_time = 0
@@ -40,7 +45,7 @@ class GFunction(SimulationEntryPoint):
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
 
         # ground temperature model
-        gtm_inputs = inputs['simulation']['ground-temperature']
+        gtm_inputs = inputs['ground-temperature']
         gtm_inputs['soil-diffusivity'] = self.soil.diffusivity
         self.my_ground_temp = make_ground_temperature_model(gtm_inputs).get_temp
 
@@ -65,6 +70,7 @@ class GFunction(SimulationEntryPoint):
         outlet_temperature = inlet_temperature
         if flow >= 0:
             ground_temp = self.my_ground_temp(self.current_time)
+
 
         return TimeStepSimulationResponse(outlet_temperature=outlet_temperature, heat_rate=heat_rate)
 

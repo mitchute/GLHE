@@ -3,6 +3,7 @@ import sys
 
 from glhe.gFunction.main import GFunction
 from glhe.profiles.factory import make_load_profile
+from glhe.globals.functions import set_time_step
 
 
 def main():
@@ -12,10 +13,10 @@ def main():
 
     g = GFunction(d)
 
-    time_step = d['simulation']['time-step']
+    time_step = set_time_step(d['simulation']['time-step'])
     run_time = d['simulation']['runtime']
 
-    load_profile = make_load_profile(d['simulation']['load-profile'])
+    load_profile = make_load_profile(d['load-profile'])
     glhe_entering_fluid_temperature = d['simulation']['initial-fluid-temperature']
 
     mass_flow_rate = 1.0

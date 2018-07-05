@@ -4,6 +4,13 @@ from glhe.aggregation.static_method import StaticMethod
 
 
 def load_agg_factory(inputs):
+    """
+    Factory method for creating load aggregation objects
+
+    :param inputs: json blob from inputs
+    :return: load aggregation object
+    """
+
     load_agg_type = inputs['type']
     if load_agg_type == 'static':
         return StaticMethod()

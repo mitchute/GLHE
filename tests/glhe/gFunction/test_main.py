@@ -28,12 +28,11 @@ class TestGFunction(unittest.TestCase):
             'load-aggregation': {
                 'type': 'dynamic'
             },
-            'simulation': {
-                "ground-temperature": {
-                    "type": "constant",
-                    "constant": {
-                        "temperature": 20}
-                }
+            "ground-temperature": {
+                "type": "constant",
+                "constant": {
+                    "temperature": 20
+                },
             }
         }
 
