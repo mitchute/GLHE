@@ -8,11 +8,9 @@ from glhe.properties.base import PropertiesBase
 class Pipe(PropertiesBase):
 
     def __init__(self, inputs, fluid):
-        PropertiesBase.__init__(self, conductivity=inputs["pipe"]["conductivity"],
-                                density=inputs["pipe"]["density"],
-                                specific_heat=inputs["pipe"]["specific heat"])
-        self.inner_diameter = inputs["pipe"]["inner diameter"]
-        self.outer_diameter = inputs["pipe"]["outer diameter"]
+        PropertiesBase.__init__(self, inputs=inputs)
+        self.inner_diameter = inputs["inner diameter"]
+        self.outer_diameter = inputs["outer diameter"]
         self.thickness = (self.outer_diameter - self.inner_diameter) / 2
         self.inner_radius = self.inner_diameter / 2
         self.outer_radius = self.outer_diameter / 2
@@ -94,7 +92,8 @@ class Pipe(PropertiesBase):
         self.resist_pipe = self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
         return self.resist_pipe
 
-    def _laminar_nusselt(self):
+    @staticmethod
+    def _laminar_nusselt():
         """
         Laminar Nusselt number for smooth pipes
 
@@ -118,7 +117,8 @@ class Pipe(PropertiesBase):
         pr = self._fluid.prandtl
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
-    def laminar_friction_factor(self, re):
+    @staticmethod
+    def laminar_friction_factor(re):
         """
         Laminar friction factor
 
@@ -128,7 +128,8 @@ class Pipe(PropertiesBase):
 
         return 64.0 / re
 
-    def turbulent_friction_factor(self, re):
+    @staticmethod
+    def turbulent_friction_factor(re):
         """
 
         :param re:

@@ -5,10 +5,13 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI
+from glhe.globals.functions import get_input_definition_data
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
+from glhe.properties.fluid import Fluid
+from glhe.topology.borehole import Borehole
 
 
 class GFunction(SimulationEntryPoint):
@@ -16,8 +19,7 @@ class GFunction(SimulationEntryPoint):
         self.inputs = inputs
 
         # g-function properties
-        g_functions = genfromtxt(inputs['g-functions']['file'],
-                                 delimiter=',')
+        g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
         self._g_function = interp1d(g_functions[:, 0],
                                     g_functions[:, 1],
@@ -25,10 +27,7 @@ class GFunction(SimulationEntryPoint):
 
         self.average_depth = inputs['g-functions']['average-depth']
 
-        self.soil = PropertiesBase(
-            conductivity=inputs['soil']['conductivity'],
-            density=inputs['soil']['density'],
-            specific_heat=inputs['soil']['specific heat'])
+        self.soil = PropertiesBase(inputs=inputs['soil'])
 
         # initialize time here
         self.current_time = 0
@@ -47,8 +46,18 @@ class GFunction(SimulationEntryPoint):
         ground_temp_model_inputs['soil-diffusivity'] = self.soil.diffusivity
         self.my_ground_temp = make_ground_temperature_model(ground_temp_model_inputs).get_temp
 
-        # init borehole
-        bh_inputs = inputs
+        # get borehole inputs
+        bh_key = inputs['g-functions']['borehole-type']
+        bh_inputs = get_input_definition_data(inputs['borehole-definitions'], bh_key)
+
+        grout_key = bh_inputs['grout-type']
+        bh_inputs['grout-data'] = get_input_definition_data(inputs['grout-definitions'], grout_key)
+
+        pipe_key = bh_inputs['pipe-type']
+        bh_inputs['pipe-data'] = get_input_definition_data(inputs['pipe-definitions'], pipe_key)
+
+        self.fluid = Fluid(inputs['fluid'])
+        _my_bh = Borehole(bh_inputs, self.fluid, self.soil)
 
     def get_g_func(self, time):
         """
@@ -63,12 +72,8 @@ class GFunction(SimulationEntryPoint):
 
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step
-        heat_rate = 0
-        outlet_temperature = inlet_temperature
-        if flow >= 0:
+
+        if flow == 0:
+            return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
+        else:
             ground_temp = self.my_ground_temp(self.current_time)
-
-        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature, heat_rate=heat_rate)
-
-        # self.load_aggregation.store_load(q)
-        # a = self._agg.loads[0].get_load()  # save load to history        return TimeStepSimulationResponse(outlet_temperature=outlet_temperature)

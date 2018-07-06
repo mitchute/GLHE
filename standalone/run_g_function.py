@@ -25,14 +25,12 @@ def main():
 
     fluid = Fluid(d['fluid'])
 
-    cp = fluid.calc_specific_heat(glhe_entering_fluid_temperature)
-
     time = 0
     while time <= run_time:
         # advance in time through the GLHE
         time += time_step
 
-        # set current plant loads
+        # set current plant status
         current_load = load_profile.get_value(time)
         mass_flow_rate = flow_profile.get_value(time)
 
@@ -40,6 +38,7 @@ def main():
         response = g.simulate_time_step(glhe_entering_fluid_temperature, mass_flow_rate, time_step)
 
         # update in preparation for next time-step
+        cp = fluid.calc_specific_heat((glhe_entering_fluid_temperature + response.outlet_temperature) / 2)
         glhe_entering_fluid_temperature = response.outlet_temperature + current_load / (mass_flow_rate * cp)
 
 

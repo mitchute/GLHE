@@ -15,15 +15,21 @@ class TestGFunction(unittest.TestCase):
         temp_g_function_file = os.path.join(temp_directory, 'g_funcs.csv')
         with open(temp_g_function_file, 'w') as f:
             f.write('1, 1\n2, 2\n3, 3\n')
+
         input_structure = {
             'g-functions': {
                 'file': temp_g_function_file,
                 'average-depth': 90,
+                'borehole-type': 'borehole type 1'
             },
             'soil': {
                 'conductivity': 1.5,
                 'density': 1500,
                 'specific heat': 1000,
+            },
+            "fluid": {
+                "type": "water",
+                "concentration": 100
             },
             'load-aggregation': {
                 'type': 'dynamic'
@@ -33,7 +39,37 @@ class TestGFunction(unittest.TestCase):
                 "constant": {
                     "temperature": 20
                 },
-            }
+            },
+            "borehole-definitions": [
+                {
+                    "name": "borehole type 1",
+                    "depth": 100,
+                    "diameter": 0.1099,
+                    "shank-spacing": 0.0521,
+                    "grout-type": "standard grout",
+                    "pipe-type": "32 mm SDR-11 HDPE",
+                    "segments": 10,
+                    "model-type": "simple"
+                }
+            ],
+            "grout-definitions": [
+                {
+                    "name": "standard grout",
+                    "conductivity": 0.744,
+                    "density": 1500,
+                    "specific heat": 2.6
+                }
+            ],
+            "pipe-definitions": [
+                {
+                    "name": "32 mm SDR-11 HDPE",
+                    "outer diameter": 0.0334,
+                    "inner diameter": 0.0269,
+                    "conductivity": 0.389,
+                    "density": 950,
+                    "specific heat": 1.623
+                }
+            ]
         }
 
         return GFunction(inputs=input_structure)

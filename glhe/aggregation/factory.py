@@ -19,4 +19,4 @@ def load_agg_factory(inputs):
     elif load_agg_type == 'none':
         return NoAggMethod()
     else:
-        raise ValueError("'{}' aggregation type is not supported")
+        raise ValueError("'{}' aggregation type is not supported".format(load_agg_type))

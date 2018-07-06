@@ -1,24 +1,32 @@
 {
-  "borehole-defs": [
+  "borehole-definitions": [
     {
       "name": "borehole type 1",
       "depth": 100,
       "diameter": 0.1099,
       "shank-spacing": 0.0521,
-      "grout": {
-        "conductivity": 0.744,
-        "density": 1500,
-        "specific heat": 2.6
-      },
-      "pipe": {
-        "outer diameter": 0.0334,
-        "inner diameter": 0.0269,
-        "conductivity": 0.389,
-        "density": 950,
-        "specific heat": 1.623
-      },
+      "grout-type": "standard grout",
+      "pipe-type": "32 mm SDR-11 HDPE",
       "segments": 10,
-      "type": "simple"
+      "model-type": "simple"
+    }
+  ],
+  "grout-definitions": [
+    {
+      "name": "standard grout",
+      "conductivity": 0.744,
+      "density": 1500,
+      "specific heat": 2.6
+    }
+  ],
+  "pipe-definitions": [
+    {
+      "name": "32 mm SDR-11 HDPE",
+      "outer diameter": 0.0334,
+      "inner diameter": 0.0269,
+      "conductivity": 0.389,
+      "density": 950,
+      "specific heat": 1.623
     }
   ],
   "flow-profile": {
@@ -28,7 +36,7 @@
     },
     "external": {
       "path": "./glhe/profiles/external_data"
-    },
+    }
   },
   "fluid": {
     "type": "water",
@@ -36,7 +44,8 @@
   },
   "g-functions": {
     "file": "../glhe/examples/2x2_g_functions.csv",
-    "average-depth": 100
+    "average-depth": 100,
+    "borehole-type": "borehole type 1"
   },
   "ground-temperature": {
     "type": "constant",
@@ -96,7 +105,7 @@
             "y": 0,
             "z": 1
           },
-          "type": "borehole type 1"
+          "borehole-type": "borehole type 1"
         },
         {
           "name": "borehole 2",
@@ -105,7 +114,7 @@
             "y": 0,
             "z": 1
           },
-          "type": "borehole type 1"
+          "borehole-type": "borehole type 1"
         }
       ]
     },
@@ -119,7 +128,7 @@
             "y": 1,
             "z": 1
           },
-          "type": "borehole type 1"
+          "borehole-type": "borehole type 1"
         },
         {
           "name": "borehole 4",
@@ -128,15 +137,15 @@
             "y": 1,
             "z": 1
           },
-          "type": "borehole type 1"
+          "borehole-type": "borehole type 1"
         }
       ]
     }
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "time-step": 70,
-    "runtime": 2,
+    "time-step": 3600,
+    "runtime": 31536000,
     "initial-fluid-temperature": 20
   },
   "soil": {

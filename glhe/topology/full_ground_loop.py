@@ -14,7 +14,7 @@ class GLHE(SimulationEntryPoint):
     def __init__(self, inputs):
 
         # Get inputs from json blob
-        self._name = inputs["name"]
+        self._name = inputs["simulation"]["name"]
         self._paths = []
 
         # Fluid instance

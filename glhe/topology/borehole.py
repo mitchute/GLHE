@@ -5,6 +5,8 @@ from glhe.properties.base import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment import Segment
 
+from glhe.globals.functions import get_input_definition_data
+
 
 class Borehole(object):
     _count = 0
@@ -12,29 +14,24 @@ class Borehole(object):
     def __init__(self, inputs, fluid, soil):
 
         # Get inputs from json blob
-        self._name = inputs["name"]
-        self._depth = inputs["depth"]
-        self._diameter = inputs["diameter"]
-        self._radius = self._diameter / 2
-        self._grout = PropertiesBase(conductivity=inputs["grout"]["conductivity"],
-                                     density=inputs["grout"]["density"],
-                                     specific_heat=inputs["grout"]["specific heat"])
-        self._pipe = Pipe(inputs=inputs, fluid=fluid)
-        self._soil = PropertiesBase(conductivity=soil["conductivity"],
-                                    density=soil["density"],
-                                    specific_heat=soil["specific heat"])
+        self.name = inputs["name"]
+        self.depth = inputs["depth"]
+        self.diameter = inputs["diameter"]
+        self.radius = self.diameter / 2
         self.shank_space = inputs["shank-spacing"]
 
-        # Keep reference to fluid instance for usage
-        self._fluid = fluid
+        self.grout = PropertiesBase(inputs=inputs["grout-data"])
+        self.pipe = Pipe(inputs=inputs['pipe-data'], fluid=fluid)
+        self.soil = soil
+        self.fluid = fluid
 
         # Initialize segments
-        self._segments = []
+        self.segments = []
         for segment in range(inputs["segments"]):
-            self._segments.append(Segment(segment_type=inputs["type"], fluid=fluid))
+            self.segments.append(Segment(model_type=inputs["model-type"], fluid=fluid))
 
         # pipe inside cross-sectional area
-        self._area_i_cr = PI * self._diameter ** 2.0 / 4.0
+        self.area_i_cr = PI * self.diameter ** 2.0 / 4.0
 
         # Initialize other parameters
         self.mass_flow_rate = 0
@@ -46,11 +43,11 @@ class Borehole(object):
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
         self.resist_bh = None
-        self.theta_1 = self.shank_space / (2 * self._radius)
-        self.theta_2 = self._radius / self._pipe.outer_radius
+        self.theta_1 = self.shank_space / (2 * self.radius)
+        self.theta_2 = self.radius / self.pipe.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
-        sigma_num = self._grout.conductivity - self._soil.conductivity
-        sigma_den = self._grout.conductivity + self._soil.conductivity
+        sigma_num = self.grout.conductivity - self.soil.conductivity
+        sigma_den = self.grout.conductivity + self.soil.conductivity
         self.sigma = sigma_num / sigma_den
         self.beta = None
 
@@ -59,8 +56,8 @@ class Borehole(object):
         Borehole._count += 1
 
     def get_flow_resistance(self):
-        numerator = 8.0 * self._pipe.friction_factor * (2 * self._depth)
-        denominator = (pow(self._pipe.inner_diameter, 5) * self._fluid.density * pow(PI, 2))
+        numerator = 8.0 * self.pipe.friction_factor * (2 * self.depth)
+        denominator = (pow(self.pipe.inner_diameter, 5) * self.fluid.density * pow(PI, 2))
         return numerator / denominator
 
     def calc_bh_average_resistance(self):
@@ -73,7 +70,7 @@ class Borehole(object):
         Equation 13
         """
 
-        self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
+        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
 
         final_term_1 = log(self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
 
@@ -83,7 +80,7 @@ class Borehole(object):
         term_2_den = term_2_den_pt_1 + term_2_den_pt_2
         final_term_2 = term_2_num / term_2_den
 
-        self.resist_bh_ave = (1 / (4 * PI * self._grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
+        self.resist_bh_ave = (1 / (4 * PI * self.grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
 
         return self.resist_bh_ave
 
@@ -97,7 +94,7 @@ class Borehole(object):
         Equation 26
         """
 
-        self.beta = 2 * PI * self._grout.conductivity * self._pipe.resist_pipe
+        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
 
         term_1_num = (1 + self.theta_1 ** 2) ** self.sigma
         term_1_den = self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma
@@ -110,7 +107,7 @@ class Borehole(object):
         term_2_den = term_2_den_pt_1 - term_2_den_pt_2 + term_2_den_pt_3
         final_term_2 = term_2_num / term_2_den
 
-        self.resist_bh_total_internal = 1 / (PI * self._grout.conductivity) * (self.beta + final_term_1 - final_term_2)
+        self.resist_bh_total_internal = 1 / (PI * self.grout.conductivity) * (self.beta + final_term_1 - final_term_2)
 
         return self.resist_bh_total_internal
 
@@ -124,7 +121,7 @@ class Borehole(object):
         Equation 3
         """
 
-        self.resist_bh_grout = self.calc_bh_average_resistance() - self._pipe.resist_pipe / 2.0
+        self.resist_bh_grout = self.calc_bh_average_resistance() - self.pipe.resist_pipe / 2.0
         return self.resist_bh_grout
 
     def calc_bh_resistance(self):
@@ -146,12 +143,12 @@ class Borehole(object):
 
         # only update if flow rate has changed
         if self.mass_flow_rate != self.mass_flow_rate_prev:
-            self.beta = 2 * PI * self._grout.conductivity * self._pipe.calc_resistance(self.mass_flow_rate)
+            self.beta = 2 * PI * self.grout.conductivity * self.pipe.calc_resistance(self.mass_flow_rate)
             self.calc_bh_average_resistance()
             self.calc_bh_total_internal_resistance()
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self._depth / (self._fluid.specific_heat * self.mass_flow_rate)) ** 2
+        pt_2 = (self.depth / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh = self.resist_bh_ave + resist_short_circuiting
@@ -160,6 +157,6 @@ class Borehole(object):
 
     def set_flow_rate(self, mass_flow_rate):
         self.mass_flow_rate = mass_flow_rate
-        velocity = mass_flow_rate / (self._fluid.density * self._area_i_cr)
-        reynolds_no = self._fluid.density * self._pipe.inner_diameter * velocity / self._fluid.viscosity
-        self.calc_friction_factor = self._pipe.calc_friction_factor(reynolds_no)
+        velocity = mass_flow_rate / (self.fluid.density * self.area_i_cr)
+        reynolds_no = self.fluid.density * self.pipe.inner_diameter * velocity / self.fluid.viscosity
+        self.calc_friction_factor = self.pipe.calc_friction_factor(reynolds_no)
