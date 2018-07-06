@@ -6,7 +6,7 @@ from scipy.interpolate.interpolate import interp1d
 from glhe.profiles.base import Base
 
 
-class External(Base):
+class ExternalLoad(Base):
 
     def __init__(self, path):
         Base.__init__(self)

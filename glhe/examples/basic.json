@@ -21,6 +21,15 @@
       "type": "simple"
     }
   ],
+  "flow-profile": {
+    "type": "fixed",
+    "fixed": {
+      "value": 1
+    },
+    "external": {
+      "path": "./glhe/profiles/external_data"
+    },
+  },
   "fluid": {
     "type": "water",
     "concentration": 100

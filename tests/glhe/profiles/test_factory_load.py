@@ -1,7 +1,7 @@
 import unittest
 
-from glhe.profiles.external import External
-from glhe.profiles.factory import make_load_profile
+from glhe.profiles.external_load import ExternalLoad
+from glhe.profiles.factory_load import make_load_profile
 from glhe.profiles.fixed import Fixed
 from glhe.profiles.impulse import Impulse
 from glhe.profiles.sinusoid import Sinusoid
@@ -28,7 +28,7 @@ class TestFactory(unittest.TestCase):
             }
         }
         profile = make_load_profile(inputs=inputs)
-        self.assertIsInstance(profile, External)
+        self.assertIsInstance(profile, ExternalLoad)
 
     def test_factory_sinusoid(self):
         inputs = {'type': 'sinusoid', 'sinusoid': {'amplitude': 2000, 'offset': 2, 'period': 4}}

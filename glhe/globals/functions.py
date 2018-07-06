@@ -44,4 +44,6 @@ def set_time_step(input_time_step):
     if input_time_step in time_step_list:
         return input_time_step
     else:
+        # We should probably raise some warning here
+        # Need to think about adding some logging features eventually
         return min(time_step_list, key=lambda x: abs(x - input_time_step))
