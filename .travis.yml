@@ -11,6 +11,7 @@ env:
   matrix:
     - TOX_ENV=py35
     - TOX_ENV=flake8
+    - TOX_ENV=spelling
 
 install:
   - pip install --upgrade pip
