@@ -5,8 +5,6 @@ from glhe.properties.base import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment import Segment
 
-from glhe.globals.functions import get_input_definition_data
-
 
 class Borehole(object):
     _count = 0

@@ -1,4 +1,3 @@
-import json
 import sys
 
 from glhe.gFunction.main import GFunction
@@ -7,11 +6,10 @@ from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
 
+from glhe.inputProcessor.process_inputs import InputProcessor
 
 def main():
-    with open(sys.argv[1]) as f:
-        json_blob = f.read()
-    d = json.loads(json_blob)
+    d = InputProcessor().process_input(sys.argv[1])
 
     g = GFunction(d)
 
