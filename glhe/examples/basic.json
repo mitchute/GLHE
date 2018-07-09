@@ -11,6 +11,42 @@
       "shank-spacing": 0.0521
     }
   ],
+  "flow-profile": {
+    "type": "fixed",
+    "fixed": {
+      "value": 1
+    },
+    "external": {
+      "path": "./glhe/profiles/external_data"
+    }
+  },
+  "fluid": {
+    "type": "water",
+    "concentration": 100
+  },
+  "g-functions": {
+    "file": "../glhe/examples/2x2_g_functions.csv",
+    "average-depth": 100,
+    "borehole-type": "borehole type 1"
+  },
+  "ground-temperature": {
+    "type": "constant",
+    "constant": {
+      "temperature": 20
+    },
+    "single-harmonic": {
+      "ave-temperature": 20,
+      "amplitude": 0,
+      "phase-shift": 0
+    },
+    "two-harmonic": {
+      "ave-temperature": 20,
+      "amplitude-1": 10,
+      "amplitude-2": 0,
+      "phase-shift-1": 0,
+      "phase-shift-2": 0
+    }
+  },
   "grout-definitions": [
     {
       "type-name": "standard grout",
@@ -19,6 +55,35 @@
       "specific heat": 2.6
     }
   ],
+  "load-aggregation": {
+    "type": "dynamic",
+    "dynamic": {
+      "param 1": 1
+    }
+  },
+  "load-profile": {
+    "type": "fixed",
+    "fixed": {
+      "value": 2000
+    },
+    "single-impulse": {
+      "start-time": 100,
+      "end-time": 200,
+      "value": 3000
+    },
+    "external": {
+      "path": "./glhe/profiles/external_data"
+    },
+    "sinusoid": {
+      "amplitude": 1000,
+      "offset": 0,
+      "period": 0
+    },
+    "synthetic": {
+      "type": "symmetric",
+      "amplitude": 1000
+    }
+  },
   "paths": [
     {
       "name": "path 1",
@@ -76,5 +141,17 @@
       "density": 950,
       "specific heat": 1.623
     }
-  ]
+  ],
+  "simulation": {
+    "name": "Basic GLHE",
+    "time-step": 3600,
+    "runtime": 31536000,
+    "initial-fluid-temperature": 20
+  },
+  "soil": {
+    "name": "Some Rock",
+    "conductivity": 2.4234,
+    "density": 1500,
+    "specific heat": 1466
+  }
 }

@@ -1,17 +1,14 @@
 import os
-import sys
 
 from jsonschema import validate
 
 from glhe.globals.functions import load_json
 
-fpath = os.path.join
-
 
 class InputProcessor(object):
 
     def __init__(self):
-        self.definitions = {}
+        self._definitions = {}
 
     def process_input(self, input_file_path):
         """
@@ -24,11 +21,8 @@ class InputProcessor(object):
         # load the input file
         d = load_json(input_file_path)
 
-        # load the schema
-        schema = load_json(fpath(os.getcwd(), 'schema.json'))
-
-        # validate
-        validate(d, schema)
+        # validate the inputs
+        self._validate_inputs(d)
 
         # get the definitions so we can use them to expand
         del_keys = []
@@ -36,7 +30,7 @@ class InputProcessor(object):
             if "definitions" in key:
                 tokens = key.split('-')
                 def_key = tokens[0]
-                self.definitions[def_key] = value
+                self._definitions[def_key] = value
                 del_keys.append(key)
 
         # don't need the defs here anymore, so get rid of them
@@ -44,9 +38,9 @@ class InputProcessor(object):
             del d[item]
 
         # expand objects
-        return self.expand_dict(d)
+        return self._expand_dict(d)
 
-    def expand_dict(self, inputs):
+    def _expand_dict(self, inputs):
         """
         Expands dictionary objects by iterating over all key-value pairs.
 
@@ -59,23 +53,23 @@ class InputProcessor(object):
         d_ret = {}
         for key, value in inputs.items():
             if type(value) is dict:
-                d_ret[key] = self.expand_dict(value)
+                d_ret[key] = self._expand_dict(value)
             elif type(value) is list:
-                d_ret[key] = self.expand_list(value)
+                d_ret[key] = self._expand_list(value)
             else:
                 if "-type" in key:
                     tokens = key.split('-')
                     def_type = tokens[0]
                     def_name = value
                     new_key = '{}-data'.format(def_type)
-                    new_val = self.get_input_definition_data(def_type, def_name)
-                    d_ret[new_key] = self.expand_dict(new_val)
+                    new_val = self._get_input_definition_data(def_type, def_name)
+                    d_ret[new_key] = self._expand_dict(new_val)
                 else:
                     d_ret[key] = value
 
         return d_ret
 
-    def expand_list(self, inputs):
+    def _expand_list(self, inputs):
         """
         Expands list objects by iterating over all items in the list.
 
@@ -88,15 +82,15 @@ class InputProcessor(object):
         l_ret = []
         for item in inputs:
             if type(item) is dict:
-                l_ret.append(self.expand_dict(item))
+                l_ret.append(self._expand_dict(item))
             elif type(item) is list:
-                l_ret.append(self.expand_list(item))
+                l_ret.append(self._expand_list(item))
             else:
                 l_ret.append(item)
 
         return l_ret
 
-    def get_input_definition_data(self, definition_type, definition_name):
+    def _get_input_definition_data(self, definition_type, definition_name):
         """
         Searches the definitions lists for a matching name. If found, return
         so the object can be expanded.
@@ -106,15 +100,21 @@ class InputProcessor(object):
         :return: found object
         """
 
-        for d_type, d_val in self.definitions.items():
+        for d_type, d_val in self._definitions.items():
             if d_type == definition_type:
-                for obj in d_val:
-                    if obj['type-name'] == definition_name:
-                        return obj
+                for item in d_val:
+                    if item['type-name'] == definition_name:
+                        return item
 
         raise ValueError("'{}' definition not found".format(definition_name))
 
+    @staticmethod
+    def _validate_inputs(inputs):
+        fpath = os.path.join
+        for key, value in inputs.items():
+            # load the schema
+            schema_path = fpath(os.path.dirname(os.path.abspath(__file__)), 'schema')
+            schema = load_json(fpath(schema_path, '{}.jsonschema'.format(key)))
 
-if __name__ == "__main__":
-    obj = InputProcessor().process_input(sys.argv[1])
-    pass
+            # validate
+            validate(value, schema)

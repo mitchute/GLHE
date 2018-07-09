@@ -1,0 +1,29 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "type-name": {
+        "type": "string"
+      },
+      "depth": {
+        "type": "number"
+      },
+      "grout-type": {
+        "type": "string"
+      },
+      "model": {
+        "type": "string"
+      },
+      "pipe-type": {
+        "type": "string"
+      },
+      "segments": {
+        "type": "number"
+      },
+      "shank spacing": {
+        "type": "number"
+      }
+    }
+  }
+}
