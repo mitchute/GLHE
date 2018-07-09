@@ -1,4 +1,12 @@
-import json
+import os
+import sys
+
+from glhe.globals.functions import load_json
+
+from jsonschema import validate
+
+
+fpath = os.path.join
 
 
 class InputProcessor(object):
@@ -14,10 +22,14 @@ class InputProcessor(object):
         :return: expanded input file
         """
 
-        # read the file, parse the json
-        with open(input_file_path) as f:
-            json_blob = f.read()
-        d = json.loads(json_blob)
+        # load the input file
+        d = load_json(input_file_path)
+
+        # load the schema
+        schema = load_json(fpath(os.getcwd(), 'schema.json'))
+
+        # validate
+        validate(d, schema)
 
         # get the definitions so we can use them to expand
         del_keys = []
@@ -102,3 +114,7 @@ class InputProcessor(object):
                         return obj
 
         raise ValueError("'{}' definition not found".format(definition_name))
+
+if __name__ == "__main__":
+    obj = InputProcessor().process_input(sys.argv[1])
+    pass
