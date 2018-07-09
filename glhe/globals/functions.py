@@ -1,3 +1,4 @@
+import json
 from math import exp
 
 from numpy import array
@@ -47,3 +48,16 @@ def set_time_step(input_time_step):
         # We should probably raise some warning here
         # Need to think about adding some logging features eventually
         return min(time_step_list, key=lambda x: abs(x - input_time_step))
+
+
+def load_json(path):
+    """
+    Loads a json file
+
+    :param path: file path
+    :return: loaded json object as parsed dict object
+    """
+
+    with open(path) as f:
+        json_blob = f.read()
+    return json.loads(json_blob)
