@@ -46,7 +46,7 @@ class GFunction(SimulationEntryPoint):
         ground_temp_model_inputs['soil-diffusivity'] = self.soil.diffusivity
         self.my_ground_temp = make_ground_temperature_model(ground_temp_model_inputs).get_temp
 
-        _my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
+        _my_bh = Borehole(inputs['g-functions'], self.fluid, self.soil)
 
     def get_g_func(self, time):
         """

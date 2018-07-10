@@ -10,7 +10,6 @@ from glhe.interface.response import TimeStepSimulationResponse
 
 
 class TestGFunction(unittest.TestCase):
-
     @staticmethod
     def add_instance():
         temp_directory = tempfile.mkdtemp()
@@ -19,18 +18,27 @@ class TestGFunction(unittest.TestCase):
             f.write('1, 1\n2, 2\n3, 3\n')
 
         d = {
-            "borehole-definitions": [
-                {
-                    "name": "borehole type 1",
-                    "depth": 100,
-                    "diameter": 0.1099,
-                    "grout-type": "standard grout",
-                    "model": "simple",
-                    "pipe-type": "32 mm SDR-11 HDPE",
-                    "segments": 10,
-                    "shank-spacing": 0.0521
-                }
-            ],
+            "borehole-definitions": {
+                "types": [
+                    {
+                        "type": "borehole type 1",
+                        "depth": 100,
+                        "diameter": 0.1099,
+                        "grout-type": "standard grout",
+                        "model": "simple",
+                        "pipe-type": "32 mm SDR-11 HDPE",
+                        "segments": 10,
+                        "shank-spacing": 0.0521
+                    }
+                ],
+                "instances": [
+                    {
+                        "name": "fancy borehole name",
+                        "location": (1, 2, 3),
+                        "type": "borehole type 1"
+                    },
+                ]
+            },
             "flow-profile": {
                 "type": "fixed",
                 "fixed": {
@@ -47,7 +55,7 @@ class TestGFunction(unittest.TestCase):
             "g-functions": {
                 "file": temp_g_function_file,
                 "average-depth": 100,
-                "borehole-type": "borehole type 1"
+                "borehole-name": "fancy borehole name"  # FULLY QUALIFIED BOREHOLE
             },
             "ground-temperature": {
                 "type": "constant",
@@ -108,24 +116,8 @@ class TestGFunction(unittest.TestCase):
                 {
                     "name": "path 1",
                     "boreholes": [
-                        {
-                            "name": "borehole 1",
-                            "location": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "borehole-type": "borehole type 1"
-                        },
-                        {
-                            "name": "borehole 2",
-                            "location": {
-                                "x": 1,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "borehole-type": "borehole type 1"
-                        }
+                        "fancy borehole name",  # BECOMES A FULL BOREHOLE REPRESENTATION
+                        "fancy borehole name 2"
                     ]
                 },
                 {
