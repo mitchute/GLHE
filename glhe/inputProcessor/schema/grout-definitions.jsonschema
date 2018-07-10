@@ -3,7 +3,7 @@
   "items": {
     "type": "object",
     "properties": {
-      "type-name": {
+      "name": {
         "type": "string"
       },
       "conductivity": {

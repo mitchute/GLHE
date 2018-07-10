@@ -1,13 +1,17 @@
 import unittest
+import tempfile
+import os
 
 from glhe.topology.full_ground_loop import GLHE
+from glhe.inputProcessor.processor import InputProcessor
+from glhe.globals.functions import write_json
 
 
 class TestGLHEIntegration(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        inputs = {
+        d = {
             'soil': {
                 'conductivity': 1.5,
                 'density': 1500,
@@ -35,7 +39,7 @@ class TestGLHEIntegration(unittest.TestCase):
                     "grout-type": "standard grout",
                     "pipe-type": "32 mm SDR-11 HDPE",
                     "segments": 10,
-                    "model-type": "simple"
+                    "model": "simple"
                 }
             ],
             "grout-definitions": [
@@ -112,6 +116,11 @@ class TestGLHEIntegration(unittest.TestCase):
             }
         }
 
+        temp_directory = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_directory, 'temp.json')
+        write_json(temp_file, d)
+
+        inputs = InputProcessor().process_input(temp_file)
         return GLHE(inputs=inputs)
 
     def test_init(self):

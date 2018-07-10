@@ -2,14 +2,14 @@ import sys
 
 from glhe.gFunction.main import GFunction
 from glhe.globals.functions import set_time_step
+from glhe.inputProcessor.processor import InputProcessor
 from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
 
-from glhe.inputProcessor.processor import InputProcessor
 
-def main():
-    d = InputProcessor().process_input(sys.argv[1])
+def main(input_file):
+    d = InputProcessor().process_input(input_file)
 
     g = GFunction(d)
 
@@ -41,4 +41,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])

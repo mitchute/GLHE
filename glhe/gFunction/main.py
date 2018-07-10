@@ -26,6 +26,7 @@ class GFunction(SimulationEntryPoint):
 
         self.average_depth = inputs['g-functions']['average-depth']
 
+        self.fluid = Fluid(inputs['fluid'])
         self.soil = PropertiesBase(inputs=inputs['soil'])
 
         # initialize time here
@@ -45,18 +46,7 @@ class GFunction(SimulationEntryPoint):
         ground_temp_model_inputs['soil-diffusivity'] = self.soil.diffusivity
         self.my_ground_temp = make_ground_temperature_model(ground_temp_model_inputs).get_temp
 
-        # get borehole inputs
-        bh_key = inputs['g-functions']['borehole-type']
-        bh_inputs = get_input_definition_data(inputs['borehole-definitions'], bh_key)
-
-        grout_key = bh_inputs['grout-type']
-        bh_inputs['grout-data'] = get_input_definition_data(inputs['grout-definitions'], grout_key)
-
-        pipe_key = bh_inputs['pipe-type']
-        bh_inputs['pipe-data'] = get_input_definition_data(inputs['pipe-definitions'], pipe_key)
-
-        self.fluid = Fluid(inputs['fluid'])
-        _my_bh = Borehole(bh_inputs, self.fluid, self.soil)
+        _my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
 
     def get_g_func(self, time):
         """

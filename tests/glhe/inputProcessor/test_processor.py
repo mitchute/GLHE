@@ -19,7 +19,7 @@ class TestInputProcessor(unittest.TestCase):
     def test_validate_pipe_definitions(self):
         d = {
             "pipe-definitions": [{
-                "type-name": "32 mm SDR-11 HDPE",
+                "name": "32 mm SDR-11 HDPE",
                 "outer diameter": 0.0334,
                 "inner diameter": 0.0269,
                 "conductivity": 0.389,
@@ -34,7 +34,7 @@ class TestInputProcessor(unittest.TestCase):
     def test_validate_borehole_definitions(self):
         d = {
             "borehole-definitions": [{
-                "type-name": "borehole type 1",
+                "name": "borehole type 1",
                 "depth": 100,
                 "diameter": 0.1099,
                 "grout-type": "standard grout",
@@ -51,7 +51,7 @@ class TestInputProcessor(unittest.TestCase):
     def test_validate_grout_definitions(self):
         d = {
             "grout-definitions": [{
-                "type-name": "standard grout",
+                "name": "standard grout",
                 "conductivity": 0.744,
                 "density": 1500,
                 "specific heat": 2.6

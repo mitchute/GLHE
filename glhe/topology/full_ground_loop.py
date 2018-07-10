@@ -4,6 +4,7 @@ from numpy import mean
 from scipy.optimize import minimize_scalar
 
 from glhe.interface.entry import SimulationEntryPoint
+from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.path import Path
 
@@ -14,11 +15,13 @@ class GLHE(SimulationEntryPoint):
     def __init__(self, inputs):
 
         # Get inputs from json blob
+
         self._name = inputs["simulation"]["name"]
         self._paths = []
 
         # Fluid instance
         self._fluid = Fluid(inputs["fluid"])
+        self._soil = PropertiesBase(inputs['soil'])
 
         # Initialize other parameters
         self._delta_p_path = 100000
@@ -27,7 +30,7 @@ class GLHE(SimulationEntryPoint):
 
         # Initialize all paths; pass fluid instance for later usage
         for path in inputs["paths"]:
-            self._paths.append(Path(path, fluid=self._fluid, soil=inputs["soil"]))
+            self._paths.append(Path(path, fluid=self._fluid, soil=self._soil))
 
         # Track GLHE num
         self._glhe_num = GLHE._count

@@ -3,6 +3,8 @@ import tempfile
 import unittest
 
 from glhe.gFunction.main import GFunction
+from glhe.globals.functions import write_json
+from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
 
@@ -16,48 +18,138 @@ class TestGFunction(unittest.TestCase):
         with open(temp_g_function_file, 'w') as f:
             f.write('1, 1\n2, 2\n3, 3\n')
 
-        input_structure = {
-            'g-functions': {
-                'file': temp_g_function_file,
-                'average-depth': 90,
-                'borehole-type': 'borehole type 1'
-            },
-            'soil': {
-                'conductivity': 1.5,
-                'density': 1500,
-                'specific heat': 1000,
+        d = {
+            "borehole-definitions": [
+                {
+                    "name": "borehole type 1",
+                    "depth": 100,
+                    "diameter": 0.1099,
+                    "grout-type": "standard grout",
+                    "model": "simple",
+                    "pipe-type": "32 mm SDR-11 HDPE",
+                    "segments": 10,
+                    "shank-spacing": 0.0521
+                }
+            ],
+            "flow-profile": {
+                "type": "fixed",
+                "fixed": {
+                    "value": 1
+                },
+                "external": {
+                    "path": "./glhe/profiles/external_data"
+                }
             },
             "fluid": {
                 "type": "water",
                 "concentration": 100
             },
-            'load-aggregation': {
-                'type': 'dynamic'
+            "g-functions": {
+                "file": temp_g_function_file,
+                "average-depth": 100,
+                "borehole-type": "borehole type 1"
             },
             "ground-temperature": {
                 "type": "constant",
                 "constant": {
                     "temperature": 20
                 },
-            },
-            "borehole-definitions": [
-                {
-                    "name": "borehole type 1",
-                    "depth": 100,
-                    "diameter": 0.1099,
-                    "shank-spacing": 0.0521,
-                    "grout-type": "standard grout",
-                    "pipe-type": "32 mm SDR-11 HDPE",
-                    "segments": 10,
-                    "model-type": "simple"
+                "single-harmonic": {
+                    "ave-temperature": 20,
+                    "amplitude": 0,
+                    "phase-shift": 0
+                },
+                "two-harmonic": {
+                    "ave-temperature": 20,
+                    "amplitude-1": 10,
+                    "amplitude-2": 0,
+                    "phase-shift-1": 0,
+                    "phase-shift-2": 0
                 }
-            ],
+            },
             "grout-definitions": [
                 {
                     "name": "standard grout",
                     "conductivity": 0.744,
                     "density": 1500,
                     "specific heat": 2.6
+                }
+            ],
+            "load-aggregation": {
+                "type": "dynamic",
+                "dynamic": {
+                    "param 1": 1
+                }
+            },
+            "load-profile": {
+                "type": "fixed",
+                "fixed": {
+                    "value": 2000
+                },
+                "single-impulse": {
+                    "start-time": 100,
+                    "end-time": 200,
+                    "value": 3000
+                },
+                "external": {
+                    "path": "./glhe/profiles/external_data"
+                },
+                "sinusoid": {
+                    "amplitude": 1000,
+                    "offset": 0,
+                    "period": 0
+                },
+                "synthetic": {
+                    "type": "symmetric",
+                    "amplitude": 1000
+                }
+            },
+            "paths": [
+                {
+                    "name": "path 1",
+                    "boreholes": [
+                        {
+                            "name": "borehole 1",
+                            "location": {
+                                "x": 0,
+                                "y": 0,
+                                "z": 1
+                            },
+                            "borehole-type": "borehole type 1"
+                        },
+                        {
+                            "name": "borehole 2",
+                            "location": {
+                                "x": 1,
+                                "y": 0,
+                                "z": 1
+                            },
+                            "borehole-type": "borehole type 1"
+                        }
+                    ]
+                },
+                {
+                    "name": "path 2",
+                    "boreholes": [
+                        {
+                            "name": "borehole 3",
+                            "location": {
+                                "x": 0,
+                                "y": 1,
+                                "z": 1
+                            },
+                            "borehole-type": "borehole type 1"
+                        },
+                        {
+                            "name": "borehole 4",
+                            "location": {
+                                "x": 1,
+                                "y": 1,
+                                "z": 1
+                            },
+                            "borehole-type": "borehole type 1"
+                        }
+                    ]
                 }
             ],
             "pipe-definitions": [
@@ -69,10 +161,81 @@ class TestGFunction(unittest.TestCase):
                     "density": 950,
                     "specific heat": 1.623
                 }
-            ]
+            ],
+            "simulation": {
+                "name": "Basic GLHE",
+                "time-step": 3600,
+                "runtime": 31536000,
+                "initial-fluid-temperature": 20
+            },
+            "soil": {
+                "name": "Some Rock",
+                "conductivity": 2.4234,
+                "density": 1500,
+                "specific heat": 1466
+            }
         }
 
-        return GFunction(inputs=input_structure)
+        # d = {
+        #     'g-functions': {
+        #         'file': temp_g_function_file,
+        #         'average-depth': 90,
+        #         'borehole-type': 'borehole type 1'
+        #     },
+        #     'soil': {
+        #         'conductivity': 1.5,
+        #         'density': 1500,
+        #         'specific heat': 1000,
+        #     },
+        #     "fluid": {
+        #         "type": "water",
+        #         "concentration": 100
+        #     },
+        #     'load-aggregation': {
+        #         'type': 'dynamic'
+        #     },
+        #     "ground-temperature": {
+        #         "type": "constant",
+        #         "constant": {
+        #             "temperature": 20
+        #         },
+        #     },
+        #     "borehole-definitions": [
+        #         {
+        #             "name": "borehole type 1",
+        #             "depth": 100,
+        #             "diameter": 0.1099,
+        #             "shank-spacing": 0.0521,
+        #             "grout-type": "standard grout",
+        #             "pipe-type": "32 mm SDR-11 HDPE",
+        #             "segments": 10,
+        #             "model-type": "simple"
+        #         }
+        #     ],
+        #     "grout-definitions": [
+        #         {
+        #             "name": "standard grout",
+        #             "conductivity": 0.744,
+        #             "density": 1500,
+        #             "specific heat": 2.6
+        #         }
+        #     ],
+        #     "pipe-definitions": [
+        #         {
+        #             "name": "32 mm SDR-11 HDPE",
+        #             "outer diameter": 0.0334,
+        #             "inner diameter": 0.0269,
+        #             "conductivity": 0.389,
+        #             "density": 950,
+        #             "specific heat": 1.623
+        #         }
+        #     ]
+        # }
+
+        temp_file = os.path.join(temp_directory, 'temp.json')
+        write_json(temp_file, d)
+        inputs = InputProcessor().process_input(temp_file)
+        return GFunction(inputs=inputs)
 
     def test_class_inheritance(self):
         g = self.add_instance()

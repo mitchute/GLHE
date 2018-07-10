@@ -9,8 +9,9 @@ class Path(object):
         # Get inputs from json blob
         self._name = inputs["name"]
 
-        # Keep reference to fluid instance for usage
+        # Keep reference to instance for usage
         self._fluid = fluid
+        self._soil = soil
 
         # Initialize boreholes
         self._boreholes = []

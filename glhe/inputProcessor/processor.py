@@ -103,7 +103,7 @@ class InputProcessor(object):
         for d_type, d_val in self._definitions.items():
             if d_type == definition_type:
                 for item in d_val:
-                    if item['type-name'] == definition_name:
+                    if item['name'] == definition_name:
                         return item
 
         raise ValueError("'{}' definition not found".format(definition_name))

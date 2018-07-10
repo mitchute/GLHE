@@ -58,6 +58,11 @@ def load_json(path):
     :return: loaded json object as parsed dict object
     """
 
-    with open(path) as f:
+    with open(path, 'r') as f:
         json_blob = f.read()
     return json.loads(json_blob)
+
+
+def write_json(path, obj):
+    with open(path, 'w') as f:
+        f.write(json.dumps(obj))

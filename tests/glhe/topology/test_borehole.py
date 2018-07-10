@@ -15,29 +15,60 @@ class TestBorehole(unittest.TestCase):
                          "soil conductivity": 4.0,
                          "grout conductivity": 0.6}
 
-        inputs = {"name": "borehole 1",
-                  "depth": 76.2,
-                  "diameter": my_inputs["radius"] * 2,
-                  "shank-spacing": my_inputs["shank-spacing"],
-                  "grout-data":
-                      {"conductivity": my_inputs["grout conductivity"],
-                       "density": 1000,
-                       "specific heat": 1000},
-                  "pipe-data":
-                      {"outer diameter": 0.032,
-                       "inner diameter": 0.02714,
-                       "conductivity": 0.389,
-                       "density": 800,
-                       "specific heat": 1000},
-                  "segments": 10,
-                  "model-type": "simple"}
+        inputs = {
+            "name": "borehole 1",
+            "location": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "borehole-data": {
+                "name": "borehole type 1",
+                "depth": 76.2,
+                "diameter": my_inputs["radius"] * 2,
+                "grout-data": {
+                    "name": "standard grout",
+                    "conductivity": my_inputs["grout conductivity"],
+                    "density": 1000,
+                    "specific heat": 1000
+                },
+                "model": "simple",
+                "pipe-data": {
+                    "name": "32 mm SDR-11 HDPE",
+                    "outer diameter": 0.032,
+                    "inner diameter": 0.0714,
+                    "conductivity": 0.389,
+                    "density": 800,
+                    "specific heat": 1000
+                },
+                "segments": 10,
+                "shank-spacing": my_inputs["shank-spacing"]
+            }
+        }
+
+        # inputs = {"name": "borehole 1",
+        #           "depth": 76.2,
+        #           "diameter": my_inputs["radius"] * 2,
+        #           "shank-spacing": my_inputs["shank-spacing"],
+        #           "grout-data":
+        #               {"conductivity": my_inputs["grout conductivity"],
+        #                "density": 1000,
+        #                "specific heat": 1000},
+        #           "pipe-data":
+        #               {"outer diameter": 0.032,
+        #                "inner diameter": 0.02714,
+        #                "conductivity": 0.389,
+        #                "density": 800,
+        #                "specific heat": 1000},
+        #           "segments": 10,
+        #           "model-type": "simple"}
 
         soil_inputs = {"conductivity": my_inputs["soil conductivity"],
                        "density": 1500,
                        "specific heat": 1663.8}
 
-        soil = PropertiesBase(soil_inputs)
         fluid = Fluid({"type": "water"})
+        soil = PropertiesBase(soil_inputs)
 
         return Borehole(inputs=inputs, fluid=fluid, soil=soil)
 
