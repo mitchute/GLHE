@@ -1,12 +1,11 @@
 import os
-import unittest
 import tempfile
+import unittest
 from contextlib import contextmanager
 
 from jsonschema.exceptions import ValidationError
 
 from glhe.globals.functions import write_json
-
 from glhe.inputProcessor.processor import InputProcessor
 
 
@@ -16,8 +15,8 @@ class TestInputProcessor(unittest.TestCase):
     def assertNotRaise(self, exc_type):
         try:
             yield None
-        except exc_type:
-            raise self.failureException('{} raised'.format(exc_type.__name__))
+        except exc_type: # pragma: no cover
+            raise self.failureException('{} raised'.format(exc_type.__name__)) # pragma: no cover
 
     def test_validate_pipe_definitions(self):
         d = {

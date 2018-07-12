@@ -6,6 +6,7 @@ from glhe.gFunction.main import GFunction
 from glhe.globals.functions import write_json
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import TimeStepSimulationResponse
 
 
 class TestGFunction(unittest.TestCase):
@@ -109,11 +110,10 @@ class TestGFunction(unittest.TestCase):
     def test_init_a(self):
         self.add_instance()
 
-    # def test_simulate_time_step(self):
-    #     g = self.add_instance()
-    #     response = g.simulate_time_step(inlet_temperature=20.0, flow=1.0, time_step=15)
-    #     self.assertIsInstance(response, TimeStepSimulationResponse)
-    #     self.assertAlmostEqual(response.outlet_temperature, 20.0, 2)
+    def test_simulate_time_step(self):
+        g = self.add_instance()
+        response = g.simulate_time_step(inlet_temperature=20.0, flow=0, time_step=15)
+        self.assertIsInstance(response, TimeStepSimulationResponse)
 
     def test_g_function_interp(self):
         g = self.add_instance()
