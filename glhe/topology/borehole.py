@@ -12,21 +12,20 @@ class Borehole(object):
     def __init__(self, inputs, fluid, soil):
 
         # Get inputs from json blob
-        self.name = inputs["name"]
-        self.depth = inputs['borehole-data']["depth"]
-        self.diameter = inputs['borehole-data']["diameter"]
+        self.depth = inputs["depth"]
+        self.diameter = inputs["diameter"]
         self.radius = self.diameter / 2
-        self.shank_space = inputs['borehole-data']["shank-spacing"]
+        self.shank_space = inputs["shank-spacing"]
 
-        self.grout = PropertiesBase(inputs=inputs['borehole-data']["grout-data"])
-        self.pipe = Pipe(inputs=inputs['borehole-data']['pipe-data'], fluid=fluid)
+        self.grout = PropertiesBase(inputs=inputs["grout-data"])
+        self.pipe = Pipe(inputs=inputs['pipe-data'], fluid=fluid)
         self.soil = soil
         self.fluid = fluid
 
         # Initialize segments
         self.segments = []
-        for segment in range(inputs['borehole-data']["segments"]):
-            self.segments.append(Segment(model_type=inputs['borehole-data']["model"], fluid=fluid))
+        for segment in range(inputs["segments"]):
+            self.segments.append(Segment(model_type=inputs["model"], fluid=fluid))
 
         # pipe inside cross-sectional area
         self.area_i_cr = PI * self.diameter ** 2.0 / 4.0

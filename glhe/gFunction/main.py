@@ -20,11 +20,9 @@ class GFunction(SimulationEntryPoint):
         # g-function properties
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
-        self._g_function = interp1d(g_functions[:, 0],
+        self._g_function_interp = interp1d(g_functions[:, 0],
                                     g_functions[:, 1],
-                                    fill_value='extrapolate')
-
-        self.average_depth = inputs['g-functions']['average-depth']
+                                           fill_value='extrapolate')
 
         self.fluid = Fluid(inputs['fluid'])
         self.soil = PropertiesBase(inputs=inputs['soil'])
@@ -35,9 +33,6 @@ class GFunction(SimulationEntryPoint):
         # init load aggregation method
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
 
-        # time constant
-        self.t_s = self.average_depth ** 2 / (9 * self.soil.diffusivity)
-
         # response constant
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
 
@@ -46,7 +41,10 @@ class GFunction(SimulationEntryPoint):
         ground_temp_model_inputs['soil-diffusivity'] = self.soil.diffusivity
         self.my_ground_temp = make_ground_temperature_model(ground_temp_model_inputs).get_temp
 
-        _my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
+        self.my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
+
+        # time constant
+        self.t_s = self.my_bh.depth ** 2 / (9 * self.soil.diffusivity)
 
     def get_g_func(self, time):
         """
@@ -57,7 +55,7 @@ class GFunction(SimulationEntryPoint):
         """
 
         lntts = log(time / self.t_s)
-        return self._g_function(lntts)
+        return self._g_function_interp(lntts)
 
     def simulate_time_step(self, inlet_temperature, flow, time_step):
         self.current_time += time_step

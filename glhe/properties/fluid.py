@@ -122,6 +122,7 @@ class Fluid(object):
     def _calc_property(self, property, temperature):
         """
         Worker function to call the CoolProp library
+
         :param property: Fluid property enum value
         :param temperature: Fluid temperature in Celsius
         :return: Property Value

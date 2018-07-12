@@ -57,7 +57,6 @@ class TestPath(unittest.TestCase):
 
         tst_bh = tst._boreholes[0]
 
-        self.assertEqual(tst_bh.name, "borehole 1")
         self.assertEqual(tst_bh.depth, 100)
         self.assertEqual(tst_bh.diameter, 0.1099)
         self.assertEqual(tst_bh.grout.conductivity, 0.744)

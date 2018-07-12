@@ -110,9 +110,18 @@ class InputProcessor(object):
 
     @staticmethod
     def _validate_inputs(inputs):
+        """
+        Validates the input objects against the schema
+
+        :param inputs: input object
+        :return: none
+        """
+
+        # shortcut
         fpath = os.path.join
+
         for key, value in inputs.items():
-            # load the schema
+            # load proper the schema
             schema_path = fpath(os.path.dirname(os.path.abspath(__file__)), 'schema')
             schema = load_json(fpath(schema_path, '{}.jsonschema'.format(key)))
 

@@ -26,7 +26,6 @@
   },
   "g-functions": {
     "file": "../glhe/examples/2x2_g_functions.csv",
-    "average-depth": 100,
     "borehole-type": "borehole type 1"
   },
   "ground-temperature": {
@@ -89,7 +88,6 @@
       "name": "path 1",
       "boreholes": [
         {
-          "name": "borehole 1",
           "location": {
             "x": 0,
             "y": 0,
@@ -98,7 +96,6 @@
           "borehole-type": "borehole type 1"
         },
         {
-          "name": "borehole 2",
           "location": {
             "x": 1,
             "y": 0,
@@ -112,7 +109,6 @@
       "name": "path 2",
       "boreholes": [
         {
-          "name": "borehole 3",
           "location": {
             "x": 0,
             "y": 1,
@@ -121,7 +117,6 @@
           "borehole-type": "borehole type 1"
         },
         {
-          "name": "borehole 4",
           "location": {
             "x": 1,
             "y": 1,

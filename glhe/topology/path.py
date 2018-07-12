@@ -16,7 +16,7 @@ class Path(object):
         # Initialize boreholes
         self._boreholes = []
         for borehole in inputs["boreholes"]:
-            self._boreholes.append(Borehole(borehole, fluid=fluid, soil=soil))
+            self._boreholes.append(Borehole(borehole['borehole-data'], fluid=fluid, soil=soil))
 
         # Initialize other parameters
         self.mass_flow_rate = 0

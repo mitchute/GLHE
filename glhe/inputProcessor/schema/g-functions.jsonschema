@@ -4,9 +4,6 @@
     "file": {
       "type": "string"
     },
-    "average depth": {
-      "type": "number"
-    },
     "borehole-type": {
       "type": "string"
     }

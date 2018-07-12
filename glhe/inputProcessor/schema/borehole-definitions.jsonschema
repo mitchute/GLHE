@@ -3,9 +3,6 @@
   "items": {
     "type": "object",
     "properties": {
-      "name": {
-        "type": "string"
-      },
       "depth": {
         "type": "number"
       },
