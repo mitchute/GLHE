@@ -15,8 +15,8 @@ class TestInputProcessor(unittest.TestCase):
     def assertNotRaise(self, exc_type):
         try:
             yield None
-        except exc_type: # pragma: no cover
-            raise self.failureException('{} raised'.format(exc_type.__name__)) # pragma: no cover
+        except exc_type:  # pragma: no cover
+            raise self.failureException('{} raised'.format(exc_type.__name__))  # pragma: no cover
 
     def test_validate_pipe_definitions(self):
         d = {
