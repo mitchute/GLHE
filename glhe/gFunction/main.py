@@ -62,5 +62,3 @@ class GFunction(SimulationEntryPoint):
 
         if flow == 0:
             return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
-        else:
-            ground_temp = self.my_ground_temp(self.current_time)

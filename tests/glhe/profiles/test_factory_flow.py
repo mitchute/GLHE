@@ -21,3 +21,7 @@ class TestFactory(unittest.TestCase):
         }
         profile = make_flow_profile(inputs=inputs)
         self.assertIsInstance(profile, ExternalFlow)
+
+    def test_error(self):
+        inputs = {'type': 'bob'}
+        self.assertRaises(ValueError, lambda: make_flow_profile(inputs=inputs))

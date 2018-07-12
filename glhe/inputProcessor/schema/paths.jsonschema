@@ -11,9 +11,6 @@
         "items": {
           "type": "object",
           "properties": {
-            "name": {
-              "type": "string"
-            },
             "borehole-type": {
               "type": "string"
             },

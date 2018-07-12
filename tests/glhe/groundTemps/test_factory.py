@@ -39,3 +39,6 @@ class TestGTMFactory(unittest.TestCase):
 
         model = make_ground_temperature_model(inputs=inputs)
         self.assertIsInstance(model, TwoHarmonic)
+
+        inputs = {'type': 'bob'}
+        self.assertRaises(ValueError, lambda: make_ground_temperature_model(inputs=inputs))

@@ -6,6 +6,7 @@ from glhe.globals.functions import load_json
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import temp_in_kelvin
+from glhe.globals.functions import write_json
 
 
 class TestFunctions(unittest.TestCase):
@@ -24,19 +25,6 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(set_time_step(200), 180)
         self.assertEqual(set_time_step(3500), 3600)
 
-    # def test_get_input_definition_data(self):
-    #     tst_def_list = [{"name": "obj 1 name", "param": 1}, {"name": "obj 2 name", "param": 1, "different param": 2}]
-    #     ret_obj = get_input_definition_data(tst_def_list, 'obj 1 name')
-    #     self.assertEqual(ret_obj['name'], 'obj 1 name')
-    #     self.assertEqual(ret_obj['param'], 1)
-    #
-    #     ret_obj = get_input_definition_data(tst_def_list, 'obj 2 name')
-    #     self.assertEqual(ret_obj['name'], 'obj 2 name')
-    #     self.assertEqual(ret_obj['param'], 1)
-    #     self.assertEqual(ret_obj['different param'], 2)
-    #
-    #     self.assertRaises(ValueError, lambda: get_input_definition_data(tst_def_list, 'not supported name'))
-
     def test_load_json(self):
         temp_directory = tempfile.mkdtemp()
         temp_json_file = os.path.join(temp_directory, 'temp.json')
@@ -47,3 +35,16 @@ class TestFunctions(unittest.TestCase):
 
         self.assertEqual(d["key"], "value")
         self.assertEqual(d["key 2"], 1)
+
+    def test_write_json(self):
+        temp_directory = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_directory, 'temp.json')
+
+        d = {
+            "key": "value",
+            "key 2": 2
+        }
+
+        write_json(temp_file, d)
+        loaded = load_json(temp_file)
+        self.assertEqual(d, loaded)
