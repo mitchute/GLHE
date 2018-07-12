@@ -21,7 +21,7 @@ class GFunction(SimulationEntryPoint):
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
         self._g_function_interp = interp1d(g_functions[:, 0],
-                                    g_functions[:, 1],
+                                           g_functions[:, 1],
                                            fill_value='extrapolate')
 
         self.fluid = Fluid(inputs['fluid'])

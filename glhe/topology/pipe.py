@@ -8,7 +8,6 @@ from glhe.properties.base import PropertiesBase
 class Pipe(PropertiesBase):
 
     def __init__(self, inputs, fluid):
-        base_inputs = {}
         PropertiesBase.__init__(self, inputs=inputs)
         self.inner_diameter = inputs["inner diameter"]
         self.outer_diameter = inputs["outer diameter"]
