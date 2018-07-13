@@ -11,5 +11,5 @@ class TestNoAgg(unittest.TestCase):
 
     def test_add_load(self):
         tst = NoAggMethod()
-        tst.add_load(1, 1)
+        tst.add_load(1, 1, 1)
         self.assertEqual(tst.loads[0].energy, 1)

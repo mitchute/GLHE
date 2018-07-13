@@ -14,7 +14,7 @@
   "flow-profile": {
     "type": "fixed",
     "fixed": {
-      "value": 1
+      "value": 0.2
     },
     "external": {
       "path": "./glhe/profiles/external_data"
@@ -26,7 +26,8 @@
   },
   "g-functions": {
     "file": "../glhe/examples/2x2_g_functions.csv",
-    "borehole-type": "borehole type 1"
+    "borehole-type": "borehole type 1",
+    "number of boreholes": 1
   },
   "ground-temperature": {
     "type": "constant",
@@ -55,7 +56,7 @@
     }
   ],
   "load-aggregation": {
-    "type": "dynamic",
+    "type": "none",
     "dynamic": {
       "param 1": 1
     }
@@ -63,7 +64,7 @@
   "load-profile": {
     "type": "fixed",
     "fixed": {
-      "value": 2000
+      "value": 4000
     },
     "single-impulse": {
       "start-time": 100,

@@ -6,6 +6,9 @@
     },
     "borehole-type": {
       "type": "string"
+    },
+    "number of boreholes": {
+      "type": "number"
     }
   }
 }

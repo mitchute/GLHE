@@ -46,7 +46,8 @@ class TestGFunction(unittest.TestCase):
             },
             "g-functions": {
                 "file": temp_g_function_file,
-                "borehole-type": "borehole type 1"
+                "borehole-type": "borehole type 1",
+                "number of boreholes": 1
             },
             "ground-temperature": {
                 "type": "constant",

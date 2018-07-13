@@ -7,5 +7,5 @@ class NoAggMethod(BaseMethod):
     def __init__(self):
         BaseMethod.__init__(self)
 
-    def add_load(self, load, width):
-        self.loads.appendleft(BaseBin(energy=load, width=width))
+    def add_load(self, load, width, time):
+        self.loads.appendleft(BaseBin(energy=load, width=width, abs_time=time))
