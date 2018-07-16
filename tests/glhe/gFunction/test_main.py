@@ -113,7 +113,7 @@ class TestGFunction(unittest.TestCase):
 
     def test_simulate_time_step(self):
         g = self.add_instance()
-        response = g.simulate_time_step(inlet_temperature=20.0, flow=0, time_step=15)
+        response = g.simulate_time_step(inlet_temperature=20.0, mass_flow=0, time_step=15)
         self.assertIsInstance(response, TimeStepSimulationResponse)
 
     def test_g_function_interp(self):

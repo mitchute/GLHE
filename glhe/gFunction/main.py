@@ -11,6 +11,7 @@ from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
+from glhe.outputProcessor.processor import OutputProcessor
 
 
 class GFunction(SimulationEntryPoint):
@@ -61,15 +62,16 @@ class GFunction(SimulationEntryPoint):
         lntts = log(time / self.t_s)
         return self._g_function_interp(lntts)
 
-    def simulate_time_step(self, inlet_temperature, flow, time_step):
+    def simulate_time_step(self, inlet_temperature, mass_flow, time_step):
         self.current_time += time_step
-        fluid_cap = flow * self.fluid.specific_heat
-        if flow == 0:
+        fluid_cap = mass_flow * self.fluid.specific_heat
+        if mass_flow == 0:
             return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
         else:
             ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
-            self.my_bh.mass_flow_rate = flow
+            self.my_bh.mass_flow_rate = mass_flow
             bh_resist = self.my_bh.calc_bh_resistance()
+            OutputProcessor().register_output_variable(self.my_bh, 'resist_bh', "Borehole Resistance [K/W]")
 
             prev_bin = self.load_aggregation.loads[0]
             delta_t_prev_bin = self.current_time - prev_bin.abs_time
