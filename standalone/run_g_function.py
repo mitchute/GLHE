@@ -37,6 +37,7 @@ class RunGFunctions(object):
         while self.sim_time <= self.run_time:
             # advance in time through the GLHE
             self.sim_time += self.time_step
+            print("Sim Time: {}".format(self.sim_time))
             op.register_output_variable(self, 'sim_time', "Simulation Time")
 
             # set current plant status
@@ -48,8 +49,8 @@ class RunGFunctions(object):
             # update entering fluid temperature
             mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
             cp = self.fluid.calc_specific_heat(mean_temp)
-            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + self.current_load / \
-                                                   (self.mass_flow_rate * cp)
+            self.glhe_entering_fluid_temperature = self.response.outlet_temperature - self.current_load / (
+                        self.mass_flow_rate * cp)
             op.register_output_variable(self, 'glhe_entering_fluid_temperature', "GLHE Inlet Temperature [C]")
 
             # compute glhe response

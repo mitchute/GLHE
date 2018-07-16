@@ -94,7 +94,7 @@ class GFunction(SimulationEntryPoint):
 
             self.load_aggregation.add_load(load=energy, width=time_step, time=self.current_time)
 
-            ave_temp = (1 - flow_fraction) * load * self.tot_length / (self.tot_length) + inlet_temperature
+            ave_temp = (1 - flow_fraction) * load * self.tot_length / fluid_cap + inlet_temperature
 
             outlet_temp = ave_temp - flow_fraction * load / fluid_cap
 
