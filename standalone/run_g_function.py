@@ -16,9 +16,6 @@ class RunGFunctions(object):
         d = InputProcessor().process_input(input_file)
         self.g = GFunction(d)
 
-        # setup output processor
-        op = OutputProcessor()
-
         self.time_step = set_time_step(d['simulation']['time-step'])
         self.run_time = d['simulation']['runtime']
 
@@ -49,8 +46,8 @@ class RunGFunctions(object):
             op.register_output_variable(self, 'mass_flow_rate', "Plant Mass Flow Rate [kg/s]")
 
             # update entering fluid temperature
-            cp = self.fluid.calc_specific_heat(
-                (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2)
+            mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+            cp = self.fluid.calc_specific_heat(mean_temp)
             self.glhe_entering_fluid_temperature = self.response.outlet_temperature + self.current_load / \
                                                    (self.mass_flow_rate * cp)
             op.register_output_variable(self, 'glhe_entering_fluid_temperature', "GLHE Inlet Temperature [C]")
