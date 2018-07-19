@@ -1,3 +1,4 @@
+import os
 import sys
 
 from glhe.gFunction.main import GFunction
@@ -48,6 +49,7 @@ class RunGFunctions(object):
 
             # update entering fluid temperature
             mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+
             cp = self.fluid.calc_specific_heat(mean_temp)
             eft_num = self.current_load
             eft_den = self.mass_flow_rate * cp
@@ -66,4 +68,7 @@ class RunGFunctions(object):
 
 
 if __name__ == '__main__':
-    RunGFunctions(sys.argv[1]).simulate()
+    if os.path.exists(sys.argv[1]):
+        RunGFunctions(sys.argv[1]).simulate()
+    else:
+        FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))

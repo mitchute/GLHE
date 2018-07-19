@@ -8,10 +8,10 @@ from glhe.globals.constants import PI
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
+from glhe.outputProcessor.processor import OutputProcessor
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
-from glhe.outputProcessor.processor import OutputProcessor
 
 
 class GFunction(SimulationEntryPoint):
@@ -63,15 +63,16 @@ class GFunction(SimulationEntryPoint):
         return self._g_function_interp(lntts)
 
     def simulate_time_step(self, inlet_temperature, mass_flow, time_step):
+        op = OutputProcessor()
         self.current_time += time_step
         fluid_cap = mass_flow * self.fluid.specific_heat
         if mass_flow == 0:
             return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
         else:
             ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
-            self.my_bh.mass_flow_rate = mass_flow
-            bh_resist = self.my_bh.calc_bh_resistance()
-            OutputProcessor().register_output_variable(self.my_bh, 'resist_bh', "Borehole Resistance [K/W]")
+            self.my_bh.mass_flow_rate = mass_flow / self.num_bh
+            self.bh_resist = self.my_bh.calc_bh_resistance()
+            op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
 
             prev_bin = self.load_aggregation.loads[0]
             delta_t_prev_bin = self.current_time - prev_bin.abs_time
@@ -82,25 +83,28 @@ class GFunction(SimulationEntryPoint):
 
             temp_rise_history = self.calc_history_temp_rise()
 
-            flow_fraction = self.calc_flow_frac()
+            self.flow_fraction = self.calc_flow_frac()
+            op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
-            c_1 = (1 - flow_fraction) * self.tot_length / (fluid_cap)
+            c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
             load_num = ground_temp - temp_rise_history + temp_rise_prev_bin - inlet_temperature
-            load_den = self.c_0 * g_func_prev_bin + bh_resist + c_1
-            load = load_num / load_den
+            load_den = self.c_0 * g_func_prev_bin + self.bh_resist + c_1
+            self.load_normalized = load_num / load_den
+            op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
 
-            energy = load * time_step
+            total_load = self.load_normalized * self.tot_length
+
+            energy = self.load_normalized * time_step
 
             self.load_aggregation.add_load(load=energy, width=time_step, time=self.current_time)
 
-            ave_temp = (1 - flow_fraction) * load * self.tot_length / fluid_cap + inlet_temperature
+            self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
+            op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
 
-            outlet_temp = ave_temp - flow_fraction * load / fluid_cap
+            outlet_temp = self.ave_fluid_temp + self.flow_fraction * total_load / fluid_cap
 
-            load_tot = load * self.tot_length
-
-            return TimeStepSimulationResponse(heat_rate=load_tot, outlet_temperature=outlet_temp)
+            return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temp)
 
     def calc_flow_frac(self):
         return 0.5
