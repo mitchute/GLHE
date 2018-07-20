@@ -1,7 +1,7 @@
 from math import log
 
 from numpy import genfromtxt
-from scipy.interpolate import interp1d
+from scipy.interpolate import UnivariateSpline
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI
@@ -21,9 +21,9 @@ class GFunction(SimulationEntryPoint):
         # g-function properties
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
-        self._g_function_interp = interp1d(g_functions[:, 0],
-                                           g_functions[:, 1],
-                                           fill_value='extrapolate')
+        self._g_function_interp = UnivariateSpline(g_functions[:, 0],
+                                                   g_functions[:, 1],
+                                                   ext=2)
 
         self.fluid = Fluid(inputs['fluid'])
         self.soil = PropertiesBase(inputs=inputs['soil'])
@@ -88,8 +88,8 @@ class GFunction(SimulationEntryPoint):
 
             c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
-            load_num = ground_temp - temp_rise_history + temp_rise_prev_bin - inlet_temperature
-            load_den = self.c_0 * g_func_prev_bin + self.bh_resist + c_1
+            load_num = ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
+            load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
             self.load_normalized = load_num / load_den
             op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
 
@@ -102,7 +102,7 @@ class GFunction(SimulationEntryPoint):
             self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
             op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
 
-            outlet_temp = self.ave_fluid_temp + self.flow_fraction * total_load / fluid_cap
+            outlet_temp = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
 
             return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temp)
 

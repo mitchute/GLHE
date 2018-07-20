@@ -49,11 +49,10 @@ class RunGFunctions(object):
 
             # update entering fluid temperature
             mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-
             cp = self.fluid.calc_specific_heat(mean_temp)
             eft_num = self.current_load
             eft_den = self.mass_flow_rate * cp
-            self.glhe_entering_fluid_temperature = self.response.outlet_temperature - eft_num / eft_den
+            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
             op.register_output_variable(self, 'glhe_entering_fluid_temperature', "GLHE Inlet Temperature [C]")
 
             # compute glhe response
