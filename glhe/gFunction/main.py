@@ -56,6 +56,7 @@ class GFunction(SimulationEntryPoint):
         self.ave_fluid_temp = 0
         self.flow_fraction = 0
         self.load_normalized = 0
+        self.prev_mass_flow_rate = 0
 
     def get_g_func(self, time):
         """
@@ -76,9 +77,15 @@ class GFunction(SimulationEntryPoint):
             return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
         else:
             ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
-            self.my_bh.mass_flow_rate = mass_flow / self.num_bh
-            self.bh_resist = self.my_bh.calc_bh_resistance()
-            op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
+
+            if self.prev_mass_flow_rate != mass_flow:
+                self.my_bh.mass_flow_rate = mass_flow / self.num_bh
+                self.prev_mass_flow_rate = mass_flow
+                self.bh_resist = self.my_bh.calc_bh_resistance()
+                op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
+
+                self.flow_fraction = self.calc_flow_frac()
+                op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
             prev_bin = self.load_aggregation.loads[0]
             delta_t_prev_bin = self.current_time - prev_bin.abs_time
@@ -88,9 +95,6 @@ class GFunction(SimulationEntryPoint):
             temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
 
             temp_rise_history = self.calc_history_temp_rise()
-
-            self.flow_fraction = self.calc_flow_frac()
-            op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
             c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
