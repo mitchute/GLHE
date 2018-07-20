@@ -1,7 +1,7 @@
 from math import log
 
 from numpy import genfromtxt
-from scipy.interpolate import UnivariateSpline
+from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI
@@ -21,9 +21,9 @@ class GFunction(SimulationEntryPoint):
         # g-function properties
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
-        self._g_function_interp = UnivariateSpline(g_functions[:, 0],
-                                                   g_functions[:, 1],
-                                                   ext=2)
+        self._g_function_interp = interp1d(g_functions[:, 0],
+                                           g_functions[:, 1],
+                                           fill_value='extrapolate')
 
         self.fluid = Fluid(inputs['fluid'])
         self.soil = PropertiesBase(inputs=inputs['soil'])
@@ -50,6 +50,12 @@ class GFunction(SimulationEntryPoint):
 
         # time constant
         self.t_s = self.my_bh.depth ** 2 / (9 * self.soil.diffusivity)
+
+        # other inits
+        self.bh_resist = 0
+        self.ave_fluid_temp = 0
+        self.flow_fraction = 0
+        self.load_normalized = 0
 
     def get_g_func(self, time):
         """
