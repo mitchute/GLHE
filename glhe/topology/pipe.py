@@ -1,3 +1,5 @@
+from math import factorial, exp
+
 from numpy import log
 
 from glhe.globals.constants import PI
@@ -94,7 +96,8 @@ class Pipe(PropertiesBase):
         self.resist_pipe = self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
         return self.resist_pipe
 
-    def _laminar_nusselt(self):
+    @staticmethod
+    def _laminar_nusselt():
         """
         Laminar Nusselt number for smooth pipes
 
@@ -118,7 +121,8 @@ class Pipe(PropertiesBase):
         pr = self._fluid.prandtl
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
-    def laminar_friction_factor(self, re):
+    @staticmethod
+    def laminar_friction_factor(re):
         """
         Laminar friction factor
 
@@ -128,7 +132,8 @@ class Pipe(PropertiesBase):
 
         return 64.0 / re
 
-    def turbulent_friction_factor(self, re):
+    @staticmethod
+    def turbulent_friction_factor(re):
         """
 
         :param re:
@@ -136,3 +141,33 @@ class Pipe(PropertiesBase):
         """
 
         return (0.79 * log(re) - 1.64) ** (-2.0)
+
+    @staticmethod
+    def hanby(time, vol_flow_rate, volume):
+        """
+        Computes the non-dimensional response of a fluid conduit
+        assuming well mixed nodes. The model accounts for the thermal
+        capacity of the fluid and diffusive mixing.
+
+        Hanby, V.I., J.A. Wright, D.W. Fetcher, D.N.T. Jones. 2002
+        'Modeling the dynamic response of conduits.' HVAC&R Research 8(1): 1-12.
+
+        The model is non-dimensional, so input parameters should have consistent units
+        for that are able to compute the non-dimensional time parameter, tau.
+
+        :math \tau = \frac{\dot{V} \cdot t}{Vol}
+
+
+        :param time: time of fluid response
+        :param vol_flow_rate: volume flow rate
+        :param volume: volume of fluid circuit
+        :return:
+        """
+
+        tau = vol_flow_rate * time / volume
+        num_nodes = 20
+        ret_sum = 1
+        for i in range(1, num_nodes):
+            ret_sum += (num_nodes * tau) ** i / factorial(i)
+
+        return 1 - exp(-num_nodes * tau) * ret_sum
