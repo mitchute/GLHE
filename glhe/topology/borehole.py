@@ -160,7 +160,7 @@ class Borehole(object):
         self.mass_flow_rate = mass_flow_rate
         velocity = mass_flow_rate / (self.fluid.density * self.area_i_cr)
         reynolds_no = self.fluid.density * self.pipe.inner_diameter * velocity / self.fluid.viscosity
-        self.calc_friction_factor = self.pipe.calc_friction_factor(reynolds_no)
+        self.pipe.calc_friction_factor(reynolds_no)
 
     def _calc_fluid_volume(self):
         return PI * self.pipe.inner_diameter ** 2 / 4 * self.depth * self.num_pipes

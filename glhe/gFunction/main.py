@@ -1,6 +1,6 @@
-from math import log
+from math import log, exp
 
-from numpy import genfromtxt
+from numpy import genfromtxt, mean
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
@@ -84,7 +84,7 @@ class GFunction(SimulationEntryPoint):
                 self.bh_resist = self.my_bh.calc_bh_resistance()
                 op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
 
-                self.flow_fraction = self.calc_flow_frac()
+                self.flow_fraction = self.calc_flow_fraction()
                 op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
             prev_bin = self.load_aggregation.loads[0]
@@ -112,11 +112,42 @@ class GFunction(SimulationEntryPoint):
             self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
             op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
 
-            outlet_temp = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+            outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
 
-            return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temp)
+            # update for next time step
+            self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
 
-    def calc_flow_frac(self):
+            return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
+
+    def calc_flow_fraction(self):
+        fluid_vol_heat_capacity = self.fluid.specific_heat * self.fluid.density
+        soil_vol_heat_capacity = self.soil.specific_heat * self.soil.density
+        volume = self.my_bh.fluid_volume
+
+        fluid_storage_coefficient_num = volume * fluid_vol_heat_capacity
+        fluid_storage_coefficient_den = 2 * PI * self.my_bh.depth * soil_vol_heat_capacity * self.my_bh.radius ** 2
+
+        fluid_storage_coefficient = fluid_storage_coefficient_num / fluid_storage_coefficient_den
+
+        resist_bh_dimensionless = 2 * PI * self.soil.conductivity * self.my_bh.resist_bh
+
+        psi = fluid_storage_coefficient * exp(2 * resist_bh_dimensionless)
+        phi = log(psi)
+
+        if 0.2 < psi <= 1.2:
+            td_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004
+        elif 1.2 < phi <= 160:
+            td_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
+        elif 160 < phi <= 2E5:
+            td_over_cd = 12.506 * phi + 45.051
+        else:
+            raise ValueError
+
+        steady_flux_time_num = td_over_cd * fluid_vol_heat_capacity * volume
+        steady_flux_time_den = 2 * PI * self.my_bh.depth * self.soil.conductivity
+
+        steady_flux_time = steady_flux_time_num / steady_flux_time_den
+
         return 0.5
 
     def calc_history_temp_rise(self):
