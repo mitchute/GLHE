@@ -16,4 +16,10 @@ class Constant(BaseGroundTemp):
         self._temp = temp
 
     def get_temp(self, time=None, depth=None):
+        """
+        Constant ground temperature
+
+        :return: ground temperature [C]
+        """
+
         return self._temp

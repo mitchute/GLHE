@@ -10,4 +10,11 @@ class BaseMethod(ABC):
 
     @abstractmethod
     def add_load(self, load):
+        """
+        Setter method for load aggregation methods
+
+        :param load: load value [J]
+        :return:
+        """
+
         pass  # pragma: no cover
