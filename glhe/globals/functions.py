@@ -1,3 +1,5 @@
+import json
+
 from math import exp
 
 
@@ -25,3 +27,16 @@ def temp_in_kelvin(x):
     """
 
     return x + 273.15
+
+
+def load_json(path):
+    """
+    Loads a json file
+
+    :param path: file path
+    :return: loaded json object as parsed dict object
+    """
+
+    with open(path) as f:
+        json_blob = f.read()
+    return json.loads(json_blob)
