@@ -148,6 +148,8 @@ class GFunction(SimulationEntryPoint):
 
         steady_flux_time = steady_flux_time_num / steady_flux_time_den
 
+        flow_factor = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))
+
         return 0.5
 
     def calc_history_temp_rise(self):

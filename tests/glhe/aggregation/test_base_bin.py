@@ -13,3 +13,7 @@ class TestDynamic(unittest.TestCase):
     def test_get_load(self):
         tst = BaseBin(energy=1, width=1)
         self.assertEqual(tst.get_load(), 1)
+
+    def test_get_load_div_zero(self):
+        tst = BaseBin()
+        self.assertEqual(tst.get_load(), 0)
