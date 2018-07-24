@@ -144,13 +144,14 @@ class GFunction(SimulationEntryPoint):
         cs = self.soil.specific_heat * self.soil.density
         v_f = self.my_bh.fluid_volume
         w = self.my_bh.vol_flow_rate
-        l = self.my_bh.depth
+        l = self.my_bh.depth  # noqa: E741
         r_b = self.my_bh.radius
         k_s = self.soil.conductivity
 
         # Transit time
         t_tr = v_f / w
 
+        # Equation 3a
         if t_i - t_i_minus_1 <= 0.02 * t_tr:
             return self.prev_flow_frac
 
@@ -231,6 +232,7 @@ class GFunction(SimulationEntryPoint):
 
         f_old = self.prev_flow_frac
 
+        # Equations 3b and 3c
         if 0.02 * t_tr <= t_i - t_i_minus_1 < t_sf:
             _part_1 = (f_sf - f_old) / 2
             _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr) / log(t_sf / (0.02 * t_tr)) - 0.5))
