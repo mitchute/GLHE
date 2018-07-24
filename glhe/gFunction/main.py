@@ -4,7 +4,7 @@ from numpy import genfromtxt, mean
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
-from glhe.globals.constants import PI
+from glhe.globals.constants import PI, GAMMA
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -79,12 +79,12 @@ class GFunction(SimulationEntryPoint):
             ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
 
             if self.prev_mass_flow_rate != mass_flow:
-                self.my_bh.mass_flow_rate = mass_flow / self.num_bh
+                self.my_bh.mass_flow_rate = self.my_bh.set_flow_rate(mass_flow / self.num_bh)
                 self.prev_mass_flow_rate = mass_flow
                 self.bh_resist = self.my_bh.calc_bh_resistance()
                 op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
 
-                self.flow_fraction = self.calc_flow_fraction()
+                self.flow_fraction = self.calc_flow_fraction(self.current_time)  # need to check which time this is
                 op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
             prev_bin = self.load_aggregation.loads[0]
@@ -119,35 +119,67 @@ class GFunction(SimulationEntryPoint):
 
             return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
-    def calc_flow_fraction(self):
-        fluid_vol_heat_capacity = self.fluid.specific_heat * self.fluid.density
-        soil_vol_heat_capacity = self.soil.specific_heat * self.soil.density
-        volume = self.my_bh.fluid_volume
+    def calc_flow_fraction(self, time):
+        """
+        Computes the flow fraction based on the method outlined in:
 
-        fluid_storage_coefficient_num = volume * fluid_vol_heat_capacity
-        fluid_storage_coefficient_den = 2 * PI * self.my_bh.depth * soil_vol_heat_capacity * self.my_bh.radius ** 2
+        Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
+        exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
 
-        fluid_storage_coefficient = fluid_storage_coefficient_num / fluid_storage_coefficient_den
+        :return flow fraction
+        """
 
-        resist_bh_dimensionless = 2 * PI * self.soil.conductivity * self.my_bh.resist_bh
+        # Define base variables
+        cf = self.fluid.specific_heat * self.fluid.density
+        cs = self.soil.specific_heat * self.soil.density
+        v_f = self.my_bh.fluid_volume
+        w = self.my_bh.vol_flow_rate
+        l = self.my_bh.depth
+        r_b = self.my_bh.radius
+        k_s = self.soil.conductivity
+        resist_a = self.my_bh.resist_bh_total_internal
+        resist_b = self.my_bh.resist_bh
+        resist_s = 1 / (2 * PI * k_s) * log(4 * self.soil.diffusivity * time / (GAMMA * r_b ** 2))
 
-        psi = fluid_storage_coefficient * exp(2 * resist_bh_dimensionless)
+        # Equation 9
+        cd_num = v_f * cf
+        cd_den = 2 * PI * l * cs * r_b ** 2
+        cd = cd_num / cd_den
+
+        # Equation 10
+        resist_db = 2 * PI * k_s * resist_b
+
+        psi = cd * exp(2 * resist_db)
         phi = log(psi)
 
+        # Equations 11
         if 0.2 < psi <= 1.2:
-            td_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004
+            tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004
         elif 1.2 < phi <= 160:
-            td_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
+            tdsf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
         elif 160 < phi <= 2E5:
-            td_over_cd = 12.506 * phi + 45.051
+            tdsf_over_cd = 12.506 * phi + 45.051
         else:
             raise ValueError
 
-        steady_flux_time_num = td_over_cd * fluid_vol_heat_capacity * volume
-        steady_flux_time_den = 2 * PI * self.my_bh.depth * self.soil.conductivity
+        # Equation 12
+        tsf_num = tdsf_over_cd * cf * v_f
+        tsf_den = 2 * PI * l * k_s
+        tsf = tsf_num / tsf_den
 
-        steady_flux_time = steady_flux_time_num / steady_flux_time_den
+        # Equation A.11
+        n_a = l / (w * cf * resist_a)
 
+        # Equation A.12
+        n_s1 = l / (w * cf * (resist_b + resist_s))
+
+        # Equation A.15
+        c_5 = c_1 * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_1
+
+        # Equation A.16
+        c_6 = (1 - c_1) * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_2
+
+        # Equation 5
         flow_factor = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))
 
         return 0.5

@@ -33,6 +33,7 @@ class Borehole(object):
         # Initialize other parameters
         self.mass_flow_rate = 0
         self.mass_flow_rate_prev = 0
+        self.vol_flow_rate = 0
         self.friction_factor = 0.02
         self.num_pipes = 2
 
@@ -158,6 +159,7 @@ class Borehole(object):
 
     def set_flow_rate(self, mass_flow_rate):
         self.mass_flow_rate = mass_flow_rate
+        self.vol_flow_rate = mass_flow_rate / self.fluid.density
         velocity = mass_flow_rate / (self.fluid.density * self.area_i_cr)
         reynolds_no = self.fluid.density * self.pipe.inner_diameter * velocity / self.fluid.viscosity
         self.pipe.calc_friction_factor(reynolds_no)
