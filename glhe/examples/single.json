@@ -2,13 +2,13 @@
   "borehole-definitions": [
     {
       "name": "borehole type 1",
-      "depth": 100,
-      "diameter": 0.1099,
+      "depth": 76.2,
+      "diameter": 0.114,
       "grout-type": "standard grout",
       "model": "simple",
       "pipe-type": "32 mm SDR-11 HDPE",
       "segments": 10,
-      "shank-spacing": 0.04776
+      "shank-spacing": 0.0469
     }
   ],
   "flow-profile": {
@@ -50,7 +50,7 @@
   "grout-definitions": [
     {
       "name": "standard grout",
-      "conductivity": 0.744,
+      "conductivity": 0.85,
       "density": 2500,
       "specific heat": 1560
     }
@@ -131,9 +131,9 @@
   "pipe-definitions": [
     {
       "name": "32 mm SDR-11 HDPE",
-      "outer diameter": 0.0334,
-      "inner diameter": 0.0269,
-      "conductivity": 0.389,
+      "outer diameter": 0.0267,
+      "inner diameter": 0.0218,
+      "conductivity": 0.39,
       "density": 950,
       "specific heat": 1.623
     }
@@ -146,8 +146,8 @@
   },
   "soil": {
     "name": "Some Rock",
-    "conductivity": 2.4234,
+    "conductivity": 2.6,
     "density": 2500,
-    "specific heat": 937
+    "specific heat": 880
   }
 }

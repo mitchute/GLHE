@@ -1,4 +1,4 @@
-from math import log, exp
+from math import log, exp, sqrt, sin
 
 from numpy import genfromtxt, mean
 from scipy.interpolate import interp1d
@@ -57,6 +57,9 @@ class GFunction(SimulationEntryPoint):
         self.flow_fraction = 0
         self.load_normalized = 0
         self.prev_mass_flow_rate = 0
+        self.prev_flow_frac = 0
+        self.time_of_curr_flow = 0
+        self.time_of_prev_flow = 0
 
     def get_g_func(self, time):
         """
@@ -79,13 +82,18 @@ class GFunction(SimulationEntryPoint):
             ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
 
             if self.prev_mass_flow_rate != mass_flow:
-                self.my_bh.mass_flow_rate = self.my_bh.set_flow_rate(mass_flow / self.num_bh)
+                self.my_bh.set_flow_rate(mass_flow / self.num_bh)
                 self.prev_mass_flow_rate = mass_flow
                 self.bh_resist = self.my_bh.calc_bh_resistance()
                 op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
 
-                self.flow_fraction = self.calc_flow_fraction(self.current_time)  # need to check which time this is
-                op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
+                if self.prev_mass_flow_rate * 0.95 < mass_flow < self.prev_mass_flow_rate * 1.05:
+                    self.prev_flow_frac = self.flow_fraction
+                    self.time_of_prev_flow = self.time_of_curr_flow
+                    self.time_of_curr_flow = self.current_time
+
+            self.flow_fraction = self.calc_flow_fraction()
+            op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
 
             prev_bin = self.load_aggregation.loads[0]
             delta_t_prev_bin = self.current_time - prev_bin.abs_time
@@ -119,17 +127,19 @@ class GFunction(SimulationEntryPoint):
 
             return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
-    def calc_flow_fraction(self, time):
+    def calc_flow_fraction(self):
         """
-        Computes the flow fraction based on the method outlined in:
+            Computes the flow fraction based on the method outlined in:
 
-        Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
-        exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
+            Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
+            exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
 
-        :return flow fraction
-        """
+            :return flow fraction
+            """
 
         # Define base variables
+        t_i = self.current_time
+        t_i_minus_1 = self.time_of_prev_flow
         cf = self.fluid.specific_heat * self.fluid.density
         cs = self.soil.specific_heat * self.soil.density
         v_f = self.my_bh.fluid_volume
@@ -137,9 +147,20 @@ class GFunction(SimulationEntryPoint):
         l = self.my_bh.depth
         r_b = self.my_bh.radius
         k_s = self.soil.conductivity
+
+        # Transit time
+        t_tr = v_f / w
+
+        if t_i - t_i_minus_1 <= 0.02 * t_tr:
+            return self.prev_flow_frac
+
+        # total internal borehole resistance
         resist_a = self.my_bh.resist_bh_total_internal
-        resist_b = self.my_bh.resist_bh
-        resist_s = 1 / (2 * PI * k_s) * log(4 * self.soil.diffusivity * time / (GAMMA * r_b ** 2))
+
+        # borehole resistance
+        resist_b = self.my_bh.resist_bh_ave
+        resist_b1 = resist_b / 2
+        resist_b2 = resist_b / 2
 
         # Equation 9
         cd_num = v_f * cf
@@ -163,26 +184,59 @@ class GFunction(SimulationEntryPoint):
             raise ValueError
 
         # Equation 12
-        tsf_num = tdsf_over_cd * cf * v_f
-        tsf_den = 2 * PI * l * k_s
-        tsf = tsf_num / tsf_den
+        t_sf_num = tdsf_over_cd * cf * v_f
+        t_sf_den = 2 * PI * l * k_s
+        t_sf = t_sf_num / t_sf_den + t_i_minus_1
+
+        # soil resistance
+        resist_s = 1 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1) / (GAMMA * r_b ** 2))
+        resist_s1 = resist_s * 2
+        resist_s2 = resist_s * 2
 
         # Equation A.11
         n_a = l / (w * cf * resist_a)
 
         # Equation A.12
-        n_s1 = l / (w * cf * (resist_b + resist_s))
+        n_s1 = l / (w * cf * (resist_b1 + resist_s1))
+
+        # Equation A.13
+        n_s2 = l / (w * cf * (resist_b2 + resist_s2))
+
+        # Equation A.5
+        a_1 = (-(n_s1 - n_s2) + sqrt((n_s1 - n_s2) ** 2 + 4 * ((n_a + n_s1) * (n_a + n_s2) - n_a ** 2))) / 2
+
+        # Equation A.6
+        a_2 = (-(n_s1 - n_s2) - sqrt((n_s1 - n_s2) ** 2 + 4 * ((n_a + n_s1) * (n_a + n_s2) - n_a ** 2))) / 2
+
+        # Equation A.7
+        c_1 = (n_s1 + a_2) * exp(a_2) / (((n_s1 + a_2) * exp(a_2)) - ((n_s1 + a_1) * exp(a_1)))
+
+        # Equation A.8
+        c_2 = 1 - c_1
+
+        # Equation A.9
+        c_3 = c_1 * (n_s1 + n_a + a_1) / n_a
+
+        # Equation A.10
+        c_4 = c_2 * (n_s1 + n_a + a_2) / n_a
 
         # Equation A.15
         c_5 = c_1 * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_1
 
         # Equation A.16
-        c_6 = (1 - c_1) * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_2
+        c_6 = (1 - c_1) * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_2) / n_a) * (exp(a_2) - 1) / a_2
 
         # Equation 5
-        flow_factor = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))
+        f_sf = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))
 
-        return 0.5
+        f_old = self.prev_flow_frac
+
+        if 0.02 * t_tr <= t_i - t_i_minus_1 < t_sf:
+            _part_1 = (f_sf - f_old) / 2
+            _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr) / log(t_sf / (0.02 * t_tr)) - 0.5))
+            return _part_1 * (1 + _part_2) + f_old
+        else:
+            return f_sf
 
     def calc_history_temp_rise(self):
         length = len(self.load_aggregation.loads)
