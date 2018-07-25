@@ -2,7 +2,7 @@ import datetime
 import os
 import sys
 
-from glhe.gFunction.main import GFunction
+from glhe.gFunction.g_function import GFunction
 from glhe.globals.functions import set_time_step
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
@@ -89,6 +89,7 @@ class RunGFunctions(object):
 
 
 if __name__ == '__main__':
+    print(sys.argv)
     start = datetime.datetime.now()
     if os.path.exists(sys.argv[1]):
         RunGFunctions(sys.argv[1]).simulate()
