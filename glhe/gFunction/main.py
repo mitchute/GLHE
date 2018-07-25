@@ -56,10 +56,11 @@ class GFunction(SimulationEntryPoint):
         self.ave_fluid_temp = 0
         self.flow_fraction = 0
         self.load_normalized = 0
-        self.prev_mass_flow_rate = 0
+        self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
+        self.flow_change_fraction_limit = 0.1
 
     def register_output_variables(self):
         op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
@@ -76,57 +77,72 @@ class GFunction(SimulationEntryPoint):
         """
 
         lntts = log(time / self.t_s)
-        return self._g_function_interp(lntts)
+        g = self._g_function_interp(lntts)
+
+        if (g / (2 * PI * self.soil.conductivity) + self.my_bh.resist_bh) < 0:
+            return -self.my_bh.resist_bh * 2 * PI * self.soil.conductivity
+        else:
+            return g
 
     def simulate_time_step(self, inlet_temperature, mass_flow, time_step):
         self.current_time += time_step
-        fluid_cap = mass_flow * self.fluid.specific_heat
+
+        if self.prev_mass_flow_rate != mass_flow:
+            self.time_of_prev_flow = self.time_of_curr_flow
+            self.time_of_curr_flow = self.current_time
+
         if mass_flow == 0:
             return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
-        else:
-            ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
 
-            if self.prev_mass_flow_rate != mass_flow:
-                self.my_bh.set_flow_rate(mass_flow / self.num_bh)
-                self.prev_mass_flow_rate = mass_flow
-                self.bh_resist = self.my_bh.calc_bh_resistance()
+        if self.prev_mass_flow_rate != mass_flow:
+            self.my_bh.set_flow_rate(mass_flow / self.num_bh)
+            self.bh_resist = self.my_bh.calc_bh_resistance()
 
-                if self.prev_mass_flow_rate * 0.95 < mass_flow < self.prev_mass_flow_rate * 1.05:
-                    self.prev_flow_frac = self.flow_fraction
-                    self.time_of_prev_flow = self.time_of_curr_flow
-                    self.time_of_curr_flow = self.current_time
+            flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
-            self.flow_fraction = self.calc_flow_fraction()
+            if flow_change_frac > self.flow_change_fraction_limit:
+                self.prev_flow_frac = self.flow_fraction
 
-            prev_bin = self.load_aggregation.loads[0]
-            delta_t_prev_bin = self.current_time - prev_bin.abs_time
-            q_prev_bin = prev_bin.get_load()
-            g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
+            self.prev_mass_flow_rate = mass_flow
 
-            temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
+        ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+        fluid_cap = mass_flow * self.fluid.specific_heat
+        self.flow_fraction = self.calc_flow_fraction()
 
-            temp_rise_history = self.calc_history_temp_rise()
+        prev_bin = self.load_aggregation.loads[0]
+        delta_t_prev_bin = self.current_time - prev_bin.abs_time
+        q_prev_bin = prev_bin.get_load()
+        g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
 
-            c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
+        temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
 
-            load_num = ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
-            load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
-            self.load_normalized = load_num / load_den
+        temp_rise_history = self.calc_history_temp_rise()
 
-            total_load = self.load_normalized * self.tot_length
+        c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
-            energy = self.load_normalized * time_step
+        load_num = ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
+        load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
+        self.load_normalized = load_num / load_den
 
-            self.load_aggregation.add_load(load=energy, width=time_step, time=self.current_time)
+        total_load = self.load_normalized * self.tot_length
 
-            self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
+        energy_normalized = self.load_normalized * time_step
 
-            outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+        self.load_aggregation.add_load(load=energy_normalized, width=time_step, time=self.current_time)
 
-            # update for next time step
-            self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
+        # self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
+        self.ave_fluid_temp = ground_temp +  self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
-            return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
+        t_out_fict = inlet_temperature - total_load / fluid_cap
+
+        self.ave_fluid_temp = mean([t_out_fict, inlet_temperature])
+
+        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+
+        # update for next time step
+        self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
+
+        return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
     def calc_flow_fraction(self):
         """

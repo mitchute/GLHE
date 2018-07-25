@@ -54,6 +54,8 @@ class RunGFunctions(object):
         while self.sim_time <= self.run_time:
             # advance in time through the GLHE
             self.sim_time += self.time_step
+
+            # only print every so often
             if self.print_idx == 50:
                 print("Sim Time: {}".format(self.sim_time))
                 self.print_idx = 0
@@ -73,14 +75,16 @@ class RunGFunctions(object):
 
             # compute glhe response
             new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                      self.mass_flow_rate,
-                                                      self.time_step)
+                                                     self.mass_flow_rate,
+                                                     self.time_step)
 
             self.response.heat_rate = new_response.heat_rate
             self.response.outlet_temperature = new_response.outlet_temperature
 
+            # update the output variables
             op.report_output()
 
+        # dump the results to a file
         op.write_to_file('test.csv')
 
 

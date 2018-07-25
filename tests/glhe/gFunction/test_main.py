@@ -76,7 +76,7 @@ class TestGFunction(unittest.TestCase):
                 }
             ],
             "load-aggregation": {
-                "type": "dynamic",
+                "type": "none",
                 "dynamic": {
                     "param 1": 1
                 }
@@ -105,26 +105,32 @@ class TestGFunction(unittest.TestCase):
         return GFunction(inputs=inputs)
 
     def test_class_inheritance(self):
-        g = self.add_instance()
-        self.assertIsInstance(g, SimulationEntryPoint)
+        tst = self.add_instance()
+        self.assertIsInstance(tst, SimulationEntryPoint)
 
     def test_init_a(self):
         self.add_instance()
 
     def test_simulate_time_step(self):
-        g = self.add_instance()
-        response = g.simulate_time_step(inlet_temperature=20.0, mass_flow=0, time_step=15)
+        tst = self.add_instance()
+        response = tst.simulate_time_step(inlet_temperature=20.0, mass_flow=0, time_step=15)
         self.assertIsInstance(response, TimeStepSimulationResponse)
+        self.assertEqual(response.outlet_temperature, 20.0)
+        self.assertEqual(response.heat_rate, 0)
+
+        response = tst.simulate_time_step(inlet_temperature=25.0, mass_flow=0.2, time_step=3600)
+        self.assertEqual(response.outlet_temperature, 22.0)
+        self.assertEqual(response.heat_rate, 2000)
 
     def test_g_function_interp(self):
-        g = self.add_instance()
-        self.assertEqual(g._g_function_interp(0.5), 0.5)
-        self.assertEqual(g._g_function_interp(1.5), 1.5)
-        self.assertEqual(g._g_function_interp(2.5), 2.5)
-        self.assertEqual(g._g_function_interp(3.5), 3.5)
+        tst = self.add_instance()
+        self.assertEqual(tst._g_function_interp(0.5), 0.5)
+        self.assertEqual(tst._g_function_interp(1.5), 1.5)
+        self.assertEqual(tst._g_function_interp(2.5), 2.5)
+        self.assertEqual(tst._g_function_interp(3.5), 3.5)
 
     def test_get_g_func(self):
-        g = self.add_instance()
-        self.assertAlmostEqual(g.get_g_func(2446453645.61), 1.0, delta=0.000001)
-        self.assertAlmostEqual(g.get_g_func(6650150489.04), 2.0, delta=0.000001)
-        self.assertAlmostEqual(g.get_g_func(18076983230.9), 3.0, delta=0.000001)
+        tst = self.add_instance()
+        self.assertAlmostEqual(tst.get_g_func(2446453645.61), 1.0, delta=0.000001)
+        self.assertAlmostEqual(tst.get_g_func(6650150489.04), 2.0, delta=0.000001)
+        self.assertAlmostEqual(tst.get_g_func(18076983230.9), 3.0, delta=0.000001)
