@@ -28,3 +28,6 @@ class OutputProcessor(object):
     def write_to_file(self, path):
         # write the data to a file
         OutputProcessor.df.to_csv(path)  # pragma: no cover
+
+
+op = OutputProcessor()
