@@ -79,8 +79,8 @@ class GFunction(SimulationEntryPoint):
         lntts = log(time / self.t_s)
         g = self._g_function_interp(lntts)
 
-        if (g / (2 * PI * self.soil.conductivity) + self.my_bh.resist_bh) < 0:
-            return -self.my_bh.resist_bh * 2 * PI * self.soil.conductivity
+        if (g / (2 * PI * self.soil.conductivity) + self.bh_resist) < 0:
+            return -self.bh_resist * 2 * PI * self.soil.conductivity
         else:
             return g
 
@@ -96,7 +96,7 @@ class GFunction(SimulationEntryPoint):
 
         if self.prev_mass_flow_rate != mass_flow:
             self.my_bh.set_flow_rate(mass_flow / self.num_bh)
-            self.bh_resist = self.my_bh.calc_bh_resistance()
+            self.bh_resist = self.my_bh.resist_bh_ave
 
             flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
@@ -130,13 +130,9 @@ class GFunction(SimulationEntryPoint):
 
         self.load_aggregation.add_load(load=energy_normalized, width=time_step, time=self.current_time)
 
-        # self.ave_fluid_temp = inlet_temperature - (1 - self.flow_fraction) * total_load / fluid_cap
-        self.ave_fluid_temp = ground_temp +  self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
+        self.ave_fluid_temp = ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
-        t_out_fict = inlet_temperature - total_load / fluid_cap
-
-        self.ave_fluid_temp = mean([t_out_fict, inlet_temperature])
-
+        inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
         outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
 
         # update for next time step
@@ -173,12 +169,11 @@ class GFunction(SimulationEntryPoint):
             return self.prev_flow_frac
 
         # total internal borehole resistance
-        resist_a = self.my_bh.resist_bh_total_internal
+        resist_a = self.my_bh.calc_bh_total_internal_resistance()
 
         # borehole resistance
         resist_b = self.my_bh.resist_bh_ave
-        resist_b1 = resist_b / 2
-        resist_b2 = resist_b / 2
+        resist_b1 = resist_b * 2
 
         # Equation 9
         cd_num = v_f * cf
@@ -207,24 +202,20 @@ class GFunction(SimulationEntryPoint):
         t_sf = t_sf_num / t_sf_den + t_i_minus_1
 
         # soil resistance
-        resist_s = 1 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1) / (GAMMA * r_b ** 2))
+        resist_s = 1 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time) / (GAMMA * r_b ** 2))
         resist_s1 = resist_s * 2
-        resist_s2 = resist_s * 2
 
         # Equation A.11
         n_a = l / (w * cf * resist_a)
 
-        # Equation A.12
+        # Equation A.12, A.13
         n_s1 = l / (w * cf * (resist_b1 + resist_s1))
 
-        # Equation A.13
-        n_s2 = l / (w * cf * (resist_b2 + resist_s2))
-
         # Equation A.5
-        a_1 = (-(n_s1 - n_s2) + sqrt((n_s1 - n_s2) ** 2 + 4 * ((n_a + n_s1) * (n_a + n_s2) - n_a ** 2))) / 2
+        a_1 = (sqrt(4 * ((n_a + n_s1) **2 - n_a ** 2))) / 2
 
         # Equation A.6
-        a_2 = (-(n_s1 - n_s2) - sqrt((n_s1 - n_s2) ** 2 + 4 * ((n_a + n_s1) * (n_a + n_s2) - n_a ** 2))) / 2
+        a_2 = -a_1
 
         # Equation A.7
         c_1 = (n_s1 + a_2) * exp(a_2) / (((n_s1 + a_2) * exp(a_2)) - ((n_s1 + a_1) * exp(a_1)))
@@ -239,10 +230,10 @@ class GFunction(SimulationEntryPoint):
         c_4 = c_2 * (n_s1 + n_a + a_2) / n_a
 
         # Equation A.15
-        c_5 = c_1 * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_1
+        c_5 = c_1 * (1 + (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_1
 
         # Equation A.16
-        c_6 = (1 - c_1) * (1 + n_s2 / n_s1 * (n_a + n_s1 + a_2) / n_a) * (exp(a_2) - 1) / a_2
+        c_6 = (1 - c_1) * (1 + (n_a + n_s1 + a_2) / n_a) * (exp(a_2) - 1) / a_2
 
         # Equation 5
         f_sf = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))

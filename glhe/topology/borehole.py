@@ -10,7 +10,6 @@ class Borehole(object):
     _count = 0
 
     def __init__(self, inputs, fluid, soil):
-
         # Get inputs from json blob
         self.depth = inputs["depth"]
         self.diameter = inputs["diameter"]
@@ -123,10 +122,12 @@ class Borehole(object):
         Equation 3
         """
 
+        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+
         self.resist_bh_grout = self.calc_bh_average_resistance() - self.pipe.resist_pipe / 2.0
         return self.resist_bh_grout
 
-    def calc_bh_resistance(self):
+    def calc_bh_effective_resistance(self):
         """
         Calculates the effective thermal resistance of the borehole assuming a uniform heat flux.
 
@@ -143,11 +144,9 @@ class Borehole(object):
         Equation 14
         """
 
-        # only update if flow rate has changed
-        if self.mass_flow_rate != self.mass_flow_rate_prev:
-            self.beta = 2 * PI * self.grout.conductivity * self.pipe.calc_resistance(self.mass_flow_rate)
-            self.calc_bh_average_resistance()
-            self.calc_bh_total_internal_resistance()
+        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+
+        self.calc_bh_total_internal_resistance()
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
         pt_2 = (self.depth / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
@@ -157,12 +156,19 @@ class Borehole(object):
 
         return self.resist_bh
 
+    def update_beta(self, pipe_resist):
+        self.beta = 2 * PI * self.grout.conductivity * pipe_resist
+        return self.beta
+
     def set_flow_rate(self, mass_flow_rate):
+        self.mass_flow_rate_prev = self.mass_flow_rate
         self.mass_flow_rate = mass_flow_rate
         self.vol_flow_rate = mass_flow_rate / self.fluid.density
-        velocity = mass_flow_rate / (self.fluid.density * self.area_i_cr)
-        reynolds_no = self.fluid.density * self.pipe.inner_diameter * velocity / self.fluid.viscosity
-        self.pipe.calc_friction_factor(reynolds_no)
+        self.update_beta(self.pipe.calc_resistance(self.mass_flow_rate))
+        self.calc_bh_total_internal_resistance()
+        self.calc_bh_average_resistance()
+        self.calc_bh_effective_resistance()
+        self.calc_bh_grout_resistance()
 
     def _calc_fluid_volume(self):
         return PI * self.pipe.inner_diameter ** 2 / 4 * self.depth * self.num_pipes

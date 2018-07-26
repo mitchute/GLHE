@@ -4407,5 +4407,5 @@ class TestBorehole(unittest.TestCase):
     def test_calc_bh_resistance(self):
         tolerance = 0.00001
         tst = self.add_instance()
-        tst.mass_flow_rate = 0.5
-        self.assertAlmostEqual(tst.calc_bh_resistance(), 0.21629, delta=tolerance)
+        tst.set_flow_rate(0.5)
+        self.assertAlmostEqual(tst.calc_bh_effective_resistance(), 0.21629, delta=tolerance)
