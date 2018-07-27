@@ -90,3 +90,8 @@ class TestPipe(unittest.TestCase):
         self.assertAlmostEqual(tst.hanby(0.8, 1, 1), 0.18775, delta=tolerance)
         self.assertAlmostEqual(tst.hanby(1, 1, 1), 0.52974, delta=tolerance)
         self.assertAlmostEqual(tst.hanby(1.5, 1, 1), 0.97812, delta=tolerance)
+
+    def test_set_resistance(self):
+        tst = self.add_instance()
+        tst.set_resistance(1)
+        self.assertEqual(tst.resist_pipe, 1)
