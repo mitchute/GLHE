@@ -66,20 +66,32 @@ class RunGFunctions(object):
             self.current_load = self.load_profile.get_value(self.sim_time)
             self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
-            # update entering fluid temperature
-            mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-            cp = self.fluid.calc_specific_heat(mean_temp)
-            eft_num = self.current_load
-            eft_den = self.mass_flow_rate * cp
-            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+            first_pass = True
+            converged = False
+            while not converged:
 
-            # compute glhe response
-            new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                     self.mass_flow_rate,
-                                                     self.time_step)
+                # check convergence
+                if abs(self.current_load - self.response.heat_rate) < 0.1:
+                    converged = True
 
-            self.response.heat_rate = new_response.heat_rate
-            self.response.outlet_temperature = new_response.outlet_temperature
+                # update entering fluid temperature
+                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+                cp = self.fluid.calc_specific_heat(mean_temp)
+                eft_num = self.current_load
+                eft_den = self.mass_flow_rate * cp
+                self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+
+                # compute glhe response
+                new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                         self.mass_flow_rate,
+                                                         self.time_step,
+                                                         first_pass,
+                                                         converged)
+
+                self.response.heat_rate = new_response.heat_rate
+                self.response.outlet_temperature = new_response.outlet_temperature
+
+                first_pass = False
 
             # update the output variables
             op.report_output()

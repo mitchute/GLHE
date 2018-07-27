@@ -84,30 +84,31 @@ class GFunction(SimulationEntryPoint):
         else:
             return g
 
-    def simulate_time_step(self, inlet_temperature, mass_flow, time_step):
-        self.current_time += time_step
+    def simulate_time_step(self, inlet_temperature, mass_flow, time_step, first_pass, converged):
+        if first_pass:
+            self.current_time += time_step
 
-        if self.prev_mass_flow_rate != mass_flow:
-            self.time_of_prev_flow = self.time_of_curr_flow
-            self.time_of_curr_flow = self.current_time
+            if self.prev_mass_flow_rate != mass_flow:
+                self.time_of_prev_flow = self.time_of_curr_flow
+                self.time_of_curr_flow = self.current_time
 
-        if mass_flow == 0:
-            return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
+            if mass_flow == 0:
+                return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
 
-        if self.prev_mass_flow_rate != mass_flow:
-            self.my_bh.set_flow_rate(mass_flow / self.num_bh)
-            self.bh_resist = self.my_bh.resist_bh_ave
+            if self.prev_mass_flow_rate != mass_flow:
+                self.my_bh.set_flow_rate(mass_flow / self.num_bh)
+                self.bh_resist = self.my_bh.resist_bh_ave
+                flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
-            flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
+                if flow_change_frac > self.flow_change_fraction_limit:
+                    self.prev_flow_frac = self.flow_fraction
 
-            if flow_change_frac > self.flow_change_fraction_limit:
-                self.prev_flow_frac = self.flow_fraction
+                self.prev_mass_flow_rate = mass_flow
 
-            self.prev_mass_flow_rate = mass_flow
+            self.flow_fraction = self.calc_flow_fraction()
 
         ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
         fluid_cap = mass_flow * self.fluid.specific_heat
-        self.flow_fraction = self.calc_flow_fraction()
 
         prev_bin = self.load_aggregation.loads[0]
         delta_t_prev_bin = self.current_time - prev_bin.abs_time
@@ -132,11 +133,14 @@ class GFunction(SimulationEntryPoint):
 
         self.ave_fluid_temp = ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
-        inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
+        # inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
         outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
+
+        if not converged:
+            self.load_aggregation.loads.popleft()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
@@ -202,8 +206,7 @@ class GFunction(SimulationEntryPoint):
         t_sf = t_sf_num / t_sf_den + t_i_minus_1
 
         # soil resistance
-        resist_s = 1 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time) / (GAMMA * r_b ** 2))
-        resist_s1 = resist_s * 2
+        resist_s1 = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time) / (GAMMA * r_b ** 2))
 
         # Equation A.11
         n_a = l / (w * cf * resist_a)
@@ -212,7 +215,7 @@ class GFunction(SimulationEntryPoint):
         n_s1 = l / (w * cf * (resist_b1 + resist_s1))
 
         # Equation A.5
-        a_1 = (sqrt(4 * ((n_a + n_s1) **2 - n_a ** 2))) / 2
+        a_1 = (sqrt(4 * ((n_a + n_s1) ** 2 - n_a ** 2))) / 2
 
         # Equation A.6
         a_2 = -a_1

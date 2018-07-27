@@ -40,7 +40,7 @@ class Borehole(object):
         self.resist_bh_ave = None
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
-        self.resist_bh = None
+        self.resist_bh_effective = None
         self.theta_1 = self.shank_space / (2 * self.radius)
         self.theta_2 = self.radius / self.pipe.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
@@ -152,9 +152,9 @@ class Borehole(object):
         pt_2 = (self.depth / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
-        self.resist_bh = self.resist_bh_ave + resist_short_circuiting
+        self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
 
-        return self.resist_bh
+        return self.resist_bh_effective
 
     def update_beta(self, pipe_resist):
         self.beta = 2 * PI * self.grout.conductivity * pipe_resist
