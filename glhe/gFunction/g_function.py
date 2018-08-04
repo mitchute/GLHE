@@ -249,7 +249,7 @@ class GFunction(SimulationEntryPoint):
             _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr)) / log(t_sf / (0.02 * t_tr)) - 0.5)
             return _part_1 * (1 + _part_2) + f_old
         else:
-            return f_sf
+            return f_sf  # pragma: no cover
 
     def calc_history_temp_rise(self):
         length = len(self.load_aggregation.loads)
