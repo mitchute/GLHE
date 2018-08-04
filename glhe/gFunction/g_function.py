@@ -195,7 +195,7 @@ class GFunction(SimulationEntryPoint):
             tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004  # pragma: no cover
         elif 1.2 < phi <= 160:
             tdsf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
-        elif 160 < phi <= 2E5:
+        elif 160 < phi <= 2E5:  # pragma: no cover
             tdsf_over_cd = 12.506 * phi + 45.051  # pragma: no cover
         else:
             raise ValueError  # pragma: no cover
