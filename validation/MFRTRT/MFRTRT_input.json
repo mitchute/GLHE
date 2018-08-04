@@ -14,7 +14,7 @@
   "flow-profile": {
     "type": "external",
     "external": {
-      "path": "MFRTRT_loads.csv"
+      "path": "in.csv"
     }
   },
   "fluid": {
@@ -46,7 +46,7 @@
   "load-profile": {
     "type": "external",
     "external": {
-      "path": "MFRTRT_loads.csv"
+      "path": "in.csv"
     }
   },
   "pipe-definitions": [
@@ -62,7 +62,7 @@
   "simulation": {
     "name": "Basic GLHE",
     "time-step": 3600,
-    "runtime": 2678400,
+    "runtime": 698400,
     "initial-fluid-temperature": 20
   },
   "soil": {
