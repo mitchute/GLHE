@@ -192,13 +192,13 @@ class GFunction(SimulationEntryPoint):
 
         # Equations 11
         if 0.2 < psi <= 1.2:
-            tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004
+            tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004  # pragma: no cover
         elif 1.2 < phi <= 160:
             tdsf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
         elif 160 < phi <= 2E5:
-            tdsf_over_cd = 12.506 * phi + 45.051
+            tdsf_over_cd = 12.506 * phi + 45.051  # pragma: no cover
         else:
-            raise ValueError
+            raise ValueError  # pragma: no cover
 
         # Equation 12
         t_sf_num = tdsf_over_cd * cf * v_f
@@ -246,7 +246,7 @@ class GFunction(SimulationEntryPoint):
         # Equations 3b and 3c
         if 0.02 * t_tr <= t_i - t_i_minus_1 < t_sf:
             _part_1 = (f_sf - f_old) / 2
-            _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr) / log(t_sf / (0.02 * t_tr)) - 0.5))
+            _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr)) / log(t_sf / (0.02 * t_tr)) - 0.5)
             return _part_1 * (1 + _part_2) + f_old
         else:
             return f_sf
@@ -255,21 +255,18 @@ class GFunction(SimulationEntryPoint):
         length = len(self.load_aggregation.loads)
 
         temp_rise_sum = 0
-        try:
-            for i in range(length - 1):
-                # this occurred nearer to the current sim time
-                bin_i = self.load_aggregation.loads[i]
+        for i in range(length - 1):
+            # this occurred nearer to the current sim time
+            bin_i = self.load_aggregation.loads[i]
 
-                # this occurred farther from the current sim time
-                bin_i_minus_1 = self.load_aggregation.loads[i + 1]
+            # this occurred farther from the current sim time
+            bin_i_minus_1 = self.load_aggregation.loads[i + 1]
 
-                g_func_val = self.get_g_func(self.current_time - bin_i_minus_1.abs_time)
+            g_func_val = self.get_g_func(self.current_time - bin_i_minus_1.abs_time)
 
-                load_i = bin_i.get_load()
-                load_i_minus_1 = bin_i_minus_1.get_load()
+            load_i = bin_i.get_load()
+            load_i_minus_1 = bin_i_minus_1.get_load()
 
-                temp_rise_sum += (load_i - load_i_minus_1) * g_func_val * self.c_0
-        except IndexError:
-            pass
+            temp_rise_sum += (load_i - load_i_minus_1) * g_func_val * self.c_0
 
         return temp_rise_sum

@@ -12,7 +12,7 @@ from glhe.interface.response import TimeStepSimulationResponse
 class TestGFunction(unittest.TestCase):
 
     @staticmethod
-    def add_instance(file_number=0):
+    def add_instance(file_number=0, depth=100):
 
         temp_directory = tempfile.mkdtemp()
         temp_g_function_file = os.path.join(temp_directory, 'g_funcs.csv')
@@ -94,10 +94,14 @@ class TestGFunction(unittest.TestCase):
             }
         }
 
+        d['borehole-definitions'][0]['depth'] = depth
+
         temp_file = os.path.join(temp_directory, 'temp.json')
         write_json(temp_file, d)
         inputs = InputProcessor().process_input(temp_file)
-        return GFunction(inputs=inputs)
+        g = GFunction(inputs=inputs)
+        g.register_output_variables()
+        return g
 
     def test_class_inheritance(self):
         tst = self.add_instance()
@@ -132,8 +136,8 @@ class TestGFunction(unittest.TestCase):
 
         response = tst.simulate_time_step(inlet_temperature=25.0,
                                           mass_flow=0.2,
-                                          time_step=3600,
+                                          time_step=10,
                                           first_pass=True,
                                           converged=False)
-        self.assertAlmostEqual(response.outlet_temperature, 23.0, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1616, delta=1)
+        self.assertAlmostEqual(response.outlet_temperature, 20.0, delta=0.1)
+        self.assertAlmostEqual(response.heat_rate, 4184, delta=1)
