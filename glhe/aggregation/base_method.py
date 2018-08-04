@@ -9,5 +9,5 @@ class BaseMethod(ABC):
         self.loads = deque()
 
     @abstractmethod
-    def add_load(self, load):
+    def add_load(self, load, width, time):
         pass  # pragma: no cover

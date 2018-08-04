@@ -1,9 +1,9 @@
 class PropertiesBase(object):
 
-    def __init__(self, conductivity=0, density=0, specific_heat=0):
-        self.conductivity = conductivity
-        self.density = density
-        self.specific_heat = specific_heat
+    def __init__(self, inputs):
+        self.conductivity = inputs["conductivity"]
+        self.density = inputs["density"]
+        self.specific_heat = inputs["specific heat"]
         self.diffusivity = self._diffusivity()
 
     def _diffusivity(self):

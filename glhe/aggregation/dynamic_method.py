@@ -19,7 +19,7 @@ class DynamicMethod(BaseMethod):
                 for _ in range(width):
                     self.loads.append(BaseBin(width=pow(exp_rate, i)))
 
-    def add_load(self, load):
+    def add_load(self, load, width, time):
 
         for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
             left_bin = self.loads[i - 1]

@@ -28,7 +28,7 @@ class Fluid(object):
             self._type = FluidType.PROPYLENE_GLYCOL
             self._concentration = inputs["concentration"] / 100.0
         else:
-            raise ValueError("'{}' is not supported".format(self._fluid_name))
+            raise ValueError("'{}' fluid is not supported".format(self._fluid_name))
 
         self._min_temperature = -200
         self._max_temperature = 200
@@ -122,6 +122,7 @@ class Fluid(object):
     def _calc_property(self, property, temperature):
         """
         Worker function to call the CoolProp library
+
         :param property: Fluid property enum value
         :param temperature: Fluid temperature in Celsius
         :return: Property Value

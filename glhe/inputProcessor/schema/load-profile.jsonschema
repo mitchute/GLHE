@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string"
+    },
+    "fixed": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        }
+      }
+    },
+    "single-impulse": {
+      "type": "object",
+      "properties": {
+        "start-time": {
+          "type": "number"
+        },
+        "end-time": {
+          "type": "number"
+        },
+        "value": {
+          "type": "number"
+        }
+      }
+    },
+    "external": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "sinusoid": {
+      "type": "object",
+      "properties": {
+        "amplitude": {
+          "type": "number"
+        },
+        "offset": {
+          "type": "number"
+        },
+        "period": {
+          "type": "number"
+        }
+      }
+    },
+    "synthetic": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "amplitude": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

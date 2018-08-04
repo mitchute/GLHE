@@ -10,11 +10,9 @@ from glhe.properties.base import PropertiesBase
 class Pipe(PropertiesBase):
 
     def __init__(self, inputs, fluid):
-        PropertiesBase.__init__(self, conductivity=inputs["pipe"]["conductivity"],
-                                density=inputs["pipe"]["density"],
-                                specific_heat=inputs["pipe"]["specific heat"])
-        self.inner_diameter = inputs["pipe"]["inner diameter"]
-        self.outer_diameter = inputs["pipe"]["outer diameter"]
+        PropertiesBase.__init__(self, inputs=inputs)
+        self.inner_diameter = inputs["inner diameter"]
+        self.outer_diameter = inputs["outer diameter"]
         self.thickness = (self.outer_diameter - self.inner_diameter) / 2
         self.inner_radius = self.inner_diameter / 2
         self.outer_radius = self.outer_diameter / 2
@@ -82,6 +80,10 @@ class Pipe(PropertiesBase):
         else:
             nu = self._turbulent_nusselt(re)
         return 1 / (nu * PI * self._fluid.conductivity)
+
+    def set_resistance(self, pipe_resistance):
+        self.resist_pipe = pipe_resistance
+        return self.resist_pipe
 
     def calc_resistance(self, mass_flow_rate):
         """

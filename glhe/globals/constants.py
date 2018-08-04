@@ -11,3 +11,4 @@ SEC_IN_YEAR = SEC_IN_DAY * DAYS_IN_YEAR
 
 # Physical constants
 PI = pi
+GAMMA = 1.781072  # exp(Euler's constant)

@@ -9,13 +9,14 @@ class Path(object):
         # Get inputs from json blob
         self._name = inputs["name"]
 
-        # Keep reference to fluid instance for usage
+        # Keep reference to instance for usage
         self._fluid = fluid
+        self._soil = soil
 
         # Initialize boreholes
         self._boreholes = []
         for borehole in inputs["boreholes"]:
-            self._boreholes.append(Borehole(borehole, fluid=fluid, soil=soil))
+            self._boreholes.append(Borehole(borehole['borehole-data'], fluid=fluid, soil=soil))
 
         # Initialize other parameters
         self.mass_flow_rate = 0

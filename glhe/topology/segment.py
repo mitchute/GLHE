@@ -5,9 +5,9 @@ from glhe.topology.segment_types import SegmentType
 class Segment(object):
     _count = 0
 
-    def __init__(self, segment_type, fluid):
+    def __init__(self, model_type, fluid):
         # Initialize segment
-        if segment_type == "simple":
+        if model_type == "simple":
             self._type = SegmentType.SIMPLE
             self._model = BoreholeSimpleHX(None)
 

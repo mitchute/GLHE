@@ -1,0 +1,26 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "outer diameter": {
+        "type": "number"
+      },
+      "inner diameter": {
+        "type": "number"
+      },
+      "conductivity": {
+        "type": "number"
+      },
+      "density": {
+        "type": "number"
+      },
+      "specific heat": {
+        "type": "number"
+      }
+    }
+  }
+}

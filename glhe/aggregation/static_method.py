@@ -19,11 +19,11 @@ class StaticMethod(BaseMethod):
         else:
             self.bin_widths = bin_widths
 
-    def add_load(self, load):
-        self.loads.appendleft(StaticBin(energy=load, width=self.bin_widths[0]))
-        self.aggregate()
+    def add_load(self, load, width, time):
+        self.loads.appendleft(StaticBin(energy=load, width=self.bin_widths[0], abs_time=time))
+        self._aggregate()
 
-    def aggregate(self):
+    def _aggregate(self):
         """
         Aggregates the current aggregation
 

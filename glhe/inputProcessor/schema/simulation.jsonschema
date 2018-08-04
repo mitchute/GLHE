@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "time-step": {
+      "type": "number"
+    },
+    "runtime": {
+      "type": "number"
+    },
+    "initial-fluid-temperature": {
+      "type": "number"
+    }
+  }
+}

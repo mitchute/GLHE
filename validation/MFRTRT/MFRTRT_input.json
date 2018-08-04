@@ -1,0 +1,74 @@
+{
+  "borehole-definitions": [
+    {
+      "name": "borehole type 1",
+      "depth": 76.2,
+      "diameter": 0.114,
+      "grout-type": "standard grout",
+      "model": "simple",
+      "pipe-type": "32 mm SDR-11 HDPE",
+      "segments": 10,
+      "shank-spacing": 0.0469
+    }
+  ],
+  "flow-profile": {
+    "type": "external",
+    "external": {
+      "path": "MFRTRT_loads.csv"
+    }
+  },
+  "fluid": {
+    "type": "water",
+    "concentration": 100
+  },
+  "g-functions": {
+    "file": "MFRTRT_g_functions.csv",
+    "borehole-type": "borehole type 1",
+    "number of boreholes": 1
+  },
+  "ground-temperature": {
+    "type": "constant",
+    "constant": {
+      "temperature": 16.2
+    }
+  },
+  "grout-definitions": [
+    {
+      "name": "standard grout",
+      "conductivity": 0.85,
+      "density": 2500,
+      "specific heat": 1560
+    }
+  ],
+  "load-aggregation": {
+    "type": "none"
+  },
+  "load-profile": {
+    "type": "external",
+    "external": {
+      "path": "MFRTRT_loads.csv"
+    }
+  },
+  "pipe-definitions": [
+    {
+      "name": "32 mm SDR-11 HDPE",
+      "outer diameter": 0.0267,
+      "inner diameter": 0.0218,
+      "conductivity": 0.39,
+      "density": 950,
+      "specific heat": 1.623
+    }
+  ],
+  "simulation": {
+    "name": "Basic GLHE",
+    "time-step": 3600,
+    "runtime": 2678400,
+    "initial-fluid-temperature": 20
+  },
+  "soil": {
+    "name": "Some Rock",
+    "conductivity": 2.6,
+    "density": 2500,
+    "specific heat": 880
+  }
+}
