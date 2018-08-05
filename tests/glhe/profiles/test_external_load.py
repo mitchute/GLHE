@@ -1,6 +1,6 @@
 import os
-import unittest
 import tempfile
+import unittest
 
 from glhe.profiles.external_load import ExternalLoad
 
@@ -33,4 +33,3 @@ class TestExternal(unittest.TestCase):
         self.assertEqual(tst.get_value(1.5 * 3600), 2.5)
         self.assertEqual(tst.get_value(2.0 * 3600), 3.0)
         self.assertEqual(tst.get_value(3.0 * 3600), 4.0)
-
