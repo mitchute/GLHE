@@ -51,9 +51,7 @@ class RunGFunctions(object):
             self.register_output_variables()
             self.first_time = False
 
-        while self.sim_time <= self.run_time:
-            # advance in time through the GLHE
-            self.sim_time += self.time_step
+        while self.sim_time < self.run_time:
 
             # only print every so often
             if self.print_idx == 50:
@@ -95,6 +93,9 @@ class RunGFunctions(object):
 
             # update the output variables
             op.report_output()
+
+            # advance in time through the GLHE for the next time step
+            self.sim_time += self.time_step
 
         # dump the results to a file
         op.write_to_file('test.csv')

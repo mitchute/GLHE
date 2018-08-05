@@ -14,4 +14,3 @@ class TestExternal(unittest.TestCase):
         self.assertEqual(tst.get_value(0), 0)
         self.assertEqual(tst.get_value(10 * 3600), 1)
         self.assertEqual(tst.get_value(8759 * 3600), 0)
-        self.assertEqual(tst.get_value(8761 * 3600), 0)

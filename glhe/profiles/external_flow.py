@@ -14,9 +14,8 @@ class ExternalFlow(Base):
         delta_t.is_copy = False
         delta_t[0] = 0
         x_range = delta_t.cumsum().tolist()
-        self._max_time = x_range[-1]
         y_range = df.iloc[:, 1].tolist()
         self._interp_values = interp1d(x_range, y_range)
 
     def get_value(self, time):
-        return self._interp_values(time % self._max_time)
+        return self._interp_values(time)
