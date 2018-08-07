@@ -7,9 +7,9 @@ class TestNoAgg(unittest.TestCase):
 
     def test_init(self):
         tst = NoAggMethod()
-        self.assertEqual(len(tst.loads), 0)
+        self.assertEqual(len(tst.loads), 1)
 
     def test_add_load(self):
         tst = NoAggMethod()
-        tst.add_load(1, 1, 1)
+        tst.add_load(1, 1)
         self.assertEqual(tst.loads[0].energy, 1)

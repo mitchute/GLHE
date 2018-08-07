@@ -7,8 +7,13 @@ class NoAggMethod(BaseMethod):
     def __init__(self):
         BaseMethod.__init__(self)
         self.last_time = 0.0
+        self.add_load(0, 0)
 
     def add_load(self, load, time):
         width = time - self.last_time
         self.loads.appendleft(BaseBin(energy=load, width=width, abs_time=time))
         self.last_time = time
+
+    def reset_to_prev(self):
+        self.last_time -= self.loads[0].width
+        self.loads.popleft()

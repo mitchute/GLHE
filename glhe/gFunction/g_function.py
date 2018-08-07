@@ -33,7 +33,6 @@ class GFunction(SimulationEntryPoint):
 
         # init load aggregation method
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
-        self.load_aggregation.add_load(load=0, width=0, time=0)
 
         # response constant
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
@@ -131,7 +130,7 @@ class GFunction(SimulationEntryPoint):
 
         energy_normalized = self.load_normalized * time_step
 
-        self.load_aggregation.add_load(load=energy_normalized, width=time_step, time=self.current_time)
+        self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
 
         self.ave_fluid_temp = ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
@@ -142,7 +141,7 @@ class GFunction(SimulationEntryPoint):
         self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
 
         if not converged:
-            self.load_aggregation.loads.popleft()
+            self.load_aggregation.reset_to_prev()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
