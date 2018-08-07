@@ -16,7 +16,7 @@ class OutputProcessor(object):
         OutputProcessor.output_vars_data[key] = (inst, attr)
 
     def report_output(self, index=None):
-        if index == None:
+        if index is None:
             index = OutputProcessor.idx_count
 
         # adds another row to the output data dataframe
