@@ -63,7 +63,9 @@ class GFunction(SimulationEntryPoint):
         self.flow_change_fraction_limit = 0.1
 
     def register_output_variables(self):
-        op.register_output_variable(self, 'bh_resist', "Borehole Resistance [K/(W/m)]")
+        op.register_output_variable(self, 'bh_resist', "Local Borehole Resistance 'Rb' [K/(W/m)]")
+        op.register_output_variable(self.my_bh, 'resist_bh_total_internal',
+                                    "Total Internal Borehole Resistance 'Ra' [K/(W/m)]")
         op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")

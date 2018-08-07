@@ -2,6 +2,9 @@ import datetime
 import os
 import sys
 
+from numpy import array
+from scipy.optimize import minimize
+
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.functions import set_time_step
 from glhe.inputProcessor.processor import InputProcessor
@@ -22,6 +25,16 @@ class RunGFunctions(object):
         self.time_step = set_time_step(d['simulation']['time-step'])
         self.run_time = d['simulation']['runtime']
 
+        try:
+            self.output_file_path = d['simulation']['output path']
+        except KeyError:
+            self.output_file_path = os.getcwd()
+
+        try:
+            self.load_convergence_tolerance = d['simulation']['load convergence tolerance']
+        except KeyError:
+            self.load_convergence_tolerance = 0.1
+
         self.load_profile = make_load_profile(d['load-profile'])
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
@@ -36,7 +49,7 @@ class RunGFunctions(object):
         self.current_load = 0
         self.mass_flow_rate = 0
         self.print_idx = 0
-        self.first_time = True
+        self.init_output_vars = True
 
     def register_output_variables(self):
         op.register_output_variable(self, 'sim_time', "Simulation Time")
@@ -47,13 +60,11 @@ class RunGFunctions(object):
         op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
-        if self.first_time:
+        if self.init_output_vars:
             self.register_output_variables()
-            self.first_time = False
+            self.init_output_vars = False
 
-        while self.sim_time <= self.run_time:
-            # advance in time through the GLHE
-            self.sim_time += self.time_step
+        while self.sim_time < self.run_time:
 
             # only print every so often
             if self.print_idx == 50:
@@ -66,38 +77,56 @@ class RunGFunctions(object):
             self.current_load = self.load_profile.get_value(self.sim_time)
             self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
-            first_pass = True
-            converged = False
-            while not converged:
+            # update entering fluid temperature
+            mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+            cp = self.fluid.calc_specific_heat(mean_temp)
+            eft_num = self.current_load
+            eft_den = self.mass_flow_rate * cp
+            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
 
-                # check convergence
-                if abs(self.current_load - self.response.heat_rate) < 0.1:
-                    converged = True
+            # run manually to init the methods
+            self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                      self.mass_flow_rate,
+                                      self.time_step,
+                                      True,
+                                      False)
 
-                # update entering fluid temperature
-                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-                cp = self.fluid.calc_specific_heat(mean_temp)
-                eft_num = self.current_load
-                eft_den = self.mass_flow_rate * cp
-                self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+            # find result
+            res = minimize(self.wrapped_sim_time_step,
+                           x0=array([self.glhe_entering_fluid_temperature]),
+                           method='Nelder-Mead',
+                           options={'fatol': self.load_convergence_tolerance})
 
-                # compute glhe response
-                new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                         self.mass_flow_rate,
-                                                         self.time_step,
-                                                         first_pass,
-                                                         converged)
+            # set result
+            self.glhe_entering_fluid_temperature = res.x
 
-                self.response.heat_rate = new_response.heat_rate
-                self.response.outlet_temperature = new_response.outlet_temperature
+            # run manually one more time to lock down state
+            new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                     self.mass_flow_rate,
+                                                     self.time_step,
+                                                     False,
+                                                     True)
 
-                first_pass = False
+            self.response.heat_rate = new_response.heat_rate
+            self.response.outlet_temperature = new_response.outlet_temperature
 
             # update the output variables
             op.report_output()
 
+            # advance in time through the GLHE for the next time step
+            self.sim_time += self.time_step
+
         # dump the results to a file
-        op.write_to_file('test.csv')
+        op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+
+    def wrapped_sim_time_step(self, inlet_temp):
+        ret_response = self.g.simulate_time_step(inlet_temp,
+                                                 self.mass_flow_rate,
+                                                 self.time_step,
+                                                 False,
+                                                 False)
+
+        return abs(ret_response.heat_rate - self.current_load)
 
 
 if __name__ == '__main__':

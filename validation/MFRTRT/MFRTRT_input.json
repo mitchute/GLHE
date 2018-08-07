@@ -6,7 +6,7 @@
       "diameter": 0.114,
       "grout-type": "standard grout",
       "model": "simple",
-      "pipe-type": "32 mm SDR-11 HDPE",
+      "pipe-type": "25 mm SDR-11 HDPE",
       "segments": 10,
       "shank-spacing": 0.0469
     }
@@ -14,7 +14,7 @@
   "flow-profile": {
     "type": "external",
     "external": {
-      "path": "MFRTRT_loads.csv"
+      "path": "in.csv"
     }
   },
   "fluid": {
@@ -35,7 +35,7 @@
   "grout-definitions": [
     {
       "name": "standard grout",
-      "conductivity": 0.85,
+      "conductivity": 1.1,
       "density": 2500,
       "specific heat": 1560
     }
@@ -46,12 +46,12 @@
   "load-profile": {
     "type": "external",
     "external": {
-      "path": "MFRTRT_loads.csv"
+      "path": "in.csv"
     }
   },
   "pipe-definitions": [
     {
-      "name": "32 mm SDR-11 HDPE",
+      "name": "25 mm SDR-11 HDPE",
       "outer diameter": 0.0267,
       "inner diameter": 0.0218,
       "conductivity": 0.39,
@@ -62,12 +62,12 @@
   "simulation": {
     "name": "Basic GLHE",
     "time-step": 3600,
-    "runtime": 2678400,
+    "runtime": 698400,
     "initial-fluid-temperature": 20
   },
   "soil": {
     "name": "Some Rock",
-    "conductivity": 2.6,
+    "conductivity": 2.7,
     "density": 2500,
     "specific heat": 880
   }
