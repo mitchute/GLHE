@@ -36,7 +36,7 @@ class RunGFunctions(object):
         self.current_load = 0
         self.mass_flow_rate = 0
         self.print_idx = 0
-        self.first_time = True
+        self.init_output_vars = True
 
     def register_output_variables(self):
         op.register_output_variable(self, 'sim_time', "Simulation Time")
@@ -47,9 +47,9 @@ class RunGFunctions(object):
         op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
-        if self.first_time:
+        if self.init_output_vars:
             self.register_output_variables()
-            self.first_time = False
+            self.init_output_vars = False
 
         while self.sim_time < self.run_time:
 
