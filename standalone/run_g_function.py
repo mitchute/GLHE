@@ -63,7 +63,7 @@ class RunGFunctions(object):
             self.register_output_variables()
             self.init_output_vars = False
 
-        while self.sim_time <= self.run_time:
+        while self.sim_time < self.run_time:
 
             # only print every so often
             if self.print_idx == 50:

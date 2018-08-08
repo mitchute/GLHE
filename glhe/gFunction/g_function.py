@@ -52,6 +52,9 @@ class GFunction(SimulationEntryPoint):
 
         # other inits
         self.bh_resist = 0
+        self.soil_resist = 0
+        self.ground_temp = 0
+        self.bh_wall_temp = 0
         self.ave_fluid_temp = 0
         self.flow_fraction = 0
         self.load_normalized = 0
@@ -65,6 +68,7 @@ class GFunction(SimulationEntryPoint):
         op.register_output_variable(self, 'bh_resist', "Local Borehole Resistance 'Rb' [K/(W/m)]")
         op.register_output_variable(self.my_bh, 'resist_bh_total_internal',
                                     "Total Internal Borehole Resistance 'Ra' [K/(W/m)]")
+        op.register_output_variable(self, 'soil_resist', "Soil Resistance 'Rs' [K/(W/m)]")
         op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
@@ -106,9 +110,24 @@ class GFunction(SimulationEntryPoint):
 
                 self.prev_mass_flow_rate = mass_flow
 
+            # soil resistance
+            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
+            #                    / (GAMMA * r_b ** 2))
+            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time - t_i_minus_1)
+            #                    / (GAMMA * r_b ** 2))
+            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * self.current_time
+            #                    / (GAMMA * r_b ** 2))
+
+            try:
+                self.soil_resist = abs(self.ground_temp - self.bh_wall_temp) / self.load_normalized
+            except ZeroDivisionError:
+                _part_1 = 2 / (4 * PI * self.soil.conductivity)
+                _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
+                self.soil_resist = _part_1 * _part_2
+
             self.flow_fraction = self.calc_flow_fraction()
 
-        ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+        self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
         fluid_cap = mass_flow * self.fluid.specific_heat
 
         prev_bin = self.load_aggregation.loads[0]
@@ -122,7 +141,7 @@ class GFunction(SimulationEntryPoint):
 
         c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
-        load_num = ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
+        load_num = self.ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
         self.load_normalized = load_num / load_den
 
@@ -132,7 +151,9 @@ class GFunction(SimulationEntryPoint):
 
         self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
 
-        self.ave_fluid_temp = ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
+        self.ave_fluid_temp = self.ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
+
+        self.bh_wall_temp = self.ave_fluid_temp - self.load_normalized * self.bh_resist
 
         # inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
         outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
@@ -206,8 +227,7 @@ class GFunction(SimulationEntryPoint):
         t_sf_den = 2 * PI * l * k_s
         t_sf = t_sf_num / t_sf_den + t_i_minus_1
 
-        # soil resistance
-        resist_s1 = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time) / (GAMMA * r_b ** 2))
+        resist_s1 = self.soil_resist
 
         # Equation A.11
         n_a = l / (w * cf * resist_a)
