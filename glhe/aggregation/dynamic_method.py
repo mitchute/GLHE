@@ -30,4 +30,4 @@ class DynamicMethod(BaseMethod):
         self.loads[0].energy += load
 
     def reset_to_prev(self):
-        pass
+        pass  # pragma: no cover

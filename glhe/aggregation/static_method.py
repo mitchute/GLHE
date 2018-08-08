@@ -65,4 +65,4 @@ class StaticMethod(BaseMethod):
                 self.loads.append(j)
 
     def reset_to_prev(self):
-        pass
+        pass  # pragma: no cover
