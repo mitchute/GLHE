@@ -157,6 +157,7 @@ class GFunction(SimulationEntryPoint):
 
         self.ave_fluid_temp = self.ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
+        # need to protect this from going negative
         self.bh_wall_temp = self.ave_fluid_temp - self.load_normalized * self.bh_resist
 
         if self.current_time - self.time_of_prev_flow < 1.5 * self.transit_time:

@@ -7,14 +7,15 @@ class BaseMethod(ABC):
 
     def __init__(self):
         self.loads = deque()
+        self.last_time = 0
 
     @abstractmethod
     def add_load(self, load, time):
         pass  # pragma: no cover
 
-    @abstractmethod
     def reset_to_prev(self):
-        pass  # pragma: no cover
+        self.last_time -= self.loads[0].width
+        self.loads.popleft()
 
     def calc_delta_q(self, current_time):
         ret_vals = []

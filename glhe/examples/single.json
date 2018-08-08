@@ -44,7 +44,7 @@
     }
   ],
   "load-aggregation": {
-    "type": "none",
+    "type": "static",
     "dynamic": {
       "param 1": 1
     }
