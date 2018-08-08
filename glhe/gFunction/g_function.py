@@ -266,5 +266,4 @@ class GFunction(SimulationEntryPoint):
         elif len(delta_q[0]) == 3:
             pass
 
-
         return temp_rise_sum
