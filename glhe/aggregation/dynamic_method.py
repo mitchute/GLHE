@@ -31,6 +31,3 @@ class DynamicMethod(BaseMethod):
 
     def reset_to_prev(self):
         pass
-
-    def calc_delta_q(self, current_time):
-        pass
