@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
+from glhe.globals.functions import hanby
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -57,6 +58,7 @@ class GFunction(SimulationEntryPoint):
         self.bh_wall_temp = 0
         self.ave_fluid_temp = 0
         self.flow_fraction = 0
+        self.transit_time = 0
         self.load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
@@ -124,6 +126,8 @@ class GFunction(SimulationEntryPoint):
                 _part_1 = 2 / (4 * PI * self.soil.conductivity)
                 _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
                 self.soil_resist = _part_1 * _part_2
+                if self.soil_resist < 0:
+                    self.soil_resist = 0
 
             self.flow_fraction = self.calc_flow_fraction()
 
@@ -155,8 +159,13 @@ class GFunction(SimulationEntryPoint):
 
         self.bh_wall_temp = self.ave_fluid_temp - self.load_normalized * self.bh_resist
 
-        # inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
-        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+        if self.current_time - self.time_of_prev_flow < 1.5 * self.transit_time:
+            delta_t = self.current_time - self.time_of_prev_flow
+            f_hanby = hanby(delta_t, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
+        else:
+            f_hanby = 1
+
+        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap * f_hanby
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
@@ -189,6 +198,7 @@ class GFunction(SimulationEntryPoint):
 
         # Transit time
         t_tr = v_f / w
+        self.transit_time = t_tr
 
         # Equation 3a
         if t_i - t_i_minus_1 <= 0.02 * t_tr:

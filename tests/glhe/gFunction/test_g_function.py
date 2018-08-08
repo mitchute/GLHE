@@ -140,4 +140,4 @@ class TestGFunction(unittest.TestCase):
                                           first_pass=True,
                                           converged=False)
         self.assertAlmostEqual(response.outlet_temperature, 22.7, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1867, delta=1)
+        self.assertAlmostEqual(response.heat_rate, 1860, delta=1)
