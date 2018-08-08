@@ -28,3 +28,9 @@ class DynamicMethod(BaseMethod):
             left_bin.energy -= delta
 
         self.loads[0].energy += load
+
+    def reset_to_prev(self):
+        pass
+
+    def calc_delta_q(self, current_time):
+        pass

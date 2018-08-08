@@ -63,3 +63,9 @@ class StaticMethod(BaseMethod):
         for i, bin_width in enumerate(d):
             for j in d[bin_width]:
                 self.loads.append(j)
+
+    def reset_to_prev(self):
+        pass
+
+    def calc_delta_q(self, current_time):
+        pass

@@ -253,21 +253,18 @@ class GFunction(SimulationEntryPoint):
             return f_sf  # pragma: no cover
 
     def calc_history_temp_rise(self):
-        length = len(self.load_aggregation.loads)
-
         temp_rise_sum = 0
-        for i in range(length - 1):
-            # this occurred nearer to the current sim time
-            bin_i = self.load_aggregation.loads[i]
 
-            # this occurred farther from the current sim time
-            bin_i_minus_1 = self.load_aggregation.loads[i + 1]
+        delta_q = self.load_aggregation.calc_delta_q(self.current_time)
 
-            g_func_val = self.get_g_func(self.current_time - bin_i_minus_1.abs_time)
+        if len(delta_q[0]) == 2:
 
-            load_i = bin_i.get_load()
-            load_i_minus_1 = bin_i_minus_1.get_load()
+            # calculate new g-function values
+            for t in delta_q:
+                temp_rise_sum += t.delta_q * self.get_g_func(t.delta_t) * self.c_0
 
-            temp_rise_sum += (load_i - load_i_minus_1) * g_func_val * self.c_0
+        elif len(delta_q[0]) == 3:
+            pass
+
 
         return temp_rise_sum
