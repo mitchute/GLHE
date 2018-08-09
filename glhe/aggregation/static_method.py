@@ -17,12 +17,12 @@ class StaticMethod(BaseMethod):
         else:
             try:
                 self.min_bin_nums = inputs['min number bins']
-            except KeyError:
-                raise KeyError("Key: 'min number bins' not found")
+            except KeyError:  # pragma: no cover
+                raise KeyError("Key: 'min number bins' not found")  # pragma: no cover
             try:
                 self.bin_widths = inputs['bin widths in hours']
-            except KeyError:
-                raise KeyError("Key: 'bin widths in hours' not found")
+            except KeyError:  # pragma: no cover
+                raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
 
         self.bin_widths = array(self.bin_widths) * 3600
 
@@ -47,9 +47,7 @@ class StaticMethod(BaseMethod):
         # aggregate within each sub-list, except the last one, which is allowed to grow as needed
         for i, width in enumerate(self.bin_widths[:-1]):
             len_bin = len(d[width])
-            if self.bin_widths[i] == 0:
-                pass
-            elif len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
+            if len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
                 # nothing to do here
                 pass
             else:

@@ -16,31 +16,31 @@ class DynamicMethod(BaseMethod):
         if inputs is not None:
             try:
                 depth = inputs['depth']
-            except KeyError:
-                pass
+            except KeyError:  # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 exp_rate = inputs['expansion rate']
-            except KeyError:
-                pass
+            except KeyError:  # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 width = inputs['width']
-            except KeyError:
-                pass
+            except KeyError:  # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 start_width = inputs['start width']
-            except KeyError:
-                pass
+            except KeyError:  # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 end_width = inputs['end width']
-            except KeyError:
-                pass
+            except KeyError:  # pragma: no cover
+                pass  # pragma: no cover
 
         if (start_width is None and end_width is not None) or (start_width is not None and end_width is None):
-            raise ValueError("key 'start width' or key 'end width' is not valid.")
+            raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
         elif start_width is None and end_width is None:
             # for cases when a constant bin width is specified
             for i in range(depth):

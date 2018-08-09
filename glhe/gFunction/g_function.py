@@ -187,7 +187,7 @@ class GFunction(SimulationEntryPoint):
 
         # Equation 3a
         if t_i - t_i_minus_1 <= 0.02 * t_tr:
-            return self.prev_flow_frac
+            return self.prev_flow_frac  # pragma: no cover
 
         # total internal borehole resistance
         resist_a = self.my_bh.calc_bh_total_internal_resistance()
