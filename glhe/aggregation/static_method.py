@@ -12,8 +12,8 @@ class StaticMethod(BaseMethod):
         BaseMethod.__init__(self)
 
         if inputs is None:
-            self.min_bin_nums = [1, 24, 10, 20, 40]
-            self.bin_widths = [0, 24, 96, 384, 1536]
+            self.min_bin_nums = [24, 10, 20, 40]
+            self.bin_widths = [24, 96, 384, 1536]
         else:
             try:
                 self.min_bin_nums = inputs['min number bins']
@@ -25,8 +25,6 @@ class StaticMethod(BaseMethod):
                 raise KeyError("Key: 'bin widths in hours' not found")
 
         self.bin_widths = array(self.bin_widths) * 3600
-
-        self.add_load(0, 0)
 
     def add_load(self, load, time):
         this_width = time - self.last_time

@@ -71,10 +71,7 @@ class TestGFunction(unittest.TestCase):
                 }
             ],
             "load-aggregation": {
-                "type": "none",
-                "dynamic": {
-                    "param 1": 1
-                }
+                "type": "none"
             },
             "pipe-definitions": [
                 {

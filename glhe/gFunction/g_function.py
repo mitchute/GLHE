@@ -112,29 +112,13 @@ class GFunction(SimulationEntryPoint):
 
                 self.prev_mass_flow_rate = mass_flow
 
-            # soil resistance
-            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
-            #                    / (GAMMA * r_b ** 2))
-            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time - t_i_minus_1)
-            #                    / (GAMMA * r_b ** 2))
-            # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * self.current_time
-            #                    / (GAMMA * r_b ** 2))
-
-            try:
-                self.soil_resist = abs(self.ground_temp - self.bh_wall_temp) / self.load_normalized
-            except ZeroDivisionError:
-                _part_1 = 2 / (4 * PI * self.soil.conductivity)
-                _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
-                self.soil_resist = _part_1 * _part_2
-                if self.soil_resist < 0:
-                    self.soil_resist = 0
-
+            self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
 
         self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
         fluid_cap = mass_flow * self.fluid.specific_heat
 
-        prev_bin = self.load_aggregation.loads[0]
+        prev_bin = self.load_aggregation.get_most_recent_bin()
         delta_t_prev_bin = self.current_time - prev_bin.abs_time
         q_prev_bin = prev_bin.get_load()
         g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
@@ -289,12 +273,28 @@ class GFunction(SimulationEntryPoint):
         delta_q = self.load_aggregation.calc_delta_q(self.current_time)
 
         if len(delta_q[0]) == 2:
-
             # calculate new g-function values
             for t in delta_q:
                 temp_rise_sum += t.delta_q * self.get_g_func(t.delta_t) * self.c_0
 
-        elif len(delta_q[0]) == 3:
-            pass
-
         return temp_rise_sum
+
+    def calc_soil_resist(self):
+        # soil resistance
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
+        #                    / (GAMMA * r_b ** 2))
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time - t_i_minus_1)
+        #                    / (GAMMA * r_b ** 2))
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * self.current_time
+        #                    / (GAMMA * r_b ** 2))
+
+        try:
+            self.soil_resist = abs(self.ground_temp - self.bh_wall_temp) / self.load_normalized
+        except ZeroDivisionError:
+            _part_1 = 2 / (4 * PI * self.soil.conductivity)
+            _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
+            self.soil_resist = _part_1 * _part_2
+            if self.soil_resist < 0:
+                self.soil_resist = 0
+
+        return self.soil_resist

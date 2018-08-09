@@ -21,7 +21,7 @@ def load_agg_factory(inputs):
         try:
             return DynamicMethod(inputs['dynamic'])
         except KeyError:
-            return StaticMethod()
+            return DynamicMethod()
     elif load_agg_type == 'none':
         return NoAggMethod()
     else:

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-
 from collections import deque, namedtuple
+
+from glhe.aggregation.base_bin import BaseBin
 
 
 class BaseMethod(ABC):
@@ -13,6 +14,12 @@ class BaseMethod(ABC):
     def add_load(self, load, time):
         pass  # pragma: no cover
 
+    def get_most_recent_bin(self):
+        if len(self.loads) == 0:
+            return BaseBin(0, 0, 0)
+        else:
+            return self.loads[0]
+
     def reset_to_prev(self):
         self.last_time -= self.loads[0].width
         self.loads.popleft()
@@ -22,20 +29,18 @@ class BaseMethod(ABC):
 
         LoadHistory = namedtuple('LoadHistory', ['delta_q', 'delta_t'])
 
-        if len(self.loads) < 2:
-            bin = self.loads[0]
-            ret_vals.append(LoadHistory(bin.get_load(), current_time))
-            return ret_vals
+        for i, bin_i in enumerate(self.loads):
 
-        for i in range(len(self.loads) - 1):
-            bin_i = self.loads[i]
+            if bin_i == self.loads[-1]:
+                ret_vals.append(LoadHistory(bin_i.get_load(), current_time))
+            else:
+                # this occurred farther from the current sim time
+                bin_i_minus_1 = self.loads[i + 1]
+                load_i = bin_i.get_load()
+                load_i_minus_1 = bin_i_minus_1.get_load()
+                ret_vals.append(LoadHistory(load_i - load_i_minus_1, current_time - bin_i_minus_1.abs_time))
 
-            # this occurred farther from the current sim time
-            bin_i_minus_1 = self.loads[i + 1]
-
-            load_i = bin_i.get_load()
-            load_i_minus_1 = bin_i_minus_1.get_load()
-
-            ret_vals.append(LoadHistory(load_i - load_i_minus_1, current_time - bin_i_minus_1.abs_time))
+        if len(ret_vals) == 0:
+            ret_vals.append(LoadHistory(0, current_time))
 
         return ret_vals

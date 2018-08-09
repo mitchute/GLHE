@@ -7,7 +7,7 @@ class TestNoAgg(unittest.TestCase):
 
     def test_init(self):
         tst = NoAggMethod()
-        self.assertEqual(len(tst.loads), 1)
+        self.assertEqual(len(tst.loads), 0)
 
     def test_add_load(self):
         tst = NoAggMethod()

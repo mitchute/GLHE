@@ -6,7 +6,6 @@ class NoAggMethod(BaseMethod):
 
     def __init__(self):
         BaseMethod.__init__(self)
-        self.add_load(0, 0)
 
     def add_load(self, load, time):
         width = time - self.last_time

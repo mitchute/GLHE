@@ -4,10 +4,44 @@ from glhe.aggregation.base_method import BaseMethod
 
 class DynamicMethod(BaseMethod):
 
-    def __init__(self, depth=16, exp_rate=2, width=5, start_width=None, end_width=None):
+    def __init__(self, inputs=None):
         BaseMethod.__init__(self)
 
-        if start_width is None and end_width is None:
+        depth = 16
+        exp_rate = 2
+        width = 5
+        start_width = None
+        end_width = None
+
+        if inputs is not None:
+            try:
+                depth = inputs['depth']
+            except KeyError:
+                pass
+
+            try:
+                exp_rate = inputs['expansion rate']
+            except KeyError:
+                pass
+
+            try:
+                width = inputs['width']
+            except KeyError:
+                pass
+
+            try:
+                start_width = inputs['start width']
+            except KeyError:
+                pass
+
+            try:
+                end_width = inputs['end width']
+            except KeyError:
+                pass
+
+        if (start_width is None and end_width is not None) or (start_width is not None and end_width is None):
+            raise ValueError("key 'start width' or key 'end width' is not valid.")
+        elif start_width is None and end_width is None:
             # for cases when a constant bin width is specified
             for i in range(depth):
                 for _ in range(width):
