@@ -28,8 +28,8 @@ class StaticMethod(BaseMethod):
                 raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
             try:
                 self.min_sub_hour_bins = inputs['min sub-hour bins']
-            except KeyError:
-                raise KeyError("Key: 'min sub-hour bins' not found")
+            except KeyError:  # pragma: no cover
+                raise KeyError("Key: 'min sub-hour bins' not found")  # pragma: no cover
 
         self.bin_widths = array(self.bin_widths) * SEC_IN_HOUR
         self.bin_widths = self.bin_widths.tolist()
