@@ -1,4 +1,5 @@
 import os
+import sys
 
 from jsonschema import validate
 
@@ -17,6 +18,10 @@ class InputProcessor(object):
         :param input_file_path: input file path
         :return: expanded input file
         """
+
+        # check if file exists
+        if not os.path.exists(input_file_path):
+            raise FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))
 
         # load the input file
         d = load_json(input_file_path)

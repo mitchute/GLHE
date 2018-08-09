@@ -5,6 +5,7 @@ import sys
 from scipy.optimize import minimize
 
 from glhe.gFunction.g_function import GFunction
+from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
@@ -59,64 +60,67 @@ class RunGFunctions(object):
         op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
-        if self.init_output_vars:
-            self.register_output_variables()
-            self.init_output_vars = False
+        try:
+            if self.init_output_vars:
+                self.register_output_variables()
+                self.init_output_vars = False
 
-        while self.sim_time < self.run_time:
+            while self.sim_time < self.run_time:
 
-            # only print every so often
-            if self.print_idx == 50:
-                print("Sim Time: {}".format(self.sim_time))
-                self.print_idx = 0
-            else:
-                self.print_idx += 1
+                # only print every so often
+                if self.print_idx == 50:
+                    print("Sim Time: {}".format(self.sim_time))
+                    self.print_idx = 0
+                else:
+                    self.print_idx += 1
 
-            # set current plant status
-            self.current_load = self.load_profile.get_value(self.sim_time)
-            self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
+                # set current plant status
+                self.current_load = self.load_profile.get_value(self.sim_time)
+                self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
-            # update entering fluid temperature
-            mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-            cp = self.fluid.calc_specific_heat(mean_temp)
-            eft_num = self.current_load
-            eft_den = self.mass_flow_rate * cp
-            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+                # update entering fluid temperature
+                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+                cp = self.fluid.calc_specific_heat(mean_temp)
+                eft_num = self.current_load
+                eft_den = self.mass_flow_rate * cp
+                self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
 
-            # run manually to init the methods
-            self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                      self.mass_flow_rate,
-                                      self.time_step,
-                                      True,
-                                      False)
+                # run manually to init the methods
+                self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                          self.mass_flow_rate,
+                                          self.time_step,
+                                          True,
+                                          False)
 
-            # find result
-            res = minimize(self.wrapped_sim_time_step,
-                           x0=self.glhe_entering_fluid_temperature,
-                           method='Nelder-Mead',
-                           options={'fatol': self.load_convergence_tolerance})
+                # find result
+                res = minimize(self.wrapped_sim_time_step,
+                               x0=self.glhe_entering_fluid_temperature,
+                               method='Nelder-Mead',
+                               options={'fatol': self.load_convergence_tolerance})
 
-            # set result
-            self.glhe_entering_fluid_temperature = res.x
+                # set result
+                self.glhe_entering_fluid_temperature = res.x
 
-            # run manually one more time to lock down state
-            new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                     self.mass_flow_rate,
-                                                     self.time_step,
-                                                     False,
-                                                     True)
+                # run manually one more time to lock down state
+                new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                         self.mass_flow_rate,
+                                                         self.time_step,
+                                                         False,
+                                                         True)
 
-            self.response.heat_rate = new_response.heat_rate
-            self.response.outlet_temperature = new_response.outlet_temperature
+                self.response.heat_rate = new_response.heat_rate
+                self.response.outlet_temperature = new_response.outlet_temperature
 
-            # update the output variables
-            op.report_output()
+                # update the output variables
+                op.report_output()
 
-            # advance in time through the GLHE for the next time step
-            self.sim_time += self.time_step
+                # advance in time through the GLHE for the next time step
+                self.sim_time += self.time_step
 
-        # dump the results to a file
-        op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+            # dump the results to a file
+            op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+        except SimulationError:  # pragma: no cover
+            raise SimulationError('Program failed')  # pragma: no cover
 
     def wrapped_sim_time_step(self, inlet_temp):
         ret_response = self.g.simulate_time_step(inlet_temp,
@@ -131,8 +135,5 @@ class RunGFunctions(object):
 if __name__ == '__main__':
     print(sys.argv)
     start = datetime.datetime.now()
-    if os.path.exists(sys.argv[1]):
-        RunGFunctions(sys.argv[1]).simulate()
-    else:
-        FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))
+    RunGFunctions(sys.argv[1]).simulate()
     print('Final runtime: {}'.format(datetime.datetime.now() - start))
