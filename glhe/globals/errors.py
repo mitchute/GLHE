@@ -1,2 +1,2 @@
-class SimulationError(Exception):
-    pass
+class SimulationError(Exception):  # pragma: no cover
+    pass  # pragma: no cover
