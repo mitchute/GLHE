@@ -41,7 +41,12 @@
     }
   ],
   "load-aggregation": {
-    "type": "none"
+    "type": "static",
+    "static": {
+      "min sub-hour bins": 60,
+      "bin widths in hours": [1, 2, 4, 8],
+      "min number bins": [5, 5, 5, 5]
+    }
   },
   "load-profile": {
     "type": "external",
@@ -61,7 +66,7 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "time-step": 60,
+    "time-steps per hour": 60,
     "runtime": 36000,
     "initial-fluid-temperature": 20
   },

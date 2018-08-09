@@ -18,12 +18,17 @@ from glhe.properties.fluid import Fluid
 
 class RunGFunctions(object):
     def __init__(self, input_file):
+
         # get input from file
         d = InputProcessor().process_input(input_file)
+
+        # set the global level time-step
+        gv.time_step = set_time_step(d['simulation']['time-steps per hour'])
+
+        # init the g-function object and resister the output variables after init
         self.g = GFunction(d)
         self.g.register_output_variables()
 
-        gv.time_step = set_time_step(d['simulation']['time-step'])
         self.run_time = d['simulation']['runtime']
 
         try:
@@ -61,6 +66,8 @@ class RunGFunctions(object):
         op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
+        start_time = datetime.datetime.now()
+
         try:
             if self.init_output_vars:
                 self.register_output_variables()
@@ -118,6 +125,7 @@ class RunGFunctions(object):
 
             # dump the results to a file
             op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+            print('Final runtime: {}'.format(datetime.datetime.now() - start_time))
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover
 
@@ -131,7 +139,4 @@ class RunGFunctions(object):
 
 
 if __name__ == '__main__':
-    print(sys.argv)
-    start = datetime.datetime.now()
     RunGFunctions(sys.argv[1]).simulate()
-    print('Final runtime: {}'.format(datetime.datetime.now() - start))

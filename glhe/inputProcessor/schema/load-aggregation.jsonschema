@@ -4,11 +4,23 @@
     "type": {
       "type": "string"
     },
-    "dynamic": {
+    "static": {
       "type": "object",
       "properties": {
-        "param 1": {
+        "min sub-hour bins": {
           "type": "number"
+        },
+        "bin widths in hours": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "min number bins": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
         }
       }
     }
