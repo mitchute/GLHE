@@ -2,7 +2,6 @@ import datetime
 import os
 import sys
 
-from numpy import array
 from scipy.optimize import minimize
 
 from glhe.gFunction.g_function import GFunction
@@ -93,7 +92,7 @@ class RunGFunctions(object):
 
             # find result
             res = minimize(self.wrapped_sim_time_step,
-                           x0=array([self.glhe_entering_fluid_temperature]),
+                           x0=self.glhe_entering_fluid_temperature,
                            method='Nelder-Mead',
                            options={'fatol': self.load_convergence_tolerance})
 

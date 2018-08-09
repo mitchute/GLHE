@@ -9,13 +9,14 @@ class TestDynamic(unittest.TestCase):
         tst = DynamicMethod()
         self.assertEqual(len(tst.loads), 80)
 
-        tst = DynamicMethod(depth=10, start_width=10, end_width=1)
+        d = {'depth': 10, 'start width': 10, 'end width': 1}
+        tst = DynamicMethod(d)
         self.assertEqual(len(tst.loads), 55)
 
     def test_add_load(self):
         tst = DynamicMethod()
-        tst.add_load(1, 1, 1)
+        tst.add_load(1, 1)
         self.assertEqual(tst.loads[0].energy, 1)
-        tst.add_load(0, 1, 1)
+        tst.add_load(0, 1)
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)

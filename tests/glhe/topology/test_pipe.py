@@ -81,16 +81,6 @@ class TestPipe(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_resistance(0.07), 0.11500, delta=tolerance)
         self.assertAlmostEqual(tst.calc_resistance(2), 0.08948, delta=tolerance)
 
-    def test_hanby(self):
-        tst = self.add_instance()
-        tolerance = 0.00001
-        self.assertAlmostEqual(tst.hanby(0, 1, 1), 0, delta=tolerance)
-        self.assertAlmostEqual(tst.hanby(0.3, 1, 1), 0, delta=tolerance)
-        self.assertAlmostEqual(tst.hanby(0.5, 1, 1), 0.00345, delta=tolerance)
-        self.assertAlmostEqual(tst.hanby(0.8, 1, 1), 0.18775, delta=tolerance)
-        self.assertAlmostEqual(tst.hanby(1, 1, 1), 0.52974, delta=tolerance)
-        self.assertAlmostEqual(tst.hanby(1.5, 1, 1), 0.97812, delta=tolerance)
-
     def test_set_resistance(self):
         tst = self.add_instance()
         tst.set_resistance(1)

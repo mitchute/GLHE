@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
+from glhe.globals.functions import hanby
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -33,7 +34,6 @@ class GFunction(SimulationEntryPoint):
 
         # init load aggregation method
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
-        self.load_aggregation.add_load(load=0, width=0, time=0)
 
         # response constant
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
@@ -53,8 +53,12 @@ class GFunction(SimulationEntryPoint):
 
         # other inits
         self.bh_resist = 0
+        self.soil_resist = 0
+        self.ground_temp = 0
+        self.bh_wall_temp = 0
         self.ave_fluid_temp = 0
         self.flow_fraction = 0
+        self.transit_time = 0
         self.load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
@@ -66,6 +70,7 @@ class GFunction(SimulationEntryPoint):
         op.register_output_variable(self, 'bh_resist', "Local Borehole Resistance 'Rb' [K/(W/m)]")
         op.register_output_variable(self.my_bh, 'resist_bh_total_internal',
                                     "Total Internal Borehole Resistance 'Ra' [K/(W/m)]")
+        op.register_output_variable(self, 'soil_resist', "Soil Resistance 'Rs' [K/(W/m)]")
         op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
@@ -107,12 +112,13 @@ class GFunction(SimulationEntryPoint):
 
                 self.prev_mass_flow_rate = mass_flow
 
+            self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
 
-        ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+        self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
         fluid_cap = mass_flow * self.fluid.specific_heat
 
-        prev_bin = self.load_aggregation.loads[0]
+        prev_bin = self.load_aggregation.get_most_recent_bin()
         delta_t_prev_bin = self.current_time - prev_bin.abs_time
         q_prev_bin = prev_bin.get_load()
         g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
@@ -123,7 +129,7 @@ class GFunction(SimulationEntryPoint):
 
         c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
 
-        load_num = ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
+        load_num = self.ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
         self.load_normalized = load_num / load_den
 
@@ -131,18 +137,26 @@ class GFunction(SimulationEntryPoint):
 
         energy_normalized = self.load_normalized * time_step
 
-        self.load_aggregation.add_load(load=energy_normalized, width=time_step, time=self.current_time)
+        self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
 
-        self.ave_fluid_temp = ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
+        self.ave_fluid_temp = self.ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
 
-        # inlet_temperature_updated = self.ave_fluid_temp + (1 - self.flow_fraction) * total_load / fluid_cap
-        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+        # need to protect this from going negative
+        self.bh_wall_temp = self.ave_fluid_temp - self.load_normalized * self.bh_resist
+
+        if self.current_time - self.time_of_prev_flow < 1.5 * self.transit_time:
+            delta_t = self.current_time - self.time_of_prev_flow
+            f_hanby = hanby(delta_t, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
+        else:
+            f_hanby = 1
+
+        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap * f_hanby
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
 
         if not converged:
-            self.load_aggregation.loads.popleft()
+            self.load_aggregation.reset_to_prev()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 
@@ -169,10 +183,11 @@ class GFunction(SimulationEntryPoint):
 
         # Transit time
         t_tr = v_f / w
+        self.transit_time = t_tr
 
         # Equation 3a
         if t_i - t_i_minus_1 <= 0.02 * t_tr:
-            return self.prev_flow_frac
+            return self.prev_flow_frac  # pragma: no cover
 
         # total internal borehole resistance
         resist_a = self.my_bh.calc_bh_total_internal_resistance()
@@ -207,8 +222,7 @@ class GFunction(SimulationEntryPoint):
         t_sf_den = 2 * PI * l * k_s
         t_sf = t_sf_num / t_sf_den + t_i_minus_1
 
-        # soil resistance
-        resist_s1 = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time) / (GAMMA * r_b ** 2))
+        resist_s1 = self.soil_resist
 
         # Equation A.11
         n_a = l / (w * cf * resist_a)
@@ -254,21 +268,33 @@ class GFunction(SimulationEntryPoint):
             return f_sf  # pragma: no cover
 
     def calc_history_temp_rise(self):
-        length = len(self.load_aggregation.loads)
-
         temp_rise_sum = 0
-        for i in range(length - 1):
-            # this occurred nearer to the current sim time
-            bin_i = self.load_aggregation.loads[i]
 
-            # this occurred farther from the current sim time
-            bin_i_minus_1 = self.load_aggregation.loads[i + 1]
+        delta_q = self.load_aggregation.calc_delta_q(self.current_time)
 
-            g_func_val = self.get_g_func(self.current_time - bin_i_minus_1.abs_time)
-
-            load_i = bin_i.get_load()
-            load_i_minus_1 = bin_i_minus_1.get_load()
-
-            temp_rise_sum += (load_i - load_i_minus_1) * g_func_val * self.c_0
+        if len(delta_q[0]) == 2:
+            # calculate new g-function values
+            for t in delta_q:
+                temp_rise_sum += t.delta_q * self.get_g_func(t.delta_t) * self.c_0
 
         return temp_rise_sum
+
+    def calc_soil_resist(self):
+        # soil resistance
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
+        #                    / (GAMMA * r_b ** 2))
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time - t_i_minus_1)
+        #                    / (GAMMA * r_b ** 2))
+        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * self.current_time
+        #                    / (GAMMA * r_b ** 2))
+
+        try:
+            self.soil_resist = abs(self.ground_temp - self.bh_wall_temp) / self.load_normalized
+        except ZeroDivisionError:
+            _part_1 = 2 / (4 * PI * self.soil.conductivity)
+            _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
+            self.soil_resist = _part_1 * _part_2
+            if self.soil_resist < 0:
+                self.soil_resist = 0
+
+        return self.soil_resist

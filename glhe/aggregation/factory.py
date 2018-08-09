@@ -13,9 +13,15 @@ def load_agg_factory(inputs):
 
     load_agg_type = inputs['type']
     if load_agg_type == 'static':
-        return StaticMethod()
+        try:
+            return StaticMethod(inputs['static'])
+        except KeyError:
+            return StaticMethod()
     elif load_agg_type == 'dynamic':
-        return DynamicMethod()
+        try:
+            return DynamicMethod(inputs['dynamic'])
+        except KeyError:
+            return DynamicMethod()
     elif load_agg_type == 'none':
         return NoAggMethod()
     else:

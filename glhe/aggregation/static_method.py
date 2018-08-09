@@ -1,27 +1,36 @@
 from collections import defaultdict, deque
 
+from numpy import array
+
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
 
 
 class StaticMethod(BaseMethod):
 
-    def __init__(self, min_bin_nums=None, bin_widths=None):
+    def __init__(self, inputs=None):
         BaseMethod.__init__(self)
 
-        if min_bin_nums is None:
+        if inputs is None:
             self.min_bin_nums = [24, 10, 20, 40]
+            self.bin_widths = [24, 96, 384, 1536]
         else:
-            self.min_bin_nums = min_bin_nums
+            try:
+                self.min_bin_nums = inputs['min number bins']
+            except KeyError:  # pragma: no cover
+                raise KeyError("Key: 'min number bins' not found")  # pragma: no cover
+            try:
+                self.bin_widths = inputs['bin widths in hours']
+            except KeyError:  # pragma: no cover
+                raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
 
-        if bin_widths is None:
-            self.bin_widths = [1, 24, 96, 384, 1536]
-        else:
-            self.bin_widths = bin_widths
+        self.bin_widths = array(self.bin_widths) * 3600
 
-    def add_load(self, load, width, time):
-        self.loads.appendleft(StaticBin(energy=load, width=self.bin_widths[0], abs_time=time))
+    def add_load(self, load, time):
+        this_width = time - self.last_time
+        self.loads.appendleft(StaticBin(energy=load, width=this_width, abs_time=time))
         self._aggregate()
+        self.last_time = time
 
     def _aggregate(self):
         """

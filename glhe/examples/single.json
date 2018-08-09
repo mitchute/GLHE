@@ -44,10 +44,7 @@
     }
   ],
   "load-aggregation": {
-    "type": "none",
-    "dynamic": {
-      "param 1": 1
-    }
+    "type": "static"
   },
   "load-profile": {
     "type": "fixed",

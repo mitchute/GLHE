@@ -2,6 +2,7 @@ import os
 import tempfile
 import unittest
 
+from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
@@ -48,3 +49,12 @@ class TestFunctions(unittest.TestCase):
         write_json(temp_file, d)
         loaded = load_json(temp_file)
         self.assertEqual(d, loaded)
+
+    def test_hanby(self):
+        tolerance = 0.00001
+        self.assertAlmostEqual(hanby(0, 1, 1), 0, delta=tolerance)
+        self.assertAlmostEqual(hanby(0.3, 1, 1), 0, delta=tolerance)
+        self.assertAlmostEqual(hanby(0.5, 1, 1), 0.00345, delta=tolerance)
+        self.assertAlmostEqual(hanby(0.8, 1, 1), 0.18775, delta=tolerance)
+        self.assertAlmostEqual(hanby(1, 1, 1), 0.52974, delta=tolerance)
+        self.assertAlmostEqual(hanby(1.5, 1, 1), 0.97812, delta=tolerance)
