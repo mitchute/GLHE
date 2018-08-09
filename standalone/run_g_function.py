@@ -7,6 +7,7 @@ from scipy.optimize import minimize
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
+from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.outputProcessor.processor import op
@@ -22,7 +23,7 @@ class RunGFunctions(object):
         self.g = GFunction(d)
         self.g.register_output_variables()
 
-        self.time_step = set_time_step(d['simulation']['time-step'])
+        gv.time_step = set_time_step(d['simulation']['time-step'])
         self.run_time = d['simulation']['runtime']
 
         try:
@@ -88,7 +89,6 @@ class RunGFunctions(object):
                 # run manually to init the methods
                 self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                           self.mass_flow_rate,
-                                          self.time_step,
                                           True,
                                           False)
 
@@ -104,7 +104,6 @@ class RunGFunctions(object):
                 # run manually one more time to lock down state
                 new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                                          self.mass_flow_rate,
-                                                         self.time_step,
                                                          False,
                                                          True)
 
@@ -115,7 +114,7 @@ class RunGFunctions(object):
                 op.report_output()
 
                 # advance in time through the GLHE for the next time step
-                self.sim_time += self.time_step
+                self.sim_time += gv.time_step
 
             # dump the results to a file
             op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
@@ -125,7 +124,6 @@ class RunGFunctions(object):
     def wrapped_sim_time_step(self, inlet_temp):
         ret_response = self.g.simulate_time_step(inlet_temp,
                                                  self.mass_flow_rate,
-                                                 self.time_step,
                                                  False,
                                                  False)
 

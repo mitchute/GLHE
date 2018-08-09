@@ -4,6 +4,8 @@ from numpy import array
 
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
+from glhe.globals.constants import SEC_IN_HOUR
+from glhe.globals.variables import gv
 
 
 class StaticMethod(BaseMethod):
@@ -12,8 +14,9 @@ class StaticMethod(BaseMethod):
         BaseMethod.__init__(self)
 
         if inputs is None:
-            self.min_bin_nums = [24, 10, 20, 40]
+            self.min_bin_nums = [5, 10, 20, 40]
             self.bin_widths = [24, 96, 384, 1536]
+            self.min_sub_hour_bins = 4
         else:
             try:
                 self.min_bin_nums = inputs['min number bins']
@@ -23,8 +26,16 @@ class StaticMethod(BaseMethod):
                 self.bin_widths = inputs['bin widths in hours']
             except KeyError:  # pragma: no cover
                 raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
+            try:
+                self.min_sub_hour_bins = inputs['min sub-hour bins']
+            except KeyError:
+                raise KeyError("Key: 'min sub-hour bins' not found")
 
-        self.bin_widths = array(self.bin_widths) * 3600
+        self.bin_widths = array(self.bin_widths) * SEC_IN_HOUR
+        self.bin_widths = self.bin_widths.tolist()
+
+        self.bin_widths.insert(0, gv.time_step)
+        self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
     def add_load(self, load, time):
         this_width = time - self.last_time

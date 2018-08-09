@@ -21,10 +21,12 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(temp_in_kelvin(30), 303.15)
 
     def test_set_time_step(self):
-        self.assertEqual(set_time_step(0), 60)
+        self.assertRaises(ZeroDivisionError, lambda: set_time_step(0))
         self.assertEqual(set_time_step(60), 60)
-        self.assertEqual(set_time_step(200), 180)
-        self.assertEqual(set_time_step(3500), 3600)
+        self.assertEqual(set_time_step(30), 120)
+        self.assertEqual(set_time_step(15), 240)
+        self.assertEqual(set_time_step(10), 360)
+        self.assertEqual(set_time_step(1), 3600)
 
     def test_load_json(self):
         temp_directory = tempfile.mkdtemp()
