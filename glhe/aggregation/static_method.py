@@ -14,8 +14,8 @@ class StaticMethod(BaseMethod):
         BaseMethod.__init__(self)
 
         if inputs is None:
-            self.min_bin_nums = [5, 10, 20, 40]
-            self.bin_widths = [24, 96, 384, 1536]
+            self.min_bin_nums = [6, 10, 10, 10, 10]
+            self.bin_widths = [1, 6, 24, 168, 840]
             self.min_sub_hour_bins = 4
         else:
             try:
@@ -40,10 +40,9 @@ class StaticMethod(BaseMethod):
     def add_load(self, load, time):
         this_width = time - self.last_time
         self.loads.appendleft(StaticBin(energy=load, width=this_width, abs_time=time))
-        self._aggregate()
         self.last_time = time
 
-    def _aggregate(self):
+    def aggregate(self):
         """
         Aggregates the current aggregation
 
@@ -63,7 +62,7 @@ class StaticMethod(BaseMethod):
                 pass
             else:
                 # merge the aggregation within this sub-list
-                merge_on_obj_index = self.min_bin_nums[i + 1]
+                merge_on_obj_index = self.min_bin_nums[i]
                 merge_obj_index_start = merge_on_obj_index + 1
                 merge_on_obj = d[width][merge_on_obj_index]
                 indices_to_pop = []

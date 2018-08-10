@@ -158,6 +158,8 @@ class GFunction(SimulationEntryPoint):
 
         if not converged:
             self.load_aggregation.reset_to_prev()
+        else:
+            self.load_aggregation.aggregate()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 

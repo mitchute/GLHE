@@ -11,3 +11,6 @@ class NoAggMethod(BaseMethod):
         width = time - self.last_time
         self.loads.appendleft(BaseBin(energy=load, width=width, abs_time=time))
         self.last_time = time
+
+    def aggregate(self):
+        pass  # pragma: no cover

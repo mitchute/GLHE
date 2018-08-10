@@ -17,35 +17,42 @@ class TestStatic(unittest.TestCase):
         gv.time_step = set_time_step(2)
         tst = StaticMethod(d)
         tst.add_load(1, 1 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 1)
 
         tst.add_load(2, 2 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 2)
         self.assertEqual(tst.loads[1].energy, 1)
 
         tst.add_load(3, 3 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 3)
         self.assertEqual(tst.loads[1].energy, 2)
         self.assertEqual(tst.loads[2].energy, 1)
 
         tst.add_load(4, 4 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 4)
         self.assertEqual(tst.loads[1].energy, 3)
         self.assertEqual(tst.loads[2].energy, 3)
 
         tst.add_load(5, 5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 5)
         self.assertEqual(tst.loads[1].energy, 4)
         self.assertEqual(tst.loads[2].energy, 3)
         self.assertEqual(tst.loads[3].energy, 3)
 
         tst.add_load(6, 6 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 6)
         self.assertEqual(tst.loads[1].energy, 5)
         self.assertEqual(tst.loads[2].energy, 7)
         self.assertEqual(tst.loads[3].energy, 3)
 
         tst.add_load(7, 7 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 7)
         self.assertEqual(tst.loads[1].energy, 6)
         self.assertEqual(tst.loads[2].energy, 5)
@@ -53,6 +60,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 3)
 
         tst.add_load(8, 8 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 8)
         self.assertEqual(tst.loads[1].energy, 7)
         self.assertEqual(tst.loads[2].energy, 11)
@@ -60,6 +68,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 3)
 
         tst.add_load(9, 9 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 9)
         self.assertEqual(tst.loads[1].energy, 8)
         self.assertEqual(tst.loads[2].energy, 7)
@@ -68,6 +77,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 3)
 
         tst.add_load(10, 10 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 10)
         self.assertEqual(tst.loads[1].energy, 9)
         self.assertEqual(tst.loads[2].energy, 15)
@@ -76,6 +86,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 3)
 
         tst.add_load(11, 11 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 11)
         self.assertEqual(tst.loads[1].energy, 10)
         self.assertEqual(tst.loads[2].energy, 9)
@@ -84,6 +95,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 10)
 
         tst.add_load(12, 12 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 12)
         self.assertEqual(tst.loads[1].energy, 11)
         self.assertEqual(tst.loads[2].energy, 19)
@@ -96,29 +108,35 @@ class TestStatic(unittest.TestCase):
         gv.time_step = set_time_step(2)
         tst = StaticMethod(d)
         tst.add_load(0.5, 0.5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0.5)  # width: 1800
 
         tst.add_load(1, 1 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 1.0)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 0.5)  # width: 1800
 
         tst.add_load(1.5, 1.5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 1.5)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 1.0)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 0.5)  # width: 1800
 
         tst.add_load(2.0, 2.0 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 2.0)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 1.5)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 1.5)  # width: 3600
 
         tst.add_load(2.5, 2.5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 2.5)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 2.0)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 1.5)  # width: 1800
         self.assertEqual(tst.loads[3].energy, 1.5)  # width: 3600
 
         tst.add_load(3.0, 3.0 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 3.0)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 2.5)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 3.5)  # width: 3600
@@ -132,6 +150,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1.5)  # width: 3600
 
         tst.add_load(4.0, 4.0 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 4.0)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 3.5)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 5.5)  # width: 3600
@@ -139,6 +158,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1.5)  # width: 3600
 
         tst.add_load(4.5, 4.5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 4.5)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 4.0)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 3.5)  # width: 1800
@@ -147,6 +167,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 1.5)  # width: 3600
 
         tst.add_load(5.0, 5.0 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 5.0)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 4.5)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 7.5)  # width: 3600
@@ -155,6 +176,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 1.5)  # width: 3600
 
         tst.add_load(5.5, 5.5 * SEC_IN_HOUR)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 5.5)  # width: 1800
         self.assertEqual(tst.loads[1].energy, 5.0)  # width: 1800
         self.assertEqual(tst.loads[2].energy, 4.5)  # width: 1800

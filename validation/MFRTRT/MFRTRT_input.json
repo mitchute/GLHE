@@ -43,7 +43,7 @@
   "load-aggregation": {
     "type": "static",
     "static": {
-      "min sub-hour bins": 60,
+      "min sub-hour bins": 5,
       "bin widths in hours": [1, 2, 4, 8],
       "min number bins": [5, 5, 5, 5]
     }

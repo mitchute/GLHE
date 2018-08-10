@@ -54,7 +54,6 @@ class DynamicMethod(BaseMethod):
                     self.loads.append(BaseBin(width=pow(exp_rate, i)))
 
     def add_load(self, load, time):
-
         for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy / left_bin.width
@@ -62,6 +61,9 @@ class DynamicMethod(BaseMethod):
             left_bin.energy -= delta
 
         self.loads[0].energy += load
+
+    def aggregate(self):
+        pass  # pragma: no cover
 
     def reset_to_prev(self):
         pass  # pragma: no cover
