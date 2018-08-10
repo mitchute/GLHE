@@ -1,7 +1,5 @@
 from collections import defaultdict, deque
 
-from numpy import array
-
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
 from glhe.globals.constants import SEC_IN_HOUR
@@ -22,18 +20,18 @@ class StaticMethod(BaseMethod):
                 self.min_bin_nums = inputs['min number bins']
             except KeyError:  # pragma: no cover
                 raise KeyError("Key: 'min number bins' not found")  # pragma: no cover
+
             try:
                 self.bin_widths = inputs['bin widths in hours']
             except KeyError:  # pragma: no cover
                 raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
+
             try:
                 self.min_sub_hour_bins = inputs['min sub-hour bins']
             except KeyError:  # pragma: no cover
                 raise KeyError("Key: 'min sub-hour bins' not found")  # pragma: no cover
 
-        self.bin_widths = array(self.bin_widths) * SEC_IN_HOUR
-        self.bin_widths = self.bin_widths.tolist()
-
+        self.bin_widths = [x * SEC_IN_HOUR for x in self.bin_widths]
         self.bin_widths.insert(0, gv.time_step)
         self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 

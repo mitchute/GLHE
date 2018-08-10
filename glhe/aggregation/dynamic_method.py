@@ -1,5 +1,7 @@
 from glhe.aggregation.base_bin import BaseBin
 from glhe.aggregation.base_method import BaseMethod
+from glhe.globals.constants import SEC_IN_HOUR
+from glhe.globals.variables import gv
 
 
 class DynamicMethod(BaseMethod):
@@ -7,54 +9,79 @@ class DynamicMethod(BaseMethod):
     def __init__(self, inputs=None):
         BaseMethod.__init__(self)
 
-        depth = 16
-        exp_rate = 2
-        width = 5
-        start_width = None
-        end_width = None
+        self.depth = 16
+        self.exp_rate = 2
+        self.width = 5
+        self.start_width = None
+        self.end_width = None
+        self.num_sub_hour_bins = 4
 
         if inputs is not None:
             try:
-                depth = inputs['depth']
+                self.depth = inputs['depth']
             except KeyError:  # pragma: no cover
                 pass  # pragma: no cover
 
             try:
-                exp_rate = inputs['expansion rate']
+                self.exp_rate = inputs['expansion rate']
             except KeyError:  # pragma: no cover
                 pass  # pragma: no cover
 
             try:
-                width = inputs['width']
+                self.width = inputs['width']
             except KeyError:  # pragma: no cover
-                pass  # pragma: no cover
+                pass
 
             try:
-                start_width = inputs['start width']
+                self.start_width = inputs['start width']
             except KeyError:  # pragma: no cover
-                pass  # pragma: no cover
+                pass
 
             try:
-                end_width = inputs['end width']
+                self.end_width = inputs['end width']
             except KeyError:  # pragma: no cover
-                pass  # pragma: no cover
+                pass
 
-        if (start_width is None and end_width is not None) or (start_width is not None and end_width is None):
+            try:
+                self.num_sub_hour_bins = inputs['number of sub-hour bins']
+            except KeyError:  # pragma: no cover
+                pass
+
+        if (self.start_width is None and self.end_width is not None) or (
+                self.start_width is not None and self.end_width is None):
             raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
-        elif start_width is None and end_width is None:
+        elif self.start_width is None and self.end_width is None:
             # for cases when a constant bin width is specified
-            for i in range(depth):
-                for _ in range(width):
-                    self.loads.append(BaseBin(width=pow(exp_rate, i)))
+            for i in range(self.depth):
+                for _ in range(self.width):
+                    self.loads.append(BaseBin(width=pow(self.exp_rate, i)))
         else:
             # for cases when the bin width is varies for each depth level
-            for i in range(depth):
-                width = int((1 - i / depth) * (start_width - end_width) + end_width)
+            for i in range(self.depth):
+                width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
                 for _ in range(width):
-                    self.loads.append(BaseBin(width=pow(exp_rate, i)))
+                    self.loads.append(BaseBin(width=pow(self.exp_rate, i)))
+
+        self._convert_bins_hours_to_seconds()
+        self._add_sts_bins()
+        self._set_bin_times()
+
+    def _add_sts_bins(self):
+        for i in range(self.num_sub_hour_bins):
+            self.loads.appendleft(BaseBin(width=gv.time_step))
+
+    def _convert_bins_hours_to_seconds(self):
+        for bin in self.loads:
+            bin.width *= SEC_IN_HOUR
+
+    def _set_bin_times(self):
+        abs_time = 0
+        for bin in self.loads:
+            abs_time += bin.width
+            bin.abs_time = abs_time
 
     def add_load(self, load, time):
-        for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
+        for i, cur_bin in reversed(list(enumerate(self.loads))[self.num_sub_hour_bins:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy / left_bin.width
             cur_bin.energy += delta
