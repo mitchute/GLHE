@@ -6,6 +6,7 @@ from scipy.interpolate import interp1d
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
 from glhe.globals.functions import hanby
+from glhe.globals.variables import gv
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -91,9 +92,9 @@ class GFunction(SimulationEntryPoint):
         else:
             return g
 
-    def simulate_time_step(self, inlet_temperature, mass_flow, time_step, first_pass, converged):
+    def simulate_time_step(self, inlet_temperature, mass_flow, first_pass, converged):
         if first_pass:
-            self.current_time += time_step
+            self.current_time += gv.time_step
 
             if self.prev_mass_flow_rate != mass_flow:
                 self.time_of_prev_flow = self.time_of_curr_flow
@@ -135,7 +136,7 @@ class GFunction(SimulationEntryPoint):
 
         total_load = self.load_normalized * self.tot_length
 
-        energy_normalized = self.load_normalized * time_step
+        energy_normalized = self.load_normalized * gv.time_step
 
         self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
 
@@ -157,6 +158,8 @@ class GFunction(SimulationEntryPoint):
 
         if not converged:
             self.load_aggregation.reset_to_prev()
+        else:
+            self.load_aggregation.aggregate()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 

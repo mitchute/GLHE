@@ -3,6 +3,8 @@ from math import exp, factorial
 
 from numpy import array
 
+from glhe.globals.constants import SEC_IN_HOUR
+
 
 def smoothing_function(x, a, b):
     """
@@ -30,24 +32,28 @@ def temp_in_kelvin(x):
     return x + 273.15
 
 
-def set_time_step(input_time_step):
+def set_time_step(input_time_step_per_hour):
     """
-    Converts the input time-step in seconds to the nearest possible time-step.
+    Converts the input time-steps per hour to the nearest possible time-step in seconds.
     Time-step should be evenly divisible into an hour.
 
-    :param input_time_step:
+    :param input_time_step_per_hour:
     :return:
     """
+    try:
+        input_time_step = SEC_IN_HOUR / input_time_step_per_hour
+    except ZeroDivisionError:
+        raise ZeroDivisionError("Incorrect times-step specified")
 
     time_step_per_hour = array([1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60])
-    time_step_list = 3600 / time_step_per_hour
+    time_step_list = SEC_IN_HOUR / time_step_per_hour
 
-    if input_time_step in time_step_list:
-        return input_time_step
+    if input_time_step in time_step_per_hour:
+        return int(input_time_step)
     else:
         # We should probably raise some warning here
         # Need to think about adding some logging features eventually
-        return min(time_step_list, key=lambda x: abs(x - input_time_step))
+        return int(min(time_step_list, key=lambda x: abs(x - input_time_step)))
 
 
 def load_json(path):

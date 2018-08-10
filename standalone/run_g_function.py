@@ -5,7 +5,9 @@ import sys
 from scipy.optimize import minimize
 
 from glhe.gFunction.g_function import GFunction
+from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
+from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.outputProcessor.processor import op
@@ -16,12 +18,17 @@ from glhe.properties.fluid import Fluid
 
 class RunGFunctions(object):
     def __init__(self, input_file):
+
         # get input from file
         d = InputProcessor().process_input(input_file)
+
+        # set the global level time-step
+        gv.time_step = set_time_step(d['simulation']['time-steps per hour'])
+
+        # init the g-function object and resister the output variables after init
         self.g = GFunction(d)
         self.g.register_output_variables()
 
-        self.time_step = set_time_step(d['simulation']['time-step'])
         self.run_time = d['simulation']['runtime']
 
         try:
@@ -59,69 +66,72 @@ class RunGFunctions(object):
         op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
-        if self.init_output_vars:
-            self.register_output_variables()
-            self.init_output_vars = False
+        start_time = datetime.datetime.now()
 
-        while self.sim_time < self.run_time:
+        try:
+            if self.init_output_vars:
+                self.register_output_variables()
+                self.init_output_vars = False
 
-            # only print every so often
-            if self.print_idx == 50:
-                print("Sim Time: {}".format(self.sim_time))
-                self.print_idx = 0
-            else:
-                self.print_idx += 1
+            while self.sim_time < self.run_time:
 
-            # set current plant status
-            self.current_load = self.load_profile.get_value(self.sim_time)
-            self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
+                # only print every so often
+                if self.print_idx == 50:
+                    print("Sim Time: {}".format(self.sim_time))
+                    self.print_idx = 0
+                else:
+                    self.print_idx += 1
 
-            # update entering fluid temperature
-            mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-            cp = self.fluid.calc_specific_heat(mean_temp)
-            eft_num = self.current_load
-            eft_den = self.mass_flow_rate * cp
-            self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+                # set current plant status
+                self.current_load = self.load_profile.get_value(self.sim_time)
+                self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
-            # run manually to init the methods
-            self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                      self.mass_flow_rate,
-                                      self.time_step,
-                                      True,
-                                      False)
+                # update entering fluid temperature
+                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
+                cp = self.fluid.calc_specific_heat(mean_temp)
+                eft_num = self.current_load
+                eft_den = self.mass_flow_rate * cp
+                self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
 
-            # find result
-            res = minimize(self.wrapped_sim_time_step,
-                           x0=self.glhe_entering_fluid_temperature,
-                           method='Nelder-Mead',
-                           options={'fatol': self.load_convergence_tolerance})
+                # run manually to init the methods
+                self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                          self.mass_flow_rate,
+                                          True,
+                                          False)
 
-            # set result
-            self.glhe_entering_fluid_temperature = res.x
+                # find result
+                res = minimize(self.wrapped_sim_time_step,
+                               x0=self.glhe_entering_fluid_temperature,
+                               method='Nelder-Mead',
+                               options={'fatol': self.load_convergence_tolerance})
 
-            # run manually one more time to lock down state
-            new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                     self.mass_flow_rate,
-                                                     self.time_step,
-                                                     False,
-                                                     True)
+                # set result
+                self.glhe_entering_fluid_temperature = res.x
 
-            self.response.heat_rate = new_response.heat_rate
-            self.response.outlet_temperature = new_response.outlet_temperature
+                # run manually one more time to lock down state
+                new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                         self.mass_flow_rate,
+                                                         False,
+                                                         True)
 
-            # update the output variables
-            op.report_output()
+                self.response.heat_rate = new_response.heat_rate
+                self.response.outlet_temperature = new_response.outlet_temperature
 
-            # advance in time through the GLHE for the next time step
-            self.sim_time += self.time_step
+                # update the output variables
+                op.report_output()
 
-        # dump the results to a file
-        op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+                # advance in time through the GLHE for the next time step
+                self.sim_time += gv.time_step
+
+            # dump the results to a file
+            op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+            print('Final runtime: {}'.format(datetime.datetime.now() - start_time))
+        except SimulationError:  # pragma: no cover
+            raise SimulationError('Program failed')  # pragma: no cover
 
     def wrapped_sim_time_step(self, inlet_temp):
         ret_response = self.g.simulate_time_step(inlet_temp,
                                                  self.mass_flow_rate,
-                                                 self.time_step,
                                                  False,
                                                  False)
 
@@ -129,10 +139,4 @@ class RunGFunctions(object):
 
 
 if __name__ == '__main__':
-    print(sys.argv)
-    start = datetime.datetime.now()
-    if os.path.exists(sys.argv[1]):
-        RunGFunctions(sys.argv[1]).simulate()
-    else:
-        FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))
-    print('Final runtime: {}'.format(datetime.datetime.now() - start))
+    RunGFunctions(sys.argv[1]).simulate()

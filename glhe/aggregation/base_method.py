@@ -14,6 +14,10 @@ class BaseMethod(ABC):
     def add_load(self, load, time):
         pass  # pragma: no cover
 
+    @abstractmethod
+    def aggregate(self):
+        pass  # pragma: no cover
+
     def get_most_recent_bin(self):
         if len(self.loads) == 0:
             return BaseBin(0, 0, 0)
