@@ -64,7 +64,6 @@ class DynamicMethod(BaseMethod):
 
         self._convert_bins_hours_to_seconds()
         self._add_sts_bins()
-        self._set_bin_times()
 
     def _add_sts_bins(self):
         for i in range(self.num_sub_hour_bins):
@@ -74,23 +73,15 @@ class DynamicMethod(BaseMethod):
         for bin in self.loads:
             bin.width *= SEC_IN_HOUR
 
-    def _set_bin_times(self):
-        abs_time = 0
-        for bin in self.loads:
-            abs_time += bin.width
-            bin.abs_time = abs_time
-
     def add_load(self, load, time):
+        self.loads[0].energy += load
+
+    def aggregate(self):
         for i, cur_bin in reversed(list(enumerate(self.loads))[self.num_sub_hour_bins:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy / left_bin.width
             cur_bin.energy += delta
             left_bin.energy -= delta
-
-        self.loads[0].energy += load
-
-    def aggregate(self):
-        pass  # pragma: no cover
 
     def reset_to_prev(self):
         pass  # pragma: no cover

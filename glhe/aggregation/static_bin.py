@@ -3,8 +3,8 @@ from glhe.aggregation.base_bin import BaseBin
 
 class StaticBin(BaseBin):
 
-    def __init__(self, energy=0, width=0, abs_time=0):
-        BaseBin.__init__(self, energy=energy, width=width, abs_time=abs_time)
+    def __init__(self, energy=0, width=0):
+        BaseBin.__init__(self, energy=energy, width=width)
 
     def merge(self, bins):
         if isinstance(bins, StaticBin):

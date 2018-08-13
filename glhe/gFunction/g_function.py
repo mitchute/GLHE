@@ -120,7 +120,7 @@ class GFunction(SimulationEntryPoint):
         fluid_cap = mass_flow * self.fluid.specific_heat
 
         prev_bin = self.load_aggregation.get_most_recent_bin()
-        delta_t_prev_bin = self.current_time - prev_bin.abs_time
+        delta_t_prev_bin = prev_bin.width
         q_prev_bin = prev_bin.get_load()
         g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
 

@@ -125,7 +125,7 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "time-steps per hour": 2,
+    "time-steps per hour": 4,
     "runtime": 360000,
     "initial-fluid-temperature": 20
   },

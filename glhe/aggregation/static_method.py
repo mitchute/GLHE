@@ -37,7 +37,7 @@ class StaticMethod(BaseMethod):
 
     def add_load(self, load, time):
         this_width = time - self.last_time
-        self.loads.appendleft(StaticBin(energy=load, width=this_width, abs_time=time))
+        self.loads.appendleft(StaticBin(energy=load, width=this_width))
         self.last_time = time
 
     def aggregate(self):

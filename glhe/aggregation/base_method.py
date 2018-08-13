@@ -20,7 +20,7 @@ class BaseMethod(ABC):
 
     def get_most_recent_bin(self):
         if len(self.loads) == 0:
-            return BaseBin(0, 0, 0)
+            return BaseBin(0, 0)
         else:
             return self.loads[0]
 
