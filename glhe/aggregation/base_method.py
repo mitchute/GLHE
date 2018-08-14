@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import deque, namedtuple
 
-from glhe.aggregation.base_bin import BaseBin
-
 
 class BaseMethod(ABC):
 

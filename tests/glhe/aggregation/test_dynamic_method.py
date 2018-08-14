@@ -1,7 +1,5 @@
 import unittest
 
-from glhe.aggregation.dynamic_method import DynamicMethod
-
 
 class TestDynamic(unittest.TestCase):
 

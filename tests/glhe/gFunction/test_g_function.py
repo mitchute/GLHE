@@ -4,10 +4,10 @@ import unittest
 
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.functions import write_json
+from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
-from glhe.globals.variables import gv
 
 
 class TestGFunction(unittest.TestCase):
