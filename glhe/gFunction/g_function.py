@@ -63,6 +63,7 @@ class GFunction(SimulationEntryPoint):
         self.load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
+        self.prev_outlet_temp = 20
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
         self.flow_change_fraction_limit = 0.1
@@ -120,7 +121,7 @@ class GFunction(SimulationEntryPoint):
         fluid_cap = mass_flow * self.fluid.specific_heat
 
         prev_bin = self.load_aggregation.get_most_recent_bin()
-        delta_t_prev_bin = self.current_time - prev_bin.abs_time
+        delta_t_prev_bin = prev_bin.width
         q_prev_bin = prev_bin.get_load()
         g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
 
@@ -151,7 +152,9 @@ class GFunction(SimulationEntryPoint):
         else:
             f_hanby = 1
 
-        outlet_temperature = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap * f_hanby
+        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+
+        outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
@@ -160,6 +163,7 @@ class GFunction(SimulationEntryPoint):
             self.load_aggregation.reset_to_prev()
         else:
             self.load_aggregation.aggregate()
+            self.prev_outlet_temp = outlet_temperature
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
 

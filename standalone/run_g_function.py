@@ -17,10 +17,10 @@ from glhe.properties.fluid import Fluid
 
 
 class RunGFunctions(object):
-    def __init__(self, input_file):
+    def __init__(self, input_file_path):
 
         # get input from file
-        d = InputProcessor().process_input(input_file)
+        d = InputProcessor().process_input(input_file_path)
 
         # set the global level time-step
         gv.time_step = set_time_step(d['simulation']['time-steps per hour'])

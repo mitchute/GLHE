@@ -22,6 +22,7 @@ class TestFunctions(unittest.TestCase):
 
     def test_set_time_step(self):
         self.assertRaises(ZeroDivisionError, lambda: set_time_step(0))
+        self.assertEqual(set_time_step(600), 60)
         self.assertEqual(set_time_step(60), 60)
         self.assertEqual(set_time_step(30), 120)
         self.assertEqual(set_time_step(15), 240)

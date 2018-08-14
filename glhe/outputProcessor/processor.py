@@ -25,7 +25,7 @@ class OutputProcessor(object):
             temp_dict[key] = getattr(*spec)
 
         df_temp = pd.DataFrame(temp_dict, index=[index])
-        OutputProcessor.df = pd.concat([OutputProcessor().df, df_temp], axis=0)
+        OutputProcessor.df = pd.concat([OutputProcessor().df, df_temp], axis=0, sort=True)
         OutputProcessor.idx_count += 1
 
     def write_to_file(self, path):
