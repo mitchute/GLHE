@@ -37,7 +37,7 @@ class StaticMethod(BaseMethod):
 
     def get_most_recent_bin(self):
         if len(self.loads) == 0:
-            return StaticBin(0, 0)
+            return StaticBin(0, gv.time_step)
         else:
             return self.loads[0]
 
