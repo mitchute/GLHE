@@ -1,8 +1,8 @@
 import unittest
 
 from glhe.aggregation.dynamic_method import DynamicMethod
-
 from glhe.globals.variables import gv
+
 
 class TestDynamic(unittest.TestCase):
 
