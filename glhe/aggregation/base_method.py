@@ -18,11 +18,9 @@ class BaseMethod(ABC):
     def aggregate(self):
         pass  # pragma: no cover
 
+    @abstractmethod
     def get_most_recent_bin(self):
-        if len(self.loads) == 0:
-            return BaseBin(0, 0)
-        else:
-            return self.loads[0]
+        pass  # pragma: no cover
 
     def reset_to_prev(self):
         self.last_time -= self.loads[0].width

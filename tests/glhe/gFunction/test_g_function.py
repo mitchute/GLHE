@@ -161,12 +161,12 @@ class TestGFunction(unittest.TestCase):
                                           mass_flow=0.2,
                                           first_pass=True,
                                           converged=False)
-        self.assertAlmostEqual(response.outlet_temperature, 23.1, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1564, delta=1)
+        self.assertAlmostEqual(response.outlet_temperature, 22.8, delta=0.1)
+        self.assertAlmostEqual(response.heat_rate, 1851, delta=1)
 
         response = tst.simulate_time_step(inlet_temperature=25.0,
                                           mass_flow=0.2,
                                           first_pass=False,
                                           converged=True)
-        self.assertAlmostEqual(response.outlet_temperature, 23.1, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1564, delta=1)
+        self.assertAlmostEqual(response.outlet_temperature, 22.8, delta=0.1)
+        self.assertAlmostEqual(response.heat_rate, 1851, delta=1)

@@ -35,6 +35,12 @@ class StaticMethod(BaseMethod):
         self.bin_widths.insert(0, gv.time_step)
         self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
+    def get_most_recent_bin(self):
+        if len(self.loads) == 0:
+            return StaticBin(0, 0)
+        else:
+            return self.loads[0]
+
     def add_load(self, load, time):
         this_width = time - self.last_time
         self.loads.appendleft(StaticBin(energy=load, width=this_width))

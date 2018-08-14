@@ -66,22 +66,32 @@ class DynamicMethod(BaseMethod):
         self._add_sts_bins()
 
     def _add_sts_bins(self):
-        for i in range(self.num_sub_hour_bins):
+
+        # add an extra bin here to give some slack for iterations
+        for i in range(self.num_sub_hour_bins + 1):
             self.loads.appendleft(BaseBin(width=gv.time_step))
 
     def _convert_bins_hours_to_seconds(self):
         for bin in self.loads:
             bin.width *= SEC_IN_HOUR
 
+    def get_most_recent_bin(self):
+        return self.loads[1]
+
     def add_load(self, load, time):
-        self.loads[0].energy += load
+        self.loads[0].energy = load
 
     def aggregate(self):
-        for i, cur_bin in reversed(list(enumerate(self.loads))[self.num_sub_hour_bins:]):
+        for i, cur_bin in reversed(list(enumerate(self.loads))[self.num_sub_hour_bins + 1:]):
             left_bin = self.loads[i - 1]
-            delta = left_bin.energy / left_bin.width
+            delta = left_bin.energy * gv.time_step / left_bin.width
             cur_bin.energy += delta
             left_bin.energy -= delta
 
+        for i in reversed(range(self.num_sub_hour_bins)):
+            self.loads[i + 1].energy = self.loads[i].energy
+
+        self.loads[0].energy = 0
+
     def reset_to_prev(self):
-        pass  # pragma: no cover
+        self.loads[0].energy = 0
