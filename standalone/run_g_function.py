@@ -106,7 +106,7 @@ class RunGFunctions(object):
                                options={'fatol': self.load_convergence_tolerance})
 
                 # set result
-                self.glhe_entering_fluid_temperature = res.x
+                self.glhe_entering_fluid_temperature = res.x[0]
 
                 # run manually one more time to lock down state
                 new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
@@ -114,8 +114,8 @@ class RunGFunctions(object):
                                                          False,
                                                          True)
 
-                self.response.heat_rate = new_response.heat_rate
                 self.response.outlet_temperature = new_response.outlet_temperature
+                self.response.heat_rate = new_response.heat_rate
 
                 # update the output variables
                 op.report_output()
@@ -129,8 +129,8 @@ class RunGFunctions(object):
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover
 
-    def wrapped_sim_time_step(self, inlet_temp):
-        ret_response = self.g.simulate_time_step(inlet_temp,
+    def wrapped_sim_time_step(self, input_args):
+        ret_response = self.g.simulate_time_step(input_args[0],
                                                  self.mass_flow_rate,
                                                  False,
                                                  False)

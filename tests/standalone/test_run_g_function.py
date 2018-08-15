@@ -2,9 +2,8 @@ import os
 import tempfile
 import unittest
 
-from glhe.globals.functions import write_json
 from glhe.globals.functions import load_json
-
+from glhe.globals.functions import write_json
 from standalone.run_g_function import RunGFunctions
 
 
@@ -12,7 +11,6 @@ class TestRunGFunctionIntegration(unittest.TestCase):
 
     @staticmethod
     def add_instance(agg_method):
-
         dir_name = os.path.dirname(__file__)
         relative_path = "../../glhe/examples"
         input_file_path = os.path.normpath(os.path.join(dir_name, relative_path, 'single.json'))

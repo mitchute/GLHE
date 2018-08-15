@@ -52,18 +52,22 @@ class GFunction(SimulationEntryPoint):
         # time constant
         self.t_s = self.my_bh.depth ** 2 / (9 * self.soil.diffusivity)
 
+        # initial temperature
+        init_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+
         # other inits
         self.bh_resist = 0
         self.soil_resist = 0
         self.ground_temp = 0
-        self.bh_wall_temp = 0
-        self.ave_fluid_temp = 0
+        self.bh_wall_temp = init_temp
+        self.ave_fluid_temp = init_temp
         self.flow_fraction = 0
         self.transit_time = 0
         self.load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
-        self.prev_outlet_temp = 20
+        self.outlet_temperature = init_temp
+        self.prev_outlet_temp = init_temp
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
         self.flow_change_fraction_limit = 0.1
@@ -97,27 +101,24 @@ class GFunction(SimulationEntryPoint):
         if first_pass:
             self.current_time += gv.time_step
 
-            if self.prev_mass_flow_rate != mass_flow:
-                self.time_of_prev_flow = self.time_of_curr_flow
-                self.time_of_curr_flow = self.current_time
-
             if mass_flow == 0:
                 return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
 
-            if self.prev_mass_flow_rate != mass_flow:
-                self.my_bh.set_flow_rate(mass_flow / self.num_bh)
-                self.bh_resist = self.my_bh.resist_bh_ave
-                flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
+            flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
-                if flow_change_frac > self.flow_change_fraction_limit:
-                    self.prev_flow_frac = self.flow_fraction
+            self.my_bh.set_flow_rate(mass_flow / self.num_bh)
+            self.bh_resist = self.my_bh.resist_bh_ave
 
+            if flow_change_frac > self.flow_change_fraction_limit:
+                self.time_of_prev_flow = self.time_of_curr_flow
+                self.time_of_curr_flow = self.current_time
+                self.prev_flow_frac = self.flow_fraction
                 self.prev_mass_flow_rate = mass_flow
-
-            self.soil_resist = self.calc_soil_resist()
-            self.flow_fraction = self.calc_flow_fraction()
+                self.soil_resist = self.calc_soil_resist()
+                self.flow_fraction = self.calc_flow_fraction()
 
         self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+
         fluid_cap = mass_flow * self.fluid.specific_heat
 
         prev_bin = self.load_aggregation.get_most_recent_bin()
@@ -151,21 +152,21 @@ class GFunction(SimulationEntryPoint):
             f_hanby = hanby(delta_t, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
         else:
             f_hanby = 1
+            self.prev_outlet_temp = self.outlet_temperature
 
-        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap * f_hanby
 
-        outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
+        self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
 
         # update for next time step
-        self.fluid.update_properties(mean([inlet_temperature, outlet_temperature]))
+        self.fluid.update_properties(mean([inlet_temperature, self.outlet_temperature]))
 
         if not converged:
             self.load_aggregation.reset_to_prev()
         else:
             self.load_aggregation.aggregate()
-            self.prev_outlet_temp = outlet_temperature
 
-        return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=outlet_temperature)
+        return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=self.outlet_temperature)
 
     def calc_flow_fraction(self):
         """

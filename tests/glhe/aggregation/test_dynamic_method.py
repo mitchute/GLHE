@@ -20,6 +20,7 @@ class TestDynamic(unittest.TestCase):
         tst.add_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
+        self.assertEqual(tst.loads[1].energy, 1)
 
         tst.add_load(1, 0)
         tst.aggregate()
