@@ -56,6 +56,7 @@ class GFunction(SimulationEntryPoint):
         init_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
 
         # other inits
+        self.fluid_cap = 0
         self.bh_resist = 0
         self.soil_resist = 0
         self.ground_temp = 0
@@ -80,6 +81,7 @@ class GFunction(SimulationEntryPoint):
         op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
+        op.register_output_variable(self, 'bh_wall_temp', "Borehole Wall Temp [C]")
 
     def get_g_func(self, time):
         """
@@ -114,12 +116,11 @@ class GFunction(SimulationEntryPoint):
                 self.time_of_curr_flow = self.current_time
                 self.prev_flow_frac = self.flow_fraction
                 self.prev_mass_flow_rate = mass_flow
-                self.soil_resist = self.calc_soil_resist()
-                self.flow_fraction = self.calc_flow_fraction()
 
-        self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
-
-        fluid_cap = mass_flow * self.fluid.specific_heat
+            self.soil_resist = self.calc_soil_resist()
+            self.flow_fraction = self.calc_flow_fraction()
+            self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
+            self.fluid_cap = mass_flow * self.fluid.specific_heat
 
         prev_bin = self.load_aggregation.get_most_recent_bin()
         delta_t_prev_bin = prev_bin.width
@@ -130,7 +131,7 @@ class GFunction(SimulationEntryPoint):
 
         temp_rise_history = self.calc_history_temp_rise()
 
-        c_1 = (1 - self.flow_fraction) * self.tot_length / fluid_cap
+        c_1 = (1 - self.flow_fraction) * self.tot_length / self.fluid_cap
 
         load_num = self.ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
@@ -154,7 +155,7 @@ class GFunction(SimulationEntryPoint):
             f_hanby = 1
             self.prev_outlet_temp = self.outlet_temperature
 
-        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
+        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
 
         self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
 
@@ -271,9 +272,13 @@ class GFunction(SimulationEntryPoint):
         if 0.02 * t_tr <= t_i - t_i_minus_1 < t_sf:
             _part_1 = (f_sf - f_old) / 2
             _part_2 = sin(PI * log((t_i - t_i_minus_1) / (0.02 * t_tr)) / log(t_sf / (0.02 * t_tr)) - 0.5)
-            return _part_1 * (1 + _part_2) + f_old
+            f = _part_1 * (1 + _part_2) + f_old
         else:
-            return f_sf  # pragma: no cover
+            f = f_sf  # pragma: no cover
+
+        self.prev_flow_frac = f
+
+        return f
 
     def calc_history_temp_rise(self):
         temp_rise_sum = 0
