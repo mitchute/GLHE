@@ -154,7 +154,7 @@ class GFunction(SimulationEntryPoint):
             f_hanby = 1
             self.prev_outlet_temp = self.outlet_temperature
 
-        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap * f_hanby
+        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / fluid_cap
 
         self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
 

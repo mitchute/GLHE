@@ -32,12 +32,10 @@ class BaseMethod(ABC):
         time_from_current = 0
 
         for i, bin_i in enumerate(self.loads):
-            if bin_i == self.loads[0]:
+            if bin_i == self.loads[-1]:
                 time_from_current += self.loads[0].width
-            elif bin_i == self.loads[-1]:
                 ret_vals.append(LoadHistory(bin_i.get_load(), time_from_current))
             else:
-                # this occurred farther from the current sim time
                 bin_i_minus_1 = self.loads[i + 1]
                 load_i = bin_i.get_load()
                 load_i_minus_1 = bin_i_minus_1.get_load()
