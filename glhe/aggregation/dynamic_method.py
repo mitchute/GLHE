@@ -1,9 +1,9 @@
-from glhe.aggregation.base_bin import BaseBin
+from collections import deque
+
 from glhe.aggregation.base_method import BaseMethod
+from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.globals.constants import SEC_IN_HOUR
 from glhe.globals.variables import gv
-
-from collections import deque
 
 
 class DynamicMethod(BaseMethod):
@@ -59,13 +59,13 @@ class DynamicMethod(BaseMethod):
             # for cases when a constant bin width is specified
             for i in range(self.depth):
                 for _ in range(self.width):
-                    self.bins.append(BaseBin(width=pow(self.exp_rate, i)))
+                    self.bins.append(DynamicBin(width=pow(self.exp_rate, i)))
         else:
             # for cases when the bin width is varies for each depth level
             for i in range(self.depth):
                 width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
                 for _ in range(width):
-                    self.bins.append(BaseBin(width=pow(self.exp_rate, i)))
+                    self.bins.append(DynamicBin(width=pow(self.exp_rate, i)))
 
         self._convert_bins_hours_to_seconds()
         self._add_sts_bins()
@@ -74,7 +74,7 @@ class DynamicMethod(BaseMethod):
     def _add_sts_bins(self):
         # add an extra bin here to give some slack for iterations
         for i in range(self.num_sub_hour_bins + 1):
-            self.loads.appendleft(BaseBin(width=gv.time_step))
+            self.loads.appendleft(DynamicBin(width=gv.time_step))
 
     def _convert_bins_hours_to_seconds(self):
         for bin in self.bins:

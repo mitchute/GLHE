@@ -126,7 +126,7 @@
   "simulation": {
     "name": "Basic GLHE",
     "time-steps per hour": 60,
-    "runtime": 3600,
+    "runtime": 86400,
     "initial-fluid-temperature": 20
   },
   "soil": {

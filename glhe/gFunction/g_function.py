@@ -3,6 +3,7 @@ from math import log, exp, sqrt, sin
 from numpy import genfromtxt, mean
 from scipy.interpolate import interp1d
 
+from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
 from glhe.globals.functions import hanby
@@ -82,6 +83,18 @@ class GFunction(SimulationEntryPoint):
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
         op.register_output_variable(self, 'bh_wall_temp', "Borehole Wall Temp [C]")
+
+    def update_g_values(self):
+        time = 0
+        for this_bin in self.load_aggregation.loads:
+            time += this_bin.width
+
+            if this_bin.g_fixed is True:
+                pass
+            else:
+                this_bin.g = self.get_g_func(time)
+                if isinstance(this_bin, DynamicBin):
+                    this_bin.g_fixed = True
 
     def get_g_func(self, time):
         """
@@ -187,7 +200,7 @@ class GFunction(SimulationEntryPoint):
         cs = self.soil.specific_heat * self.soil.density
         v_f = self.my_bh.fluid_volume
         w = self.my_bh.vol_flow_rate
-        l = self.my_bh.depth  # noqa: E741
+        l_bh = self.my_bh.depth  # noqa: E741
         r_b = self.my_bh.radius
         k_s = self.soil.conductivity
 
@@ -208,7 +221,7 @@ class GFunction(SimulationEntryPoint):
 
         # Equation 9
         cd_num = v_f * cf
-        cd_den = 2 * PI * l * cs * r_b ** 2
+        cd_den = 2 * PI * l_bh * cs * r_b ** 2
         cd = cd_num / cd_den
 
         # Equation 10
@@ -229,16 +242,16 @@ class GFunction(SimulationEntryPoint):
 
         # Equation 12
         t_sf_num = tdsf_over_cd * cf * v_f
-        t_sf_den = 2 * PI * l * k_s
+        t_sf_den = 2 * PI * l_bh * k_s
         t_sf = t_sf_num / t_sf_den + t_i_minus_1
 
         resist_s1 = self.soil_resist
 
         # Equation A.11
-        n_a = l / (w * cf * resist_a)
+        n_a = l_bh / (w * cf * resist_a)
 
         # Equation A.12, A.13
-        n_s1 = l / (w * cf * (resist_b1 + resist_s1))
+        n_s1 = l_bh / (w * cf * (resist_b1 + resist_s1))
 
         # Equation A.5
         a_1 = (sqrt(4 * ((n_a + n_s1) ** 2 - n_a ** 2))) / 2
@@ -282,16 +295,22 @@ class GFunction(SimulationEntryPoint):
         return f
 
     def calc_history_temp_rise(self):
+        self.update_g_values()
         temp_rise_sum = 0
 
-        delta_q = self.load_aggregation.calc_delta_q(self.current_time)
+        for i, bin_i in enumerate(self.load_aggregation.loads):
+            if bin_i == self.load_aggregation.loads[-1]:
+                temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
+            else:
+                bin_i_minus_1 = self.load_aggregation.loads[i + 1]
+                load_i = bin_i.get_load()
+                load_i_minus_1 = bin_i_minus_1.get_load()
+                temp_rise_sum += (load_i - load_i_minus_1) * bin_i_minus_1.g * self.c_0
 
-        if len(delta_q[0]) == 2:
-            # calculate new g-function values
-            for t in delta_q:
-                temp_rise_sum += t.delta_q * self.get_g_func(t.delta_t) * self.c_0
-
-        return temp_rise_sum
+        if len(self.load_aggregation.loads) == 0:
+            return 0
+        else:
+            return temp_rise_sum
 
     def calc_soil_resist(self):
         # self.soil_resist = abs(self.ground_temp - self.bh_wall_temp / self.load_normalized)
