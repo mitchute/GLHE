@@ -6,7 +6,7 @@ import pandas as pd
 ghe_length = 76.2
 
 heat = np.concatenate((np.ones([180]) * (25 * ghe_length),
-                       np.ones([180]) * (50 * ghe_length) ,
+                       np.ones([180]) * (50 * ghe_length),
                        np.ones([180]) * (25 * ghe_length),
                        np.ones([180]) * (0 * ghe_length),
                        np.ones([180]) * (-25 * ghe_length),
