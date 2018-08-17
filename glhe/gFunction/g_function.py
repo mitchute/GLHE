@@ -293,21 +293,15 @@ class GFunction(SimulationEntryPoint):
         return temp_rise_sum
 
     def calc_soil_resist(self):
-        # soil resistance
-        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
-        #                    / (GAMMA * r_b ** 2))
-        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * (self.current_time - t_i_minus_1)
-        #                    / (GAMMA * r_b ** 2))
-        # self.soil_resist = 2 / (4 * PI * k_s) * log(4 * self.soil.diffusivity * self.current_time
-        #                    / (GAMMA * r_b ** 2))
+        # self.soil_resist = abs(self.ground_temp - self.bh_wall_temp / self.load_normalized)
 
-        try:
-            self.soil_resist = abs(self.ground_temp - self.bh_wall_temp) / self.load_normalized
-        except ZeroDivisionError:
-            _part_1 = 2 / (4 * PI * self.soil.conductivity)
-            _part_2 = log(4 * self.soil.diffusivity * self.current_time / (GAMMA * self.bh_resist ** 2))
-            self.soil_resist = _part_1 * _part_2
-            if self.soil_resist < 0:
-                self.soil_resist = 0
+        part_1 = 2 / (4 * PI * self.soil.conductivity)
+        # part_2_num = 4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
+        # part_2_num = 4 * self.soil.diffusivity * self.current_time
+        part_2_num = 4 * self.soil.diffusivity * (self.current_time - self.time_of_prev_flow)
+        part_2_den = GAMMA * self.bh_resist ** 2
+        self.soil_resist = part_1 * log(part_2_num / part_2_den)
+        if self.soil_resist < 0:
+            self.soil_resist = 0
 
         return self.soil_resist
