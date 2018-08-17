@@ -20,6 +20,7 @@ class TestRunGFunctionIntegration(unittest.TestCase):
 
         input_dict['load-aggregation']['type'] = agg_method
         input_dict['g-functions']['file'] = g_function_path
+        input_dict['simulation']['time-steps per hour'] = 1
         input_dict['simulation']['runtime'] = 86400
 
         temp_directory = tempfile.mkdtemp()
