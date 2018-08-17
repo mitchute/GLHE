@@ -19,5 +19,8 @@ class NoAggMethod(BaseMethod):
         self.loads.appendleft(BaseBin(energy=load, width=width))
         self.last_time = time
 
+    def update_aggregation(self, time):
+        pass  # pragma: no cover
+
     def aggregate(self):
         pass  # pragma: no cover

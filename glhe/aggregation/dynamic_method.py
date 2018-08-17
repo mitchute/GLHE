@@ -3,6 +3,8 @@ from glhe.aggregation.base_method import BaseMethod
 from glhe.globals.constants import SEC_IN_HOUR
 from glhe.globals.variables import gv
 
+from collections import deque
+
 
 class DynamicMethod(BaseMethod):
 
@@ -15,6 +17,9 @@ class DynamicMethod(BaseMethod):
         self.start_width = None
         self.end_width = None
         self.num_sub_hour_bins = 4
+
+        self.bins = deque()
+        self.available_time = 0
 
         if inputs is not None:
             try:
@@ -54,32 +59,43 @@ class DynamicMethod(BaseMethod):
             # for cases when a constant bin width is specified
             for i in range(self.depth):
                 for _ in range(self.width):
-                    self.loads.append(BaseBin(width=pow(self.exp_rate, i)))
+                    self.bins.append(BaseBin(width=pow(self.exp_rate, i)))
         else:
             # for cases when the bin width is varies for each depth level
             for i in range(self.depth):
                 width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
                 for _ in range(width):
-                    self.loads.append(BaseBin(width=pow(self.exp_rate, i)))
+                    self.bins.append(BaseBin(width=pow(self.exp_rate, i)))
 
         self._convert_bins_hours_to_seconds()
         self._add_sts_bins()
+        self._compute_available_time()
 
     def _add_sts_bins(self):
-
         # add an extra bin here to give some slack for iterations
         for i in range(self.num_sub_hour_bins + 1):
             self.loads.appendleft(BaseBin(width=gv.time_step))
 
     def _convert_bins_hours_to_seconds(self):
-        for bin in self.loads:
+        for bin in self.bins:
             bin.width *= SEC_IN_HOUR
+
+    def _compute_available_time(self):
+        for bin in self.loads:
+            self.available_time += bin.width
 
     def get_most_recent_bin(self):
         return self.loads[1]
 
     def add_load(self, load, time):
         self.loads[0].energy = load
+
+    def update_aggregation(self, time):
+        if time >= self.available_time:
+            new_bin = self.bins[0]
+            self.available_time += new_bin.width
+            self.loads.append(new_bin)
+            self.bins.popleft()
 
     def aggregate(self):
         for i, cur_bin in reversed(list(enumerate(self.loads))[self.num_sub_hour_bins + 1:]):

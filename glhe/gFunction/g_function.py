@@ -102,6 +102,7 @@ class GFunction(SimulationEntryPoint):
     def simulate_time_step(self, inlet_temperature, mass_flow, first_pass, converged):
         if first_pass:
             self.current_time += gv.time_step
+            self.load_aggregation.update_aggregation(self.current_time)
 
             if mass_flow == 0:
                 return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)

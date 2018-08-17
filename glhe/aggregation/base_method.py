@@ -13,6 +13,10 @@ class BaseMethod(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
+    def update_aggregation(self, time):
+        pass  # pragma: no cover
+
+    @abstractmethod
     def aggregate(self):
         pass  # pragma: no cover
 

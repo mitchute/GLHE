@@ -46,6 +46,9 @@ class StaticMethod(BaseMethod):
         self.loads.appendleft(StaticBin(energy=load, width=this_width))
         self.last_time = time
 
+    def update_aggregation(self, time):
+        pass  # pragma: no cover
+
     def aggregate(self):
         """
         Aggregates the current aggregation
