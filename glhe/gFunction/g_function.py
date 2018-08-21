@@ -171,7 +171,8 @@ class GFunction(SimulationEntryPoint):
 
         outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
 
-        self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
+        # self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
+        self.outlet_temperature = outlet_temperature_new
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temperature, self.outlet_temperature]))

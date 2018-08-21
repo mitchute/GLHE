@@ -75,10 +75,9 @@
     }
   ],
   "simulation": {
-    "initial-fluid-temperature": 20,
     "name": "Basic GLHE",
-    "runtime": 97200,
-    "time-steps per hour": 60
+    "runtime": 32400,
+    "time-steps per hour": 30
   },
   "soil": {
     "conductivity": 2.7,

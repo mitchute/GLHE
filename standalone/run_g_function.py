@@ -44,7 +44,7 @@ class RunGFunctions(object):
         self.load_profile = make_load_profile(d['load-profile'])
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
-        self.glhe_entering_fluid_temperature = d['simulation']['initial-fluid-temperature']
+        self.glhe_entering_fluid_temperature = self.g.my_ground_temp(time=0, depth=50)
         self.response = TimeStepSimulationResponse(outlet_temperature=self.glhe_entering_fluid_temperature)
 
         # plant fluids instance

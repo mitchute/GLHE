@@ -9,9 +9,6 @@
     },
     "runtime": {
       "type": "number"
-    },
-    "initial-fluid-temperature": {
-      "type": "number"
     }
   }
 }

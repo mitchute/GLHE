@@ -158,8 +158,7 @@ class TestGLHE(unittest.TestCase):
             "simulation": {
                 "name": "Basic GLHE",
                 "time-step": 3600,
-                "runtime": 31536000,
-                "initial-fluid-temperature": 20
+                "runtime": 31536000
             },
             "soil": {
                 "name": "Some Rock",
