@@ -12,6 +12,7 @@ class Fluid(object):
     conductivity = 0
     prandtl = 0
     viscosity = 0
+    temperature = 0
 
     def __init__(self, inputs):
         self._fluid_name = inputs["type"].upper()
@@ -63,6 +64,7 @@ class Fluid(object):
         self.update_properties(20)
 
     def update_properties(self, temperature):
+        Fluid.temperature = temperature
         Fluid.conductivity = self.calc_conductivity(temperature)
         Fluid.specific_heat = self.calc_specific_heat(temperature)
         Fluid.density = self.calc_density(temperature)

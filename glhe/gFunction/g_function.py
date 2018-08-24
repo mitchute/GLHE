@@ -61,18 +61,24 @@ class GFunction(SimulationEntryPoint):
         self.bh_resist = 0
         self.soil_resist = 0
         self.ground_temp = 0
-        self.bh_wall_temp = init_temp
         self.ave_fluid_temp = init_temp
+        self.prev_ave_fluid_temp = init_temp
         self.flow_fraction = 0
         self.transit_time = 0
         self.load_normalized = 0
+        self.prev_load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
-        self.outlet_temperature = init_temp
+        self.outlet_temp = init_temp
         self.prev_outlet_temp = init_temp
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
         self.flow_change_fraction_limit = 0.1
+        self.specific_load = 0
+        self.prev_specific_load = 0
+        self.specific_load_change_time = 0
+        self.specific_load_tolerance = 2000
+        self.correct_exft_flag = False
 
     def register_output_variables(self):
         op.register_output_variable(self, 'bh_resist', "Local Borehole Resistance 'Rb' [K/(W/m)]")
@@ -82,7 +88,6 @@ class GFunction(SimulationEntryPoint):
         op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
         op.register_output_variable(self, 'load_normalized', "Load on GHE [W/m]")
         op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
-        op.register_output_variable(self, 'bh_wall_temp', "Borehole Wall Temp [C]")
 
     def update_g_values(self):
         time = 0
@@ -112,13 +117,13 @@ class GFunction(SimulationEntryPoint):
         else:
             return g
 
-    def simulate_time_step(self, inlet_temperature, mass_flow, first_pass, converged):
+    def simulate_time_step(self, inlet_temp, mass_flow, first_pass, converged):
         if first_pass:
             self.current_time += gv.time_step
             self.load_aggregation.update_aggregation(self.current_time)
 
             if mass_flow == 0:
-                return TimeStepSimulationResponse(outlet_temperature=inlet_temperature, heat_rate=0)
+                return TimeStepSimulationResponse(outlet_temp=inlet_temp, heat_rate=0)
 
             flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
@@ -136,63 +141,68 @@ class GFunction(SimulationEntryPoint):
             self.ground_temp = self.my_ground_temp(time=self.current_time, depth=self.my_bh.depth)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
+            self.specific_load = self.fluid.specific_heat * (inlet_temp - self.prev_outlet_temp)
+            if abs(self.specific_load - self.prev_specific_load) > self.specific_load_tolerance:
+                self.correct_exft_flag = True
+                self.specific_load_change_time = self.current_time
+            else:
+                if (self.current_time - self.specific_load_change_time) > 2.0 * self.transit_time:
+                    self.correct_exft_flag = False
+
         prev_bin = self.load_aggregation.get_most_recent_bin()
         delta_t_prev_bin = prev_bin.width
         q_prev_bin = prev_bin.get_load()
         g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
 
         temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
-
         temp_rise_history = self.calc_history_temp_rise()
-
         c_1 = (1 - self.flow_fraction) * self.tot_length / self.fluid_cap
 
-        load_num = self.ground_temp - inlet_temperature + temp_rise_history - temp_rise_prev_bin
+        load_num = self.ground_temp - inlet_temp + temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
-        self.load_normalized = load_num / load_den
 
-        total_load = self.load_normalized * self.tot_length
-
-        energy_normalized = self.load_normalized * gv.time_step
-
-        self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
-
-        self.ave_fluid_temp = self.ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
-
-        # need to protect this from going negative
-        self.bh_wall_temp = self.ave_fluid_temp - self.load_normalized * self.bh_resist
-
-        if self.current_time - self.time_of_prev_flow < 1.5 * self.transit_time:
-            delta_t = self.current_time - self.time_of_prev_flow
+        if self.correct_exft_flag:
+            self.specific_load = self.fluid.specific_heat * (inlet_temp - self.prev_outlet_temp)
+            delta_t = self.current_time - self.specific_load_change_time
             f_hanby = hanby(delta_t, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
         else:
             f_hanby = 1
-            self.prev_outlet_temp = self.outlet_temperature
 
-        outlet_temperature_new = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
+        # self.load_normalized = load_num / load_den * f_hanby + self.prev_load_normalized * (1 - f_hanby)
+        self.load_normalized = load_num / load_den
+        total_load = self.load_normalized * self.tot_length
+        energy_normalized = self.load_normalized * gv.time_step
+        self.load_aggregation.add_load(load=energy_normalized, time=self.current_time)
 
-        # self.outlet_temperature = (1 - f_hanby) * self.prev_outlet_temp + f_hanby * outlet_temperature_new
-        self.outlet_temperature = outlet_temperature_new
+        ave_fluid_temp_new = self.ground_temp + self.calc_history_temp_rise() + self.load_normalized * self.bh_resist
+        outlet_temp_new = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
+
+        self.ave_fluid_temp = f_hanby * ave_fluid_temp_new + (1 - f_hanby) * self.prev_ave_fluid_temp
+        self.outlet_temp = f_hanby * outlet_temp_new + (1 - f_hanby) * self.prev_outlet_temp
 
         # update for next time step
-        self.fluid.update_properties(mean([inlet_temperature, self.outlet_temperature]))
+        self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
 
-        if not converged:
-            self.load_aggregation.reset_to_prev()
-        else:
+        if converged:
             self.load_aggregation.aggregate()
+            self.prev_outlet_temp = self.outlet_temp
+            self.prev_ave_fluid_temp = self.ave_fluid_temp
+            self.prev_specific_load = self.specific_load
+            self.prev_load_normalized = self.load_normalized
+        else:
+            self.load_aggregation.reset_to_prev()
 
-        return TimeStepSimulationResponse(heat_rate=total_load, outlet_temperature=self.outlet_temperature)
+        return TimeStepSimulationResponse(heat_rate=total_load, outlet_temp=self.outlet_temp)
 
     def calc_flow_fraction(self):
         """
-            Computes the flow fraction based on the method outlined in:
+        Computes the flow fraction based on the method outlined in:
 
-            Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
-            exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
+        Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
+        exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
 
-            :return flow fraction
-            """
+        :return flow fraction
+        """
 
         # Define base variables
         t_i = self.current_time
