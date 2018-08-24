@@ -146,7 +146,7 @@ class GFunction(SimulationEntryPoint):
                 self.correct_exft_flag = True
                 self.specific_load_change_time = self.current_time
             else:
-                if (self.current_time - self.specific_load_change_time) > 2.0 * self.transit_time:
+                if (self.current_time - self.specific_load_change_time) > 1.8 * self.transit_time:
                     self.correct_exft_flag = False
 
         prev_bin = self.load_aggregation.get_most_recent_bin()
