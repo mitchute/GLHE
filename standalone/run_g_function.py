@@ -76,7 +76,6 @@ class RunGFunctions(object):
 
             while self.sim_time < self.run_time:
 
-                # only print every so often
                 if self.print_idx == 50:
                     print("Sim Time: {}".format(self.sim_time))
                     self.print_idx = 0
@@ -95,6 +94,7 @@ class RunGFunctions(object):
                 # run manually to init the methods
                 self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                           self.mass_flow_rate,
+                                          gv.time_step,
                                           True,
                                           False)
 
@@ -110,16 +110,15 @@ class RunGFunctions(object):
                 # run manually one more time to lock down state
                 new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                                          self.mass_flow_rate,
+                                                         gv.time_step,
                                                          False,
                                                          True)
 
                 self.response.outlet_temp = new_response.outlet_temp
                 self.response.heat_rate = new_response.heat_rate
 
-                # update the output variables
                 op.report_output()
 
-                # advance in time through the GLHE for the next time step
                 self.sim_time += gv.time_step
 
             # dump the results to a file
@@ -131,11 +130,13 @@ class RunGFunctions(object):
     def wrapped_sim_time_step(self, input_args):
         ret_response = self.g.simulate_time_step(input_args[0],
                                                  self.mass_flow_rate,
+                                                 gv.time_step,
                                                  False,
                                                  False)
 
-        load = self.fluid_cap * (input_args[0] - ret_response.outlet_temp)
-        return abs(load - self.current_load)
+        # load = self.fluid_cap * (input_args[0] - ret_response.outlet_temp)
+        # return abs(load - self.current_load)
+        return abs(ret_response.heat_rate - self.current_load)
 
 
 if __name__ == '__main__':

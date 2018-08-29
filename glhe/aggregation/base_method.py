@@ -6,24 +6,30 @@ class BaseMethod(ABC):
 
     def __init__(self):
         self.loads = deque()
-        self.last_time = 0
+        self.type = None
 
-    @abstractmethod
-    def add_load(self, load, time):
-        pass  # pragma: no cover
+    def update_time(self):
+        time = 0
+        for load in self.loads:
+            time += load.width
+            load.time = time
 
-    @abstractmethod
-    def update_aggregation(self, time):
-        pass  # pragma: no cover
+    def set_current_load(self, load):
+        self.loads[0].energy = load
 
-    @abstractmethod
-    def aggregate(self):
-        pass  # pragma: no cover
+    def reset_current_load(self):
+        self.loads[0].energy = 0
 
-    @abstractmethod
     def get_most_recent_bin(self):
+        try:
+            return self.loads[1]
+        except IndexError:
+            return self.loads[0]
+
+    @abstractmethod
+    def add_load(self, bin_width, sim_time):
         pass  # pragma: no cover
 
-    def reset_to_prev(self):
-        self.last_time -= self.loads[0].width
-        self.loads.popleft()
+    @abstractmethod
+    def aggregate(self, sim_time):
+        pass  # pragma: no cover

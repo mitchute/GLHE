@@ -2,6 +2,7 @@ from collections import defaultdict, deque
 
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
+from glhe.aggregation.types import AggregationType
 from glhe.globals.constants import SEC_IN_HOUR
 from glhe.globals.variables import gv
 
@@ -10,6 +11,8 @@ class StaticMethod(BaseMethod):
 
     def __init__(self, inputs=None):
         BaseMethod.__init__(self)
+
+        self.type = AggregationType.STATIC
 
         if inputs is None:
             self.min_bin_nums = [6, 10, 10, 10, 10]
@@ -35,21 +38,11 @@ class StaticMethod(BaseMethod):
         self.bin_widths.insert(0, gv.time_step)
         self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
-    def get_most_recent_bin(self):
-        if len(self.loads) == 0:
-            return StaticBin(0, gv.time_step)
-        else:
-            return self.loads[0]
+    def add_load(self, bin_width, sim_time):
+        self.loads.appendleft(StaticBin(0, width=bin_width))
+        self.update_time()
 
-    def add_load(self, load, time):
-        this_width = time - self.last_time
-        self.loads.appendleft(StaticBin(energy=load, width=this_width))
-        self.last_time = time
-
-    def update_aggregation(self, time):
-        pass  # pragma: no cover
-
-    def aggregate(self):
+    def aggregate(self, sim_time):
         """
         Aggregates the current aggregation
 

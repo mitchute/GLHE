@@ -41,22 +41,7 @@
     }
   ],
   "load-aggregation": {
-    "static": {
-      "bin widths in hours": [
-        1,
-        2,
-        4,
-        8
-      ],
-      "min number bins": [
-        5,
-        5,
-        5,
-        5
-      ],
-      "min sub-hour bins": 5
-    },
-    "type": "static"
+    "type": "none"
   },
   "load-profile": {
     "external": {
@@ -76,8 +61,8 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "runtime": 32400,
-    "time-steps per hour": 60
+    "runtime": 36000,
+    "time-steps per hour": 30
   },
   "soil": {
     "conductivity": 2.7,

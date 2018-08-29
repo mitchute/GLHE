@@ -17,29 +17,25 @@ class TestDynamic(unittest.TestCase):
     def test_add_load(self):
         gv.time_step = 900
         tst = DynamicMethod()
-        tst.add_load(1, 0)
-        tst.update_aggregation(900)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(1800)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
         self.assertEqual(tst.loads[2].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(2700)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
         self.assertEqual(tst.loads[2].energy, 1)
         self.assertEqual(tst.loads[3].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(3600)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -47,8 +43,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[3].energy, 1)
         self.assertEqual(tst.loads[4].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(4500)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -57,8 +52,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1)
         self.assertEqual(tst.loads[5].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(5400)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -67,8 +61,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1)
         self.assertEqual(tst.loads[5].energy, 2)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(6300)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -77,8 +70,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1)
         self.assertEqual(tst.loads[5].energy, 3)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(7200)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -87,8 +79,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[4].energy, 1)
         self.assertEqual(tst.loads[5].energy, 4)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(8100)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)
@@ -98,8 +89,7 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 4)
         self.assertEqual(tst.loads[6].energy, 1)
 
-        tst.add_load(1, 0)
-        tst.update_aggregation(9000)
+        tst.set_current_load(1, 0)
         tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 0)
         self.assertEqual(tst.loads[1].energy, 1)

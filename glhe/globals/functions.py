@@ -94,7 +94,7 @@ def hanby(time, vol_flow_rate, volume):
     """
 
     tau = vol_flow_rate * time / volume
-    tau = max(1/0.7 * tau - 0.9285, 0)
+    # tau = max(1/0.7 * tau - 0.9285, 0)
     num_nodes = 20
     ret_sum = 1
     for i in range(1, num_nodes):
