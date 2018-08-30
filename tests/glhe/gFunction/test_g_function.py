@@ -126,7 +126,7 @@ class TestGFunction(unittest.TestCase):
         gv.time_step = 15
         response = tst.simulate_time_step(inlet_temp=20.0,
                                           mass_flow=0,
-                                          sim_time=0,
+                                          time_step=gv.time_step,
                                           first_pass=True,
                                           converged=False)
         self.assertIsInstance(response, TimeStepSimulationResponse)
