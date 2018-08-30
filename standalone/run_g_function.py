@@ -44,8 +44,8 @@ class RunGFunctions(object):
         self.load_profile = make_load_profile(d['load-profile'])
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
-        self.glhe_entering_fluid_temperature = d['simulation']['initial-fluid-temperature']
-        self.response = TimeStepSimulationResponse(outlet_temperature=self.glhe_entering_fluid_temperature)
+        self.glhe_entering_fluid_temperature = self.g.my_ground_temp(time=0, depth=50)
+        self.response = TimeStepSimulationResponse(outlet_temp=self.glhe_entering_fluid_temperature)
 
         # plant fluids instance
         self.fluid = Fluid(d['fluid'])
@@ -54,6 +54,7 @@ class RunGFunctions(object):
         self.sim_time = 0
         self.current_load = 0
         self.mass_flow_rate = 0
+        self.fluid_cap = 0
         self.print_idx = 0
         self.init_output_vars = True
 
@@ -63,7 +64,7 @@ class RunGFunctions(object):
         op.register_output_variable(self, 'mass_flow_rate', "Plant Mass Flow Rate [kg/s]")
         op.register_output_variable(self, 'glhe_entering_fluid_temperature', "GLHE Inlet Temperature [C]")
         op.register_output_variable(self.response, 'heat_rate', "GLHE Heat Transfer Rate [W]")
-        op.register_output_variable(self.response, 'outlet_temperature', "GLHE Outlet Temperature [C]")
+        op.register_output_variable(self.response, 'outlet_temp', "GLHE Outlet Temperature [C]")
 
     def simulate(self):
         start_time = datetime.datetime.now()
@@ -75,7 +76,6 @@ class RunGFunctions(object):
 
             while self.sim_time < self.run_time:
 
-                # only print every so often
                 if self.print_idx == 50:
                     print("Sim Time: {}".format(self.sim_time))
                     self.print_idx = 0
@@ -87,15 +87,14 @@ class RunGFunctions(object):
                 self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
                 # update entering fluid temperature
-                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temperature) / 2
-                cp = self.fluid.calc_specific_heat(mean_temp)
-                eft_num = self.current_load
-                eft_den = self.mass_flow_rate * cp
-                self.glhe_entering_fluid_temperature = self.response.outlet_temperature + eft_num / eft_den
+                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
+                self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
+                self.glhe_entering_fluid_temperature = self.response.outlet_temp + self.current_load / self.fluid_cap
 
                 # run manually to init the methods
                 self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                           self.mass_flow_rate,
+                                          gv.time_step,
                                           True,
                                           False)
 
@@ -106,21 +105,20 @@ class RunGFunctions(object):
                                options={'fatol': self.load_convergence_tolerance})
 
                 # set result
-                self.glhe_entering_fluid_temperature = res.x
+                self.glhe_entering_fluid_temperature = res.x[0]
 
                 # run manually one more time to lock down state
                 new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
                                                          self.mass_flow_rate,
+                                                         gv.time_step,
                                                          False,
                                                          True)
 
+                self.response.outlet_temp = new_response.outlet_temp
                 self.response.heat_rate = new_response.heat_rate
-                self.response.outlet_temperature = new_response.outlet_temperature
 
-                # update the output variables
                 op.report_output()
 
-                # advance in time through the GLHE for the next time step
                 self.sim_time += gv.time_step
 
             # dump the results to a file
@@ -129,12 +127,15 @@ class RunGFunctions(object):
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover
 
-    def wrapped_sim_time_step(self, inlet_temp):
-        ret_response = self.g.simulate_time_step(inlet_temp,
+    def wrapped_sim_time_step(self, input_args):
+        ret_response = self.g.simulate_time_step(input_args[0],
                                                  self.mass_flow_rate,
+                                                 gv.time_step,
                                                  False,
                                                  False)
 
+        # load = self.fluid_cap * (input_args[0] - ret_response.outlet_temp)
+        # return abs(load - self.current_load)
         return abs(ret_response.heat_rate - self.current_load)
 
 
