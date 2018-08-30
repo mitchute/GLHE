@@ -109,4 +109,3 @@ class TestDynamic(unittest.TestCase):
         self.assertEqual(tst.loads[7].energy, 0.150390625)
         self.assertEqual(tst.loads[8].energy, 0.0185546875)
         self.assertEqual(tst.loads[9].energy, 0.0009765625)
-

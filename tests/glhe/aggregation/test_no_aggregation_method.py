@@ -1,8 +1,8 @@
 import unittest
-from glhe.globals.variables import gv
-from glhe.globals.functions import set_time_step
 
 from glhe.aggregation.no_aggregation_method import NoAggMethod
+from glhe.globals.functions import set_time_step
+from glhe.globals.variables import gv
 
 
 class TestNoAgg(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestNoAgg(unittest.TestCase):
 
     def test_add_load(self):
         gv.time_step = set_time_step(2)
-        sim_time =0
+        sim_time = 0
 
         tst = NoAggMethod()
 

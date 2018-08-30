@@ -6,8 +6,6 @@ from scipy.interpolate import interp1d
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
-from glhe.globals.functions import hanby
-from glhe.globals.variables import gv
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -74,11 +72,7 @@ class GFunction(SimulationEntryPoint):
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
         self.flow_change_fraction_limit = 0.1
-        self.specific_load = 0
-        self.prev_specific_load = 0
-        self.specific_load_change_time = 0
         self.specific_load_tolerance = 2000
-        self.correct_exft_flag = False
         self.prev_sim_time = 0
         self.time_step = 0
 
@@ -147,14 +141,6 @@ class GFunction(SimulationEntryPoint):
             self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.depth)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
-            # self.specific_load = self.fluid.specific_heat * (inlet_temp - self.prev_outlet_temp)
-            # if abs(self.specific_load - self.prev_specific_load) > self.specific_load_tolerance:
-            #     self.correct_exft_flag = True
-            #     self.specific_load_change_time = self.current_time
-            # else:
-            #     if (self.current_time - self.specific_load_change_time) > 1.8 * self.transit_time:
-            #         self.correct_exft_flag = False
-
         prev_bin = self.load_aggregation.get_most_recent_bin()
         delta_t_prev_bin = prev_bin.time
         q_prev_bin = prev_bin.get_load()
@@ -167,40 +153,22 @@ class GFunction(SimulationEntryPoint):
         load_num = self.ground_temp - inlet_temp + temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
 
-        # if self.correct_exft_flag:
-        #     self.specific_load = self.fluid.specific_heat * (inlet_temp - self.prev_outlet_temp)
-        #     delta_t = self.current_time - self.specific_load_change_time
-        #     f_hanby = hanby(delta_t, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
-        # else:
-        #     f_hanby = 1
-
-        # self.load_per_meter = load_num / load_den * f_hanby + self.prev_load_normalized * (1 - f_hanby)
         self.load_per_meter = load_num / load_den
         energy_per_meter = self.load_per_meter * self.time_step
 
         self.load_aggregation.set_current_load(load=energy_per_meter)
 
         temp_rise_history = self.calc_history_temp_rise(True)
-        ave_fluid_temp_new = self.ground_temp + temp_rise_history + self.load_per_meter * self.bh_resist
+        self.ave_fluid_temp = self.ground_temp + temp_rise_history + self.load_per_meter * self.bh_resist
 
         total_load = self.load_per_meter * self.tot_length
-        outlet_temp_new = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
-
-        # self.ave_fluid_temp = f_hanby * ave_fluid_temp_new + (1 - f_hanby) * self.prev_ave_fluid_temp
-        # self.outlet_temp = f_hanby * outlet_temp_new + (1 - f_hanby) * self.prev_outlet_temp
-
-        self.ave_fluid_temp = ave_fluid_temp_new
-        self.outlet_temp = outlet_temp_new
+        self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
 
         # update for next time step
         self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
 
         if converged:
             self.load_aggregation.aggregate(self.sim_time)
-            self.prev_outlet_temp = self.outlet_temp
-            self.prev_ave_fluid_temp = self.ave_fluid_temp
-            self.prev_specific_load = self.specific_load
-            self.prev_load_normalized = self.load_per_meter
             self.prev_sim_time = self.sim_time
         else:
             self.load_aggregation.reset_current_load()
@@ -341,7 +309,6 @@ class GFunction(SimulationEntryPoint):
         temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
 
         return temp_rise_sum
-
 
     def calc_soil_resist(self):
         # self.soil_resist = abs(self.ground_temp - self.bh_wall_temp / self.load_normalized)

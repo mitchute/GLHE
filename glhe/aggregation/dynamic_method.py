@@ -1,5 +1,3 @@
-from collections import deque
-
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.types import AggregationType
@@ -81,30 +79,10 @@ class DynamicMethod(BaseMethod):
         for bin in self.loads:
             bin.width *= SEC_IN_HOUR
 
-    # def _append_bin(self):
-    #     new_bin = self.bins[0]
-    #     self.loads.append(new_bin)
-    #     self.bins.popleft()
-
     def add_load(self, bin_width, sim_time):
         self.update_time()
-        # try:
-        #     if sim_time <= self.loads[-1].time and self.loads:
-        #         return
-        # except IndexError:
-        #     pass
-        #
-        # self._append_bin()
 
     def aggregate(self, sim_time):
-
-        # if len(self.loads) < self.num_sub_hour_bins:
-        #     self._append_bin()
-        #     for i in reversed(range(1, len(self.loads))):
-        #         delta = self.loads[i - 1].energy
-        #         self.loads[i - 1].energy -= delta
-        #         self.loads[i].energy += delta
-        #     return
 
         # self.add_load(gv.time_step, sim_time + gv.time_step)
 
@@ -113,7 +91,3 @@ class DynamicMethod(BaseMethod):
             delta = left_bin.energy * gv.time_step / left_bin.width
             cur_bin.energy += delta
             left_bin.energy -= delta
-
-        # for i in reversed(range(self.num_sub_hour_bins)):
-        #     self.loads[i].energy = self.loads[i - 1].energy
-
