@@ -104,13 +104,13 @@ class GFunction(SimulationEntryPoint):
 
         try:
             lntts = log(time / self.t_s)
-        except ValueError:
-            return 0
+        except ValueError:  # pragma: no cover
+            return 0  # pragma: no cover
 
         g = self._g_function_interp(lntts)
 
         if (g / (2 * PI * self.soil.conductivity) + self.bh_resist) < 0:
-            return -self.bh_resist * 2 * PI * self.soil.conductivity
+            return -self.bh_resist * 2 * PI * self.soil.conductivity  # pragma: no cover
         else:
             return g
 
@@ -318,7 +318,7 @@ class GFunction(SimulationEntryPoint):
         # part_2_num = 4 * self.soil.diffusivity * self.current_time
         part_2_num = 4 * self.soil.diffusivity * (self.sim_time - self.time_of_prev_flow)
         if part_2_num == 0:
-            self.soil_resist = 0
+            self.soil_resist = 0  # pragma: no cover
         else:
             part_2_den = GAMMA * self.bh_resist ** 2
             self.soil_resist = part_1 * log(part_2_num / part_2_den)
