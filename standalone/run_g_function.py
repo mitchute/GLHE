@@ -123,7 +123,14 @@ class RunGFunctions(object):
 
             # dump the results to a file
             op.write_to_file(self.output_file_path)
+
+            log_file = '{}{}'.format(self.output_file_path.split('.csv')[0], '.log')
+
+            with open(log_file, 'w') as f:
+                f.write('Final runtime: {}'.format(datetime.datetime.now() - start_time))
+
             print('Final runtime: {}'.format(datetime.datetime.now() - start_time))
+
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover
 
