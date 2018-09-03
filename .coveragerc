@@ -1,7 +1,6 @@
 [run]
 source =
         glhe/
-        loads/
         tests/
 omit =
         /usr/*

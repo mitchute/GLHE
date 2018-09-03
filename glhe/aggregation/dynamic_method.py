@@ -84,8 +84,6 @@ class DynamicMethod(BaseMethod):
 
     def aggregate(self, sim_time):
 
-        # self.add_load(gv.time_step, sim_time + gv.time_step)
-
         for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy * gv.time_step / left_bin.width

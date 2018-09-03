@@ -32,9 +32,9 @@ class RunGFunctions(object):
         self.run_time = d['simulation']['runtime']
 
         try:
-            self.output_file_path = d['simulation']['output path']
+            self.output_file_path = d['simulation']['output-path']
         except KeyError:
-            self.output_file_path = os.getcwd()
+            self.output_file_path = os.path.join(os.getcwd(), 'out.csv')
 
         try:
             self.load_convergence_tolerance = d['simulation']['load convergence tolerance']
@@ -122,7 +122,7 @@ class RunGFunctions(object):
                 self.sim_time += gv.time_step
 
             # dump the results to a file
-            op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+            op.write_to_file(self.output_file_path)
             print('Final runtime: {}'.format(datetime.datetime.now() - start_time))
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover

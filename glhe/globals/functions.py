@@ -69,7 +69,10 @@ def load_json(path):
 
 def write_json(path, obj):
     with open(path, 'w') as f:
-        f.write(json.dumps(obj))
+        f.write(json.dumps(obj,
+                           sort_keys=True,
+                           indent=2,
+                           separators=(',', ': ')))
 
 
 def hanby(time, vol_flow_rate, volume):
