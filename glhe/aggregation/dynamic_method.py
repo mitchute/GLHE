@@ -76,8 +76,8 @@ class DynamicMethod(BaseMethod):
             self.loads.appendleft(DynamicBin(width=gv.time_step))
 
     def _convert_bins_hours_to_seconds(self):
-        for bin in self.loads:
-            bin.width *= SEC_IN_HOUR
+        for this_bin in self.loads:
+            this_bin.width *= SEC_IN_HOUR
 
     def add_load(self, bin_width, sim_time):
         self.update_time()
