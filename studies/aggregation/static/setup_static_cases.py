@@ -67,8 +67,8 @@ def setup_all_cases():
                 for num_other in min_num_bins_others:
                     for width in bin_widths:
 
-                        run_name = '{}_{}_{}'.format(num_hourly, num_other, width[1])
-                        run_path = join(cwd, 'runs', load_time_name, run_name)
+                        run_name = '{}_{}'.format(num_other, width[1])
+                        run_path = join(cwd, 'runs', load_time_name, str(num_hourly), run_name)
 
                         if not os.path.exists(run_path):
                             os.makedirs(run_path)
