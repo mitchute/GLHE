@@ -41,7 +41,11 @@
     }
   ],
   "load-aggregation": {
-    "type": "none"
+    "type": "none",
+    "static": {
+      "min number bins": [0],
+      "bin widths in hours": [0]
+    }
   },
   "load-profile": {
     "type": "external",
