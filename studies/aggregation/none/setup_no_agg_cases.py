@@ -44,7 +44,8 @@ def setup_case():
         for load in loads:
             dir_name = '{}_{}'.format(load, int(time / SEC_IN_YEAR))
             dir_path = join(cwd, dir_name)
-            os.mkdir(dir_path)
+            if not os.path.exists(dir_path):
+                os.mkdir(dir_path)
             load_path = '{}.csv'.format(norm(join(cwd, '../base', load)))
             g_path = norm(join(cwd, '../base', 'g_functions.csv'))
             output_path = join(dir_path, 'out.csv')
