@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.abspath('../../..'))
 
 from glhe.globals.constants import SEC_IN_YEAR  # noqa
 from glhe.globals.functions import load_json, write_json  # noqa
+from studies.aggregation.base.write_pbs import write_pbs  # noqa
 
 run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
 loads = ['balanced', 'imbalanced']
@@ -26,23 +27,7 @@ def write_no_agg_json_input(run_dir, time, path_to_load, path_to_g, path_to_outp
     write_json(join(run_dir, 'in.json'), f)
 
 
-def write_pbs(run_dir, time):
-    pbs = ''
-
-    with open(norm(join(cwd, '../base', 'run.pbs')), 'r') as f:
-        for line in f:
-            if 'SIM_RUNTIME' in line:
-                pbs += line.replace('SIM_RUNTIME', time)
-            elif 'PATH_TO_LOCAL_JSON_FILE' in line:
-                pbs += line.replace('PATH_TO_LOCAL_JSON_FILE', join(run_dir, 'in.json'))
-            else:
-                pbs += line
-
-    with open(join(run_dir, 'run.pbs'), 'w') as f:
-        f.write(pbs)
-
-
-def setup_case():
+def setup_all_cases():
     for idx, time in enumerate(run_times):
         for load in loads:
             run_name = '{}_{}'.format(load, int(time / SEC_IN_YEAR))
@@ -57,4 +42,4 @@ def setup_case():
 
 
 if __name__ == "__main__":
-    setup_case()
+    setup_all_cases()
