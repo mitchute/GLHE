@@ -3,8 +3,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../../..'))
 
-from glhe.globals.constants import SEC_IN_YEAR
-from glhe.globals.functions import load_json, write_json
+from glhe.globals.constants import SEC_IN_YEAR  # noqa
+from glhe.globals.functions import load_json, write_json  # noqa
 
 run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
 loads = ['balanced', 'imbalanced']
