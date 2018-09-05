@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.insert(0, os.path.abspath('../../..'))
 
 from glhe.globals.constants import SEC_IN_YEAR
 from glhe.globals.functions import load_json, write_json
@@ -42,15 +44,15 @@ def write_pbs(run_dir, time):
 def setup_case():
     for idx, time in enumerate(run_times):
         for load in loads:
-            dir_name = '{}_{}'.format(load, int(time / SEC_IN_YEAR))
-            dir_path = join(cwd, dir_name)
-            if not os.path.exists(dir_path):
-                os.mkdir(dir_path)
+            run_name = '{}_{}'.format(load, int(time / SEC_IN_YEAR))
+            run_path = join(cwd, 'runs', run_name)
+            if not os.path.exists(run_path):
+                os.makedirs(run_path)
             load_path = '{}.csv'.format(norm(join(cwd, '../base', load)))
             g_path = norm(join(cwd, '../base', 'g_functions.csv'))
-            output_path = join(dir_path, 'out.csv')
-            write_no_agg_json_input(dir_path, time, load_path, g_path, output_path)
-            write_pbs(dir_path, wall_times[idx])
+            output_path = join(run_path, 'out.csv')
+            write_no_agg_json_input(run_path, time, load_path, g_path, output_path)
+            write_pbs(run_path, wall_times[idx])
 
 
 if __name__ == "__main__":
