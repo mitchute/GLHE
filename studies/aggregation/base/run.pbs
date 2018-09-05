@@ -10,4 +10,4 @@ cd $PBS_O_WORKDIR
 export PATH=/home/mitchute/.pyenv/versions/GLHE/bin:$PATH
 export PYTHONPATH=/home/mitchute/.pyenv/versions/GLHE/lib/python3.5/site-packages:$PYTHONPATH
 
-python ../../base/run_case.py PATH_TO_LOCAL_JSON_FILE
+python /scratch/mitchute/glhe/studies/aggregation/base/run_case.py PATH_TO_LOCAL_JSON_FILE
