@@ -57,6 +57,7 @@ def write_static_json_input(run_dir, time, path_to_load, path_to_g, path_to_outp
 
     write_json(join(run_dir, 'in.json'), f)
 
+
 def setup_all_cases():
     for _, load in enumerate(loads):
         for idx, time in enumerate(run_times):
