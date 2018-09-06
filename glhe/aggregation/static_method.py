@@ -22,7 +22,7 @@ class StaticMethod(BaseMethod):
             try:
                 self.min_bin_nums = inputs['min number bins']
             except KeyError:  # pragma: no cover
-                pass # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 self.bin_widths = inputs['bin widths in hours']
