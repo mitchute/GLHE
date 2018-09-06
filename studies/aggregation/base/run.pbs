@@ -3,7 +3,6 @@
 #PBS -l nodes=1:ppn=1
 #PBS -l walltime=SIM_RUNTIME
 #PBS -j oe
-#PBS -m abe -M matt.s.mitchell@okstate.edu
 
 cd $PBS_O_WORKDIR
 
