@@ -7,7 +7,9 @@ import pandas as pd
 sys.path.insert(0, os.path.abspath('../../../../../../..'))
 
 from glhe.globals.functions import load_json  # noqa
-from glhe.globals.constants import SEC_IN_YEAR, SEC_IN_HOUR, SEC_IN_MIN  # noqa
+from glhe.globals.constants import SEC_IN_YEAR  # noqa
+from glhe.globals.constants import SEC_IN_HOUR  # noqa
+from glhe.globals.constants import SEC_IN_MIN  # noqa
 
 # shortcuts
 cwd = os.getcwd()
