@@ -95,6 +95,9 @@ def process_all_run_stats(path):
 
     df = pd.DataFrame(columns=cols)
 
+    with open('static_stats.log', 'w') as f:
+        f.write('')
+
     for dirpath, subdirs, files in os.walk(path):
         for subdir in subdirs:
 
@@ -104,18 +107,27 @@ def process_all_run_stats(path):
 
             if run_exists and log_exists:
 
-                run_time, rmse, load, sim_time = compute_run_stats(this_dir)
-                config_1, config_2 = get_configuration(this_dir)
+                try:
+                    run_time, rmse, load, sim_time = compute_run_stats(this_dir)
+                    config_1, config_2 = get_configuration(this_dir)
 
-                d = {cols[0]: [run_time],
-                     cols[1]: [rmse],
-                     cols[2]: [load],
-                     cols[3]: [sim_time],
-                     cols[4]: [config_1],
-                     cols[5]: [config_2]}
+                    d = {cols[0]: [run_time],
+                         cols[1]: [rmse],
+                         cols[2]: [load],
+                         cols[3]: [sim_time],
+                         cols[4]: [config_1],
+                         cols[5]: [config_2]}
 
-                df_case = pd.DataFrame(data=d)
-                df = pd.concat([df, df_case])
+                    df_case = pd.DataFrame(data=d)
+                    df = pd.concat([df, df_case])
+
+                    with open('static_stat.log', 'a') as f:
+                        f.write('{} completed\n'.format(this_dir))
+
+                except:
+
+                    with open('static_stat.log', 'a') as f:
+                        f.write('{} failed\n'.format(this_dir))
 
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
