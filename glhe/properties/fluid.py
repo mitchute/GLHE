@@ -60,6 +60,8 @@ class Fluid(object):
             self._min_concentration = 0
             self._max_concentration = 60
 
+        self.temp_freeze = self.calc_freezing_point()
+
         # init at 20 C
         self.update_properties(20)
 
@@ -70,6 +72,16 @@ class Fluid(object):
         Fluid.density = self.calc_density(temperature)
         Fluid.prandtl = self.calc_prandtl(temperature)
         Fluid.viscosity = self.calc_viscosity(temperature)
+
+    def calc_freezing_point(self):
+        """
+        Determines the freezing point of the fluid.
+        Uses the CoolProp python library.
+
+        :returns fluid freezing point in [K]
+        """
+
+        return PropsSI("T_FREEZE", self._fluid_str)
 
     def calc_conductivity(self, temperature):
         """
@@ -136,4 +148,14 @@ class Fluid(object):
                  FluidPropertyType.SPECIFIC_HEAT: 'C',
                  FluidPropertyType.VISCOSITY: 'VISCOSITY'}
 
-        return PropsSI(props[property], 'T', temp_in_kelvin(temperature), 'P', self.pressure, self._fluid_str)
+        try:
+            return PropsSI(props[property],
+                           'T', temp_in_kelvin(temperature),
+                           'P', self.pressure,
+                           self._fluid_str)
+        except ValueError:
+            print("Temperature out of range. Fluid properties evaluated at the freezing point.")
+            return PropsSI(props[property],
+                           'T', self.temp_freeze,
+                           'P', self.pressure,
+                           self._fluid_str)
