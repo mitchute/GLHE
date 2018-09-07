@@ -18,15 +18,15 @@ class Fluid(object):
         self._fluid_name = inputs["type"].upper()
 
         if self._fluid_name == "WATER":
-            self._type = FluidType.WATER
+            self._fluid_type = FluidType.WATER
         elif self._fluid_name == "EA":
-            self._type = FluidType.ETHYL_ALCOHOL
+            self._fluid_type = FluidType.ETHYL_ALCOHOL
             self._concentration = inputs["concentration"] / 100.0
         elif self._fluid_name == "EG":
-            self._type = FluidType.ETHYLENE_GLYCOL
+            self._fluid_type = FluidType.ETHYLENE_GLYCOL
             self._concentration = inputs["concentration"] / 100.0
         elif self._fluid_name == "PG":
-            self._type = FluidType.PROPYLENE_GLYCOL
+            self._fluid_type = FluidType.PROPYLENE_GLYCOL
             self._concentration = inputs["concentration"] / 100.0
         else:
             raise ValueError("'{}' fluid is not supported".format(self._fluid_name))
@@ -37,23 +37,23 @@ class Fluid(object):
         self._max_concentration = 100
 
         # Fluid definitions: http://www.coolprop.org/fluid_properties/Incompressibles.html#the-different-fluids
-        if self._type == FluidType.WATER:
+        if self._fluid_type == FluidType.WATER:
             self._fluid_str = "WATER"
             self._min_temperature = 0
             self._max_temperature = 200
-        elif self._type == FluidType.ETHYL_ALCOHOL:
+        elif self._fluid_type == FluidType.ETHYL_ALCOHOL:
             self._fluid_str = "INCOMP::MEA[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 40
             self._min_concentration = 0
             self._max_concentration = 60
-        elif self._type == FluidType.ETHYLENE_GLYCOL:
+        elif self._fluid_type == FluidType.ETHYLENE_GLYCOL:
             self._fluid_str = "INCOMP::MEG[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 100
             self._min_concentration = 0
             self._max_concentration = 60
-        elif self._type == FluidType.PROPYLENE_GLYCOL:
+        elif self._fluid_type == FluidType.PROPYLENE_GLYCOL:
             self._fluid_str = "INCOMP::MPG[{0}]".format(self._concentration)
             self._min_temperature = -100
             self._max_temperature = 100
@@ -81,7 +81,10 @@ class Fluid(object):
         :returns fluid freezing point in [K]
         """
 
-        return PropsSI("T_FREEZE", self._fluid_str)
+        if self._fluid_type == FluidType.WATER:
+            return 273.15
+        else:
+            return PropsSI("T_FREEZE", self._fluid_str)
 
     def calc_conductivity(self, temperature):
         """

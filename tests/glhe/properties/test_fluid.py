@@ -8,13 +8,13 @@ class TestFluid(unittest.TestCase):
 
     def test_init(self):
         tst_w = Fluid({"type": "water", "concentration": 0})
-        self.assertEqual(tst_w._type, FluidType.WATER)
+        self.assertEqual(tst_w._fluid_type, FluidType.WATER)
         self.assertEqual(tst_w._min_temperature, 0)
         self.assertEqual(tst_w._max_temperature, 200)
         self.assertEqual(tst_w._fluid_str, "WATER")
 
         tst_ea = Fluid({"type": "EA", "concentration": 50})
-        self.assertEqual(tst_ea._type, FluidType.ETHYL_ALCOHOL)
+        self.assertEqual(tst_ea._fluid_type, FluidType.ETHYL_ALCOHOL)
         self.assertEqual(tst_ea._min_temperature, -100)
         self.assertEqual(tst_ea._max_temperature, 40)
         self.assertEqual(tst_ea._min_concentration, 0)
@@ -22,7 +22,7 @@ class TestFluid(unittest.TestCase):
         self.assertEqual(tst_ea._fluid_str, "INCOMP::MEA[0.5]")
 
         tst_eg = Fluid({"type": "EG", "concentration": 50})
-        self.assertEqual(tst_eg._type, FluidType.ETHYLENE_GLYCOL)
+        self.assertEqual(tst_eg._fluid_type, FluidType.ETHYLENE_GLYCOL)
         self.assertEqual(tst_eg._min_temperature, -100)
         self.assertEqual(tst_eg._max_temperature, 100)
         self.assertEqual(tst_eg._min_concentration, 0)
@@ -30,7 +30,7 @@ class TestFluid(unittest.TestCase):
         self.assertEqual(tst_eg._fluid_str, "INCOMP::MEG[0.5]")
 
         tst_pg = Fluid({"type": "PG", "concentration": 50})
-        self.assertEqual(tst_pg._type, FluidType.PROPYLENE_GLYCOL)
+        self.assertEqual(tst_pg._fluid_type, FluidType.PROPYLENE_GLYCOL)
         self.assertEqual(tst_pg._min_temperature, -100)
         self.assertEqual(tst_pg._max_temperature, 100)
         self.assertEqual(tst_pg._min_concentration, 0)
