@@ -120,7 +120,7 @@ def process_all_run_stats(path):
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
 
-    df.to_csv("stats.csv")
+    df.to_csv("static_stats.csv")
 
 
 if __name__ == "__main__":
