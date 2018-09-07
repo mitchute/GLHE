@@ -4,7 +4,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.abspath('../../../../../../..'))
+sys.path.insert(0, os.path.abspath('../../..'))
 
 from glhe.globals.functions import load_json  # noqa
 from glhe.globals.constants import SEC_IN_YEAR  # noqa
