@@ -58,6 +58,9 @@ def get_base_run_file_path(path):
                                       '{}_{}'.format(load, time),
                                       'out.csv'))
 
+    if not os.path.exists(path_to_base_run_file):
+        raise FileNotFoundError
+
     return path_to_base_run_file, load, time
 
 
@@ -124,10 +127,8 @@ def process_all_run_stats(path):
                     with open('static_stat.log', 'a') as f:
                         f.write('{} completed\n'.format(this_dir))
 
-                except:
-
-                    with open('static_stat.log', 'a') as f:
-                        f.write('{} failed\n'.format(this_dir))
+                except FileNotFoundError:
+                    pass
 
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
