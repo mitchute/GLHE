@@ -98,9 +98,6 @@ def process_all_run_stats(path):
 
     df = pd.DataFrame(columns=cols)
 
-    with open('static_stats.log', 'w') as f:
-        f.write('')
-
     for dirpath, subdirs, files in os.walk(path):
         for subdir in subdirs:
 
@@ -124,7 +121,7 @@ def process_all_run_stats(path):
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case])
 
-                    with open('static_stat.log', 'a') as f:
+                    with open('static_stats.log', 'a') as f:
                         f.write('{} completed\n'.format(this_dir))
 
                 except FileNotFoundError:
