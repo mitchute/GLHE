@@ -23,10 +23,12 @@ def os_path_split_asunder(path, debug=False):
     parts = []
     while True:
         newpath, tail = os.path.split(path)
-        if debug: print(repr(path), (newpath, tail))
+        if debug:
+            print(repr(path), (newpath, tail))
         if newpath == path:
             assert not tail
-            if path: parts.append(path)
+            if path:
+                parts.append(path)
             break
         parts.append(tail)
         path = newpath
