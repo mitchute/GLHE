@@ -54,7 +54,7 @@ def process_all_run_stats(path_to_root):
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
 
-    df.to_csv(join(path_to_root, "MLAA_stats..csv"))
+    df.to_csv(join(path_to_root, "MLAA_stats.csv"))
 
 
 if __name__ == "__main__":
