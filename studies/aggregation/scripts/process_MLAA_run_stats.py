@@ -14,13 +14,12 @@ join = os.path.join
 
 def get_configuration(path):
     tokens = os_path_split_asunder(path)
-    pt_1 = tokens[-2]
-    pt_2 = tokens[-1]
-    return pt_1, pt_2
+    pt_1 = tokens[-1]
+    return pt_1
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'rmse', 'load', 'sim_time', 'min hourly', 'min other']
+    cols = ['run time', 'rmse', 'load', 'sim_time', 'case id']
 
     df = pd.DataFrame(columns=cols)
 
@@ -35,19 +34,18 @@ def process_all_run_stats(path_to_root):
 
                 try:
                     run_time, rmse, load, sim_time = compute_run_stats(this_dir)
-                    config_1, config_2 = get_configuration(this_dir)
+                    config_1 = get_configuration(this_dir)
 
                     d = {cols[0]: [run_time],
                          cols[1]: [rmse],
                          cols[2]: [load],
                          cols[3]: [sim_time],
-                         cols[4]: [config_1],
-                         cols[5]: [config_2]}
+                         cols[4]: [config_1]}
 
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case], ignore_index=True)
 
-                    with open(join(path_to_root, 'static_stats.log'), 'a') as f:
+                    with open(join(path_to_root, 'MLAA_stats.log'), 'a') as f:
                         f.write('{} completed\n'.format(this_dir))
 
                 except FileNotFoundError:
@@ -56,7 +54,7 @@ def process_all_run_stats(path_to_root):
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
 
-    df.to_csv(join(path_to_root, "static_stats.csv"))
+    df.to_csv(join(path_to_root, "MLAA_stats..csv"))
 
 
 if __name__ == "__main__":
