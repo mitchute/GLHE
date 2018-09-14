@@ -38,7 +38,7 @@ def setup_all_cases():
             g_path = norm(join(cwd, '../base', 'g_functions.csv'))
             output_path = join(run_path, 'out.csv')
             write_no_agg_json_input(run_path, time, load_path, g_path, output_path)
-            write_pbs(run_path, wall_times[idx])
+            write_pbs(run_path, wall_times[idx], 5)
 
 
 if __name__ == "__main__":
