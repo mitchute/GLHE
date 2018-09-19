@@ -79,12 +79,12 @@ def set_dynamic_parameters(run_time, exp_rate, start_width, end_width):
 
 
 def make_bin_times(depth, exp_rate, start_width, end_width):
-    loads = []
+    _loads = []
     for i in range(depth):
         width = int((1 - i / depth) * (start_width - end_width) + end_width)
         for _ in range(width):
-            loads.append(int(exp_rate ** i * SEC_IN_HOUR))
-    return loads
+            _loads.append(int(exp_rate ** i * SEC_IN_HOUR))
+    return _loads
 
 
 def write_dynamic_json_input(run_dir, time, path_to_load, path_to_g, path_to_output, other):
