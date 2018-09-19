@@ -45,6 +45,12 @@
     "static": {
       "min number bins": [0],
       "bin widths in hours": [0]
+    },
+    "dynamic": {
+      "depth": 0,
+      "expansion rate": 0,
+      "start width": 0,
+      "end width": 0
     }
   },
   "load-profile": {

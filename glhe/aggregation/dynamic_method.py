@@ -52,7 +52,7 @@ class DynamicMethod(BaseMethod):
             for i in range(self.depth):
                 width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
                 for _ in range(width):
-                    self.loads.append(DynamicBin(width=int(self.exp_rate ** i)))
+                    self.loads.append(DynamicBin(width=self.exp_rate ** i))
 
         self._convert_bins_hours_to_seconds()
         self._add_sts_bins()
@@ -63,13 +63,12 @@ class DynamicMethod(BaseMethod):
 
     def _convert_bins_hours_to_seconds(self):
         for this_bin in self.loads:
-            this_bin.width *= SEC_IN_HOUR
+            this_bin.width = int(this_bin.width * SEC_IN_HOUR)
 
     def add_load(self, bin_width, sim_time):
         self.update_time()
 
     def aggregate(self, sim_time):
-
         for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy * gv.time_step / left_bin.width
