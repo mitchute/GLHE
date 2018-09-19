@@ -14,13 +14,9 @@ class DynamicMethod(BaseMethod):
 
         self.depth = 16
         self.exp_rate = 2
-        self.width = 5
-        self.start_width = None
-        self.end_width = None
+        self.start_width = 5
+        self.end_width = 5
         self.num_sub_hour_bins = 4
-
-        # self.bins = deque()
-        self.available_time = 0
 
         if inputs is not None:
             try:
@@ -32,11 +28,6 @@ class DynamicMethod(BaseMethod):
                 self.exp_rate = inputs['expansion rate']
             except KeyError:  # pragma: no cover
                 pass  # pragma: no cover
-
-            try:
-                self.width = inputs['width']
-            except KeyError:  # pragma: no cover
-                pass
 
             try:
                 self.start_width = inputs['start width']
@@ -53,20 +44,15 @@ class DynamicMethod(BaseMethod):
             except KeyError:  # pragma: no cover
                 pass
 
-        if (self.start_width is None and self.end_width is not None) or (
-                self.start_width is not None and self.end_width is None):
+        if self.start_width is None and self.end_width is not None:
             raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
-        elif self.start_width is None and self.end_width is None:
-            # for cases when a constant bin width is specified
-            for i in range(self.depth):
-                for _ in range(self.width):
-                    self.loads.append(DynamicBin(width=pow(self.exp_rate, i)))
-        else:
-            # for cases when the bin width is varies for each depth level
+        elif self.start_width is not None and self.end_width is None:
+            raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
+        elif self.start_width is not None and self.end_width is not None:
             for i in range(self.depth):
                 width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
                 for _ in range(width):
-                    self.loads.append(DynamicBin(width=pow(self.exp_rate, i)))
+                    self.loads.append(DynamicBin(width=int(self.exp_rate ** i)))
 
         self._convert_bins_hours_to_seconds()
         self._add_sts_bins()
