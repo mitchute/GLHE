@@ -1,5 +1,6 @@
 import os
 import sys
+import fnmatch
 
 import numpy as np
 import pandas as pd
@@ -67,21 +68,31 @@ def get_base_run_file_path(path):
 
 def get_run_time(path):
     time_str = ''
-    with open(path, 'r') as f:
-        for line in f:
-            time_str = line.replace(' ', '')
-            break
+    hrs = 0
+    mins = 0
+    secs = 0
+    count = 0
 
-    tokens = time_str.split(':')
-    hrs = float(tokens[1])
-    mins = float(tokens[2])
-    secs = float(tokens[3])
+    for _, _, files in os.walk(path):
+        for file in files:
+            if fnmatch.fnmatch(file, '*.pbs.*'):
+                with open(join(path, file), 'r') as f:
+                    for line in f:
+                        if 'Final runtime:' in line:
+                            line = line.split('Final runtime:')[-1]
+                            time_str = line.replace(' ', '')
+                            tokens = time_str.split(':')
+                            hrs += float(tokens[0])
+                            mins += float(tokens[1])
+                            secs += float(tokens[2])
+                            count += 1
+                            break
 
-    return hrs * SEC_IN_HOUR + mins * SEC_IN_MIN + secs
+    return hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
 
 
 def compute_run_stats(path):
     base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
     rmse = calc_rmse(base_path, join(path, 'out.csv'))
-    run_time = get_run_time(join(path, 'out.log'))
+    run_time = get_run_time(path)
     return run_time, rmse, load, sim_time
