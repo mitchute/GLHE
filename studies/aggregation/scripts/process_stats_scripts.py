@@ -1,6 +1,6 @@
+import fnmatch
 import os
 import sys
-import fnmatch
 
 import numpy as np
 import pandas as pd
