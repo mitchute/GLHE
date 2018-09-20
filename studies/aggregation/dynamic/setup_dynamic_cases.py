@@ -10,7 +10,7 @@ from glhe.globals.functions import load_json, write_json  # noqa
 
 run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
 loads = ['balanced', 'imbalanced']
-wall_times = ['20:00', '1:30:00']
+wall_times = ['20:00', '2:30:00']
 
 exp_rates = [1.25, 1.5, 1.61803398875, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
 start_widths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'depth']
