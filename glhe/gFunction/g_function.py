@@ -107,7 +107,7 @@ class GFunction(SimulationEntryPoint):
         except ValueError:  # pragma: no cover
             return 0  # pragma: no cover
 
-        g = self._g_function_interp(lntts)
+        g = float(self._g_function_interp(lntts))
 
         if (g / (2 * PI * self.soil.conductivity) + self.bh_resist) < 0:
             return -self.bh_resist * 2 * PI * self.soil.conductivity  # pragma: no cover
