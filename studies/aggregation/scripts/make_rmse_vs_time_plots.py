@@ -19,7 +19,7 @@ def make_plots():
     times = [1, 5]
 
     runs = {"static": {"name": 'Static',
-                     "path": '../static/runs/static_stats.csv'}}
+                       "path": '../static/runs/static_stats.csv'}}
 
     for load in loads:
         for time in times:
