@@ -59,8 +59,9 @@ class StaticMethod(BaseMethod):
         # aggregate within each sub-list, except the last one, which is allowed to grow as needed
         for i, width in enumerate(self.bin_widths[:-1]):
             len_bin = len(d[width])
-            if len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
-                # nothing to do here
+            if len_bin == 0:
+                break
+            elif len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
                 pass
             else:
                 # merge the aggregation within this sub-list
@@ -78,6 +79,6 @@ class StaticMethod(BaseMethod):
 
         # redefine the loads
         self.loads = deque()
-        for i, bin_width in enumerate(d):
+        for i, bin_width in enumerate(sorted(d)):
             for j in d[bin_width]:
                 self.loads.append(j)
