@@ -25,4 +25,4 @@ class ExternalBase(Base):
         self._interp_values = interp1d(x_range, y_range)
 
     def get_value(self, time):
-        return self._interp_values(time % self.max_time)
+        return float(self._interp_values(time % self.max_time))
