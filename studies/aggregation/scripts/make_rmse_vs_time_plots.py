@@ -46,7 +46,7 @@ def make_plots():
             for idx, val in enumerate(runs):
                 x, y = extract_case_data(val["path"], load, time)
 
-                if x or y:
+                if x and y:
                     ax.scatter(x, y, label=val["name"])
                     count += 1
 
