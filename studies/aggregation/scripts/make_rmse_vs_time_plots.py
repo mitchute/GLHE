@@ -10,14 +10,14 @@ join = os.path.join
 
 
 def extract_case_data(path, load, time):
-    if os.path.exists(path):
-        path = norm(join(cwd, path))
-        df = pd.read_csv(path, usecols=['rmse', 'run time', 'sim time', 'load'])
+    _path = norm(join(cwd, path))
+    if os.path.exists(_path):
+        df = pd.read_csv(_path, usecols=['rmse', 'run time', 'sim time', 'load'])
         df = df.loc[df["sim time"] == time]
         df = df.loc[df["load"] == load]
         return df["rmse"].tolist(), df["run time"].tolist()
     else:
-        print('File not found: {}'.format(path))
+        print('File not found: {}'.format(_path))
         return [], []
 
 
