@@ -19,7 +19,7 @@ def get_configuration(path):
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'rmse', 'load', 'sim_time', 'case id']
+    cols = ['run time', 'rmse', 'load', 'sim time', 'case id']
 
     df = pd.DataFrame(columns=cols)
 
