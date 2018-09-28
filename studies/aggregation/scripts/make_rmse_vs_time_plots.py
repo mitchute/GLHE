@@ -10,19 +10,32 @@ join = os.path.join
 
 
 def extract_case_data(path, load, time):
-    path = norm(join(cwd, path))
-    df = pd.read_csv(path, usecols=['rmse', 'run time', 'sim time', 'load'])
-    df = df.loc[df["sim time"] == time]
-    df = df.loc[df["load"] == load]
-    return df["rmse"].tolist(), df["run time"].tolist()
+
+    if os.path.exists(path):
+        path = norm(join(cwd, path))
+        df = pd.read_csv(path, usecols=['rmse', 'run time', 'sim time', 'load'])
+        df = df.loc[df["sim time"] == time]
+        df = df.loc[df["load"] == load]
+        return df["rmse"].tolist(), df["run time"].tolist()
+    else:
+        return [], []
 
 
 def make_plots():
     loads = ['balanced', 'imbalanced']
     times = [1, 5]
 
-    runs = {1: {"name": 'Static',
-                "path": '../static/runs/static_stats.csv'}}
+    runs = [{"name": 'Static',
+             "path": '../static/runs/static_stats.csv'},
+            {"name": 'Dynamic',
+             "path": '../dynamic/runs/dynamic_stats.csv'},
+            {"name": 'Hierarchical',
+             "path": '../Hierarchical-Liu/runs/Hierarchical-stats.csv'},
+            {"name": 'MLAA',
+             "path": '../MLAA-Bernier/runs/MLAA-stats.csv'},
+            {"name": 'Monthly',
+             "path": '../Yavuzturk/runs/Yavuzturk-stats.csv'}
+            ]
 
     for load in loads:
         for time in times:
@@ -30,7 +43,7 @@ def make_plots():
             ax = fig.add_subplot(1, 1, 1)
             count = 0
 
-            for key, val in sorted(runs.items()):
+            for idx, val in enumerate(runs):
                 x, y = extract_case_data(val["path"], load, time)
 
                 if x or y:
