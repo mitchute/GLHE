@@ -30,11 +30,11 @@ def make_plots():
             {"name": 'Dynamic',
              "path": '../dynamic/runs/dynamic_stats.csv'},
             {"name": 'Hierarchical',
-             "path": '../Hierarchical-Liu/runs/Hierarchical-stats.csv'},
+             "path": '../Hierarchical-Liu/runs/Hierarchical_stats.csv'},
             {"name": 'MLAA',
-             "path": '../MLAA-Bernier/runs/MLAA-stats.csv'},
+             "path": '../MLAA-Bernier/runs/MLAA_stats.csv'},
             {"name": 'Monthly',
-             "path": '../Yavuzturk/runs/Yavuzturk-stats.csv'}
+             "path": '../Yavuzturk/runs/Yavuzturk_stats.csv'}
             ]
 
     for load in loads:
