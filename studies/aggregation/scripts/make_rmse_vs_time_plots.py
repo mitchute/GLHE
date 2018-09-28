@@ -10,7 +10,6 @@ join = os.path.join
 
 
 def extract_case_data(path, load, time):
-
     if os.path.exists(path):
         path = norm(join(cwd, path))
         df = pd.read_csv(path, usecols=['rmse', 'run time', 'sim time', 'load'])
