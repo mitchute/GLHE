@@ -9,7 +9,7 @@ from studies.aggregation.static.setup_static_cases import write_static_json_inpu
 
 run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
 loads = ['balanced', 'imbalanced']
-wall_times = ['20:00', '1:30:00']
+wall_times = ['120:00', '600:00']
 
 bin_widths = [[1, 730]]
 
