@@ -44,6 +44,9 @@ def make_plots():
             count = 0
 
             for idx, val in enumerate(runs):
+
+                print('Processing: Method={}, load={}, run time={}'.format(val["name"], load, time))
+
                 x, y = extract_case_data(val["path"], load, time)
 
                 if x and y:
