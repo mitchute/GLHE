@@ -49,10 +49,15 @@ def make_plots():
                 x, y = extract_case_data(val["path"], load, time)
 
                 if x and y:
-                    ax.scatter(x, y, label=val["name"])
+                    ax.scatter(x, y, label=val["name"], s=2)
                     count += 1
 
             if count > 0:
+
+                plt.legend()
+                plt.grid()
+                plt.xlabel(r'RMSE [$^\circ$C]')
+                plt.ylabel('Simulation Time [s]')
                 plt.savefig('{}_{}.png'.format(load, time), bbox_inches='tight')
 
 
