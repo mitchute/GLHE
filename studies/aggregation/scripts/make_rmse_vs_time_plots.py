@@ -17,6 +17,7 @@ def extract_case_data(path, load, time):
         df = df.loc[df["load"] == load]
         return df["rmse"].tolist(), df["run time"].tolist()
     else:
+        print('File not found: {}'.format(path))
         return [], []
 
 
@@ -43,17 +44,16 @@ def make_plots():
             count = 0
 
             for idx, val in enumerate(runs):
-
-                print('Processing: Method={}, load={}, run time={}'.format(val["name"], load, time))
-
                 x, y = extract_case_data(val["path"], load, time)
 
                 if x and y:
+                    print('Processing: {}, {}_{}'.format(val["name"], load, time))
                     ax.scatter(x, y, label=val["name"], s=2)
                     count += 1
+                else:
+                    print('Not found: {}, {}_{}'.format(val["name"], load, time))
 
             if count > 0:
-
                 plt.legend()
                 plt.grid()
                 plt.xlabel(r'RMSE [$^\circ$C]')
