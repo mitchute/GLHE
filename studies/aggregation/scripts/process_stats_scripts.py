@@ -22,20 +22,24 @@ split = os.path.split
 def os_path_split_asunder(path, debug=False):
     # https://stackoverflow.com/questions/4579908/cross-platform-splitting-of-path-in-python
 
-    parts = []
-    while True:
-        newpath, tail = split(path)
-        if debug:
-            print(repr(path), (newpath, tail))
-        if newpath == path:
-            assert not tail
-            if path:
-                parts.append(path)
-            break
-        parts.append(tail)
-        path = newpath
-    parts.reverse()
-    return parts
+    if os.path.exists(path):
+        parts = []
+        while True:
+            newpath, tail = split(path)
+            if debug:
+                print(repr(path), (newpath, tail))
+            if newpath == path:
+                assert not tail
+                if path:
+                    parts.append(path)
+                break
+            parts.append(tail)
+            path = newpath
+        parts.reverse()
+        return parts
+    else:
+        print("File not found: {}".format(path))
+        raise FileNotFoundError
 
 
 def calc_rmse(file_1, file_2):
