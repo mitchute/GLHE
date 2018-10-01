@@ -75,7 +75,6 @@ def get_base_run_file_path(path):
 
 
 def get_run_time(path):
-    time_str = ''
     hrs = 0
     mins = 0
     secs = 0
