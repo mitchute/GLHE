@@ -156,7 +156,9 @@ class Fluid(object):
                            'T', temp_in_kelvin(temperature),
                            'P', self.pressure,
                            self._fluid_str)
-        except ValueError:
+        except ValueError:  # pragma: no cover
+            # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
+            # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
             return PropsSI(props[property],
                            'T', self.temp_freeze,

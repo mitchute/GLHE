@@ -57,6 +57,9 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_conductivity(60), 0.654, delta=tolerance)
         self.assertAlmostEqual(tst.calc_conductivity(80), 0.670, delta=tolerance)
 
+        # test freezing point
+        self.assertAlmostEqual(tst.calc_conductivity(-5), 0.542, delta=tolerance)
+
     def test_cp(self):
         """
         Tests fluid specific heat calculation routine
