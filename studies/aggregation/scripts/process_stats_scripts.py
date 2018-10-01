@@ -39,10 +39,14 @@ def os_path_split_asunder(path, debug=False):
 
 
 def calc_rmse(file_1, file_2):
-    df1 = pd.read_csv(file_1, usecols=[1], names=["Base"], header=0, dtype=np.float64)
-    df2 = pd.read_csv(file_2, usecols=[1], names=["Case"], header=0, dtype=np.float64)
+    df1 = pd.read_csv(file_1, usecols=["Average Fluid Temp [C]"], dtype=np.float64)
+    df1.rename(index=str, columns={"Average Fluid Temp [C]": "Base"}, inplace=True)
+
+    df2 = pd.read_csv(file_2, usecols=["Average Fluid Temp [C]"], dtype=np.float64)
+    df2.rename(index=str, columns={"Average Fluid Temp [C]": "Test"}, inplace=True)
+
     df = pd.concat([df1, df2], axis=1)
-    return ((df['Base'] - df['Case']) ** 2).mean() ** 0.5
+    return ((df['Base'] - df['Test']) ** 2).mean() ** 0.5
 
 
 def get_base_run_file_path(path):

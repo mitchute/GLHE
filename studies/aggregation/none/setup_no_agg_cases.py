@@ -9,7 +9,7 @@ from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 
 run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
 loads = ['balanced', 'imbalanced']
-wall_times = ['3:00:00', '30:00:00']
+wall_times = ['10:00:00', '100:00:00']
 
 # shortcuts
 join = os.path.join
