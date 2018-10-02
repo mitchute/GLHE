@@ -95,7 +95,10 @@ def get_run_time(path):
                             count += 1
                             break
 
-    return hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
+    try:
+        return hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
+    except ZeroDivisionError:
+        return 0
 
 
 def compute_run_stats(path):
