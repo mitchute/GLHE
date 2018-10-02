@@ -19,7 +19,7 @@ def get_configuration(path):
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'rmse', 'load', 'sim time', 'case id']
+    cols = ['run time', 'run time fraction', 'rmse', 'load', 'sim time', 'case id']
 
     df = pd.DataFrame(columns=cols)
 
@@ -33,14 +33,15 @@ def process_all_run_stats(path_to_root):
             if run_exists and log_exists:
 
                 try:
-                    run_time, rmse, load, sim_time = compute_run_stats(this_dir)
+                    run_time, run_time_frac, rmse, load, sim_time = compute_run_stats(this_dir)
                     config_1 = get_configuration(this_dir)
 
                     d = {cols[0]: [run_time],
-                         cols[1]: [rmse],
-                         cols[2]: [load],
-                         cols[3]: [sim_time],
-                         cols[4]: [config_1]}
+                         cols[1]: [run_time_frac],
+                         cols[2]: [rmse],
+                         cols[3]: [load],
+                         cols[4]: [sim_time],
+                         cols[5]: [config_1]}
 
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case], ignore_index=True)

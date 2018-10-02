@@ -102,4 +102,6 @@ def compute_run_stats(path):
     base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
     rmse = calc_rmse(base_path, join(path, 'out.csv'))
     run_time = get_run_time(path)
-    return run_time, rmse, load, sim_time
+    base_run_time = get_run_time(base_path)
+    run_time_frac = run_time / base_run_time
+    return run_time, run_time_frac, rmse, load, sim_time
