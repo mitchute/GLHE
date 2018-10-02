@@ -103,5 +103,9 @@ def compute_run_stats(path):
     rmse = calc_rmse(base_path, join(path, 'out.csv'))
     run_time = get_run_time(path)
     base_run_time = get_run_time(base_path)
-    run_time_frac = run_time / base_run_time
+    try:
+        run_time_frac = run_time / base_run_time
+    except ZeroDivisionError:
+        run_time_frac = 0
+        print('Base runtime error: {}'.format(base_path))
     return run_time, run_time_frac, rmse, load, sim_time
