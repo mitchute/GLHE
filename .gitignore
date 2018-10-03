@@ -109,3 +109,5 @@ in.csv
 in.json
 out.csv
 runs/
+*.png
+*.pbs.*
