@@ -5,7 +5,7 @@
 #PBS -j oe
 #PBS -m abe -M matt.s.mitchell@okstate.edu
 
-cd $PBS_O_WORKDIR
+$PBS_O_WORKDIR
 
 export PATH=/home/mitchute/.pyenv/versions/GLHE/bin:$PATH
 export PYTHONPATH=/home/mitchute/.pyenv/versions/GLHE/lib/python3.5/site-packages:$PYTHONPATH
