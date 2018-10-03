@@ -98,7 +98,6 @@ def get_run_time(path):
 
                                 line = tokens[-1]
 
-
                             tokens = line.split(':')
                             hrs += float(tokens[0])
                             mins += float(tokens[1])
