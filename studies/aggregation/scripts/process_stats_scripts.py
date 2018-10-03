@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath('../../..'))
 
 from glhe.globals.constants import SEC_IN_HOUR  # noqa
 from glhe.globals.constants import SEC_IN_MIN  # noqa
+from glhe.globals.constants import SEC_IN_DAY  # noqa
 from glhe.globals.functions import load_json  # noqa
 from glhe.globals.constants import SEC_IN_YEAR  # noqa
 
@@ -65,8 +66,7 @@ def get_base_run_file_path(path):
                                       '..',
                                       'none',
                                       'runs',
-                                      '{}_{}'.format(load, time),
-                                      'out.csv'))
+                                      '{}_{}'.format(load, time)))
 
     if not os.path.exists(path_to_base_run_file):
         raise FileNotFoundError
@@ -75,6 +75,7 @@ def get_base_run_file_path(path):
 
 
 def get_run_time(path):
+    days = 0
     hrs = 0
     mins = 0
     secs = 0
@@ -87,8 +88,18 @@ def get_run_time(path):
                     for line in f:
                         if 'Final runtime:' in line:
                             line = line.split('Final runtime:')[-1]
-                            time_str = line.replace(' ', '')
-                            tokens = time_str.split(':')
+                            line = line.replace(' ', '')
+                            if 'day' in line or 'days' in line:
+                                tokens = line.split(',')
+                                if 'day' in line:
+                                    days = float(tokens[0].replace('day', ''))
+                                elif 'days' in line:
+                                    days = float(tokens[0].replace('days', ''))
+
+                                line = tokens[-1]
+
+
+                            tokens = line.split(':')
                             hrs += float(tokens[0])
                             mins += float(tokens[1])
                             secs += float(tokens[2])
@@ -96,14 +107,14 @@ def get_run_time(path):
                             break
 
     try:
-        return hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
+        return days / count * SEC_IN_DAY + hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
     except ZeroDivisionError:
         return 0
 
 
 def compute_run_stats(path):
     base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
-    rmse = calc_rmse(base_path, join(path, 'out.csv'))
+    rmse = calc_rmse(join(base_path, 'out.csv'), join(path, 'out.csv'))
     run_time = get_run_time(path)
     base_run_time = get_run_time(base_path)
     try:
