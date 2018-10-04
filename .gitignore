@@ -111,3 +111,13 @@ out.csv
 runs/
 *.png
 *.pbs.*
+*.gz
+*.spl
+*.pdf
+*.log
+*.blg
+*.bbl
+*.aux
+*.dvi
+*.bak
+*.sav

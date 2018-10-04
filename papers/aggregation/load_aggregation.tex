@@ -127,34 +127,89 @@ Ground heat exchanger, simulation, load aggregation, g-function
 \linenumbers
 
 %% main text
-\section{Introduction}
-\label{S:1}
+\section*{Introduction}
+Ground source heat pump (GSHP) systems are used to provide building space heating and cooling and hot water generation. The GSHP system heat pump is coupled to the soil via a ground heat exchanger (GHE), which is the heat sink/source for the system. This GSHP system exchanges energy between the heat pump and the soil via the GHE to provide for the heating and cooling loads. Below a certain depth (which varies with geography and location) the soil temperature remains constant during the year. This temperature is typically lower than the local ambient air temperature during periods of peak cooling demand, and higher than the ambient air temperature during periods of peek heating demand. As a result, GSHP systems can generally provide heating or cooling more efficiently than by using other more conventional heating and cooling technologies. 
 
-Many hourly ground heat exchanger (GHE) simulation models rely on a response factor type approach to compute the GHE temperature response. These response factor models use the GHE load history as a series of discrete step heat pulses to compute the GHE temperature response. Since these simulations require an accounting of the full load history of the GHE, hourly annual or multi-year simulations can be very time-consuming because the number superposition calculations required is proportional to the square of the number of timesteps. 
+GSHP systems \textit{can} be an effective and economical method for providing space heating and cooling. However, due to the complex nature of the thermally interacting ground heat exchangers, they are often difficult to apply rule-of-thumb based design approaches, as could more easily be done with other heating and cooling technologies. If the ground heat exchanger is not designed properly, it can cause the entire system to fail to meet the load. Additionally, since the GHE represents potentially the largest single-item cost of a GSHP system, it is important for it to be designed properly.
 
-Response factor type models are typically formulated as shown in the following Equation.
+Therefore, in order for GSHP systems to be compared against other comparable heating and cooling systems, designers need the ability to simulate the systems and compare the results. Due to this, a great amount of effort has been put towards developing simulation models for GSHP and GHE. Designers, however, not only expect that the simulations be accurate, but they also expect them to be executed quickly.
+
+One such GHE model that is often used for performing hourly GHE simulations is the model originally developed by \cite{EskilsonClaesson1988}. This model relies on precomputed response factors and the GHE load history to compute the temperature response of the GHE. Response factor type models are typically formulated as is shown in Equation \ref{eq:MFT}.
+
+\begin{equation}
+    T_f = T_g + \sum_{i=1}^n \frac{q_{i} - q_{i-1}}{2 \cdot \pi \cdot k_g} \cdot g\left(\frac{t_n - t_{i-1}}{t_s}\right) +  q_n \cdot R_b
+    \label{eq:MFT}
+\end{equation}
+
+where:
+\begin{flalign*}
+    T_f &=\mbox{GHE mean-fluid temperature} && \\
+    T_g &=\mbox{ground temperature} && \\
+    q_i &=i^{th} \mbox{ GHE heat transfer rate normalized based on GHE length. i.e Btu/h-ft, W/m} && \\
+    t_i &=i^{th} \mbox{ timestep} && \\
+    t_s &=\mbox{ GHE time constant} \frac{H^2}{9\cdot\alpha_g} && \\
+    R_b &=\mbox{ borehole thermal resistance} && \\
+    g &=\mbox{g-function response factors} && \\
+\end{flalign*}
+
+At a fundamental level, conduction problems can be evaluated using linear partial differential equations. Because no non-linear terms exist in these equations, the principle of superpostion can be applied to simplify the solution. GHE response factor models take advantage of this property and apply the principle of superposition to compute the GHE temperature response by using the GHE load history. The GHE load history is treated as a series of step heat pulses which when superimposed and combined using the response factors can lead to an accurate calculation of the GHE temperature response. This reduces the solution of the fundamental conduction differential equations to the simple algebraic equation show in Equation \ref{eq:MFT}.
+
+A practical issue that arises from this superpostion approach, however, is the fact that the number of superposition calculations grows with the square of the number of timesteps \citep{YavuzturkSpitler1999}. Therefore, applying this approach directly will greatly affect simulation runtime. Attempting to simulate, say, for example an hourly annual or hourly multi-year simulations may be impractical without some way to reduce the number of computations required.
+
+In order to reduce runtime, load aggregation procedures have been developed which will reduce then number of superposition calculations. This will in turn reduces simulation runtime. Load aggregation is the process of taking discrete individual loads that occurred over a given time interval, and replacing them with a single load over the same time interval. If the individual loads occurred over uniform timestep intervals, the average load rate could be computed and applied for the aggregated load. If the loads have non-uniform timesteps, and energy bases approach should be taken to ensure that energy is conserved.
+
+As stated, several different load aggregation methods have been proposed, however, there has not been a direct comparison of all methods. Additionally, none of the existing methods have had their parameters optimized with the goal of minimizing simulation runtime and maximizing accuracy. This paper describe the process used to test these aggregation algorithms. It also recommends the best algorithm and the parameters for each algorithm which yield an acceptable balance of runtime saving and accuracy.
+
+\section*{Method}
+
+Several different load aggregation procedures have been proposed. These will be outlined and described here. The methods used to compare the methods will also be described.
+
+\cite{YavuzturkSpitler1999} were the first to develop a load aggregation procedure to reduce simulation runtime. The method relies on using ``monthly" heat pulses to aggregate 730 hourly loads, though the method retains 192 hourly heat pulses for the most recent 192 simulation hours. In other words, once the first 922 (192 + 730) hours have passed, the 730 hours which are farthest from the current simulation time are aggregated into monthly blocks. Once another 730 hours have passed the next 730 hours are aggregated into another monthly block. This process is repeated for the duration of the simulation.
+
+To further illustrate this example, once 922 (192 + 730) simulated hours have passed, the hourly loads from hour 729 to 0 are aggregated together into a single block. The mean value of the loads over this period is computed and the 730 individual hourly loads are removed and replaced with a single value. This single value represents the average load over this 730 hour period. As the simulation continues for another 730 hours until hour 1652, the hourly loads from hours 1459 to 730 are aggregated together again into another monthly block.
+
+The authors state that they tested the minimum hourly history periods of 24, 192, and 730 hours. However, the method is not stated to have been optimized. As a result, a question that arises is that of whether the minimum of 192 hourly loads and 730 hour ``monthly" blocks will result in the best performance.
+
+Fundamentally, this method forms the basis for what is termed the ``static" method. The method is characterized by smaller load blocks which collapse into larger blocks once a sufficient number of the smaller blocks have been created. This was illustrated in the above example when the smaller hourly load blocks collapsed into the larger 730 hour blocks after a sufficient number of smaller blocks have been created. 
+
+The method could loosely be thought of as similar to the Lagrangian approach which, in the case of fluid flow characterizations, tracks individual particles or packets of fluid, rather than tracking a fixed control volume through which fluid flows. In our case, however, we are concerned with tracking individual loads, or load blocks which are formed from previously aggregated smaller blocks. These load blocks are created and added to our resistance factor calculations. Once a sufficient number of the blocks have been created, they collapse into a larger block.
+
+To illustrate this, consider the example given in Table \ref{tab:static example}. In this example, we will assume that the the timesteps occur hourly, and that we will keep a minimum of three hours at the hourly level before aggregating into two-hour blocks. We also assume that a new load with a value of 1 occurs at each timestep.
+
+\begin{table}[htbp!]
+\centering
+\caption{Static bin aggregation example}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+                                                        & \multicolumn{6}{c|}{Bin No.} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Timestep \\ $n$\end{tabular} & 1   & 2  & 3  & 4  & 5  & 6  \\ \hline
+1                                                       & 1   &    &    &    &    &    \\ \hline
+2                                                       & 1   & 1  &    &    &    &    \\ \hline
+3                                                       & 1   & 1  & 1  &    &    &    \\ \hline
+4                                                       & 1   & 1  & 1  & 1  &    &    \\ \hline
+5                                                       & 1   & 1  & 1  & 2  &    &    \\ \hline
+6                                                       & 1   & 1  & 1  & 1  & 2  &    \\ \hline
+7                                                       & 1   & 1  & 1  & 2  & 2  &    \\ \hline
+8                                                       & 1   & 1  & 1  & 1  & 2  & 2  \\ \hline
+\end{tabular}
+\label{tab:static example}
+\end{table}
+
+The steps occurring at each timestep are described below.
+
+\begin{itemize}
+    \item Timestep 1: a new load with a value of 1 occurs. This is placed in Bin 1.
+    \item Timestep 2-4: a new load with a value of 1 occurs. Again, this is placed in Bin 1. The load which from Bin 1 from the previous timestep is displaced to Bin 2. This process is repeated for for the next two timesteps until Bins 1-4 each contain a value of 1.
+    \item Timestep 5:  
+\end{itemize}
+
+\section*{Results}
+
+\section*{Recommendations}
+
+\section*{Conclusions}
 
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \bibliography{references}
 
-%% Authors are advised to submit their bibtex database files. They are
-%% requested to list a bibtex style file in the manuscript if they do
-%% not want to use model1-num-names.bst.
-
-%% References without bibTeX database:
-
-% \begin{thebibliography}{00}
-
-%% \bibitem must have the following form:
-%%   \bibitem{key}...
-%%
-
-% \bibitem{}
-
-% \end{thebibliography}
-
-
 \end{document}
-
-%%
-%% End of file `elsarticle-template-1-num.tex'.
