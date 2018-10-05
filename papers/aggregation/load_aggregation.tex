@@ -40,6 +40,9 @@
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
 
+\usepackage{multirow}
+\usepackage{url}
+
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers after \end{frontmatter}.
@@ -112,7 +115,7 @@
 
 \begin{abstract}
 %% Text of abstract
-This paper outlines work performed to characterize and optimize the currently available load aggregation methods. A parametric study was performed by simulating several thousand test cases for different aggregation methods. The optimized methods and parameters for each respective algorithm are given.
+This paper describes work performed to characterize and optimize the currently available load aggregation methods. A parametric study was performed by simulating several thousand test cases for different aggregation methods. The optimized methods and parameters for each respective algorithm are given.
 \end{abstract}
 
 \begin{keyword}
@@ -147,7 +150,7 @@ where:
     T_g &=\mbox{ground temperature} && \\
     q_i &=i^{th} \mbox{ GHE heat transfer rate normalized based on GHE length. i.e Btu/h-ft, W/m} && \\
     t_i &=i^{th} \mbox{ timestep} && \\
-    t_s &=\mbox{ GHE time constant} \frac{H^2}{9\cdot\alpha_g} && \\
+    t_s &=\mbox{ GHE time constant } \left(\frac{H^2}{9\cdot\alpha_g}\right) && \\
     R_b &=\mbox{ borehole thermal resistance} && \\
     g &=\mbox{g-function response factors} && \\
 \end{flalign*}
@@ -156,58 +159,119 @@ At a fundamental level, conduction problems can be evaluated using linear partia
 
 A practical issue that arises from this superpostion approach, however, is the fact that the number of superposition calculations grows with the square of the number of timesteps \citep{YavuzturkSpitler1999}. Therefore, applying this approach directly will greatly affect simulation runtime. Attempting to simulate, say, for example an hourly annual or hourly multi-year simulations may be impractical without some way to reduce the number of computations required.
 
-In order to reduce runtime, load aggregation procedures have been developed which will reduce then number of superposition calculations. This will in turn reduces simulation runtime. Load aggregation is the process of taking discrete individual loads that occurred over a given time interval, and replacing them with a single load over the same time interval. If the individual loads occurred over uniform timestep intervals, the average load rate could be computed and applied for the aggregated load. If the loads have non-uniform timesteps, and energy bases approach should be taken to ensure that energy is conserved.
+In order to reduce runtime, load aggregation procedures have been developed which will reduce then number of superposition calculations. This will in turn reduce simulation runtime. Load aggregation is the process of taking discrete individual loads that occurred over a given time interval, and replacing them with a single load over the same time interval. If the individual loads occurred over uniform timestep intervals, the average load rate could be computed and applied for the aggregated load. If the loads have non-uniform timesteps, and energy bases approach should be taken to ensure that energy is conserved.
 
-As stated, several different load aggregation methods have been proposed, however, there has not been a direct comparison of all methods. Additionally, none of the existing methods have had their parameters optimized with the goal of minimizing simulation runtime and maximizing accuracy. This paper describe the process used to test these aggregation algorithms. It also recommends the best algorithm and the parameters for each algorithm which yield an acceptable balance of runtime saving and accuracy.
+As stated, several different load aggregation methods have been proposed, however, there has not been a direct comparison of all methods. Additionally, none of the existing methods have had their parameters optimized with the goal of minimizing simulation runtime and maximizing accuracy. This paper describe the process used to test these aggregation algorithms. It also recommends the best algorithm and the parameters for each algorithm which yield an acceptable balance of runtime saving and accuracy. The source code for this project is available here: \url{https://github.com/mitchute/GLHE}
 
 \section*{Method}
+
+\subsection*{Static Method}
 
 Several different load aggregation procedures have been proposed. These will be outlined and described here. The methods used to compare the methods will also be described.
 
 \cite{YavuzturkSpitler1999} were the first to develop a load aggregation procedure to reduce simulation runtime. The method relies on using ``monthly" heat pulses to aggregate 730 hourly loads, though the method retains 192 hourly heat pulses for the most recent 192 simulation hours. In other words, once the first 922 (192 + 730) hours have passed, the 730 hours which are farthest from the current simulation time are aggregated into monthly blocks. Once another 730 hours have passed the next 730 hours are aggregated into another monthly block. This process is repeated for the duration of the simulation.
 
-To further illustrate this example, once 922 (192 + 730) simulated hours have passed, the hourly loads from hour 729 to 0 are aggregated together into a single block. The mean value of the loads over this period is computed and the 730 individual hourly loads are removed and replaced with a single value. This single value represents the average load over this 730 hour period. As the simulation continues for another 730 hours until hour 1652, the hourly loads from hours 1459 to 730 are aggregated together again into another monthly block.
+To further illustrate this example, once 922 (192 + 730) simulated hours have passed, the hourly loads from hour 730 to 0 are aggregated together into a single block. The mean value of the loads over this period is computed and the 730 individual hourly loads are removed and replaced with a single value. This single value represents the average load over this 730 hour period. As the simulation continues for another 730 hours until hour 1652, the hourly loads from hours 1461 to 731 are aggregated together again into another monthly block.
 
-The authors state that they tested the minimum hourly history periods of 24, 192, and 730 hours. However, the method is not stated to have been optimized. As a result, a question that arises is that of whether the minimum of 192 hourly loads and 730 hour ``monthly" blocks will result in the best performance.
+The authors state that they tested the minimum hourly history periods of 24, 192, and 730 hours. However, the method is not stated to have been optimized any further. As a result, a question that arises is that of whether the minimum of 192 hourly loads and 730 hour ``monthly" blocks will result in the best performance?
 
 Fundamentally, this method forms the basis for what is termed the ``static" method. The method is characterized by smaller load blocks which collapse into larger blocks once a sufficient number of the smaller blocks have been created. This was illustrated in the above example when the smaller hourly load blocks collapsed into the larger 730 hour blocks after a sufficient number of smaller blocks have been created. 
 
-The method could loosely be thought of as similar to the Lagrangian approach which, in the case of fluid flow characterizations, tracks individual particles or packets of fluid, rather than tracking a fixed control volume through which fluid flows. In our case, however, we are concerned with tracking individual loads, or load blocks which are formed from previously aggregated smaller blocks. These load blocks are created and added to our resistance factor calculations. Once a sufficient number of the blocks have been created, they collapse into a larger block.
+The method could loosely be thought of as similar to the Lagrangian approach which, in the case of fluid flow characterizations, tracks individual particles or packets of fluid, rather than tracking a fixed control volume through which fluid flows. In our case, however, we are concerned with tracking individual loads or load blocks which are formed from previously aggregated smaller blocks. These load blocks are created and added to our resistance factor calculations. Once a sufficient number of the blocks have been created, they collapse into a larger block. After a load block is formed, the load values remain within the block until the block is aggregated together with other similar blocks.
 
-To illustrate this, consider the example given in Table \ref{tab:static example}. In this example, we will assume that the the timesteps occur hourly, and that we will keep a minimum of three hours at the hourly level before aggregating into two-hour blocks. We also assume that a new load with a value of 1 occurs at each timestep.
+To illustrate this, consider the example given in Table \ref{tab:static example}. In this example, we will assume that the timesteps have a value of $h$, and that we will keep a minimum of three $h$ before aggregating into $2h$ blocks.
 
 \begin{table}[htbp!]
 \centering
-\caption{Static bin aggregation example}
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-                                                        & \multicolumn{6}{c|}{Bin No.} \\ \hline
-\begin{tabular}[c]{@{}c@{}}Timestep \\ $n$\end{tabular} & 1   & 2  & 3  & 4  & 5  & 6  \\ \hline
-1                                                       & 1   &    &    &    &    &    \\ \hline
-2                                                       & 1   & 1  &    &    &    &    \\ \hline
-3                                                       & 1   & 1  & 1  &    &    &    \\ \hline
-4                                                       & 1   & 1  & 1  & 1  &    &    \\ \hline
-5                                                       & 1   & 1  & 1  & 2  &    &    \\ \hline
-6                                                       & 1   & 1  & 1  & 1  & 2  &    \\ \hline
-7                                                       & 1   & 1  & 1  & 2  & 2  &    \\ \hline
-8                                                       & 1   & 1  & 1  & 1  & 2  & 2  \\ \hline
-\end{tabular}
+\caption{Static method aggregation example.}
 \label{tab:static example}
+\begin{tabular}{cccccc}
+Bin No.                                  & 1                      & 2                      & 3                      & 4                        & 5                        \\
+Timestep                                 &                        &                        &                        &                          &                          \\ \cline{1-2}
+\multicolumn{1}{|c|}{\multirow{2}{*}{1}} & \multicolumn{1}{c|}{h} &                        &                        &                          &                          \\ \cline{2-2}
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{1} &                        &                        &                          &                          \\ \cline{1-2}
+                                         &                        &                        &                        &                          &                          \\ \cline{1-3}
+\multicolumn{1}{|c|}{\multirow{2}{*}{2}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} &                        &                          &                          \\ \cline{2-3}
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{1} &                        &                          &                          \\ \cline{1-3}
+                                         &                        &                        &                        &                          &                          \\ \cline{1-4}
+\multicolumn{1}{|c|}{\multirow{2}{*}{3}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} &                          &                          \\ \cline{2-4}
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{1} &                          &                          \\ \cline{1-4}
+                                         &                        &                        &                        &                          &                          \\ \cline{1-5}
+\multicolumn{1}{|c|}{\multirow{2}{*}{4}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h}   &                          \\ \cline{2-5}
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{1}   &                          \\ \cline{1-5}
+                                         &                        &                        &                        &                          &                          \\ \cline{1-5}
+\multicolumn{1}{|c|}{\multirow{2}{*}{5}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{2h}  &                          \\ \cline{2-5}
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{1/2} &                          \\ \cline{1-5}
+                                         &                        &                        &                        &                          &                          \\ \hline
+\multicolumn{1}{|c|}{\multirow{2}{*}{6}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h}   & \multicolumn{1}{c|}{2h}  \\ \cline{2-6} 
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0}   & \multicolumn{1}{c|}{1/2} \\ \hline
+                                         &                        &                        &                        &                          &                          \\ \hline
+\multicolumn{1}{|c|}{\multirow{2}{*}{7}} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{h} & \multicolumn{1}{c|}{2h}  & \multicolumn{1}{c|}{2h}  \\ \cline{2-6} 
+\multicolumn{1}{|c|}{}                   & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0} & \multicolumn{1}{c|}{0}   & \multicolumn{1}{c|}{1/2} \\ \hline
+\end{tabular}
 \end{table}
 
 The steps occurring at each timestep are described below.
 
 \begin{itemize}
     \item Timestep 1: a new load with a value of 1 occurs. This is placed in Bin 1.
-    \item Timestep 2-4: a new load with a value of 1 occurs. Again, this is placed in Bin 1. The load which from Bin 1 from the previous timestep is displaced to Bin 2. This process is repeated for for the next two timesteps until Bins 1-4 each contain a value of 1.
-    \item Timestep 5:  
+    
+    \item Timestep 2-4: the load from Bin 1 from the previous timestep is displaced to Bin 2. No new loads occurs at timestep 2, so a value of 0 is placed in Bin 1. This process is repeated for for the next two timesteps until Bins 1-3 each contain a value of 0, and Bin 4 has a value 1.
+    
+    \item Timestep 5: no new load occurs at timestep 5, so a value of 0 is place in Bin 1 and the other bins are displaced, so that Bins 1-4 contain a value of 0, and Bin 5 contains a value of 1. As was stated when the example was defined above, we plan to keep three $h$ loads and then aggregate into $2h$ blocks for any remaining loads. As a result, the loads from Bins 4-5 collapse into a $2h$ load block with a value of 1/2, since this is the average load over this time period.
+    
+    \item Timestep 6: no new load occurs, so a value of 0 is placed in Bin 1 and the other bins are displaced.
+    
+    \item Timestep 7: no new load occurs, so a value of 0 is placed in Bin 1 and the other bins are displaced. Bins 4-5 are again aggregated into a single bin of width $2h$.
+    
 \end{itemize}
+
+\cite{Liu2005} developed another static load aggregation scheme, which is stated to be an improvement on the method by \cite{YavuzturkSpitler1999}. The author referred to the scheme as a ``hierarchical" approach, which used the following parameters to guide the aggregation process.
+
+\begin{itemize}
+    \item A minimum of 12 hourly loads are kept for the 12 most recently simulated hours.
+
+    \item Hourly loads are then aggregated into daily, 24 hour blocks. These blocks are referred to as ``small" blocks.
+
+    \item Five ``small" blocks are aggregated into ``medium" blocks with a minimum of three small blocks kept after the aggregation process. In other words, once eight small blocks have been created, the five which are most distant from the current simulation time are aggregated into medium blocks to represent a period of 120 hours.
+    
+    \item 73 ``medium" blocks are then aggregated into ``large" blocks which represents 8760 simulation hours, with 30 medium blocks to be kept unaggregated. In other words, once 103 medium blocks have been created, the 73 which are most distant from the current simulation time are aggregated into a period of 8760 hours.
+    
+\end{itemize} 
+
+The author claims that the method results in generating only 12\% of the aggregation block when compared to the \cite{YavuzturkSpitler1999} method, and that this results in a 20\% reduction in simulation time.
+
+\cite{BernierPinelLabibPaillot2004} also developed another static aggregation algorithm which was termed the ``multiple-load aggregation algorithm" (MLAA). The method uses a GHE model formulation which relies on a cylindrical heat source equation, rather than the response factor approach outlined previously. Regardless, of this, the load aggregation procedure which is described is applicable to the work performed here.
+
+The authors tested a number of different variations for bin duration, but settled on the following:
+
+\begin{itemize}
+    \item A minimum of 12 hourly values are kept.
+    
+    \item Hourly values are aggregated into blocks representing 48 hours, termed ``daily" blocks.
+
+    \item Daily blocks are aggregated into 168 hour ``weekly" blocks.
+    
+    \item Weekly blocks are aggregated into 360 hour ``monthly" blocks.
+
+\end{itemize}
+
+Something that should be pointed out regarding this work's testing of the MLAA method, is the fact that the aggregation blocks specified by the authors do not aggregate together evenly. As the method is formulated in this work, the aggregation blocks must be integer combinations of each other. In other words, we can take, for example, 3 or 4 smaller blocks and combine them together to form a larger block, but we cannot take 3.2 smaller blocks to form a larger block. In the case of the MLAA algorithm, the 48 is not an integer multiple of 168, so this discrepancy causes a minor implementation issue. To get around the problem, 
+
+Dynamic method g-function generation
+
+\subsection*{Dynamic Method}
+
+\section*{Testing}
 
 \section*{Results}
 
 \section*{Recommendations}
 
 \section*{Conclusions}
+
+\section*{Acknowledgments}
+This project was supported under the National Renewable Energy Laboratory Task Order Agreement No.~KAGN-4-42503-00. The computing for the project was performed at the OSU High Performance Computing Center at Oklahoma State University supported in part through the National Science Foundation grant OAC-1126330.
 
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \bibliography{references}
