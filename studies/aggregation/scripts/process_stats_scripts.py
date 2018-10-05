@@ -91,10 +91,10 @@ def get_run_time(path):
                             line = line.replace(' ', '')
                             if 'day' in line or 'days' in line:
                                 tokens = line.split(',')
-                                if 'day' in line:
-                                    days = float(tokens[0].replace('day', ''))
-                                elif 'days' in line:
+                                if 'days' in line:
                                     days = float(tokens[0].replace('days', ''))
+                                elif 'day' in line:
+                                    days = float(tokens[0].replace('day', ''))
 
                                 line = tokens[-1]
 
