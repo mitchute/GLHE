@@ -6,11 +6,16 @@ norm = os.path.normpath
 cwd = os.getcwd()
 
 
-def write_pbs(run_dir, time, num_up):
+def write_pbs(run_dir, time, num_up, kill):
     pbs = ''
 
     with open(norm(join(cwd, '../base', 'run.pbs')), 'r') as f:
         for line in f:
+
+            if kill:
+                if 'batch' in line:
+                    line = line.replace('batch', 'killable')
+
             if 'SIM_RUNTIME' in line:
                 line = line.replace('SIM_RUNTIME', time)
 

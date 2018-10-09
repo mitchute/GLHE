@@ -7,9 +7,46 @@ from glhe.globals.constants import SEC_IN_YEAR  # noqa
 from glhe.globals.functions import load_json, write_json  # noqa
 from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 
-run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
+run_times = [1 * SEC_IN_YEAR,
+             2 * SEC_IN_YEAR,
+             3 * SEC_IN_YEAR,
+             4 * SEC_IN_YEAR,
+             5 * SEC_IN_YEAR,
+             6 * SEC_IN_YEAR,
+             7 * SEC_IN_YEAR,
+             8 * SEC_IN_YEAR,
+             9 * SEC_IN_YEAR,
+             10 * SEC_IN_YEAR,
+             11 * SEC_IN_YEAR,
+             12 * SEC_IN_YEAR]
+
 loads = ['balanced', 'imbalanced']
-wall_times = ['10:00:00', '100:00:00']
+
+wall_times = ['120:00:00',
+              '120:00:00',
+              '120:00:00',
+              '120:00:00',
+              '120:00:00',
+              '540:00:00',
+              '540:00:00',
+              '540:00:00',
+              '540:00:00',
+              '540:00:00',
+              '540:00:00',
+              '540:00:00']
+
+killable = [False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True]
 
 # shortcuts
 join = os.path.join
@@ -38,7 +75,7 @@ def setup_all_cases():
             g_path = norm(join(cwd, '../base', 'g_functions.csv'))
             output_path = join(run_path, 'out.csv')
             write_no_agg_json_input(run_path, time, load_path, g_path, output_path)
-            write_pbs(run_path, wall_times[idx], 5)
+            write_pbs(run_path, wall_times[idx], 5, killable[idx])
 
 
 if __name__ == "__main__":
