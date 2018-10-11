@@ -48,6 +48,8 @@
 %% for the whole article with \linenumbers after \end{frontmatter}.
 \usepackage{lineno}
 
+\usepackage{xcolor}
+
 %% natbib.sty is loaded by default. However, natbib options can be
 %% provided with \biboptions{...} command. Following options are
 %% valid:
@@ -131,13 +133,13 @@ Ground heat exchanger, simulation, load aggregation, g-function
 
 %% main text
 \section*{Introduction}
-Ground source heat pump (GSHP) systems are used to provide building space heating and cooling and hot water generation. The GSHP system heat pump is coupled to the soil via a ground heat exchanger (GHE), which is the heat sink/source for the system. This GSHP system exchanges energy between the heat pump and the soil via the GHE to provide for the heating and cooling loads. Below a certain depth (which varies with geography and location) the soil temperature remains constant during the year. This temperature is typically lower than the local ambient air temperature during periods of peak cooling demand, and higher than the ambient air temperature during periods of peek heating demand. As a result, GSHP systems can generally provide heating or cooling more efficiently than by using other more conventional heating and cooling technologies. 
+Ground source heat pump (GSHP) systems are used to provide building space heating and cooling and hot water generation. In these systems, a heat pump is coupled to the soil via a ground heat exchanger (GHE).  The ground acts as the heat sink/source for the system. This GSHP system exchanges energy between the heat pump and the soil via the GHE to provide for the heating and cooling loads. Below a certain depth (which varies with geography and location) the soil temperature remains constant during the year. This temperature is typically lower than the local ambient air temperature during periods of peak cooling demand, and higher than the ambient air temperature during periods of peek heating demand. As a result, GSHP systems can generally provide heating or cooling more efficiently than by using other more conventional heating and cooling technologies. 
 
-GSHP systems \textit{can} be an effective and economical method for providing space heating and cooling. However, due to the complex nature of the thermally interacting ground heat exchangers, they are often difficult to apply rule-of-thumb based design approaches, as could more easily be done with other heating and cooling technologies. If the ground heat exchanger is not designed properly, it can cause the entire system to fail to meet the load. Additionally, since the GHE represents potentially the largest single-item cost of a GSHP system, it is important for it to be designed properly.
+GSHP systems \textit{can} be an effective and economical method for providing space heating and cooling. However, due to the complex nature of the thermally interacting ground heat exchangers, rule-of-thumb based design approaches, which are frequently applied to typical heating and cooling technologies, break down. If the ground heat exchanger is not designed properly, it can cause the entire system to fail to meet the load. Additionally, since the GHE represents potentially the largest single-item cost of a GSHP system, it is important for it to be designed properly.
 
-Therefore, in order for GSHP systems to be compared against other comparable heating and cooling systems, designers need the ability to simulate the systems and compare the results. Due to this, a great amount of effort has been put towards developing simulation models for GSHP and GHE. Designers, however, not only expect that the simulations be accurate, but they also expect them to be executed quickly.
+To compare GSHP systems with other heating and cooling system types, designers need the ability to simulate the systems and compare the results. Due to this, a great amount of effort has been put towards developing simulation models for GSHP and GHE. Designers, however, not only expect that the simulations be accurate, but they also expect them to be executed quickly.
 
-One such GHE model that is often used for performing hourly GHE simulations is the model originally developed by \cite{EskilsonClaesson1988}. This model relies on precomputed response factors and the GHE load history to compute the temperature response of the GHE. Response factor type models are typically formulated as is shown in Equation \ref{eq:MFT}.
+One GHE model that is often used for performing hourly GHE simulations is the model originally developed by \cite{EskilsonClaesson1988}. This model relies on precomputed response factors and the GHE load history to compute the temperature response of the GHE. Response factor type models are typically formulated as is shown in Equation \ref{eq:MFT}.
 
 \begin{equation}
     T_f = T_g + \sum_{i=1}^n \frac{q_{i} - q_{i-1}}{2 \cdot \pi \cdot k_g} \cdot g\left(\frac{t_n - t_{i-1}}{t_s}\right) +  q_n \cdot R_b
@@ -148,16 +150,16 @@ where:
 \begin{flalign*}
     T_f &=\mbox{GHE mean-fluid temperature} && \\
     T_g &=\mbox{ground temperature} && \\
-    q_i &=i^{th} \mbox{ GHE heat transfer rate normalized based on GHE length. i.e Btu/h-ft, W/m} && \\
+    q_i &=i^{th} \mbox{ GHE heat transfer rate divided by GHE length} && \\
     t_i &=i^{th} \mbox{ timestep} && \\
     t_s &=\mbox{ GHE time constant } \left(\frac{H^2}{9\cdot\alpha_g}\right) && \\
     R_b &=\mbox{ borehole thermal resistance} && \\
     g &=\mbox{g-function response factors} && \\
 \end{flalign*}
 
-At a fundamental level, conduction problems can be evaluated using linear partial differential equations. Because no non-linear terms exist in these equations, the principle of superpostion can be applied to simplify the solution. GHE response factor models take advantage of this property and apply the principle of superposition to compute the GHE temperature response by using the GHE load history. The GHE load history is treated as a series of step heat pulses which when superimposed and combined using the response factors can lead to an accurate calculation of the GHE temperature response. This reduces the solution of the fundamental conduction differential equations to the simple algebraic equation shown in Equation \ref{eq:MFT}.
+At a fundamental level, conduction problems can be evaluated using linear partial differential equations. Because no non-linear terms exist in these equations, the principle of superpostion can be applied to simplify the solution. GHE response factor models take advantage of this property and apply the principle of superposition to compute the GHE temperature response by using the GHE load history. The GHE load history is treated as a series of step heat pulses which, when superimposed and combined using the response factors, can lead to an accurate calculation of the GHE temperature response. This reduces the solution of the fundamental conduction differential equations to the simple algebraic equation shown in Equation \ref{eq:MFT}.
 
-A practical issue that arises from this superpostion approach, however, is the fact that the number of superposition calculations grows with the square of the number of timesteps \citep{YavuzturkSpitler1999}. Therefore, applying this approach directly will greatly affect simulation runtime. Attempting to simulate, say, for example an hourly annual or hourly multi-year simulations may be impractical without some way to reduce the number of computations required.
+A practical issue that arises from this superpostion approach, however, is the fact that the number of superposition calculations grows with the square of the number of timesteps \citep{YavuzturkSpitler1999}. \textcolor{red}{Therefore, applying this approach directly will greatly affect simulation runtime.  -- this sentence is a bit too early I think, I don't understand the implication of the word "directly" at this point.  You can talk about the computational complexity, but just keep it general as in, "any reduction in the number of timesteps to calculate will provide a benefit" or something.} Attempting to simulate, say, for example an hourly annual or hourly multi-year simulations may be impractical without some way to reduce the number of computations required.
 
 In order to reduce runtime, load aggregation procedures have been developed which will reduce then number of superposition calculations. This will in turn reduce simulation runtime. Load aggregation is the process of taking discrete individual loads that occurred over a given time interval, and replacing them with a single load over the same time interval. If the individual loads occurred over uniform timestep intervals, the average load rate could be computed and applied for the aggregated load. If the loads have non-uniform timesteps, and energy bases approach should be taken to ensure that energy is conserved.
 
