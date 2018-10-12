@@ -23,18 +23,18 @@ run_times = [1 * SEC_IN_YEAR,
 
 loads = ['balanced', 'imbalanced']
 
-wall_times = ['4:00:00',
+wall_times = ['1:00:00',
+              '1:00:00',
+              '2:00:00',
+              '2:00:00',
               '4:00:00',
               '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00',
-              '4:00:00']
+              '8:00:00',
+              '8:00:00',
+              '16:00:00',
+              '16:00:00',
+              '32:00:00',
+              '32:00:00']
 
 exp_rates = [1.5, 1.61803398875, 1.75, 2.0]
 start_widths = [1, 2, 3]
@@ -75,7 +75,7 @@ def setup_all_cases():
                                         'end width': end_width}
 
                         write_dynamic_json_input(run_path, time, load_path, g_path, output_path, other_inputs)
-                        write_pbs(run_path, wall_times[idx_time], 7, False)
+                        write_pbs(run_path, wall_times[idx_time], 8, False)
 
 
 def set_dynamic_parameters(run_time, exp_rate, start_width, end_width):
