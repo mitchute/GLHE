@@ -8,13 +8,37 @@ from glhe.globals.constants import SEC_IN_HOUR  # noqa
 from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 from glhe.globals.functions import load_json, write_json  # noqa
 
-run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
-loads = ['balanced', 'imbalanced']
-wall_times = ['20:00', '2:30:00']
+run_times = [1 * SEC_IN_YEAR,
+             2 * SEC_IN_YEAR,
+             3 * SEC_IN_YEAR,
+             4 * SEC_IN_YEAR,
+             5 * SEC_IN_YEAR,
+             6 * SEC_IN_YEAR,
+             7 * SEC_IN_YEAR,
+             8 * SEC_IN_YEAR,
+             9 * SEC_IN_YEAR,
+             10 * SEC_IN_YEAR,
+             11 * SEC_IN_YEAR,
+             12 * SEC_IN_YEAR]
 
-exp_rates = [1.25, 1.5, 1.61803398875, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
-start_widths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'depth']
-end_widths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'depth']
+loads = ['balanced', 'imbalanced']
+
+wall_times = ['4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00',
+              '4:00:00']
+
+exp_rates = [1.5, 1.61803398875, 1.75, 2.0]
+start_widths = [1, 2, 3]
+end_widths = [1, 2, 3]
 
 # shortcuts
 join = os.path.join
@@ -36,7 +60,7 @@ def setup_all_cases():
                                                                                          end_width)
 
                         run_name = '{}_{}_{}'.format(depth, start_width, end_width)
-                        run_path = join(cwd, 'runs', load_time_name, '{:0.2f}'.format(exp_rate), run_name)
+                        run_path = join(cwd, 'runs', 'validation', load_time_name, '{:0.2f}'.format(exp_rate), run_name)
 
                         if not os.path.exists(run_path):
                             os.makedirs(run_path)
@@ -51,7 +75,7 @@ def setup_all_cases():
                                         'end width': end_width}
 
                         write_dynamic_json_input(run_path, time, load_path, g_path, output_path, other_inputs)
-                        write_pbs(run_path, wall_times[idx_time], 7)
+                        write_pbs(run_path, wall_times[idx_time], 7, False)
 
 
 def set_dynamic_parameters(run_time, exp_rate, start_width, end_width):
