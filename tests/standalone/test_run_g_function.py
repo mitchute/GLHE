@@ -48,4 +48,4 @@ class TestRunGFunctionIntegration(unittest.TestCase):
         tst, path = self.add_instance('dynamic')
         tst.simulate()
         df = pd.read_csv(path)
-        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
+        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.9, delta=0.15)

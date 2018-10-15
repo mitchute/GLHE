@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 
 
@@ -30,6 +32,8 @@ class OutputProcessor(object):
 
     def write_to_file(self, path):
         # write the data to a file
+        if os.path.exists(path):
+            os.remove(path)
         OutputProcessor.df.to_csv(path)  # pragma: no cover
 
 

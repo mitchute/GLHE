@@ -60,7 +60,7 @@ def setup_all_cases():
                                                                                          end_width)
 
                         run_name = '{}_{}_{}'.format(depth, start_width, end_width)
-                        run_path = join(cwd, 'runs', 'validation', load_time_name, '{:0.2f}'.format(exp_rate), run_name)
+                        run_path = join(cwd, 'runs', load_time_name, '{:0.2f}'.format(exp_rate), run_name)
 
                         if not os.path.exists(run_path):
                             os.makedirs(run_path)

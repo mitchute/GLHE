@@ -77,7 +77,7 @@ class RunGFunctions(object):
             while self.sim_time < self.run_time:
 
                 if self.print_idx == 50:
-                    print("Sim Time: {}".format(self.sim_time))
+                    print("Sim Time: {}".format(self.sim_time + gv.time_step))
                     self.print_idx = 0
                 else:
                     self.print_idx += 1
