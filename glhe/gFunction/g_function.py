@@ -279,7 +279,7 @@ class GFunction(SimulationEntryPoint):
             _part_1 = (f_sf - f_old) / 2
             log_num = log((t_i - t_i_minus_1) / (0.02 * t_tr))
             log_den = log(t_sf / (0.02 * t_tr))
-            _part_2 = 1 + sin(PI * (log_num / log_den  - 0.5))
+            _part_2 = 1 + sin(PI * (log_num / log_den - 0.5))
             f = _part_1 * _part_2 + f_old
         else:
             f = f_sf  # pragma: no cover
