@@ -46,8 +46,8 @@ def process_all_run_stats(path_to_root):
             if run_exists and log_exists:
 
                 try:
-                    run_time, run_time_frac, run_time_stdev, \
-                    rmse, load, sim_time, sample_count = compute_run_stats(this_dir)
+                    run_time, run_time_frac, run_time_stdev, rmse, load, sim_time, sample_count = compute_run_stats(
+                        this_dir)
 
                     config_1 = get_configuration(this_dir)
 
