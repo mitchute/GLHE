@@ -9,7 +9,6 @@ from glhe.globals.constants import PI, GAMMA
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
-from glhe.outputProcessor.processor import op
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
@@ -76,14 +75,15 @@ class GFunction(SimulationEntryPoint):
         self.prev_sim_time = 0
         self.time_step = 0
 
-    def register_output_variables(self):
-        op.register_output_variable(self, 'bh_resist', "Local Borehole Resistance 'Rb' [K/(W/m)]")
-        op.register_output_variable(self.my_bh, 'resist_bh_total_internal',
-                                    "Total Internal Borehole Resistance 'Ra' [K/(W/m)]")
-        op.register_output_variable(self, 'soil_resist', "Soil Resistance 'Rs' [K/(W/m)]")
-        op.register_output_variable(self, 'flow_fraction', "Flow Fraction [-]")
-        op.register_output_variable(self, 'load_per_meter', "Load on GHE [W/m]")
-        op.register_output_variable(self, 'ave_fluid_temp', "Average Fluid Temp [C]")
+    def report_output(self):
+        ret_vals = {"Local Borehole Resistance 'Rb' [K/(W/m)]": self.bh_resist,
+                    "Total Internal Borehole Resistance 'Ra' [K/(W/m)]": self.my_bh.resist_bh_total_internal,
+                    "Soil Resistance 'Rs' [K/(W/m)]": self.soil_resist,
+                    "Flow Fraction [-]": self.flow_fraction,
+                    "Load on GHE [W/m]": self.load_per_meter,
+                    "Average Fluid Temp [C]": self.ave_fluid_temp}
+
+        return ret_vals
 
     def update_g_values(self):
         for this_bin in self.load_aggregation.loads:
