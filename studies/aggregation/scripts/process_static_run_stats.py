@@ -22,6 +22,12 @@ def get_configuration(path):
 def process_all_run_stats(path_to_root):
     cols = ['run time', 'run time fraction', 'rmse', 'load', 'sim time', 'min hourly', 'min other']
 
+    fpath_csv = join(path_to_root, "static_stats.csv")
+    fpath_log = join(path_to_root, "static_stats.log")
+
+    if os.path.exists(fpath_log):
+        os.remove(fpath_log)
+
     df = pd.DataFrame(columns=cols)
 
     for dirpath, subdirs, files in os.walk(path_to_root):
@@ -48,7 +54,7 @@ def process_all_run_stats(path_to_root):
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case], ignore_index=True)
 
-                    with open(join(path_to_root, 'static_stats.log'), 'a') as f:
+                    with open(fpath_log, 'a') as f:
                         f.write('{} completed\n'.format(this_dir))
 
                 except FileNotFoundError:
@@ -57,7 +63,9 @@ def process_all_run_stats(path_to_root):
             elif run_exists and not log_exists:
                 print("'{}' run not completed".format(this_dir))
 
-    df.to_csv(join(path_to_root, "static_stats.csv"))
+    if os.path.exists(fpath_csv):
+        os.remove(fpath_csv)
+    df.to_csv(fpath_csv)
 
 
 if __name__ == "__main__":
