@@ -61,8 +61,8 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "runtime": 36000,
-    "time-steps per hour": 60
+    "runtime": 180000,
+    "time-steps per hour": 30
   },
   "soil": {
     "conductivity": 2.7,
