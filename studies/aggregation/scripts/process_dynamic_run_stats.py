@@ -20,8 +20,9 @@ def get_configuration(path):
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'run time fraction', 'rmse', 'load', 'sim time', 'exp_rate', 'depth', 'start width',
-            'end width']
+    cols = ['run time', 'run time fraction', 'run time stdev' 
+            'rmse', 'load', 'sim time', 'exp_rate', 'depth',
+            'start width', 'end width', 'sample count']
 
     fpath_csv = join(path_to_root, "dynamic_stats.csv")
     fpath_log = join(path_to_root, "dynamic_stats.log")
@@ -41,19 +42,22 @@ def process_all_run_stats(path_to_root):
             if run_exists and log_exists:
 
                 try:
-                    run_time, run_time_frac, rmse, load, sim_time = compute_run_stats(this_dir)
+                    run_time, run_time_frac, run_time_stdev, \
+                    rmse, load, sim_time, sample_count = compute_run_stats(this_dir)
+
                     config_1, config_2, config_3, config_4 = get_configuration(this_dir)
 
                     d = {cols[0]: [run_time],
                          cols[1]: [run_time_frac],
-                         cols[2]: [rmse],
-                         cols[3]: [load],
-                         cols[4]: [sim_time],
-                         cols[5]: [config_1],
-                         cols[6]: [config_2],
-                         cols[7]: [config_3],
-                         cols[8]: [config_4]
-                         }
+                         cols[2]: [run_time_stdev],
+                         cols[3]: [rmse],
+                         cols[4]: [load],
+                         cols[5]: [sim_time],
+                         cols[6]: [config_1],
+                         cols[7]: [config_2],
+                         cols[8]: [config_3],
+                         cols[9]: [config_4],
+                         cols[10]: [sample_count]}
 
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case], ignore_index=True)
