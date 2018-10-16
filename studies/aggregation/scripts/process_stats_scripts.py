@@ -75,11 +75,10 @@ def get_base_run_file_path(path):
 
 
 def get_run_time(path):
-    days = 0
-    hrs = 0
-    mins = 0
-    secs = 0
+
     count = 0
+
+    results = []
 
     for _, _, files in os.walk(path):
         for file in files:
@@ -95,30 +94,41 @@ def get_run_time(path):
                                     days = float(tokens[0].replace('days', ''))
                                 elif 'day' in line:
                                     days = float(tokens[0].replace('day', ''))
+                                else:
+                                    days = 0
 
                                 line = tokens[-1]
 
+                            else:
+                                days = 0
+
                             tokens = line.split(':')
-                            hrs += float(tokens[0])
-                            mins += float(tokens[1])
-                            secs += float(tokens[2])
+
+                            hrs = float(tokens[0])
+                            mins = float(tokens[1])
+                            secs = float(tokens[2])
+
+                            time = days * SEC_IN_DAY + hrs * SEC_IN_HOUR + mins * SEC_IN_MIN + secs
+
+                            results.append(time)
                             count += 1
+
                             break
 
     try:
-        return days / count * SEC_IN_DAY + hrs / count * SEC_IN_HOUR + mins / count * SEC_IN_MIN + secs / count
+        return np.mean(results), np.std(results), len(results)
     except ZeroDivisionError:
-        return 0
+        return 0, 0, 0
 
 
 def compute_run_stats(path):
     base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
     rmse = calc_rmse(join(base_path, 'out.csv'), join(path, 'out.csv'))
-    run_time = get_run_time(path)
-    base_run_time = get_run_time(base_path)
+    run_time, run_time_stdev, sample_count = get_run_time(path)
+    base_run_time, _, _ = get_run_time(base_path)
     try:
         run_time_frac = run_time / base_run_time
     except ZeroDivisionError:
         run_time_frac = 0
         print('Base runtime error: {}'.format(base_path))
-    return run_time, run_time_frac, rmse, load, sim_time
+    return run_time, run_time_frac, run_time_stdev, rmse, load, sim_time, sample_count

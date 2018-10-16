@@ -16,7 +16,6 @@ class StaticMethod(BaseMethod):
 
         self.min_bin_nums = [6, 10, 10, 10, 10]
         self.bin_widths = [1, 6, 24, 168, 840]
-        self.min_sub_hour_bins = 4
 
         if inputs is not None:
             try:
@@ -29,10 +28,7 @@ class StaticMethod(BaseMethod):
             except KeyError:  # pragma: no cover
                 pass  # pragma: no cover
 
-            try:
-                self.min_sub_hour_bins = inputs['min sub-hour bins']
-            except KeyError:  # pragma: no cover
-                pass  # pragma: no cover
+        self.min_sub_hour_bins = int(SEC_IN_HOUR / gv.time_step)
 
         self.bin_widths = [x * SEC_IN_HOUR for x in self.bin_widths]
 

@@ -41,13 +41,7 @@
     }
   ],
   "load-aggregation": {
-    "type": "dynamic",
-    "dynamic": {
-      "depth": 18,
-      "end width": 3,
-      "expansion rate": 1.5,
-      "start width": 3
-    }
+    "type": "dynamic"
   },
   "load-profile": {
     "type": "external",
@@ -67,7 +61,7 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "runtime": 7200,
+    "runtime": 360000,
     "time-steps per hour": 60
   },
   "soil": {

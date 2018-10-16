@@ -16,7 +16,6 @@ class DynamicMethod(BaseMethod):
         self.exp_rate = 2
         self.start_width = 5
         self.end_width = 5
-        self.num_sub_hour_bins = 4
 
         if inputs is not None:
             try:
@@ -39,10 +38,7 @@ class DynamicMethod(BaseMethod):
             except KeyError:  # pragma: no cover
                 pass
 
-            try:
-                self.num_sub_hour_bins = inputs['number of sub-hour bins']
-            except KeyError:  # pragma: no cover
-                pass
+        self.num_sub_hour_bins = int(SEC_IN_HOUR / gv.time_step)
 
         if self.start_width is None and self.end_width is not None:
             raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover

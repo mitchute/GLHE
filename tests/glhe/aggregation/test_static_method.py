@@ -12,7 +12,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(len(tst.loads), 0)
 
     def test_add_load(self):
-        d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4], 'min sub-hour bins': 2}
+        d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4]}
 
         gv.time_step = set_time_step(2)
         sim_time = 0
@@ -131,7 +131,7 @@ class TestStatic(unittest.TestCase):
         self.assertEqual(tst.loads[5].energy, 10)
 
     def test_add_load_with_sub_hour_loads(self):
-        d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4], 'min sub-hour bins': 2}
+        d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4]}
         gv.time_step = set_time_step(2)
         sim_time = 0
 
