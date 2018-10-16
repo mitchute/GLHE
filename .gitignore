@@ -105,9 +105,9 @@ ENV/
 
 .DS_Store
 
-in.csv
-in.json
-out.csv
+in*.csv
+in*.json
+out*.csv
 runs/
 *.png
 *.pbs.*

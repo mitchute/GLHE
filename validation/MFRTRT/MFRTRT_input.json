@@ -61,7 +61,7 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "runtime": 360000,
+    "runtime": 36000,
     "time-steps per hour": 60
   },
   "soil": {
