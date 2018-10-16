@@ -99,7 +99,6 @@ class TestGFunction(unittest.TestCase):
         write_json(temp_file, d)
         inputs = InputProcessor().process_input(temp_file)
         g = GFunction(inputs=inputs)
-        g.register_output_variables()
         return g
 
     def test_class_inheritance(self):
