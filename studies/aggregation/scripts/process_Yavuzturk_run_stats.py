@@ -19,9 +19,14 @@ def get_configuration(path):
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'run time fraction',
-            'run time stdev', 'rmse', 'load',
-            'sim time', 'case id', 'sample count']
+    cols = ['run time',
+            'run time fraction',
+            'run time stdev',
+            'rmse',
+            'load',
+            'sim time',
+            'case id',
+            'sample count']
 
     fpath_csv = join(path_to_root, "Yavuzturk_stats.csv")
     fpath_log = join(path_to_root, "Yavuzturk_stats.log")

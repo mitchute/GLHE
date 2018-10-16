@@ -20,9 +20,17 @@ def get_configuration(path):
 
 
 def process_all_run_stats(path_to_root):
-    cols = ['run time', 'run time fraction', 'run time stdev' 
-            'rmse', 'load', 'sim time', 'exp_rate', 'depth',
-            'start width', 'end width', 'sample count']
+    cols = ['run time',
+            'run time fraction',
+            'run time stdev'
+            'rmse',
+            'load',
+            'sim time',
+            'exp_rate',
+            'depth',
+            'start width',
+            'end width',
+            'sample count']
 
     fpath_csv = join(path_to_root, "dynamic_stats.csv")
     fpath_log = join(path_to_root, "dynamic_stats.log")
