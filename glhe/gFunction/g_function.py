@@ -13,6 +13,8 @@ from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
 
+from glhe.aggregation.types import AggregationType
+
 
 class GFunction(SimulationEntryPoint):
     def __init__(self, inputs):
@@ -169,11 +171,29 @@ class GFunction(SimulationEntryPoint):
 
         if converged:
             self.load_aggregation.aggregate(self.sim_time)
+            self.report_loads()
             self.prev_sim_time = self.sim_time
         else:
             self.load_aggregation.reset_current_load()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temp=self.outlet_temp)
+
+    def report_loads(self):
+
+        if self.load_aggregation.type == AggregationType.STATIC:
+            fname = "loads_static.csv"
+        elif self.load_aggregation.type  == AggregationType.DYNAMIC:
+            fname = "loads_dynamic.csv"
+        else:
+            fname = "loads_none.csv"
+
+        with open(fname, 'a') as f:
+            s = '{}'.format(self.sim_time)
+            for load in self.load_aggregation.loads:
+                s += ',{}'.format(load.energy / load.width)
+
+            s += '\n'
+            f.write(s)
 
     def calc_flow_fraction(self):
         """

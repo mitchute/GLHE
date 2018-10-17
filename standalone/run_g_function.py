@@ -15,6 +15,8 @@ from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
 
+from glhe.aggregation.types import AggregationType
+
 
 class RunGFunctions(object):
     def __init__(self, input_file_path):
@@ -72,6 +74,16 @@ class RunGFunctions(object):
 
     def simulate(self):
         start_time = datetime.datetime.now()
+
+        if self.g.load_aggregation.type == AggregationType.STATIC:
+            fname = "loads_static.csv"
+        elif self.g.load_aggregation.type  == AggregationType.DYNAMIC:
+            fname = "loads_dynamic.csv"
+        else:
+            fname = "loads_none.csv"
+
+        if os.path.exists(fname):
+            os.remove(fname)
 
         try:
             if self.init_output_vars:
