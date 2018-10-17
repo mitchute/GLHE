@@ -316,15 +316,15 @@ class GFunction(SimulationEntryPoint):
         else:
             start_idx = 1
 
-        def calc_temp_rise(self, bin_i, bin_i_minus_1):
+        def calc_temp_rise(bin_i, bin_i_minus_1, c_0):
             load_i = bin_i.get_load()
             load_i_minus_1 = bin_i_minus_1.get_load()
-            return (load_i - load_i_minus_1) * bin_i_minus_1.g * self.c_0
+            return (load_i - load_i_minus_1) * bin_i_minus_1.g * c_0
 
         for i in range(start_idx, len(self.load_aggregation.loads) - 1):
             bin_i = self.load_aggregation.loads[i]
             bin_i_minus_1 = self.load_aggregation.loads[i + 1]
-            temp_rise_sum += calc_temp_rise(self, bin_i, bin_i_minus_1)
+            temp_rise_sum += calc_temp_rise(bin_i, bin_i_minus_1, self.c_0)
 
         bin_i = self.load_aggregation.loads[-1]
         temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
