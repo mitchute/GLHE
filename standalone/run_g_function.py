@@ -4,6 +4,7 @@ import sys
 
 from scipy.optimize import minimize
 
+from glhe.aggregation.types import AggregationType
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
@@ -14,8 +15,6 @@ from glhe.outputProcessor.processor import OutputProcessor
 from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
-
-from glhe.aggregation.types import AggregationType
 
 
 class RunGFunctions(object):
@@ -77,7 +76,7 @@ class RunGFunctions(object):
 
         if self.g.load_aggregation.type == AggregationType.STATIC:
             fname = "loads_static.csv"
-        elif self.g.load_aggregation.type  == AggregationType.DYNAMIC:
+        elif self.g.load_aggregation.type == AggregationType.DYNAMIC:
             fname = "loads_dynamic.csv"
         else:
             fname = "loads_none.csv"

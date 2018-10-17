@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
+from glhe.aggregation.types import AggregationType
 from glhe.globals.constants import PI, GAMMA
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
@@ -12,8 +13,6 @@ from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
-
-from glhe.aggregation.types import AggregationType
 
 
 class GFunction(SimulationEntryPoint):
@@ -182,7 +181,7 @@ class GFunction(SimulationEntryPoint):
 
         if self.load_aggregation.type == AggregationType.STATIC:
             fname = "loads_static.csv"
-        elif self.load_aggregation.type  == AggregationType.DYNAMIC:
+        elif self.load_aggregation.type == AggregationType.DYNAMIC:
             fname = "loads_dynamic.csv"
         else:
             fname = "loads_none.csv"
