@@ -180,17 +180,36 @@ class GFunction(SimulationEntryPoint):
     def report_loads(self):
 
         if self.load_aggregation.type == AggregationType.STATIC:
-            fname = "loads_static.csv"
+            fname_csv = "loads_static.csv"
+            fname_g = "g_static.csv"
+            fname_width = "widths_static.csv"
         elif self.load_aggregation.type == AggregationType.DYNAMIC:
-            fname = "loads_dynamic.csv"
+            fname_csv = "loads_dynamic.csv"
+            fname_g = "g_dynamic.csv"
+            fname_width = "widths_dynamic.csv"
         else:
-            fname = "loads_none.csv"
+            fname_csv = "loads_none.csv"
+            fname_g = "g_none.csv"
+            fname_width = "widths_none.csv"
 
-        with open(fname, 'a') as f:
+        with open(fname_csv, 'a') as f:
             s = '{}'.format(self.sim_time)
             for load in self.load_aggregation.loads:
-                s += ',{}'.format(load.energy / load.width)
+                s += ',{}'.format(load.energy)
+            s += '\n'
+            f.write(s)
 
+        with open(fname_g, 'a') as f:
+            s = '{}'.format(self.sim_time)
+            for load in self.load_aggregation.loads:
+                s += ',{}'.format(load.g)
+            s += '\n'
+            f.write(s)
+
+        with open(fname_width, 'a') as f:
+            s = '{}'.format(self.sim_time)
+            for load in self.load_aggregation.loads:
+                s += ',{}'.format(load.width)
             s += '\n'
             f.write(s)
 

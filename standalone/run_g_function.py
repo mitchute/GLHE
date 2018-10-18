@@ -75,14 +75,25 @@ class RunGFunctions(object):
         start_time = datetime.datetime.now()
 
         if self.g.load_aggregation.type == AggregationType.STATIC:
-            fname = "loads_static.csv"
+            fname_csv = "loads_static.csv"
+            fname_g = "g_static.csv"
+            fname_width = "widths_static.csv"
         elif self.g.load_aggregation.type == AggregationType.DYNAMIC:
-            fname = "loads_dynamic.csv"
+            fname_csv = "loads_dynamic.csv"
+            fname_g = "g_dynamic.csv"
+            fname_width = "widths_dynamic.csv"
         else:
-            fname = "loads_none.csv"
+            fname_csv = "loads_none.csv"
+            fname_g = "g_none.csv"
+            fname_width = "widths_none.csv"
 
-        if os.path.exists(fname):
-            os.remove(fname)
+
+        if os.path.exists(fname_csv):
+            os.remove(fname_csv)
+        if os.path.exists(fname_g):
+            os.remove(fname_g)
+        if os.path.exists(fname_width):
+            os.remove(fname_width)
 
         try:
             if self.init_output_vars:
