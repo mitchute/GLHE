@@ -78,14 +78,17 @@ class RunGFunctions(object):
             fname_csv = "loads_static.csv"
             fname_g = "g_static.csv"
             fname_width = "widths_static.csv"
+            fname_resist = "resist_static.csv"
         elif self.g.load_aggregation.type == AggregationType.DYNAMIC:
             fname_csv = "loads_dynamic.csv"
             fname_g = "g_dynamic.csv"
             fname_width = "widths_dynamic.csv"
+            fname_resist = "resist_dynamic.csv"
         else:
             fname_csv = "loads_none.csv"
             fname_g = "g_none.csv"
             fname_width = "widths_none.csv"
+            fname_resist = "resist_none.csv"
 
         if os.path.exists(fname_csv):
             os.remove(fname_csv)
@@ -93,6 +96,8 @@ class RunGFunctions(object):
             os.remove(fname_g)
         if os.path.exists(fname_width):
             os.remove(fname_width)
+        if os.path.exists(fname_resist):
+            os.remove(fname_resist)
 
         try:
             if self.init_output_vars:

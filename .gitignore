@@ -109,6 +109,7 @@ in*.csv
 in*.json
 out*.csv
 g*.csv
+resist*.csv
 widths*.csv
 loads*.csv
 runs/

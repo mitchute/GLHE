@@ -183,14 +183,17 @@ class GFunction(SimulationEntryPoint):
             fname_csv = "loads_static.csv"
             fname_g = "g_static.csv"
             fname_width = "widths_static.csv"
+            fname_resist = "resist_static.csv"
         elif self.load_aggregation.type == AggregationType.DYNAMIC:
             fname_csv = "loads_dynamic.csv"
             fname_g = "g_dynamic.csv"
             fname_width = "widths_dynamic.csv"
+            fname_resist = "resist_dynamic.csv"
         else:
             fname_csv = "loads_none.csv"
             fname_g = "g_none.csv"
             fname_width = "widths_none.csv"
+            fname_resist = "resist_none.csv"
 
         with open(fname_csv, 'a') as f:
             s = '{}'.format(self.sim_time)
@@ -211,6 +214,10 @@ class GFunction(SimulationEntryPoint):
             for load in self.load_aggregation.loads:
                 s += ',{}'.format(load.width)
             s += '\n'
+            f.write(s)
+
+        with open(fname_resist, 'a') as f:
+            s = '{},{}\n'.format(self.sim_time, self.bh_resist)
             f.write(s)
 
     def calc_flow_fraction(self):
