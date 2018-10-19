@@ -108,6 +108,8 @@ ENV/
 in*.csv
 in*.json
 out*.csv
+g*.csv
+widths*.csv
 loads*.csv
 runs/
 *.png
