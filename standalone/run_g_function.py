@@ -87,7 +87,6 @@ class RunGFunctions(object):
             fname_g = "g_none.csv"
             fname_width = "widths_none.csv"
 
-
         if os.path.exists(fname_csv):
             os.remove(fname_csv)
         if os.path.exists(fname_g):
