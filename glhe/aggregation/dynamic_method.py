@@ -12,7 +12,7 @@ class DynamicMethod(BaseMethod):
 
         self.type = AggregationType.DYNAMIC
 
-        self.depth = 16
+        self.depth = 11
         self.exp_rate = 2
         self.start_width = 5
         self.end_width = 5
@@ -61,12 +61,15 @@ class DynamicMethod(BaseMethod):
         for this_bin in self.loads:
             this_bin.width = int(this_bin.width * SEC_IN_HOUR)
 
-    def add_load(self, bin_width, sim_time):
-        self.update_time()
+    def get_new_current_load_bin(self, energy=0, width=0):
+        self.current_load = DynamicBin(energy=energy, width=width)
 
-    def aggregate(self, sim_time):
+    def aggregate(self):
+
         for i, cur_bin in reversed(list(enumerate(self.loads))[1:]):
             left_bin = self.loads[i - 1]
             delta = left_bin.energy * gv.time_step / left_bin.width
             cur_bin.energy += delta
             left_bin.energy -= delta
+
+        self.loads[0] = self.current_load

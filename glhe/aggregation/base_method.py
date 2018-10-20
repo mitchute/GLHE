@@ -5,31 +5,34 @@ from collections import deque
 class BaseMethod(ABC):
 
     def __init__(self):
+        self.current_load = None
         self.loads = deque()
         self.type = None
 
     def update_time(self):
         time = 0
         for load in self.loads:
+            if load.g_fixed:
+                break
             time += load.width
             load.time = time
 
     def set_current_load(self, load):
-        self.loads[0].energy = load
-
-    def reset_current_load(self):
-        self.loads[0].energy = 0
+        self.current_load.energy = load
 
     def get_most_recent_bin(self):
         try:
-            return self.loads[1]
-        except IndexError:
             return self.loads[0]
+        except IndexError:
+            raise IndexError
+
+    def aggregate_current_load(self):
+        self.loads.appendleft(self.current_load)
 
     @abstractmethod
-    def add_load(self, bin_width, sim_time):
+    def get_new_current_load_bin(self):
         pass  # pragma: no cover
 
     @abstractmethod
-    def aggregate(self, sim_time):
+    def aggregate(self):
         pass  # pragma: no cover

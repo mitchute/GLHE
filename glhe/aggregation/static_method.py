@@ -36,16 +36,17 @@ class StaticMethod(BaseMethod):
             self.bin_widths.insert(0, gv.time_step)
             self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
-    def add_load(self, bin_width, sim_time):
-        self.loads.appendleft(StaticBin(0, width=bin_width))
-        self.update_time()
+    def get_new_current_load_bin(self, energy=0, width=0):
+        self.current_load = StaticBin(energy=energy, width=width)
 
-    def aggregate(self, sim_time):
+    def aggregate(self):
         """
         Aggregates the current aggregation
 
         :return: none
         """
+
+        self.aggregate_current_load()
 
         # bin the current bin objects into sub-lists to they can be combined as needed
         d = defaultdict(list)

@@ -56,7 +56,7 @@ class GFunction(SimulationEntryPoint):
 
         # other inits
         self.fluid_cap = 0
-        self.bh_resist = 0
+        self.bh_resist = 0.15
         self.soil_resist = 0
         self.ground_temp = 0
         self.ave_fluid_temp = init_temp
@@ -76,6 +76,10 @@ class GFunction(SimulationEntryPoint):
         self.prev_sim_time = 0
         self.time_step = 0
 
+        # set initial g-values
+        self.load_aggregation.update_time()
+        self.update_g_values(False)
+
     def report_output(self):
         ret_vals = {"Local Borehole Resistance 'Rb' [K/(W/m)]": self.bh_resist,
                     "Total Internal Borehole Resistance 'Ra' [K/(W/m)]": self.my_bh.resist_bh_total_internal,
@@ -86,13 +90,13 @@ class GFunction(SimulationEntryPoint):
 
         return ret_vals
 
-    def update_g_values(self):
+    def update_g_values(self, lock_down_g_value=True):
         for this_bin in self.load_aggregation.loads:
             if this_bin.g_fixed is True:
                 pass
             else:
                 this_bin.g = self.get_g_func(this_bin.time)
-                if isinstance(this_bin, DynamicBin):
+                if isinstance(this_bin, DynamicBin) and lock_down_g_value:
                     this_bin.g_fixed = True
 
     def get_g_func(self, time):
@@ -126,8 +130,8 @@ class GFunction(SimulationEntryPoint):
             self.my_bh.set_flow_rate(mass_flow / self.num_bh)
             self.bh_resist = self.my_bh.resist_bh_ave
 
-            self.load_aggregation.add_load(self.time_step, self.sim_time)
-            self.update_g_values()
+            self.load_aggregation.get_new_current_load_bin(width=time_step)
+            self.load_aggregation.current_load.g = self.get_g_func(time_step)
 
             flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
@@ -142,12 +146,7 @@ class GFunction(SimulationEntryPoint):
             self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.depth)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
-        prev_bin = self.load_aggregation.get_most_recent_bin()
-        delta_t_prev_bin = prev_bin.time
-        q_prev_bin = prev_bin.get_load()
-        g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
-
-        temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
+        temp_rise_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
         temp_rise_history = self.calc_history_temp_rise()
         c_1 = (1 - self.flow_fraction) * self.tot_length / self.fluid_cap
 
@@ -165,15 +164,15 @@ class GFunction(SimulationEntryPoint):
         total_load = self.load_per_meter * self.tot_length
         self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * total_load / self.fluid_cap
 
-        # update for next time step
-        self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
-
         if converged:
-            self.load_aggregation.aggregate(self.sim_time)
+            self.load_aggregation.aggregate()
+            self.load_aggregation.update_time()
+            self.update_g_values()
             self.report_loads()
             self.prev_sim_time = self.sim_time
-        else:
-            self.load_aggregation.reset_current_load()
+            self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
+        # else:
+        #     self.load_aggregation.reset_current_load()
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temp=self.outlet_temp)
 
@@ -333,27 +332,48 @@ class GFunction(SimulationEntryPoint):
 
         return f
 
-    def calc_history_temp_rise(self, include_current_timestep=False):
+    def calc_prev_bin_temp_rise(self):
+
+        try:
+            prev_bin = self.load_aggregation.get_most_recent_bin()
+            delta_t_prev_bin = prev_bin.time
+            q_prev_bin = prev_bin.get_load()
+            g_func_prev_bin = self.get_g_func(delta_t_prev_bin)
+            temp_rise_prev_bin = q_prev_bin * g_func_prev_bin * self.c_0
+        except IndexError:
+            temp_rise_prev_bin = 0
+            g_func_prev_bin = self.get_g_func(60)
+
+        return temp_rise_prev_bin, g_func_prev_bin
+
+    def calc_history_temp_rise(self, include_current_load=False):
 
         temp_rise_sum = 0
-
-        if include_current_timestep:
-            start_idx = 0
-        else:
-            start_idx = 1
 
         def calc_temp_rise(bin_i, bin_i_minus_1, c_0):
             load_i = bin_i.get_load()
             load_i_minus_1 = bin_i_minus_1.get_load()
             return (load_i - load_i_minus_1) * bin_i_minus_1.g * c_0
 
-        for i in range(start_idx, len(self.load_aggregation.loads) - 1):
+        if include_current_load:
+            try:
+                bin_i = self.load_aggregation.current_load
+                bin_i_minus_1 = self.load_aggregation.loads[0]
+                temp_rise_sum += calc_temp_rise(bin_i, bin_i_minus_1, self.c_0)
+            except IndexError:
+                bin_i = self.load_aggregation.current_load
+                temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
+
+        for i in range(len(self.load_aggregation.loads) - 1):
             bin_i = self.load_aggregation.loads[i]
             bin_i_minus_1 = self.load_aggregation.loads[i + 1]
             temp_rise_sum += calc_temp_rise(bin_i, bin_i_minus_1, self.c_0)
 
-        bin_i = self.load_aggregation.loads[-1]
-        temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
+        try:
+            bin_i = self.load_aggregation.loads[-1]
+            temp_rise_sum += bin_i.get_load() * bin_i.g * self.c_0
+        except IndexError:
+            pass
 
         return temp_rise_sum
 
