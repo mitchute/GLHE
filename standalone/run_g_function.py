@@ -4,7 +4,6 @@ import sys
 
 from scipy.optimize import minimize
 
-from glhe.aggregation.types import AggregationType
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
@@ -73,31 +72,6 @@ class RunGFunctions(object):
 
     def simulate(self):
         start_time = datetime.datetime.now()
-
-        if self.g.load_aggregation.type == AggregationType.STATIC:
-            fname_csv = "loads_static.csv"
-            fname_g = "g_static.csv"
-            fname_width = "widths_static.csv"
-            fname_resist = "resist_static.csv"
-        elif self.g.load_aggregation.type == AggregationType.DYNAMIC:
-            fname_csv = "loads_dynamic.csv"
-            fname_g = "g_dynamic.csv"
-            fname_width = "widths_dynamic.csv"
-            fname_resist = "resist_dynamic.csv"
-        else:
-            fname_csv = "loads_none.csv"
-            fname_g = "g_none.csv"
-            fname_width = "widths_none.csv"
-            fname_resist = "resist_none.csv"
-
-        if os.path.exists(fname_csv):
-            os.remove(fname_csv)
-        if os.path.exists(fname_g):
-            os.remove(fname_g)
-        if os.path.exists(fname_width):
-            os.remove(fname_width)
-        if os.path.exists(fname_resist):
-            os.remove(fname_resist)
 
         try:
             if self.init_output_vars:

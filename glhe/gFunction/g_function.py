@@ -5,7 +5,6 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
-from glhe.aggregation.types import AggregationType
 from glhe.globals.constants import PI, GAMMA
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
@@ -170,54 +169,10 @@ class GFunction(SimulationEntryPoint):
             self.load_aggregation.aggregate()
             self.load_aggregation.update_time()
             self.update_g_values()
-            self.report_loads()
             self.prev_sim_time = self.sim_time
             self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
 
         return TimeStepSimulationResponse(heat_rate=total_load, outlet_temp=self.outlet_temp)
-
-    def report_loads(self):
-
-        if self.load_aggregation.type == AggregationType.STATIC:
-            fname_csv = "loads_static.csv"
-            fname_g = "g_static.csv"
-            fname_width = "widths_static.csv"
-            fname_resist = "resist_static.csv"
-        elif self.load_aggregation.type == AggregationType.DYNAMIC:
-            fname_csv = "loads_dynamic.csv"
-            fname_g = "g_dynamic.csv"
-            fname_width = "widths_dynamic.csv"
-            fname_resist = "resist_dynamic.csv"
-        else:
-            fname_csv = "loads_none.csv"
-            fname_g = "g_none.csv"
-            fname_width = "widths_none.csv"
-            fname_resist = "resist_none.csv"
-
-        with open(fname_csv, 'a') as f:
-            s = '{}'.format(self.sim_time)
-            for load in self.load_aggregation.loads:
-                s += ',{}'.format(load.energy)
-            s += '\n'
-            f.write(s)
-
-        with open(fname_g, 'a') as f:
-            s = '{}'.format(self.sim_time)
-            for load in self.load_aggregation.loads:
-                s += ',{}'.format(load.g)
-            s += '\n'
-            f.write(s)
-
-        with open(fname_width, 'a') as f:
-            s = '{}'.format(self.sim_time)
-            for load in self.load_aggregation.loads:
-                s += ',{}'.format(load.width)
-            s += '\n'
-            f.write(s)
-
-        with open(fname_resist, 'a') as f:
-            s = '{},{}\n'.format(self.sim_time, self.bh_resist)
-            f.write(s)
 
     def calc_flow_fraction(self):
         """
