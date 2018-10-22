@@ -13,7 +13,6 @@ class TestNoAgg(unittest.TestCase):
 
     def test_add_load(self):
         gv.time_step = set_time_step(2)
-        sim_time = 0
 
         tst = NoAggMethod()
 

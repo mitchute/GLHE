@@ -7,9 +7,15 @@ from glhe.globals.constants import SEC_IN_YEAR  # noqa
 from glhe.globals.functions import load_json, write_json  # noqa
 from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 
-run_times = [SEC_IN_YEAR, 5 * SEC_IN_YEAR]
+run_times = [1* SEC_IN_YEAR,
+             5 * SEC_IN_YEAR,
+             10 * SEC_IN_YEAR]
+
 loads = ['balanced', 'imbalanced']
-wall_times = ['20:00', '1:30:00']
+
+wall_times = ['20:00',
+              '2:00:00',
+              '6:00:00']
 
 bin_widths = [[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384],
               [1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683],

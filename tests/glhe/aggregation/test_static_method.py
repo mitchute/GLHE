@@ -15,7 +15,6 @@ class TestStatic(unittest.TestCase):
         d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4]}
 
         gv.time_step = set_time_step(2)
-        sim_time = 0
 
         tst = StaticMethod(d)
 

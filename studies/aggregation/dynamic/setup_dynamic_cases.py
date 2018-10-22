@@ -9,36 +9,18 @@ from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 from glhe.globals.functions import load_json, write_json  # noqa
 
 run_times = [1 * SEC_IN_YEAR,
-             2 * SEC_IN_YEAR,
-             3 * SEC_IN_YEAR,
-             4 * SEC_IN_YEAR,
              5 * SEC_IN_YEAR,
-             6 * SEC_IN_YEAR,
-             7 * SEC_IN_YEAR,
-             8 * SEC_IN_YEAR,
-             9 * SEC_IN_YEAR,
-             10 * SEC_IN_YEAR,
-             11 * SEC_IN_YEAR,
-             12 * SEC_IN_YEAR]
+             10 * SEC_IN_YEAR]
 
 loads = ['balanced', 'imbalanced']
 
 wall_times = ['1:00:00',
-              '1:00:00',
-              '2:00:00',
-              '2:00:00',
               '4:00:00',
-              '4:00:00',
-              '8:00:00',
-              '8:00:00',
-              '16:00:00',
-              '16:00:00',
-              '32:00:00',
-              '32:00:00']
+              '8:00:00']
 
-exp_rates = [1.5, 1.61803398875, 1.75, 2.0]
-start_widths = [1, 2, 3]
-end_widths = [1, 2, 3]
+exp_rates = [1.25, 1.5, 1.61803398875, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
+start_widths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'depth']
+end_widths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'depth']
 
 # shortcuts
 join = os.path.join
