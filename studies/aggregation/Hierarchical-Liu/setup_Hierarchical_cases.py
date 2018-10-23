@@ -50,7 +50,7 @@ def setup_all_cases():
                                     'min number bins': num_hourly}
 
                     write_static_json_input(run_path, time, load_path, g_path, output_path, other_inputs)
-                    write_pbs(run_path, wall_times[idx_time], 6)
+                    write_pbs(run_path, wall_times[idx_time], 6, False)
 
 
 if __name__ == "__main__":
