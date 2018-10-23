@@ -9,6 +9,7 @@ import pandas as pd
 
 # shortcuts
 join = os.path.join
+abspath = os.path.abspath
 
 
 def count_running():
@@ -33,7 +34,7 @@ def call_showq():
 
 
 def init_sim(path):
-    return subprocess.call(['(cd', path, '&&', 'qsub', 'run.pbs)'])
+    return subprocess.call(['(cd', path, '&&', 'qsub', 'run.pbs)'], shell=True)
 
 
 def tail_file(path):
@@ -46,7 +47,7 @@ def find_all_jobs(path):
     for root, dirs, files in os.walk(path):
         for file in files:
             if fnmatch.fnmatch(file, 'run.pbs'):
-                jobs.append(root)
+                jobs.append(abspath(root))
 
     df = pd.DataFrame(data={'path': jobs,
                             'completed': [0] * len(jobs),
@@ -92,7 +93,7 @@ def schedule_jobs(path, num_runs):
 
         for idx, row in df.iterrows():
             if idle < max_idle:
-                if row['completed'] < num_runs:
+                if row['completed'] < int(num_runs):
                     init_sim(row['path'])
                     idle += 1
                     finished = False
