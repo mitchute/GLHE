@@ -85,9 +85,11 @@ def schedule_jobs(path, num_runs):
         df = count_completed_jobs(df)
         running, idle = count_running()
 
-        for _ in range(max_idle - idle):
-            for idx, row in df.iterrows():
+        for idx, row in df.iterrows():
+            if idle < max_idle:
                 init_sim(row['path'])
+                idle += 1
+                time.sleep(5)
 
         time.sleep(300)
 
