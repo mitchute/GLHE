@@ -8,6 +8,7 @@ import time
 import pandas as pd
 
 # shortcuts
+cwd = os.getcwd()
 join = os.path.join
 abspath = os.path.abspath
 
@@ -30,12 +31,12 @@ def count_running():
 
 
 def call_showq():
-    return io.BytesIO(subprocess.Popen(['showq'], stdout=subprocess.PIPE).stdout.read())
+    return io.BytesIO(subprocess.Popen(['showq'], stdout=subprocess.PIPE, cwd=cwd).stdout.read())
 
 
 def init_sim(path):
     print(path)
-    subprocess.Popen(['cd', path, '&&' 'qsub', 'run.pbs'], shell=True, cwd=path)
+    subprocess.Popen(['qsub', 'run.pbs'], cwd=path)
 
 
 def tail_file(path):
