@@ -34,7 +34,8 @@ def call_showq():
 
 
 def init_sim(path):
-    return subprocess.call(['(cd', path, '&&', 'qsub', 'run.pbs)'], shell=True)
+    print(path)
+    subprocess.Popen(['qsub', 'run.pbs)'], shell=True, cwd=path)
 
 
 def tail_file(path):
