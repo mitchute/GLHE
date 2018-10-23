@@ -10,4 +10,4 @@ cd $PBS_O_WORKDIR
 export PATH=/home/mitchute/.pyenv/versions/GLHE/bin:$PATH
 export PYTHONPATH=/home/mitchute/.pyenv/versions/GLHE/lib/python3.5/site-packages:$PYTHONPATH
 
-python /scratch/mitchute/glhe/studies/aggregation/scripts/schedule_jobs.py /scratch/mitchute/glhe/studies/aggregation/Yavuzturk/runs 3
+python /scratch/mitchute/glhe/studies/aggregation/scripts/scheduler.py /scratch/mitchute/glhe/studies/aggregation/Yavuzturk/runs 3
