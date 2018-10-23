@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import time
+
 import pandas as pd
 
 # shortcuts
@@ -82,6 +83,8 @@ def schedule_jobs(path, num_runs):
     max_idle = 50
 
     while True:
+
+        finished = True
         df = count_completed_jobs(df)
         running, idle = count_running()
 
@@ -90,9 +93,13 @@ def schedule_jobs(path, num_runs):
                 if row['completed'] < num_runs:
                     init_sim(row['path'])
                     idle += 1
+                    finished = False
                     time.sleep(5)
 
-        time.sleep(120)
+        if finished:
+            break
+        else:
+            time.sleep(120)
 
 
 if __name__ == "__main__":
