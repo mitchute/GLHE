@@ -14,23 +14,22 @@ join = os.path.join
 def count_running():
     running = 0
     idle = 0
-    error = 0
 
     f = call_showq()
 
     for line in f:
-        if b'Running' in line:
+        if b'Running' and b'mitchute' in line:
             running += 1
-        elif b'Idle' in line:
+        elif b'Idle' and b'mitchute' in line:
             idle += 1
         else:
-            error += 1
+            pass
 
     return running, idle
 
 
 def call_showq():
-    return io.BytesIO(subprocess.Popen(['showq', '|', 'grep', 'mitchute'], stdout=subprocess.PIPE).stdout.read())
+    return io.BytesIO(subprocess.Popen(['showq'], stdout=subprocess.PIPE).stdout.read())
 
 
 def init_sim(path):
