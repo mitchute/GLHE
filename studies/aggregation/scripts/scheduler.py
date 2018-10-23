@@ -1,4 +1,5 @@
 import fnmatch
+import io
 import os
 import subprocess
 import sys
@@ -15,7 +16,9 @@ def count_running():
     idle = 0
     error = 0
 
-    for line in call_showq():
+    f = call_showq()
+
+    for line in f:
         if b'Running' in line:
             running += 1
         elif b'Idle' in line:
@@ -27,7 +30,7 @@ def count_running():
 
 
 def call_showq():
-    return subprocess.Popen(['showq', '|', 'grep', 'mitchute'], stdout=subprocess.PIPE).stdout.read()
+    return io.BytesIO(subprocess.Popen(['showq', '|', 'grep', 'mitchute'], stdout=subprocess.PIPE).stdout.read())
 
 
 def init_sim(path):
