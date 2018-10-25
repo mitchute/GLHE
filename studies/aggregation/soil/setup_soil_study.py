@@ -40,15 +40,19 @@ def setup_all_cases():
                                                                                  end_width)
 
                 run_name = '{:0.1f}_{:0.0f}_{:0.0f}'.format(k, rho, cp)
-                run_path = join(cwd, 'runs', run_name)
+                run_path = join(cwd, 'runs', run_name, 'test')
+                run_path_annual = join(cwd, 'runs', run_name, 'annual')
 
                 if not os.path.exists(run_path):
                     os.makedirs(run_path)
 
+                if not os.path.exists(run_path_annual):
+                    os.makedirs(run_path_annual)
+
                 load_path = '{}.csv'.format(norm(join(cwd, '../base', load)))
                 g_path = norm(join(cwd, '../base', 'g_functions.csv'))
                 output_path = join(run_path, 'out.csv')
-                output_path_annual = join(run_path, 'out_annual.csv')
+                output_path_annual = join(run_path_annual, 'out_annual.csv')
 
                 other_inputs = {'depth': depth,
                                 'expansion rate': exp_rate,
@@ -59,9 +63,9 @@ def setup_all_cases():
                                 'cp': cp}
 
                 write_soil_json_input(run_path, time, load_path, g_path, output_path, other_inputs)
-                write_annual_json_input(run_path, time, load_path, g_path, output_path_annual, other_inputs)
+                write_annual_json_input(run_path_annual, time, load_path, g_path, output_path_annual, other_inputs)
                 write_pbs(run_path, wall_time, 6, False)
-                write_pbs(run_path, wall_time, 6, False, infile='in_annual.json', runfile='run_annual.pbs')
+                write_pbs(run_path_annual, wall_time, 6, False)
 
 
 def set_dynamic_parameters(run_time, exp_rate, start_width, end_width):
@@ -111,7 +115,7 @@ def write_annual_json_input(run_dir, time, path_to_load, path_to_g, path_to_outp
     f['soil']['density'] = other['rho']
     f['soil']['specific heat'] = other['cp']
 
-    write_json(join(run_dir, 'in_annual.json'), f)
+    write_json(join(run_dir, 'in.json'), f)
 
 
 def write_soil_json_input(run_dir, time, path_to_load, path_to_g, path_to_output, other):
