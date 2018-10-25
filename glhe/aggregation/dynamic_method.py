@@ -38,24 +38,28 @@ class DynamicMethod(BaseMethod):
             except KeyError:  # pragma: no cover
                 pass
 
-        self.num_sub_hour_bins = int(SEC_IN_HOUR / gv.time_step)
+            try:
+                self.runtime = inputs['runtime']
+            except KeyError:  # pragma: no cover
+                pass
 
         if self.start_width is None and self.end_width is not None:
             raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
         elif self.start_width is not None and self.end_width is None:
             raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
         elif self.start_width is not None and self.end_width is not None:
-            for i in range(self.depth):
-                width = int((1 - i / self.depth) * (self.start_width - self.end_width) + self.end_width)
-                for _ in range(width):
-                    self.loads.append(DynamicBin(width=self.exp_rate ** i))
+            self.loads.append(DynamicBin(width=gv.time_step / SEC_IN_HOUR))
+            cumulative_time = gv.time_step
+
+            while True:
+                prev_width = self.loads[-1].width
+                next_width = prev_width * self.exp_rate
+                self.loads.append(DynamicBin(width=next_width))
+                cumulative_time += next_width * SEC_IN_HOUR
+                if cumulative_time > self.runtime:
+                    break
 
         self._convert_bins_hours_to_seconds()
-        self._add_sts_bins()
-
-    def _add_sts_bins(self):
-        for i in range(self.num_sub_hour_bins):
-            self.loads.appendleft(DynamicBin(width=gv.time_step))
 
     def _convert_bins_hours_to_seconds(self):
         for this_bin in self.loads:
