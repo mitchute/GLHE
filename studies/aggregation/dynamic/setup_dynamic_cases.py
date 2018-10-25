@@ -57,7 +57,7 @@ def setup_all_cases():
                                         'end width': end_width}
 
                         write_dynamic_json_input(run_path, time, load_path, g_path, output_path, other_inputs)
-                        write_pbs(run_path, wall_times[idx_time], 8, False)
+                        write_pbs(run_path, wall_times[idx_time], 7, False)
 
 
 def set_dynamic_parameters(run_time, exp_rate, start_width, end_width):
