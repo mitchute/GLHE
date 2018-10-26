@@ -52,7 +52,7 @@ def setup_all_cases():
                 load_path = '{}.csv'.format(norm(join(cwd, '../base', load)))
                 g_path = norm(join(cwd, '../base', 'g_functions.csv'))
                 output_path = join(run_path, 'out.csv')
-                output_path_annual = join(run_path_annual, 'out_annual.csv')
+                output_path_annual = join(run_path_annual, 'out.csv')
 
                 other_inputs = {'depth': depth,
                                 'expansion rate': exp_rate,
