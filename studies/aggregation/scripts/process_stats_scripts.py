@@ -121,14 +121,22 @@ def get_run_time(path):
         return 0, 0, 0
 
 
-def compute_run_stats(path):
-    base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
+def compute_run_stats(path, base_path=None):
+
+    if base_path is None:
+        base_path, load, sim_time = get_base_run_file_path(join(path, 'in.json'))
+    else:
+        load = 'balanced'
+        sim_time = 1
+
     rmse = calc_rmse(join(base_path, 'out.csv'), join(path, 'out.csv'))
     run_time, run_time_stdev, sample_count = get_run_time(path)
     base_run_time, _, _ = get_run_time(base_path)
+
     try:
         run_time_frac = run_time / base_run_time
     except ZeroDivisionError:
         run_time_frac = 0
         print('Base runtime error: {}'.format(base_path))
+
     return run_time, run_time_frac, run_time_stdev, rmse, load, sim_time, sample_count

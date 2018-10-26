@@ -14,8 +14,8 @@ join = os.path.join
 
 def get_configuration(path):
     tokens = os_path_split_asunder(path)
-    pt_1 = tokens[-1]
-    return pt_1
+    tokens = tokens[-2].split('_')
+    return float(tokens[0]), float(tokens[1]), float(tokens[2])
 
 
 def process_all_run_stats(path_to_root):
@@ -25,7 +25,9 @@ def process_all_run_stats(path_to_root):
             'rmse',
             'load',
             'sim time',
-            'case id',
+            'conductivity',
+            'density',
+            'cp',
             'sample count']
 
     fpath_csv = join(path_to_root, "soil_stats.csv")
@@ -39,17 +41,25 @@ def process_all_run_stats(path_to_root):
     for dirpath, subdirs, files in os.walk(path_to_root):
         for subdir in subdirs:
 
-            this_dir = join(dirpath, subdir)
-            run_exists = os.path.exists(join(this_dir, "run.pbs"))
-            log_exists = os.path.exists(join(this_dir, "out.log"))
+            if subdir == 'annual' or subdir == 'test':
+                break
 
-            if run_exists and log_exists:
+            test_dir = join(dirpath, subdir, 'test')
+            annual_dir = join(dirpath, subdir, 'annual')
+
+            test_run_exists = os.path.exists(join(test_dir, "run.pbs"))
+            test_log_exists = os.path.exists(join(test_dir, "out.log"))
+
+            annual_run_exists = os.path.exists(join(annual_dir, "run.pbs"))
+            annual_log_exists = os.path.exists(join(annual_dir, "out.log"))
+
+            if test_run_exists and test_log_exists and annual_run_exists and annual_log_exists:
 
                 try:
                     run_time, run_time_frac, run_time_stdev, rmse, load, sim_time, sample_count = compute_run_stats(
-                        this_dir)
+                        test_dir, base_path=annual_dir)
 
-                    config_1 = get_configuration(this_dir)
+                    k, rho, cp = get_configuration(test_dir)
 
                     d = {cols[0]: [run_time],
                          cols[1]: [run_time_frac],
@@ -57,20 +67,24 @@ def process_all_run_stats(path_to_root):
                          cols[3]: [rmse],
                          cols[4]: [load],
                          cols[5]: [sim_time],
-                         cols[6]: [config_1],
-                         cols[7]: [sample_count]}
+                         cols[6]: [k],
+                         cols[7]: [rho],
+                         cols[8]: [cp],
+                         cols[9]: [sample_count]}
 
                     df_case = pd.DataFrame(data=d)
                     df = pd.concat([df, df_case], ignore_index=True)
 
                     with open(fpath_log, 'a') as f:
-                        f.write('{} completed\n'.format(this_dir))
+                        f.write('{} completed\n'.format(test_dir))
 
                 except FileNotFoundError:
                     pass
 
-            elif run_exists and not log_exists:
-                print("'{}' run not completed".format(this_dir))
+            elif test_run_exists and not test_log_exists:
+                print("'{}' run not completed".format(test_dir))
+            elif annual_run_exists and not annual_log_exists:
+                print("'{}' base run not completed".format(annual_dir))
 
     if os.path.exists(fpath_csv):
         os.remove(fpath_csv)
