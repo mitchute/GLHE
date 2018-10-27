@@ -6,16 +6,16 @@ from scipy.optimize import minimize
 
 sys.path.insert(0, os.path.abspath('../'))
 
-from glhe.gFunction.g_function import GFunction
-from glhe.globals.errors import SimulationError
-from glhe.globals.functions import set_time_step
-from glhe.globals.variables import gv
-from glhe.inputProcessor.processor import InputProcessor
-from glhe.interface.response import TimeStepSimulationResponse
-from glhe.outputProcessor.processor import OutputProcessor
-from glhe.profiles.factory_flow import make_flow_profile
-from glhe.profiles.factory_load import make_load_profile
-from glhe.properties.fluid import Fluid
+from glhe.gFunction.g_function import GFunction  # noqa
+from glhe.globals.errors import SimulationError  # noqa
+from glhe.globals.functions import set_time_step  # noqa
+from glhe.globals.variables import gv  # noqa
+from glhe.inputProcessor.processor import InputProcessor  # noqa
+from glhe.interface.response import TimeStepSimulationResponse  # noqa
+from glhe.outputProcessor.processor import OutputProcessor  # noqa
+from glhe.profiles.factory_flow import make_flow_profile  # noqa
+from glhe.profiles.factory_load import make_load_profile  # noqa
+from glhe.properties.fluid import Fluid  # noqa
 
 
 class RunGFunctions(object):
