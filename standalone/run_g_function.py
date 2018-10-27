@@ -4,6 +4,8 @@ import sys
 
 from scipy.optimize import minimize
 
+sys.path.insert(0, os.path.abspath('../'))
+
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.errors import SimulationError
 from glhe.globals.functions import set_time_step
