@@ -87,9 +87,6 @@ def hanby(time, vol_flow_rate, volume):
     The model is non-dimensional, so input parameters should have consistent units
     for that are able to compute the non-dimensional time parameter, tau.
 
-    :math \tau = \frac{\dot{V} \cdot t}{Vol}
-
-
     :param time: time of fluid response
     :param vol_flow_rate: volume flow rate
     :param volume: volume of fluid circuit
