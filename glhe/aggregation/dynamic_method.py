@@ -2,6 +2,7 @@ from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.types import AggregationType
 from glhe.globals.constants import SEC_IN_HOUR
+from glhe.globals.constants import SEC_IN_YEAR
 from glhe.globals.variables import gv
 
 
@@ -12,29 +13,18 @@ class DynamicMethod(BaseMethod):
 
         self.type = AggregationType.DYNAMIC
 
-        self.depth = 11
         self.exp_rate = 2
-        self.start_width = 5
-        self.end_width = 5
+        self.bins_per_level = 5
+        self.runtime = SEC_IN_YEAR
 
         if inputs is not None:
-            try:
-                self.depth = inputs['depth']
-            except KeyError:  # pragma: no cover
-                pass  # pragma: no cover
-
             try:
                 self.exp_rate = inputs['expansion rate']
             except KeyError:  # pragma: no cover
                 pass  # pragma: no cover
 
             try:
-                self.start_width = inputs['start width']
-            except KeyError:  # pragma: no cover
-                pass
-
-            try:
-                self.end_width = inputs['end width']
+                self.bins_per_level = inputs['bins per level']
             except KeyError:  # pragma: no cover
                 pass
 
@@ -43,27 +33,16 @@ class DynamicMethod(BaseMethod):
             except KeyError:  # pragma: no cover
                 pass
 
-        if self.start_width is None and self.end_width is not None:
-            raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
-        elif self.start_width is not None and self.end_width is None:
-            raise ValueError("key 'start width' or key 'end width' is not valid.")  # pragma: no cover
-        elif self.start_width is not None and self.end_width is not None:
-            self.loads.append(DynamicBin(width=gv.time_step / SEC_IN_HOUR))
-            cumulative_time = gv.time_step
-
-            while True:
-                prev_width = self.loads[-1].width
-                next_width = prev_width * self.exp_rate
-                self.loads.append(DynamicBin(width=next_width))
-                cumulative_time += next_width * SEC_IN_HOUR
-                if cumulative_time > self.runtime:
-                    break
-
-        self._convert_bins_hours_to_seconds()
-
-    def _convert_bins_hours_to_seconds(self):
-        for this_bin in self.loads:
-            this_bin.width = int(this_bin.width * SEC_IN_HOUR)
+        cumulative_time = 0
+        bin_width = gv.time_step
+        while True:
+            for _ in range(self.bins_per_level):
+                self.loads.append(DynamicBin(width=bin_width))
+                cumulative_time += bin_width
+            if cumulative_time > self.runtime:
+                break
+            else:
+                bin_width = int(bin_width * self.exp_rate)
 
     def get_new_current_load_bin(self, energy=0, width=0):
         self.current_load = DynamicBin(energy=energy, width=width)
