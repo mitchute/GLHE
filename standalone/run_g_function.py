@@ -10,7 +10,7 @@ from glhe.globals.functions import set_time_step
 from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
-from glhe.outputProcessor.processor import op
+from glhe.outputProcessor.processor import OutputProcessor
 from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
@@ -22,19 +22,21 @@ class RunGFunctions(object):
         # get input from file
         d = InputProcessor().process_input(input_file_path)
 
+        # output processor
+        self.op = OutputProcessor()
+
         # set the global level time-step
         gv.time_step = set_time_step(d['simulation']['time-steps per hour'])
 
         # init the g-function object and resister the output variables after init
         self.g = GFunction(d)
-        self.g.register_output_variables()
 
         self.run_time = d['simulation']['runtime']
 
         try:
-            self.output_file_path = d['simulation']['output path']
+            self.output_file_path = d['simulation']['output-path']
         except KeyError:
-            self.output_file_path = os.getcwd()
+            self.output_file_path = os.path.join(os.getcwd(), 'out.csv')
 
         try:
             self.load_convergence_tolerance = d['simulation']['load convergence tolerance']
@@ -58,26 +60,27 @@ class RunGFunctions(object):
         self.print_idx = 0
         self.init_output_vars = True
 
-    def register_output_variables(self):
-        op.register_output_variable(self, 'sim_time', "Simulation Time")
-        op.register_output_variable(self, 'current_load', "Plant Load [W]")
-        op.register_output_variable(self, 'mass_flow_rate', "Plant Mass Flow Rate [kg/s]")
-        op.register_output_variable(self, 'glhe_entering_fluid_temperature', "GLHE Inlet Temperature [C]")
-        op.register_output_variable(self.response, 'heat_rate', "GLHE Heat Transfer Rate [W]")
-        op.register_output_variable(self.response, 'outlet_temp', "GLHE Outlet Temperature [C]")
+    def report_output(self):
+        ret_vals = {"Simulation Time": self.sim_time,
+                    "Plant Load [W]": self.current_load,
+                    "Plant Mass Flow Rate [kg/s]": self.mass_flow_rate,
+                    "GLHE Inlet Temperature [C]": self.glhe_entering_fluid_temperature,
+                    "GLHE Heat Transfer Rate [W]": self.response.heat_rate,
+                    "GLHE Outlet Temperature [C]": self.response.outlet_temp}
+
+        return ret_vals
 
     def simulate(self):
         start_time = datetime.datetime.now()
 
         try:
             if self.init_output_vars:
-                self.register_output_variables()
                 self.init_output_vars = False
 
             while self.sim_time < self.run_time:
 
                 if self.print_idx == 50:
-                    print("Sim Time: {}".format(self.sim_time))
+                    print("Sim Time: {}".format(self.sim_time + gv.time_step))
                     self.print_idx = 0
                 else:
                     self.print_idx += 1
@@ -117,13 +120,20 @@ class RunGFunctions(object):
                 self.response.outlet_temp = new_response.outlet_temp
                 self.response.heat_rate = new_response.heat_rate
 
-                op.report_output()
+                self.op.collect_output([self.report_output(), self.g.report_output()])
 
                 self.sim_time += gv.time_step
 
             # dump the results to a file
-            op.write_to_file(os.path.join(self.output_file_path, 'out.csv'))
+            self.op.write_to_file(self.output_file_path)
+
+            log_file = '{}{}'.format(self.output_file_path.split('.csv')[0], '.log')
+
+            with open(log_file, 'w') as f:
+                f.write('Final runtime: {}'.format(datetime.datetime.now() - start_time))
+
             print('Final runtime: {}'.format(datetime.datetime.now() - start_time))
+
         except SimulationError:  # pragma: no cover
             raise SimulationError('Program failed')  # pragma: no cover
 

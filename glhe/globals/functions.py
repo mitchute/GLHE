@@ -69,7 +69,10 @@ def load_json(path):
 
 def write_json(path, obj):
     with open(path, 'w') as f:
-        f.write(json.dumps(obj))
+        f.write(json.dumps(obj,
+                           sort_keys=True,
+                           indent=2,
+                           separators=(',', ': ')))
 
 
 def hanby(time, vol_flow_rate, volume):
@@ -83,9 +86,6 @@ def hanby(time, vol_flow_rate, volume):
 
     The model is non-dimensional, so input parameters should have consistent units
     for that are able to compute the non-dimensional time parameter, tau.
-
-    :math \tau = \frac{\dot{V} \cdot t}{Vol}
-
 
     :param time: time of fluid response
     :param vol_flow_rate: volume flow rate

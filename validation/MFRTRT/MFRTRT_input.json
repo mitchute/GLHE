@@ -41,7 +41,7 @@
     }
   ],
   "load-aggregation": {
-    "type": "static"
+    "type": "dynamic"
   },
   "load-profile": {
     "type": "external",
@@ -61,8 +61,8 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "runtime": 698400,
-    "time-steps per hour": 4
+    "runtime": 36000,
+    "time-steps per hour": 30
   },
   "soil": {
     "conductivity": 2.7,

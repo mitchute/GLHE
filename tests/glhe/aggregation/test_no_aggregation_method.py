@@ -13,11 +13,10 @@ class TestNoAgg(unittest.TestCase):
 
     def test_add_load(self):
         gv.time_step = set_time_step(2)
-        sim_time = 0
 
         tst = NoAggMethod()
 
-        sim_time += gv.time_step
-        tst.add_load(gv.time_step, sim_time)
+        tst.get_new_current_load_bin(width=gv.time_step)
         tst.set_current_load(1)
+        tst.aggregate()
         self.assertEqual(tst.loads[0].energy, 1)

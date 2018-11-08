@@ -105,6 +105,23 @@ ENV/
 
 .DS_Store
 
-in.csv
-in.json
-out.csv
+in*.csv
+in*.json
+out*.csv
+g*.csv
+resist*.csv
+widths*.csv
+loads*.csv
+runs/
+*.png
+*.pbs.*
+*.gz
+*.spl
+*.pdf
+*.log
+*.blg
+*.bbl
+*.aux
+*.dvi
+*.bak
+*.sav

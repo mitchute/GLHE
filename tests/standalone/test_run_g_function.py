@@ -26,26 +26,26 @@ class TestRunGFunctionIntegration(unittest.TestCase):
         input_dict['g-functions']['file'] = g_function_path
         input_dict['simulation']['time-steps per hour'] = 1
         input_dict['simulation']['runtime'] = 86400
-        input_dict['simulation']['output path'] = temp_directory
+        input_dict['simulation']['output-path'] = os.path.join(temp_directory, 'out.csv')
 
         write_json(temp_file, input_dict)
 
-        return RunGFunctions(temp_file), temp_directory
+        return RunGFunctions(temp_file), input_dict['simulation']['output-path']
 
     def test_no_agg(self):
         tst, path = self.add_instance('none')
         tst.simulate()
-        df = pd.read_csv(os.path.join(path, 'out.csv'))
+        df = pd.read_csv(path)
         self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
 
     def test_static_agg(self):
         tst, path = self.add_instance('static')
         tst.simulate()
-        df = pd.read_csv(os.path.join(path, 'out.csv'))
+        df = pd.read_csv(path)
         self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
 
     def test_dynamic_agg(self):
         tst, path = self.add_instance('dynamic')
         tst.simulate()
-        df = pd.read_csv(os.path.join(path, 'out.csv'))
-        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
+        df = pd.read_csv(path)
+        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.9, delta=0.15)
