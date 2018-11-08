@@ -1,7 +1,6 @@
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.types import AggregationType
-from glhe.globals.constants import SEC_IN_HOUR
 from glhe.globals.constants import SEC_IN_YEAR
 from glhe.globals.variables import gv
 
