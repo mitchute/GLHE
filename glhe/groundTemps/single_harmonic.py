@@ -8,9 +8,6 @@ class SingleHarmonic(BaseGroundTemp):
     """
     Single harmonic ground temperature model.
 
-    .. math::
-        a^2 + b^2 = c^2
-
     Kusuda, T., and P. R. Achenbach. 1965. Earth temperatures and thermal diffusivity at selected
     stations in the United States. ASHRAE Transactions 71(1): 61-74.
     """
@@ -32,6 +29,6 @@ class SingleHarmonic(BaseGroundTemp):
 
     def get_temp(self, time, depth):
         term1 = -depth * sqrt(pi / (SEC_IN_YEAR * self._soil_diffusivity))
-        term2 = (2 * pi / SEC_IN_YEAR) * (time - self._phase_shift - (depth / 2) *
-                                          sqrt(SEC_IN_YEAR / (pi * self._soil_diffusivity)))
+        term2 = (2 * pi / SEC_IN_YEAR) * (  # noqa: E741
+                time - self._phase_shift - (depth / 2) * sqrt(SEC_IN_YEAR / (pi * self._soil_diffusivity)))  # noqa: E741
         return self._ave_ground_temp - self._amplitude * exp(term1) * cos(term2)

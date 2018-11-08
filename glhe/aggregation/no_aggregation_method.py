@@ -9,9 +9,8 @@ class NoAggMethod(BaseMethod):
         BaseMethod.__init__(self)
         self.type = AggregationType.NOAGG
 
-    def add_load(self, bin_width, sim_time):
-        self.loads.appendleft(BaseBin(energy=0, width=bin_width))
-        self.update_time()
+    def get_new_current_load_bin(self, energy=0, width=0):
+        self.current_load = BaseBin(energy=energy, width=width)
 
-    def aggregate(self, sim_time):
-        pass
+    def aggregate(self):
+        self.aggregate_current_load()

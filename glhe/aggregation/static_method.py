@@ -14,40 +14,39 @@ class StaticMethod(BaseMethod):
 
         self.type = AggregationType.STATIC
 
-        if inputs is None:
-            self.min_bin_nums = [6, 10, 10, 10, 10]
-            self.bin_widths = [1, 6, 24, 168, 840]
-            self.min_sub_hour_bins = 4
-        else:
+        self.min_bin_nums = [6, 10, 10, 10, 10]
+        self.bin_widths = [1, 6, 24, 168, 840]
+
+        if inputs is not None:
             try:
                 self.min_bin_nums = inputs['min number bins']
             except KeyError:  # pragma: no cover
-                raise KeyError("Key: 'min number bins' not found")  # pragma: no cover
+                pass  # pragma: no cover
 
             try:
                 self.bin_widths = inputs['bin widths in hours']
             except KeyError:  # pragma: no cover
-                raise KeyError("Key: 'bin widths in hours' not found")  # pragma: no cover
+                pass  # pragma: no cover
 
-            try:
-                self.min_sub_hour_bins = inputs['min sub-hour bins']
-            except KeyError:  # pragma: no cover
-                raise KeyError("Key: 'min sub-hour bins' not found")  # pragma: no cover
+        self.min_sub_hour_bins = int(SEC_IN_HOUR / gv.time_step)
 
         self.bin_widths = [x * SEC_IN_HOUR for x in self.bin_widths]
-        self.bin_widths.insert(0, gv.time_step)
-        self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
-    def add_load(self, bin_width, sim_time):
-        self.loads.appendleft(StaticBin(0, width=bin_width))
-        self.update_time()
+        if gv.time_step != SEC_IN_HOUR:
+            self.bin_widths.insert(0, gv.time_step)
+            self.min_bin_nums.insert(0, self.min_sub_hour_bins)
 
-    def aggregate(self, sim_time):
+    def get_new_current_load_bin(self, energy=0, width=0):
+        self.current_load = StaticBin(energy=energy, width=width)
+
+    def aggregate(self):
         """
         Aggregates the current aggregation
 
         :return: none
         """
+
+        self.aggregate_current_load()
 
         # bin the current bin objects into sub-lists to they can be combined as needed
         d = defaultdict(list)
@@ -57,8 +56,9 @@ class StaticMethod(BaseMethod):
         # aggregate within each sub-list, except the last one, which is allowed to grow as needed
         for i, width in enumerate(self.bin_widths[:-1]):
             len_bin = len(d[width])
-            if len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
-                # nothing to do here
+            if len_bin == 0:
+                break
+            elif len_bin < int(self.min_bin_nums[i] + self.bin_widths[i + 1] / self.bin_widths[i]):
                 pass
             else:
                 # merge the aggregation within this sub-list
@@ -76,6 +76,6 @@ class StaticMethod(BaseMethod):
 
         # redefine the loads
         self.loads = deque()
-        for i, bin_width in enumerate(d):
+        for i, bin_width in enumerate(sorted(d)):
             for j in d[bin_width]:
                 self.loads.append(j)

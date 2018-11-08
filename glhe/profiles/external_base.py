@@ -10,10 +10,9 @@ class ExternalBase(Base):
         Base.__init__(self)
 
         df = pd.read_csv(path, index_col=0, parse_dates=True)
-        delta_t = df.index.to_series().diff().dt.total_seconds()
-        delta_t.is_copy = False
-        delta_t[0] = 0
-        x_range = delta_t.cumsum().tolist()
+        df['delta t'] = df.index.to_series().diff().dt.total_seconds()
+        df['delta t'].iloc[0] = 0
+        x_range = df['delta t'].cumsum().tolist()
         y_range = df.iloc[:, col_num].tolist()
 
         # added to allow multi-year simulations
@@ -25,4 +24,4 @@ class ExternalBase(Base):
         self._interp_values = interp1d(x_range, y_range)
 
     def get_value(self, time):
-        return self._interp_values(time % self.max_time)
+        return float(self._interp_values(time % self.max_time))
