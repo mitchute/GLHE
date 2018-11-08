@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=SIM_RUNTIME
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+export PATH=/home/mitchute/.pyenv/versions/GLHE/bin:$PATH
+export PYTHONPATH=/home/mitchute/.pyenv/versions/GLHE/lib/python3.5/site-packages:$PYTHONPATH
+
+python /scratch/mitchute/glhe/studies/aggregation/scripts/run_case.py PATH_TO_LOCAL_JSON_FILE NUM_DIRS_UP_FOR_PATH

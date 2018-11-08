@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -q batch
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=360:00
+#PBS -j oe
+#PBS -m abe -M matt.s.mitchell@okstate.edu
+
+cd $PBS_O_WORKDIR
+
+export PATH=/home/mitchute/.pyenv/versions/GLHE/bin:$PATH
+export PYTHONPATH=/home/mitchute/.pyenv/versions/GLHE/lib/python3.5/site-packages:$PYTHONPATH
+
+python /scratch/mitchute/glhe/studies/aggregation/scripts/process_static_run_stats.py /scratch/mitchute/glhe/studies/aggregation/static/runs
