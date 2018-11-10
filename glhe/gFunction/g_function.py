@@ -176,13 +176,15 @@ class GFunction(SimulationEntryPoint):
             self.prev_sim_time = self.sim_time
             self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
 
-        return TimeStepSimulationResponse(heat_rate=self.curr_total_load, outlet_temp=self.outlet_temp)
+        inst_curr_load = self.fluid_cap * (inlet_temp - self.outlet_temp)
+
+        return TimeStepSimulationResponse(heat_rate=inst_curr_load, outlet_temp=self.outlet_temp)
 
     def calc_outlet_temp(self):
 
         transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
 
-        if self.sim_time - self.time_of_prev_flow < 5 * transit_time:
+        if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
 
             LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
 
