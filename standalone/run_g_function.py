@@ -43,6 +43,14 @@ class RunGFunctions(object):
         except KeyError:
             self.load_convergence_tolerance = 0.1
 
+        try:
+            if d['simulation']['plant driver'] == 'inlet-flow':
+                drive_sim_with_inlet_temps = True
+            else:
+                self.drive_sim_with_inlet_temps = False
+        except KeyError:
+            self.drive_sim_with_inlet_temps = False
+
         self.load_profile = make_load_profile(d['load-profile'])
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
@@ -85,40 +93,46 @@ class RunGFunctions(object):
                 else:
                     self.print_idx += 1
 
-                # set current plant status
-                self.current_load = self.load_profile.get_value(self.sim_time)
                 self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
-                # update entering fluid temperature
-                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
-                self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
-                self.glhe_entering_fluid_temperature = self.response.outlet_temp + self.current_load / self.fluid_cap
+                if self.drive_sim_with_inlet_temps:
 
-                # run manually to init the methods
-                self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                          self.mass_flow_rate,
-                                          gv.time_step,
-                                          True,
-                                          False)
+                    current_inlet_temp =
 
-                # find result
-                res = minimize(self.wrapped_sim_time_step,
-                               x0=self.glhe_entering_fluid_temperature,
-                               method='Nelder-Mead',
-                               options={'fatol': self.load_convergence_tolerance})
+                else:
 
-                # set result
-                self.glhe_entering_fluid_temperature = res.x[0]
+                    self.current_load = self.load_profile.get_value(self.sim_time)
 
-                # run manually one more time to lock down state
-                new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
-                                                         self.mass_flow_rate,
-                                                         gv.time_step,
-                                                         False,
-                                                         True)
+                    # update entering fluid temperature
+                    mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
+                    self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
+                    self.glhe_entering_fluid_temperature = self.response.outlet_temp + self.current_load / self.fluid_cap
 
-                self.response.outlet_temp = new_response.outlet_temp
-                self.response.heat_rate = new_response.heat_rate
+                    # run manually to init the methods
+                    self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                              self.mass_flow_rate,
+                                              gv.time_step,
+                                              True,
+                                              False)
+
+                    # find result
+                    res = minimize(self.wrapped_sim_time_step,
+                                   x0=self.glhe_entering_fluid_temperature,
+                                   method='Nelder-Mead',
+                                   options={'fatol': self.load_convergence_tolerance})
+
+                    # set result
+                    self.glhe_entering_fluid_temperature = res.x[0]
+
+                    # run manually one more time to lock down state
+                    new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                             self.mass_flow_rate,
+                                                             gv.time_step,
+                                                             False,
+                                                             True)
+
+                    self.response.outlet_temp = new_response.outlet_temp
+                    self.response.heat_rate = new_response.heat_rate
 
                 self.op.collect_output([self.report_output(), self.g.report_output()])
 
