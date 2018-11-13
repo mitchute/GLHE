@@ -12,6 +12,7 @@ from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.response import TimeStepSimulationResponse
 from glhe.outputProcessor.processor import OutputProcessor
 from glhe.profiles.factory_flow import make_flow_profile
+from glhe.profiles.factory_inlet_temp import make_inlet_temp_profile
 from glhe.profiles.factory_load import make_load_profile
 from glhe.properties.fluid import Fluid
 
@@ -43,15 +44,18 @@ class RunGFunctions(object):
         except KeyError:
             self.load_convergence_tolerance = 0.1
 
+        self.drive_sim_with_inlet_temps = False
         try:
             if d['simulation']['plant driver'] == 'inlet-flow':
-                drive_sim_with_inlet_temps = True
-            else:
-                self.drive_sim_with_inlet_temps = False
+                self.drive_sim_with_inlet_temps = True
         except KeyError:
-            self.drive_sim_with_inlet_temps = False
+            pass
 
-        self.load_profile = make_load_profile(d['load-profile'])
+        if self.drive_sim_with_inlet_temps:
+            self.inlet_temp_profile = make_inlet_temp_profile(d['flow-profile'])
+        else:
+            self.load_profile = make_load_profile(d['load-profile'])
+
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
         self.glhe_entering_fluid_temperature = self.g.my_ground_temp(time=0, depth=50)
@@ -93,19 +97,22 @@ class RunGFunctions(object):
                 else:
                     self.print_idx += 1
 
+                mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
+                self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
                 self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
 
                 if self.drive_sim_with_inlet_temps:
 
-                    current_inlet_temp =
+                    self.glhe_entering_fluid_temperature = self.inlet_temp_profile.get_value(self.sim_time)
+                    new_response = self.g.simulate_time_step(self.glhe_entering_fluid_temperature,
+                                                             self.mass_flow_rate,
+                                                             gv.time_step,
+                                                             True,
+                                                             True)
 
                 else:
 
                     self.current_load = self.load_profile.get_value(self.sim_time)
-
-                    # update entering fluid temperature
-                    mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
-                    self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
                     self.glhe_entering_fluid_temperature = self.response.outlet_temp + self.current_load / self.fluid_cap
 
                     # run manually to init the methods
@@ -131,9 +138,8 @@ class RunGFunctions(object):
                                                              False,
                                                              True)
 
-                    self.response.outlet_temp = new_response.outlet_temp
-                    self.response.heat_rate = new_response.heat_rate
-
+                self.response.outlet_temp = new_response.outlet_temp
+                self.response.heat_rate = new_response.heat_rate
                 self.op.collect_output([self.report_output(), self.g.report_output()])
 
                 self.sim_time += gv.time_step

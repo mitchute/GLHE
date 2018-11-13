@@ -148,7 +148,6 @@ class GFunction(SimulationEntryPoint):
 
             self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
-            # self.flow_fraction = 0.5
             self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.depth)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
@@ -176,53 +175,51 @@ class GFunction(SimulationEntryPoint):
             self.prev_sim_time = self.sim_time
             self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
 
-        inst_curr_load = self.fluid_cap * (inlet_temp - self.outlet_temp)
-
-        return TimeStepSimulationResponse(heat_rate=inst_curr_load, outlet_temp=self.outlet_temp)
+        return TimeStepSimulationResponse(heat_rate=self.curr_total_load, outlet_temp=self.outlet_temp)
 
     def calc_outlet_temp(self):
 
         transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
 
-        if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
+        # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
 
-            LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
+        LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
 
-            def my_hanby(time):
-                return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
+        def my_hanby(time):
+            return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
 
-            outlet_temp_calc_vals = []
+        outlet_temp_calc_vals = []
 
-            curr = self.load_aggregation.current_load
-            curr_load = curr.energy
-            curr_width = curr.width
-            curr_f = my_hanby(curr_width)
+        curr = self.load_aggregation.current_load
+        curr_load = curr.energy
+        curr_width = curr.width
+        curr_f = my_hanby(curr_width)
 
-            outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
+        outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
 
-            time = curr_width
+        time = curr_width
 
-            for load in self.load_aggregation.loads:
-                if time < 2 * transit_time:
-                    time += load.width
-                    outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
-                else:
-                    break
+        for load in self.load_aggregation.loads:
+            if time < 2 * transit_time:
+                time += load.width
+                outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
+            else:
+                break
 
-            sum_energy_f = 0
-            sum_width = 0
-            sum_f = 0
-            for data in outlet_temp_calc_vals:
-                sum_energy_f += data.energy * data.f
-                sum_width += data.width
-                sum_f += data.f
+        sum_energy_f = 0
+        sum_width = 0
+        sum_f = 0
+        for data in outlet_temp_calc_vals:
+            sum_energy_f += data.energy * data.f
+            sum_width += data.width
+            sum_f += data.f
 
-            outlet_temp_load = sum_energy_f / (sum_width * sum_f) * self.tot_length
+        outlet_temp_load = sum_energy_f / (sum_width) * self.tot_length
 
-            return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
+        return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
 
-        else:
-            return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
+        # else:
+        #     return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
     def calc_flow_fraction(self):
         """
