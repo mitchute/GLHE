@@ -1,6 +1,6 @@
 language: python
 
-python: 3.5
+python: 3.7
 
 cache:
     pip: true
@@ -9,7 +9,7 @@ cache:
 
 env:
   matrix:
-    - TOX_ENV=py35
+    - TOX_ENV=py37
     - TOX_ENV=flake8
     - TOX_ENV=spelling
 
@@ -21,4 +21,4 @@ install:
 script:
   - tox -e $TOX_ENV
 
-after_success: test $TOX_ENV = "py35" && coveralls
+after_success: test $TOX_ENV = "py37" && coveralls
