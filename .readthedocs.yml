@@ -4,7 +4,7 @@ build:
 
 # Must use 3.4+ to get the ABC modules
 python:
-    version: 3.5
+    version: 3.6
 
 # Don't build any extra formats
 formats: []
