@@ -82,7 +82,7 @@ class Fluid(object):
         """
 
         if self._fluid_type == FluidType.WATER:
-            return 273.15
+            return 273.2
         else:
             return PropsSI("T_FREEZE", self._fluid_str)
 

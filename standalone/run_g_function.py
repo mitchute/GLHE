@@ -98,8 +98,8 @@ class RunGFunctions(object):
                     self.print_idx += 1
 
                 mean_temp = (self.glhe_entering_fluid_temperature + self.response.outlet_temp) / 2
-                self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
                 self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
+                self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
 
                 if self.drive_sim_with_inlet_temps:
 
