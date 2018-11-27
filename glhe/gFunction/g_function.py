@@ -6,6 +6,7 @@ from scipy.interpolate import interp1d
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
+from glhe.globals.functions import merge_dicts
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
@@ -21,9 +22,9 @@ class GFunction(SimulationEntryPoint):
         # g-function properties
         g_functions = genfromtxt(inputs['g-functions']['file'], delimiter=',')
 
-        self._g_function_interp = interp1d(g_functions[:, 0],
-                                           g_functions[:, 1],
-                                           fill_value='extrapolate')
+        self.g_function_interp = interp1d(g_functions[:, 0],
+                                          g_functions[:, 1],
+                                          fill_value='extrapolate')
 
         self.fluid = Fluid(inputs['fluid'])
         self.soil = PropertiesBase(inputs=inputs['soil'])
@@ -38,14 +39,14 @@ class GFunction(SimulationEntryPoint):
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
 
         # ground temperature model
-        ground_temp_model_inputs = inputs['ground-temperature']
-        ground_temp_model_inputs['soil-diffusivity'] = self.soil.diffusivity
-        self.my_ground_temp = make_ground_temperature_model(ground_temp_model_inputs).get_temp
+        self.my_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
+                                                                        {'soil-diffusivity': self.soil.diffusivity}
+                                                                        )).get_temp
 
         self.my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
-        self.num_bh = inputs['g-functions']['number of boreholes']
+        self.NUM_BH = inputs['g-functions']['number of boreholes']
 
-        self.tot_length = self.my_bh.DEPTH * self.num_bh
+        self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH
 
         # time constant
         self.t_s = self.my_bh.DEPTH ** 2 / (9 * self.soil.diffusivity)
@@ -114,7 +115,7 @@ class GFunction(SimulationEntryPoint):
         except ValueError:  # pragma: no cover
             return 0  # pragma: no cover
 
-        g = float(self._g_function_interp(lntts))
+        g = float(self.g_function_interp(lntts))
 
         if (g / (2 * PI * self.soil.conductivity) + self.bh_resist) < 0:
             return -self.bh_resist * 2 * PI * self.soil.conductivity  # pragma: no cover
@@ -129,7 +130,7 @@ class GFunction(SimulationEntryPoint):
             if mass_flow == 0:
                 return TimeStepSimulationResponse(outlet_temp=inlet_temp, heat_rate=0)
 
-            self.my_bh.set_flow_rate(mass_flow / self.num_bh)
+            self.my_bh.set_flow_rate(mass_flow / self.NUM_BH)
             self.bh_resist = self.my_bh.resist_bh_ave
 
             self.load_aggregation.get_new_current_load_bin(width=time_step)
@@ -150,7 +151,7 @@ class GFunction(SimulationEntryPoint):
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
         temp_rise_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
-        c_1 = (1 - self.flow_fraction) * self.tot_length / self.fluid_cap
+        c_1 = (1 - self.flow_fraction) * self.TOT_LENGTH / self.fluid_cap
 
         load_num = self.ground_temp - inlet_temp + self.temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
@@ -163,7 +164,7 @@ class GFunction(SimulationEntryPoint):
         temp_rise_history = self.calc_current_temp_rise_history()
         self.ave_fluid_temp = self.ground_temp + temp_rise_history + self.load_per_meter * self.bh_resist
 
-        self.curr_total_load = self.load_per_meter * self.tot_length
+        self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
         self.outlet_temp = self.calc_outlet_temp()
 
         if converged:
@@ -214,7 +215,7 @@ class GFunction(SimulationEntryPoint):
         #     sum_width += data.width
         #     sum_f += data.f
         #
-        # outlet_temp_load = sum_energy_f / sum_width * self.tot_length
+        # outlet_temp_load = sum_energy_f / sum_width * self.TOT_LENGTH
         #
         # return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
 

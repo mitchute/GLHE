@@ -20,10 +20,35 @@ class Pipe(PropertiesBase):
         self.AREA_CR_INNER = PI / 4 * self.INNER_DIAMETER ** 2
         self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
 
-        self._fluid = fluid
+        self.fluid = fluid
 
         self.friction_factor = 0.02
         self.resist_pipe = 0
+
+        self.temp_nodes = ones(15) * 20
+
+    # def calc_outlet_temp_hanby(self, temp, v_dot, time):
+    #     transit_time = self.FLUID_VOL / v_dot
+    #
+
+    # def calc_outlet_temp(self, v_dot):
+    #
+    #     """
+    #     Computes outlet temp as described by:
+    #
+    #     Rees, S. J. 2015. 'An extended two-dimensional borehole heat exchanger model for simulation
+    #     of short and medium timescale thermal response' Renewable Energy 83(2015): 518-526.
+    #
+    #     :param v_dot:
+    #     :return:
+    #     """
+    #
+    #     velocity = self.FLUID_VOL / v_dot
+    #
+    #     diffusion_coeff = self.LENGTH
+    #
+    #     # Equation 14
+    #     num_cst = int(velocity * self.LENGTH / (2 * diffusion_coeff))
 
     def calc_friction_factor(self, re):
         """
@@ -41,6 +66,7 @@ class Pipe(PropertiesBase):
             self.friction_factor = self.laminar_friction_factor(re)
         elif LOWER_LIMIT <= re < UPPER_LIMIT:
             f_low = self.laminar_friction_factor(re)
+
             # pure turbulent flow
             f_high = self.turbulent_friction_factor(re)
             sigma = smoothing_function(re, a=3000, b=450)
@@ -71,7 +97,7 @@ class Pipe(PropertiesBase):
         LOWER_LIMIT = 2000
         UPPER_LIMIT = 4000
 
-        re = 4 * mass_flow_rate / (self._fluid.viscosity * PI * self.INNER_DIAMETER)
+        re = 4 * mass_flow_rate / (self.fluid.viscosity * PI * self.INNER_DIAMETER)
 
         if re < LOWER_LIMIT:
             nu = self.laminar_nusselt()
@@ -82,7 +108,7 @@ class Pipe(PropertiesBase):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re)
-        return 1 / (nu * PI * self._fluid.conductivity)
+        return 1 / (nu * PI * self.fluid.conductivity)
 
     def set_resistance(self, pipe_resistance):
         self.resist_pipe = pipe_resistance
@@ -123,7 +149,7 @@ class Pipe(PropertiesBase):
         """
 
         f = self.calc_friction_factor(re)
-        pr = self._fluid.prandtl
+        pr = self.fluid.prandtl
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
     @staticmethod

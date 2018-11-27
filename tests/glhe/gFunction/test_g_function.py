@@ -110,10 +110,10 @@ class TestGFunction(unittest.TestCase):
 
     def test_g_function_interp(self):
         tst = self.add_instance()
-        self.assertEqual(tst._g_function_interp(0.5), 0.5)
-        self.assertEqual(tst._g_function_interp(1.5), 1.5)
-        self.assertEqual(tst._g_function_interp(2.5), 2.5)
-        self.assertEqual(tst._g_function_interp(3.5), 3.5)
+        self.assertEqual(tst.g_function_interp(0.5), 0.5)
+        self.assertEqual(tst.g_function_interp(1.5), 1.5)
+        self.assertEqual(tst.g_function_interp(2.5), 2.5)
+        self.assertEqual(tst.g_function_interp(3.5), 3.5)
 
     def test_get_g_func(self):
         tst = self.add_instance()
