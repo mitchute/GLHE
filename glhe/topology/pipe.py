@@ -1,4 +1,4 @@
-from numpy import log
+from numpy import log, ones
 
 from glhe.globals.constants import PI
 from glhe.globals.functions import smoothing_function
@@ -9,11 +9,16 @@ class Pipe(PropertiesBase):
 
     def __init__(self, inputs, fluid):
         PropertiesBase.__init__(self, inputs=inputs)
-        self.inner_diameter = inputs["inner diameter"]
-        self.outer_diameter = inputs["outer diameter"]
-        self.thickness = (self.outer_diameter - self.inner_diameter) / 2
-        self.inner_radius = self.inner_diameter / 2
-        self.outer_radius = self.outer_diameter / 2
+        self.INNER_DIAMETER = inputs["inner diameter"]
+        self.OUTER_DIAMETER = inputs["outer diameter"]
+        self.LENGTH = inputs['length']
+
+        self.THICKNESS = (self.OUTER_DIAMETER - self.INNER_DIAMETER) / 2
+        self.INNER_RADIUS = self.INNER_DIAMETER / 2
+        self.OUTER_RADIUS = self.OUTER_DIAMETER / 2
+
+        self.AREA_CR_INNER = PI / 4 * self.INNER_DIAMETER ** 2
+        self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
 
         self._fluid = fluid
 
@@ -29,12 +34,12 @@ class Pipe(PropertiesBase):
         """
 
         # limits picked be within about 1% of actual values
-        lower_limit = 1500
-        upper_limit = 5000
+        LOWER_LIMIT = 1500
+        UPPER_LIMIT = 5000
 
-        if re < lower_limit:
+        if re < LOWER_LIMIT:
             self.friction_factor = self.laminar_friction_factor(re)
-        elif lower_limit <= re < upper_limit:
+        elif LOWER_LIMIT <= re < UPPER_LIMIT:
             f_low = self.laminar_friction_factor(re)
             # pure turbulent flow
             f_high = self.turbulent_friction_factor(re)
@@ -53,7 +58,7 @@ class Pipe(PropertiesBase):
         for Grouted Single U-tube Ground Heat Exchangers.' J. Energy Engineering. Draft in progress.
         """
 
-        return log(self.outer_diameter / self.inner_diameter) / (2 * PI * self.conductivity)
+        return log(self.OUTER_DIAMETER / self.INNER_DIAMETER) / (2 * PI * self.conductivity)
 
     def calc_convection_resistance(self, mass_flow_rate):
         """
@@ -63,20 +68,20 @@ class Pipe(PropertiesBase):
         International Chemical Engineering 16(1976), pp. 359-368.
         """
 
-        lower_limit = 2000
-        upper_limit = 4000
+        LOWER_LIMIT = 2000
+        UPPER_LIMIT = 4000
 
-        re = 4 * mass_flow_rate / (self._fluid.viscosity * PI * self.inner_diameter)
+        re = 4 * mass_flow_rate / (self._fluid.viscosity * PI * self.INNER_DIAMETER)
 
-        if re < lower_limit:
-            nu = self._laminar_nusselt()
-        elif lower_limit <= re < upper_limit:
-            nu_low = self._laminar_nusselt()
-            nu_high = self._turbulent_nusselt(re)
+        if re < LOWER_LIMIT:
+            nu = self.laminar_nusselt()
+        elif LOWER_LIMIT <= re < UPPER_LIMIT:
+            nu_low = self.laminar_nusselt()
+            nu_high = self.turbulent_nusselt(re)
             sigma = smoothing_function(re, a=3000, b=150)
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
-            nu = self._turbulent_nusselt(re)
+            nu = self.turbulent_nusselt(re)
         return 1 / (nu * PI * self._fluid.conductivity)
 
     def set_resistance(self, pipe_resistance):
@@ -97,7 +102,7 @@ class Pipe(PropertiesBase):
         return self.resist_pipe
 
     @staticmethod
-    def _laminar_nusselt():
+    def laminar_nusselt():
         """
         Laminar Nusselt number for smooth pipes
 
@@ -106,7 +111,7 @@ class Pipe(PropertiesBase):
         """
         return 4.01
 
-    def _turbulent_nusselt(self, re):
+    def turbulent_nusselt(self, re):
         """
         Turbulent Nusselt number for smooth pipes
 

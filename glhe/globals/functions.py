@@ -101,3 +101,15 @@ def hanby(time, vol_flow_rate, volume):
         ret_sum += (num_nodes * tau) ** i / factorial(i)
 
     return 1 - exp(-num_nodes * tau) * ret_sum
+
+
+def merge_dicts(d, d_append):
+    """
+    Return new dictionary with d_append added to d at the root level
+
+    :param d: input dictionary
+    :param d_append: dictionary to append
+    :return: combined dict
+    """
+
+    return {**d, **d_append}

@@ -4,45 +4,43 @@ from glhe.globals.constants import PI
 from glhe.properties.base import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment import Segment
+from glhe.globals.functions import merge_dicts
 
 
 class Borehole(object):
     _count = 0
 
     def __init__(self, inputs, fluid, soil):
-        # Get inputs from json blob
-        self.depth = inputs["depth"]
-        self.diameter = inputs["diameter"]
-        self.radius = self.diameter / 2
-        self.shank_space = inputs["shank-spacing"]
+        self.DEPTH = inputs['depth']
+        self.DIAMETER = inputs['diameter']
+        self.RADIUS = self.DIAMETER / 2
+        self.SHANK_SPACE = inputs['shank-spacing']
 
-        self.grout = PropertiesBase(inputs=inputs["grout-data"])
-        self.pipe = Pipe(inputs=inputs['pipe-data'], fluid=fluid)
+        self.grout = PropertiesBase(inputs=inputs['grout-data'])
+        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth']}),
+                         fluid=fluid)
         self.soil = soil
         self.fluid = fluid
 
         # Initialize segments
         self.segments = []
-        for segment in range(inputs["segments"]):
-            self.segments.append(Segment(model_type=inputs["model"], fluid=fluid))
-
-        # pipe inside cross-sectional area
-        self.area_i_cr = PI * self.diameter ** 2.0 / 4.0
+        for segment in range(inputs['segments']):
+            self.segments.append(Segment(model_type=inputs['model'], fluid=fluid))
 
         # Initialize other parameters
         self.mass_flow_rate = 0
         self.mass_flow_rate_prev = 0
         self.vol_flow_rate = 0
         self.friction_factor = 0.02
-        self.num_pipes = 2
+        self.NUM_PIPES = 2
 
         # Multipole method parameters
         self.resist_bh_ave = None
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
         self.resist_bh_effective = None
-        self.theta_1 = self.shank_space / (2 * self.radius)
-        self.theta_2 = self.radius / self.pipe.outer_radius
+        self.theta_1 = self.SHANK_SPACE / (2 * self.RADIUS)
+        self.theta_2 = self.RADIUS / self.pipe.OUTER_RADIUS
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
         sigma_num = self.grout.conductivity - self.soil.conductivity
         sigma_den = self.grout.conductivity + self.soil.conductivity
@@ -50,15 +48,15 @@ class Borehole(object):
         self.beta = None
 
         # Init borehole fluid volume
-        self.fluid_volume = self._calc_fluid_volume()
+        self.FLUID_VOL = self.calc_fluid_volume()
 
         # Track bh number
-        self._bh_num = Borehole._count
+        self.BH_NUM = Borehole._count
         Borehole._count += 1
 
     def get_flow_resistance(self):
-        numerator = 8.0 * self.pipe.friction_factor * (2 * self.depth)
-        denominator = (pow(self.pipe.inner_diameter, 5) * self.fluid.density * pow(PI, 2))
+        numerator = 8.0 * self.pipe.friction_factor * (2 * self.DEPTH)
+        denominator = (pow(self.pipe.INNER_DIAMETER, 5) * self.fluid.density * pow(PI, 2))
         return numerator / denominator
 
     def calc_bh_average_resistance(self):
@@ -149,7 +147,7 @@ class Borehole(object):
         self.calc_bh_total_internal_resistance()
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.depth / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
+        pt_2 = (self.DEPTH / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -170,5 +168,5 @@ class Borehole(object):
         self.calc_bh_effective_resistance()
         self.calc_bh_grout_resistance()
 
-    def _calc_fluid_volume(self):
-        return PI * self.pipe.inner_diameter ** 2 / 4 * self.depth * self.num_pipes
+    def calc_fluid_volume(self):
+        return PI * self.pipe.INNER_DIAMETER ** 2 / 4 * self.DEPTH * self.NUM_PIPES

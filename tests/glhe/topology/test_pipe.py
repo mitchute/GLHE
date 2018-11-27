@@ -11,14 +11,15 @@ class TestPipe(unittest.TestCase):
     @staticmethod
     def add_instance():
         inputs = {
-            "outer diameter": 0.0334,
-            "inner diameter": 0.0269,
-            "conductivity": 0.389,
-            "density": 950,
-            "specific heat": 1.623
+            'outer diameter': 0.0334,
+            'inner diameter': 0.0269,
+            'conductivity': 0.389,
+            'density': 950,
+            'specific heat': 1.623,
+            'length': 100
         }
 
-        fluid = Fluid({"type": "water"})
+        fluid = Fluid({'type': 'water'})
 
         return Pipe(inputs=inputs, fluid=fluid)
 

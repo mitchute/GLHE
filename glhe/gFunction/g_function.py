@@ -47,13 +47,13 @@ class GFunction(SimulationEntryPoint):
         self.my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
         self.num_bh = inputs['g-functions']['number of boreholes']
 
-        self.tot_length = self.my_bh.depth * self.num_bh
+        self.tot_length = self.my_bh.DEPTH * self.num_bh
 
         # time constant
-        self.t_s = self.my_bh.depth ** 2 / (9 * self.soil.diffusivity)
+        self.t_s = self.my_bh.DEPTH ** 2 / (9 * self.soil.diffusivity)
 
         # initial temperature
-        init_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.depth)
+        init_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
 
         # other inits
         self.fluid_cap = 0
@@ -148,7 +148,7 @@ class GFunction(SimulationEntryPoint):
 
             self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
-            self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.depth)
+            self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
         temp_rise_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
@@ -179,44 +179,46 @@ class GFunction(SimulationEntryPoint):
 
     def calc_outlet_temp(self):
 
-        transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
+        return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
-        # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
-
-        LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
-
-        def my_hanby(time):
-            return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
-
-        outlet_temp_calc_vals = []
-
-        curr = self.load_aggregation.current_load
-        curr_load = curr.energy
-        curr_width = curr.width
-        curr_f = my_hanby(curr_width)
-
-        outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
-
-        time = curr_width
-
-        for load in self.load_aggregation.loads:
-            if time < 2 * transit_time:
-                time += load.width
-                outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
-            else:
-                break
-
-        sum_energy_f = 0
-        sum_width = 0
-        sum_f = 0
-        for data in outlet_temp_calc_vals:
-            sum_energy_f += data.energy * data.f
-            sum_width += data.width
-            sum_f += data.f
-
-        outlet_temp_load = sum_energy_f / (sum_width) * self.tot_length
-
-        return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
+        # transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
+        #
+        # # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
+        #
+        # LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
+        #
+        # def my_hanby(time):
+        #     return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
+        #
+        # outlet_temp_calc_vals = []
+        #
+        # curr = self.load_aggregation.current_load
+        # curr_load = curr.energy
+        # curr_width = curr.width
+        # curr_f = my_hanby(curr_width)
+        #
+        # outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
+        #
+        # time = curr_width
+        #
+        # for load in self.load_aggregation.loads:
+        #     if time < 2 * transit_time:
+        #         time += load.width
+        #         outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
+        #     else:
+        #         break
+        #
+        # sum_energy_f = 0
+        # sum_width = 0
+        # sum_f = 0
+        # for data in outlet_temp_calc_vals:
+        #     sum_energy_f += data.energy * data.f
+        #     sum_width += data.width
+        #     sum_f += data.f
+        #
+        # outlet_temp_load = sum_energy_f / sum_width * self.tot_length
+        #
+        # return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
 
         # else:
         #     return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
@@ -236,10 +238,10 @@ class GFunction(SimulationEntryPoint):
         t_i_minus_1 = self.time_of_prev_flow
         cf = self.fluid.specific_heat * self.fluid.density
         cs = self.soil.specific_heat * self.soil.density
-        v_f = self.my_bh.fluid_volume
+        v_f = self.my_bh.FLUID_VOL
         w = self.my_bh.vol_flow_rate
-        l_bh = self.my_bh.depth  # noqa: E741
-        r_b = self.my_bh.radius
+        l_bh = self.my_bh.DEPTH  # noqa: E741
+        r_b = self.my_bh.RADIUS
         k_s = self.soil.conductivity
 
         # Transit time
@@ -385,12 +387,8 @@ class GFunction(SimulationEntryPoint):
         return temp_rise_sum
 
     def calc_soil_resist(self):
-        # self.soil_resist = abs(self.ground_temp - self.bh_wall_temp / self.load_normalized)
-
         part_1 = 2 / (4 * PI * self.soil.conductivity)
-        # part_2_num = 4 * self.soil.diffusivity * (t_sf + t_i_minus_1)
-        # part_2_num = 4 * self.soil.diffusivity * self.current_time
-        part_2_num = 4 * self.soil.diffusivity * (self.sim_time - self.time_of_prev_flow)
+        part_2_num = 4 * self.soil.diffusivity * self.sim_time
         if part_2_num == 0:
             self.soil_resist = 0  # pragma: no cover
         else:

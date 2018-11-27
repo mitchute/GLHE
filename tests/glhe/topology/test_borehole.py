@@ -56,8 +56,8 @@ class TestBorehole(unittest.TestCase):
 
     def test_init(self):
         tst = self.add_instance()
-        self.assertEqual(tst.depth, 76.2)
-        self.assertEqual(tst.diameter, 0.096)
+        self.assertEqual(tst.DEPTH, 76.2)
+        self.assertEqual(tst.DIAMETER, 0.096)
         self.assertEqual(tst.grout.conductivity, 0.6)
         self.assertEqual(tst.grout.density, 1000)
         self.assertEqual(tst.grout.specific_heat, 1000)
