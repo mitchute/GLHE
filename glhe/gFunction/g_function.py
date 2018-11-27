@@ -1,4 +1,3 @@
-from collections import namedtuple
 from math import log, exp, sqrt, sin
 
 from numpy import genfromtxt, mean
@@ -7,7 +6,6 @@ from scipy.interpolate import interp1d
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
 from glhe.globals.constants import PI, GAMMA
-from glhe.globals.functions import hanby
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import TimeStepSimulationResponse
