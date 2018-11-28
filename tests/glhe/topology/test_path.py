@@ -11,6 +11,7 @@ class TestPath(unittest.TestCase):
     def add_instance():
         inputs = {
             'name': 'path 1',
+            'initial temp': 20,
             'boreholes': [
                 {
                     'name': 'borehole 1',

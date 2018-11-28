@@ -1,3 +1,4 @@
+from glhe.globals.functions import merge_dicts
 from glhe.topology.borehole import Borehole
 
 
@@ -11,12 +12,15 @@ class Path(object):
 
         # Keep reference to instance for usage
         self.fluid = fluid
-        self.fluid = soil
+        self.soil = soil
 
         # Initialize boreholes
         self.boreholes = []
         for borehole in inputs["boreholes"]:
-            self.boreholes.append(Borehole(borehole['borehole-data'], fluid=fluid, soil=soil))
+            self.boreholes.append(Borehole(merge_dicts(borehole['borehole-data'],
+                                                       {'initial temp': inputs['initial temp']}),
+                                           fluid=fluid,
+                                           soil=soil))
 
         # Initialize other parameters
         self.mass_flow_rate = 0

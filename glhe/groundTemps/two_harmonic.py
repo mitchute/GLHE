@@ -1,6 +1,6 @@
-from math import cos, exp, sqrt, pi
+from math import cos, exp, pi, sqrt
 
-from glhe.globals.constants import SEC_IN_DAY, DAYS_IN_YEAR
+from glhe.globals.constants import DAYS_IN_YEAR, SEC_IN_DAY
 from glhe.groundTemps.base import BaseGroundTemp
 
 
@@ -8,14 +8,17 @@ class TwoHarmonic(BaseGroundTemp):
     """
     Two harmonic ground temperature model.
 
-    Xing, L. and J. D. Spitler. 2017. Prediction of undisturbed ground temperature using analytical and numerical modeling.
-    Part I: Model development and experimental validation. Science and Technology for the Built Environment 23(5): 787-808.
+    Xing, L. and J. D. Spitler. 2017. 'Prediction of undisturbed ground temperature using analytical
+    and numerical modeling. Part I: Model development and experimental validation.'
+    Science and Technology for the Built Environment 23(5): 787-808.
 
-    Xing, L. and J. D. Spitler. 2017. Prediction of undisturbed ground temperature using analytical and numerical modeling.
-    Part II: Methodology for developing a world-wide dataset. Science and Technology for the Built Environment 23(5): 809-825.
+    Xing, L. and J. D. Spitler. 2017. 'Prediction of undisturbed ground temperature using analytical
+    and numerical modeling. Part II: Methodology for developing a world-wide dataset.'
+     Science and Technology for the Built Environment 23(5): 809-825.
 
-    Xing, L., J. D. Spitler and A. Bandyopadhyay. 2017. Prediction of undisturbed ground temperature using analytical and numerical modeling.
-    Part III: Experimental validation of a world-wide dataset. Science and Technology for the Built Environment 23(5): 826-842.
+    Xing, L., J. D. Spitler and A. Bandyopadhyay. 2017. 'Prediction of undisturbed ground temperature
+    using analytical and numerical modeling. Part III: Experimental validation of a world-wide dataset.'
+    Science and Technology for the Built Environment 23(5): 826-842.
     """
 
     def __init__(self, ave_temp, amplitude_1, amplitude_2, phase_shift_1, phase_shift_2, soil_diffusivity):

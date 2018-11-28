@@ -16,7 +16,8 @@ class TestPipe(unittest.TestCase):
             'conductivity': 0.389,
             'density': 950,
             'specific heat': 1.623,
-            'length': 100
+            'length': 100,
+            'initial temp': 20
         }
 
         fluid = Fluid({'type': 'water'})
@@ -86,3 +87,13 @@ class TestPipe(unittest.TestCase):
         tst = self.add_instance()
         tst.set_resistance(1)
         self.assertEqual(tst.resist_pipe, 1)
+
+    def test_calc_outlet_temp_hanby(self):
+        tst = self.add_instance()
+        tol = 0.05
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.4, delta=tol)
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 22.3, delta=tol)
+        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 25.0, delta=tol)

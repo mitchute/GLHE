@@ -3,6 +3,8 @@ from math import sqrt
 from numpy import mean
 from scipy.optimize import minimize_scalar
 
+from glhe.globals.functions import merge_dicts
+from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
@@ -14,25 +16,24 @@ class GLHE(SimulationEntryPoint):
 
     def __init__(self, inputs):
 
-        # Get inputs from json blob
-
         self.name = inputs["simulation"]["name"]
         self.paths = []
 
-        # Fluid instance
         self.fluid = Fluid(inputs["fluid"])
         self.soil = PropertiesBase(inputs['soil'])
 
-        # Initialize other parameters
         self.delta_p_path = 100000
         self.inlet_temp = 20
         self.outlet_temp = 20
 
-        # Initialize all paths; pass fluid instance for later usage
-        for path in inputs["paths"]:
-            self.paths.append(Path(path, fluid=self.fluid, soil=self.soil))
+        self.get_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
+                                                                         {'soil-diffusivity': self.soil.diffusivity}
+                                                                         )).get_temp
 
-        # Track GLHE num
+        for path in inputs["paths"]:
+            self.paths.append(Path(merge_dicts(path, {'initial temp': self.get_ground_temp(0, 100)}),
+                                   fluid=self.fluid, soil=self.soil))
+
         self.glhe_num = GLHE.count
         GLHE.count += 1
 

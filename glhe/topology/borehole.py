@@ -1,10 +1,10 @@
 from numpy import log
 
 from glhe.globals.constants import PI
+from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment import Segment
-from glhe.globals.functions import merge_dicts
 
 
 class Borehole(object):
@@ -17,7 +17,8 @@ class Borehole(object):
         self.SHANK_SPACE = inputs['shank-spacing']
 
         self.grout = PropertiesBase(inputs=inputs['grout-data'])
-        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth']}),
+        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
+                                                                  'initial temp': inputs['initial temp']}),
                          fluid=fluid)
         self.soil = soil
         self.fluid = fluid

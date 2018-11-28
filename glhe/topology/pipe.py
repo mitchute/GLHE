@@ -1,8 +1,19 @@
-from numpy import log, ones
+from collections import deque
+
+from numpy import log
 
 from glhe.globals.constants import PI
-from glhe.globals.functions import smoothing_function
+from glhe.globals.functions import hanby, smoothing_function
 from glhe.properties.base import PropertiesBase
+
+
+class TempObject(object):
+    def __init__(self, temp=0, timestep=0, time=0, f=0, tau=0):
+        self.temp = temp
+        self.timestep = timestep
+        self.time = time
+        self.f = f
+        self.tau = tau
 
 
 class Pipe(PropertiesBase):
@@ -12,6 +23,7 @@ class Pipe(PropertiesBase):
         self.INNER_DIAMETER = inputs["inner diameter"]
         self.OUTER_DIAMETER = inputs["outer diameter"]
         self.LENGTH = inputs['length']
+        self.INIT_TEMP = inputs['initial temp']
 
         self.THICKNESS = (self.OUTER_DIAMETER - self.INNER_DIAMETER) / 2
         self.INNER_RADIUS = self.INNER_DIAMETER / 2
@@ -25,11 +37,54 @@ class Pipe(PropertiesBase):
         self.friction_factor = 0.02
         self.resist_pipe = 0
 
-        self.temp_nodes = ones(15) * 20
+        self.temps = deque()
+        self.start_up = True
 
-    # def calc_outlet_temp_hanby(self, temp, v_dot, time):
-    #     transit_time = self.FLUID_VOL / v_dot
-    #
+    def calc_outlet_temp_hanby(self, temp, v_dot, timestep):
+
+        def my_hanby(time):
+            return hanby(time, v_dot, self.FLUID_VOL)
+
+        transit_time = self.FLUID_VOL / v_dot
+
+        if self.start_up:
+            idx = 1
+            while True:
+
+                time = timestep * idx
+                f = my_hanby(time)
+                tau = time / transit_time
+                self.temps.append(TempObject(self.INIT_TEMP, timestep, time, f, tau))
+
+                idx += 1
+
+                if self.temps[-1].tau > 1.3:
+                    self.start_up = False
+                    break
+
+        self.temps.appendleft(TempObject(temp, timestep, 0, my_hanby(timestep), 0))
+
+        pop_idxs = []
+        sum_temp_f = 0
+        sum_f = 0
+
+        for idx, obj in enumerate(self.temps):
+            obj.time += timestep
+            obj.f = my_hanby(obj.time)
+            tau = obj.time / transit_time
+            obj.tau = tau
+            if obj.tau > 1.3:
+                pop_idxs.append(idx)
+            else:
+                sum_temp_f += obj.temp * obj.f
+                sum_f += obj.f
+
+        for idx in reversed(pop_idxs):
+            del self.temps[idx]
+
+        ret_temp = sum_temp_f / sum_f
+
+        return ret_temp
 
     # def calc_outlet_temp(self, v_dot):
     #

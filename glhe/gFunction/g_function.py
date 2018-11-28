@@ -1,11 +1,11 @@
-from math import log, exp, sqrt, sin
+from math import exp, log, sin, sqrt
 
 from numpy import genfromtxt, mean
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
-from glhe.globals.constants import PI, GAMMA
+from glhe.globals.constants import GAMMA, PI
 from glhe.globals.functions import merge_dicts
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
@@ -39,20 +39,23 @@ class GFunction(SimulationEntryPoint):
         self.c_0 = 1 / (2 * PI * self.soil.conductivity)
 
         # ground temperature model
-        self.my_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
-                                                                        {'soil-diffusivity': self.soil.diffusivity}
-                                                                        )).get_temp
+        self.get_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
+                                                                         {'soil-diffusivity': self.soil.diffusivity}
+                                                                         )).get_temp
 
-        self.my_bh = Borehole(inputs['g-functions']['borehole-data'], self.fluid, self.soil)
+        self.my_bh = Borehole(merge_dicts(inputs['g-functions']['borehole-data'],
+                                          {'initial temp': self.get_ground_temp(0, 100)}),
+                              self.fluid,
+                              self.soil)
+
         self.NUM_BH = inputs['g-functions']['number of boreholes']
-
         self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH
 
         # time constant
         self.t_s = self.my_bh.DEPTH ** 2 / (9 * self.soil.diffusivity)
 
         # initial temperature
-        init_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
+        init_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
 
         # other inits
         self.fluid_cap = 0
@@ -147,7 +150,7 @@ class GFunction(SimulationEntryPoint):
 
             self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
-            self.ground_temp = self.my_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
+            self.ground_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
             self.fluid_cap = mass_flow * self.fluid.specific_heat
 
         temp_rise_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
