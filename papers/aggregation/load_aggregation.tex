@@ -78,7 +78,7 @@
 
 \graphicspath{{Figures/}}
 
-\journal{ASHRAE Transactions}
+\journal{Science \& Technology for the Built Environment}
 
 \begin{document}
 
@@ -160,13 +160,15 @@ One such GHE model that is often used for performing hourly GHE simulations is t
 
 where:
 \begin{align*}
-    T_f & \mbox{ --- } \mbox{GHE mean-fluid temperature} && \\
-    T_s & \mbox{ --- }\mbox{soil temperature} && \\
-    q_i & \mbox{ --- }i^{th} \mbox{ GHE heat transfer rate per unit GHE length. i.e Btu/h-ft, \SI{}{\watt\per\meter}} && \\
-    t_i & \mbox{ --- }i^{th} \mbox{ time-step} && \\
-    t_s & \mbox{ --- }\mbox{ GHE time constant } \left(\frac{H^2}{9\cdot\alpha_g}\right) && \\
-    R_b & \mbox{ --- }\mbox{ borehole thermal resistance} && \\
-    g & \mbox{ --- }\mbox{g-function response factors} && \\
+    T_f & \mbox{ --- GHE mean-fluid temperature} && \\
+    T_s & \mbox{ --- soil temperature} && \\
+    q_i & \mbox{ ---  GHE heat transfer rate per unit length} && \\
+    t_i & \mbox{ --- time-step} && \\
+    t_s & \mbox{ --- GHE time constant } \left(H^2 / 9\cdot\alpha_s\right) && \\
+    H & \mbox{ --- borehole length} && \\
+    \alpha_s & \mbox{ --- soil thermal diffusivity} && \\ 
+    R_b & \mbox{ --- borehole thermal resistance} && \\
+    g & \mbox{ --- g-function response factors} && \\
 \end{align*}
 
 At a fundamental level, conduction problems can be evaluated using partial differential equations, as is seen in the simplified heat equation in radial coordinates given in Equation \ref{eq:agg:general conduction simplified}. The heat equation is linear and inhomogeneous, and as a result Duhamel's principle can be applied which allows the equation to be broken down into a set of homogeneous equation that correspond to a given time interval \citep{Cullin2014}.
