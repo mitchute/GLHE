@@ -40,7 +40,7 @@ class Pipe(PropertiesBase):
         self.temps = deque()
         self.start_up = True
 
-    def calc_outlet_temp_hanby(self, temp, v_dot, timestep):
+    def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
 
         def my_hanby(time):
             return hanby(time, v_dot, self.FLUID_VOL)
@@ -51,10 +51,10 @@ class Pipe(PropertiesBase):
             idx = 1
             while True:
 
-                time = timestep * idx
+                time = time_step * idx
                 f = my_hanby(time)
                 tau = time / transit_time
-                self.temps.append(TempObject(self.INIT_TEMP, timestep, time, f, tau))
+                self.temps.append(TempObject(self.INIT_TEMP, time_step, time, f, tau))
 
                 idx += 1
 
@@ -62,25 +62,28 @@ class Pipe(PropertiesBase):
                     self.start_up = False
                     break
 
-        self.temps.appendleft(TempObject(temp, timestep, 0, my_hanby(timestep), 0))
+        self.temps.appendleft(TempObject(temp, time_step, 0, my_hanby(time_step), 0))
 
         pop_idxs = []
         sum_temp_f = 0
         sum_f = 0
 
         for idx, obj in enumerate(self.temps):
-            obj.time += timestep
+            obj.time += time_step
             obj.f = my_hanby(obj.time)
             tau = obj.time / transit_time
             obj.tau = tau
-            if obj.tau > 1.3:
+            if obj.tau > 1.3 and idx != 0:
                 pop_idxs.append(idx)
             else:
                 sum_temp_f += obj.temp * obj.f
                 sum_f += obj.f
 
         for idx in reversed(pop_idxs):
-            del self.temps[idx]
+            if idx == 0:
+                pass
+            else:
+                del self.temps[idx]
 
         ret_temp = sum_temp_f / sum_f
 

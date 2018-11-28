@@ -1,6 +1,6 @@
 from math import exp, log, sin, sqrt
 
-from numpy import genfromtxt, mean
+from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
@@ -9,7 +9,6 @@ from glhe.globals.constants import GAMMA, PI
 from glhe.globals.functions import merge_dicts
 from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import TimeStepSimulationResponse
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.borehole import Borehole
@@ -70,7 +69,6 @@ class GFunction(SimulationEntryPoint):
         self.prev_load_normalized = 0
         self.prev_mass_flow_rate = -999
         self.prev_flow_frac = 0
-        self.outlet_temp = init_temp
         self.prev_outlet_temp = init_temp
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
@@ -80,6 +78,8 @@ class GFunction(SimulationEntryPoint):
         self.time_step = 0
         self.temp_rise_history = 0
         self.curr_total_load = 0
+        self.inlet_temp_after_pipe = init_temp
+        self.outlet_temp_after_pipe = init_temp
 
         # set initial g-values
         self.load_aggregation.update_time()
@@ -91,7 +91,9 @@ class GFunction(SimulationEntryPoint):
                     "Soil Resistance 'Rs' [K/(W/m)]": self.soil_resist,
                     "Flow Fraction [-]": self.flow_fraction,
                     "Load on GHE [W/m]": self.load_per_meter,
-                    "Average Fluid Temp [C]": self.ave_fluid_temp}
+                    "Average Fluid Temp [C]": self.ave_fluid_temp,
+                    "GLHE Inlet Temp (After Pipe) [C]": self.inlet_temp_after_pipe,
+                    "GLHE Outlet Temp (After Pipe) [C]": self.outlet_temp_after_pipe}
 
         return ret_vals
 
@@ -126,12 +128,18 @@ class GFunction(SimulationEntryPoint):
             return g
 
     def simulate_time_step(self, inlet_temp, mass_flow, time_step, first_pass, converged):
+
+        vol_flow_rate = mass_flow / self.NUM_BH / self.fluid.density
+
         if first_pass:
             self.time_step = time_step
             self.sim_time += time_step
 
             if mass_flow == 0:
-                return TimeStepSimulationResponse(outlet_temp=inlet_temp, heat_rate=0)
+                return inlet_temp
+
+            self.inlet_temp_after_pipe = self.my_bh.inlet_pipe.calc_outlet_temp_hanby(inlet_temp, vol_flow_rate,
+                                                                                      time_step)
 
             self.my_bh.set_flow_rate(mass_flow / self.NUM_BH)
             self.bh_resist = self.my_bh.resist_bh_ave
@@ -156,7 +164,7 @@ class GFunction(SimulationEntryPoint):
         temp_rise_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
         c_1 = (1 - self.flow_fraction) * self.TOT_LENGTH / self.fluid_cap
 
-        load_num = self.ground_temp - inlet_temp + self.temp_rise_history - temp_rise_prev_bin
+        load_num = self.ground_temp - self.inlet_temp_after_pipe + self.temp_rise_history - temp_rise_prev_bin
         load_den = -self.c_0 * g_func_prev_bin - self.bh_resist - c_1
 
         self.load_per_meter = load_num / load_den
@@ -168,62 +176,66 @@ class GFunction(SimulationEntryPoint):
         self.ave_fluid_temp = self.ground_temp + temp_rise_history + self.load_per_meter * self.bh_resist
 
         self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
-        self.outlet_temp = self.calc_outlet_temp()
+        outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
+
+        self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(outlet_temp,
+                                                                                    vol_flow_rate,
+                                                                                    time_step)
 
         if converged:
             self.load_aggregation.aggregate()
             self.load_aggregation.update_time()
             self.update_g_values()
             self.prev_sim_time = self.sim_time
-            self.fluid.update_properties(mean([inlet_temp, self.outlet_temp]))
+            self.fluid.update_properties(self.ave_fluid_temp)
 
-        return TimeStepSimulationResponse(heat_rate=self.curr_total_load, outlet_temp=self.outlet_temp)
+        return TimeStepSimulationResponse(heat_rate=self.curr_total_load, outlet_temp=self.outlet_temp_after_pipe)
 
-    def calc_outlet_temp(self):
+    # def calc_outlet_temp(self):
+    #
+    #     return
 
-        return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
+    # transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
+    #
+    # # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
+    #
+    # LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
+    #
+    # def my_hanby(time):
+    #     return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
+    #
+    # outlet_temp_calc_vals = []
+    #
+    # curr = self.load_aggregation.current_load
+    # curr_load = curr.energy
+    # curr_width = curr.width
+    # curr_f = my_hanby(curr_width)
+    #
+    # outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
+    #
+    # time = curr_width
+    #
+    # for load in self.load_aggregation.loads:
+    #     if time < 2 * transit_time:
+    #         time += load.width
+    #         outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
+    #     else:
+    #         break
+    #
+    # sum_energy_f = 0
+    # sum_width = 0
+    # sum_f = 0
+    # for data in outlet_temp_calc_vals:
+    #     sum_energy_f += data.energy * data.f
+    #     sum_width += data.width
+    #     sum_f += data.f
+    #
+    # outlet_temp_load = sum_energy_f / sum_width * self.TOT_LENGTH
+    #
+    # return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
 
-        # transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
-        #
-        # # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
-        #
-        # LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
-        #
-        # def my_hanby(time):
-        #     return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
-        #
-        # outlet_temp_calc_vals = []
-        #
-        # curr = self.load_aggregation.current_load
-        # curr_load = curr.energy
-        # curr_width = curr.width
-        # curr_f = my_hanby(curr_width)
-        #
-        # outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
-        #
-        # time = curr_width
-        #
-        # for load in self.load_aggregation.loads:
-        #     if time < 2 * transit_time:
-        #         time += load.width
-        #         outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
-        #     else:
-        #         break
-        #
-        # sum_energy_f = 0
-        # sum_width = 0
-        # sum_f = 0
-        # for data in outlet_temp_calc_vals:
-        #     sum_energy_f += data.energy * data.f
-        #     sum_width += data.width
-        #     sum_f += data.f
-        #
-        # outlet_temp_load = sum_energy_f / sum_width * self.TOT_LENGTH
-        #
-        # return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
-
-        # else:
-        #     return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
+    # else:
+    #     return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
     def calc_flow_fraction(self):
         """

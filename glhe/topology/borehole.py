@@ -8,18 +8,28 @@ from glhe.topology.segment import Segment
 
 
 class Borehole(object):
-    _count = 0
+    count = 0
 
     def __init__(self, inputs, fluid, soil):
         self.DEPTH = inputs['depth']
         self.DIAMETER = inputs['diameter']
         self.RADIUS = self.DIAMETER / 2
         self.SHANK_SPACE = inputs['shank-spacing']
+        self.NUM_PIPES = 2
 
         self.grout = PropertiesBase(inputs=inputs['grout-data'])
-        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
+        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
                                                                   'initial temp': inputs['initial temp']}),
                          fluid=fluid)
+
+        self.inlet_pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
+                                                                        'initial temp': inputs['initial temp']}),
+                               fluid=fluid)
+
+        self.outlet_pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
+                                                                         'initial temp': inputs['initial temp']}),
+                                fluid=fluid)
+
         self.soil = soil
         self.fluid = fluid
 
@@ -33,7 +43,6 @@ class Borehole(object):
         self.mass_flow_rate_prev = 0
         self.vol_flow_rate = 0
         self.friction_factor = 0.02
-        self.NUM_PIPES = 2
 
         # Multipole method parameters
         self.resist_bh_ave = None
@@ -49,11 +58,11 @@ class Borehole(object):
         self.beta = None
 
         # Init borehole fluid volume
-        self.FLUID_VOL = self.calc_fluid_volume()
+        self.FLUID_VOL = self.pipe.FLUID_VOL
 
         # Track bh number
-        self.BH_NUM = Borehole._count
-        Borehole._count += 1
+        self.BH_NUM = Borehole.count
+        Borehole.count += 1
 
     def get_flow_resistance(self):
         numerator = 8.0 * self.pipe.friction_factor * (2 * self.DEPTH)
@@ -168,6 +177,3 @@ class Borehole(object):
         self.calc_bh_average_resistance()
         self.calc_bh_effective_resistance()
         self.calc_bh_grout_resistance()
-
-    def calc_fluid_volume(self):
-        return PI * self.pipe.INNER_DIAMETER ** 2 / 4 * self.DEPTH * self.NUM_PIPES

@@ -36,16 +36,16 @@ class TestRunGFunctionIntegration(unittest.TestCase):
         tst, path = self.add_instance('none')
         tst.simulate()
         df = pd.read_csv(path)
-        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
+        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.47, delta=0.15)
 
     def test_static_agg(self):
         tst, path = self.add_instance('static')
         tst.simulate()
         df = pd.read_csv(path)
-        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.76, delta=0.15)
+        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.46, delta=0.15)
 
     def test_dynamic_agg(self):
         tst, path = self.add_instance('dynamic')
         tst.simulate()
         df = pd.read_csv(path)
-        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.9, delta=0.15)
+        self.assertAlmostEqual(df['GLHE Outlet Temperature [C]'].iloc[-1], 30.54, delta=0.15)
