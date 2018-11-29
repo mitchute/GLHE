@@ -78,6 +78,7 @@ class GFunction(SimulationEntryPoint):
         self.time_step = 0
         self.temp_rise_history = 0
         self.curr_total_load = 0
+        self.outlet_temp = init_temp
         self.inlet_temp_after_pipe = init_temp
         self.outlet_temp_after_pipe = init_temp
 
@@ -92,8 +93,9 @@ class GFunction(SimulationEntryPoint):
                     "Flow Fraction [-]": self.flow_fraction,
                     "Load on GHE [W/m]": self.load_per_meter,
                     "Average Fluid Temp [C]": self.ave_fluid_temp,
-                    "GLHE Inlet Temp (After Pipe) [C]": self.inlet_temp_after_pipe,
-                    "GLHE Outlet Temp (After Pipe) [C]": self.outlet_temp_after_pipe}
+                    "GHE Outlet Temp (Before Pipe) [C]": self.outlet_temp,
+                    "GHE Inlet Temp (After Pipe) [C]": self.inlet_temp_after_pipe,
+                    "GHE Outlet Temp (After Pipe) [C]": self.outlet_temp_after_pipe}
 
         return ret_vals
 
@@ -176,9 +178,9 @@ class GFunction(SimulationEntryPoint):
         self.ave_fluid_temp = self.ground_temp + temp_rise_history + self.load_per_meter * self.bh_resist
 
         self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
-        outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
+        self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
-        self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(outlet_temp,
+        self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(self.outlet_temp,
                                                                                     vol_flow_rate,
                                                                                     time_step)
 
@@ -189,7 +191,7 @@ class GFunction(SimulationEntryPoint):
             self.prev_sim_time = self.sim_time
             self.fluid.update_properties(self.ave_fluid_temp)
 
-        return TimeStepSimulationResponse(heat_rate=self.curr_total_load, outlet_temp=self.outlet_temp_after_pipe)
+        return self.outlet_temp_after_pipe
 
     # def calc_outlet_temp(self):
     #
