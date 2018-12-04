@@ -136,11 +136,11 @@ class Fluid(object):
 
         return self._calc_property(FluidPropertyType.VISCOSITY, temperature)
 
-    def _calc_property(self, property, temperature):
+    def _calc_property(self, _property, temperature):
         """
         Worker function to call the CoolProp library
 
-        :param property: Fluid property enum value
+        :param _property: Fluid property enum value
         :param temperature: Fluid temperature in Celsius
         :return: Property Value
         """
@@ -152,7 +152,7 @@ class Fluid(object):
                  FluidPropertyType.VISCOSITY: 'VISCOSITY'}
 
         try:
-            return PropsSI(props[property],
+            return PropsSI(props[_property],
                            'T', temp_in_kelvin(temperature),
                            'P', self.pressure,
                            self._fluid_str)
@@ -160,7 +160,7 @@ class Fluid(object):
             # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
             # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
-            return PropsSI(props[property],
+            return PropsSI(props[_property],
                            'T', self.temp_freeze,
                            'P', self.pressure,
                            self._fluid_str)
