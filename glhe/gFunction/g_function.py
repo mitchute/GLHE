@@ -276,7 +276,7 @@ class GFunction(SimulationEntryPoint):
         cs = self.soil.specific_heat * self.soil.density
         v_f = self.my_bh.FLUID_VOL
         w = self.my_bh.vol_flow_rate
-        l_bh = self.my_bh.DEPTH  # noqa: E741
+        l_bh = self.my_bh.DEPTH
         r_b = self.my_bh.RADIUS
         k_s = self.soil.conductivity
 
