@@ -57,8 +57,11 @@ class Borehole(object):
         self.sigma = sigma_num / sigma_den
         self.beta = None
 
-        # Init borehole fluid volume
+        # Init volumes
+        self.VOLUME = PI / 4 * self.DIAMETER ** 2 * self.DEPTH
         self.FLUID_VOL = self.pipe.FLUID_VOL
+        self.PIPE_VOL = self.inlet_pipe.TOTAL_VOL + self.outlet_pipe.TOTAL_VOL
+        self.GROUT_VOL = self.VOLUME - self.PIPE_VOL
 
         # Track bh number
         self.BH_NUM = Borehole.count

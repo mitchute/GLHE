@@ -1,6 +1,6 @@
 from collections import deque
 
-from numpy import log
+from numpy import log, mean
 
 from glhe.globals.constants import PI
 from glhe.globals.functions import hanby, smoothing_function
@@ -29,8 +29,11 @@ class Pipe(PropertiesBase):
         self.INNER_RADIUS = self.INNER_DIAMETER / 2
         self.OUTER_RADIUS = self.OUTER_DIAMETER / 2
 
+        self.AREA_CR_OUTER = PI / 4 * self.OUTER_DIAMETER ** 2
         self.AREA_CR_INNER = PI / 4 * self.INNER_DIAMETER ** 2
         self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
+        self.TOTAL_VOL = self.AREA_CR_OUTER * self.LENGTH
+        self.WALL_VOL = (self.AREA_CR_OUTER - self.AREA_CR_INNER) * self.LENGTH
 
         self.fluid = fluid
 

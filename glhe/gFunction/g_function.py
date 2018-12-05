@@ -80,6 +80,9 @@ class GFunction(SimulationEntryPoint):
         self.outlet_temp_after_pipe = init_temp
         self.total_fluid_mass = 0
 
+        self.total_pipe_mass = self.my_bh.PIPE_VOL * self.my_bh.pipe.density
+        self.total_grout_mass = self.my_bh.GROUT_VOL * self.my_bh.grout.density
+
         # set initial g-values
         self.load_aggregation.update_time()
         self.update_g_values(False)
@@ -100,7 +103,6 @@ class GFunction(SimulationEntryPoint):
     def update_g_values(self, lock_down_g_value=True):
         for this_bin in self.load_aggregation.loads:
             if this_bin.g_fixed is True:
-                pass
                 break
             else:
                 this_bin.g = self.get_g_func(this_bin.time)
@@ -168,26 +170,51 @@ class GFunction(SimulationEntryPoint):
         temp_rise_prev_bin, q_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
 
         # equations *without* fluid capacitance
-        load_num_1 = self.fluid_cap
-        load_num_2 = -self.temp_rise_history + q_prev_bin * g_func_prev_bin
-        load_num_3 = self.c_0 * (self.inlet_temp_after_pipe - self.ground_temp)
-        load_num = load_num_1 * (load_num_2 + load_num_3)
-
-        load_den_1 = -self.c_0 * self.TOT_LENGTH * (-1 + self.flow_fraction)
-        load_den_2 = self.fluid_cap * (g_func_prev_bin + self.c_0 * self.bh_resist)
-        load_den = load_den_1 + load_den_2
+        # load_num_1 = -self.temp_rise_history + q_prev_bin * g_func_prev_bin
+        # load_num_2 = self.c_0 * (self.inlet_temp_after_pipe - self.ground_temp)
+        # load_num = self.fluid_cap * (load_num_1 + load_num_2)
+        #
+        # load_den_1 = self.fluid_cap * g_func_prev_bin
+        # load_den_2 = self.TOT_LENGTH - self.flow_fraction * self.TOT_LENGTH + self.fluid_cap * self.bh_resist
+        # load_den = load_den_1 + self.c_0 * load_den_2
 
         # equations *with* fluid capacitance
-        # load_num_1 = self.fluid.specific_heat
-        # load_num_2 = -self.c_0 * self.ave_fluid_temp_change * (-1 + self.flow_fraction) * self.total_fluid_mass
-        # load_num_3 = self.time_step * mass_flow
-        # load_num_4 = -self.temp_rise_history + q_prev_bin * g_func_prev_bin
-        # load_num_5 = self.c_0 * (self.inlet_temp_after_pipe - self.ground_temp)
-        # load_num = load_num_1 * (load_num_2 + load_num_3 * (load_num_4 + load_num_5))
+        # load_num_1 = self.time_step * mass_flow * (-self.temp_rise_history + q_prev_bin * g_func_prev_bin)
+        # load_num_2 = self.ave_fluid_temp_change * (-1 + self.flow_fraction) * self.total_fluid_mass
+        # load_num_3 = self.time_step * mass_flow * (self.inlet_temp_after_pipe - self.ground_temp)
+        # load_num = self.fluid.specific_heat * (load_num_1 + self.c_0 * (load_num_2 + load_num_3))
         #
-        # load_den_1 = -self.c_0 * self.TOT_LENGTH * (-1 + self.flow_fraction)
-        # load_den_2 = self.fluid_cap * (g_func_prev_bin + self.c_0 * self.bh_resist)
-        # load_den = self.time_step * (load_den_1 + load_den_2)
+        # load_den_1 = self.fluid_cap * g_func_prev_bin
+        # load_den_2 = self.TOT_LENGTH - self.flow_fraction * self.TOT_LENGTH + self.fluid_cap * self.bh_resist
+        # load_den = self.time_step * (load_den_1 + self.c_0 * load_den_2)
+
+        c_0 = self.c_0
+        cp = self.fluid.specific_heat
+        dTf = self.ave_fluid_temp_change
+        f = self.flow_fraction
+        f_1 = -1 + self.flow_fraction
+        m_tot = self.total_fluid_mass + self.total_pipe_mass + self.total_grout_mass
+        rb = self.bh_resist
+        l_tot = self.TOT_LENGTH
+        h = self.temp_rise_history
+        m_dot = mass_flow
+        Tf = self.ave_fluid_temp
+        Tfold = self.prev_ave_fluid_temp
+        Tin = self.inlet_temp_after_pipe
+        Ts = self.ground_temp
+        dt = self.time_step
+        gc = g_func_prev_bin
+        qp = q_prev_bin
+
+        n_1 = c_0 * cp * dTf * f_1 * m_tot * rb
+        n_2 = h * (l_tot - f * l_tot)
+        n_3 = f_1 * gc * l_tot * qp
+        n_4 = cp * m_dot * rb * (-Tf + Tin)
+        n_5 = f_1 * l_tot * (Tf - Ts)
+
+        load_num = n_1 + dt * (n_2 + n_3 + c_0 * (n_4 + n_5))
+
+        load_den = dt * f_1 * gc * l_tot
 
         self.load_per_meter = load_num / load_den
         energy_per_meter = self.load_per_meter * self.time_step
@@ -195,7 +222,13 @@ class GFunction(SimulationEntryPoint):
         self.load_aggregation.set_current_load(load=energy_per_meter)
 
         temp_rise_history = self.calc_temp_rise_history(True)
-        self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
+
+        # self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
+
+        Tb = self.ground_temp + temp_rise_history / self.c_0
+        Tf_n = dt * l_tot * (self.load_per_meter * rb + Tb) + cp * m_tot * rb * Tfold
+        Tf_d = dt * l_tot + cp * m_tot * rb
+        self.ave_fluid_temp = Tf_n / Tf_d
 
         self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
         self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
