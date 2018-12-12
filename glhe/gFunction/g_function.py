@@ -178,14 +178,21 @@ class GFunction(SimulationEntryPoint):
         # load_den_2 = self.TOT_LENGTH + 2 * self.fluid_cap * self.bh_resist
         # load_den = load_den_1 + self.c_0 * load_den_2
 
-        # Beier model
-        load_num_1 = -self.temp_rise_history + q_prev_bin * g_func_prev_bin
-        load_num_2 = self.c_0 * (self.inlet_temp_after_pipe - self.ground_temp)
-        load_num = self.fluid_cap * (load_num_1 + load_num_2)
+        # original model (my formulation)
+        load_num_1 = self.inlet_temp_after_pipe - self.ground_temp
+        load_num_2 = -self.temp_rise_history / self.c_0 + q_prev_bin * g_func_prev_bin / self.c_0
+        load_num = load_num_1 + load_num_2
 
-        load_den_1 = self.fluid_cap * g_func_prev_bin
-        load_den_2 = self.TOT_LENGTH - self.flow_fraction * self.TOT_LENGTH + self.fluid_cap * self.bh_resist
-        load_den = load_den_1 + self.c_0 * load_den_2
+        load_den = g_func_prev_bin / self.c_0 + self.TOT_LENGTH / (2 * self.fluid_cap) + self.bh_resist
+
+        # Beier model
+        # load_num_1 = -self.temp_rise_history + q_prev_bin * g_func_prev_bin
+        # load_num_2 = self.c_0 * (self.inlet_temp_after_pipe - self.ground_temp)
+        # load_num = self.fluid_cap * (load_num_1 + load_num_2)
+        #
+        # load_den_1 = self.fluid_cap * g_func_prev_bin
+        # load_den_2 = self.TOT_LENGTH - self.flow_fraction * self.TOT_LENGTH + self.fluid_cap * self.bh_resist
+        # load_den = load_den_1 + self.c_0 * load_den_2
 
         # equations *with* fluid capacitance
         # load_num_1 = self.time_step * mass_flow * (-self.temp_rise_history + q_prev_bin * g_func_prev_bin)
@@ -230,7 +237,7 @@ class GFunction(SimulationEntryPoint):
 
         self.load_aggregation.set_current_load(load=energy_per_meter)
 
-        temp_rise_history = self.calc_temp_rise_history(True)
+        temp_rise_history = self.calc_temp_rise_history(include_current_timestep=True)
 
         self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
 
@@ -240,8 +247,12 @@ class GFunction(SimulationEntryPoint):
         # self.ave_fluid_temp = Tf_n / Tf_d
 
         self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
-        self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
-        # self.outlet_temp = self.ave_fluid_temp - self.curr_total_load / self.fluid_cap
+
+        # original model
+        self.outlet_temp = self.ave_fluid_temp - self.curr_total_load / (2 * self.fluid_cap)
+
+        # Beier model
+        # self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
         self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(self.outlet_temp,
                                                                                     vol_flow_rate,
