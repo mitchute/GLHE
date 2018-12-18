@@ -1,6 +1,6 @@
 from collections import deque
 
-from numpy import log, mean
+from numpy import log
 
 from glhe.globals.constants import PI
 from glhe.globals.functions import hanby, smoothing_function
@@ -91,25 +91,6 @@ class Pipe(PropertiesBase):
         ret_temp = sum_temp_f / sum_f
 
         return ret_temp
-
-    # def calc_outlet_temp(self, v_dot):
-    #
-    #     """
-    #     Computes outlet temp as described by:
-    #
-    #     Rees, S. J. 2015. 'An extended two-dimensional borehole heat exchanger model for simulation
-    #     of short and medium timescale thermal response' Renewable Energy 83(2015): 518-526.
-    #
-    #     :param v_dot:
-    #     :return:
-    #     """
-    #
-    #     velocity = self.FLUID_VOL / v_dot
-    #
-    #     diffusion_coeff = self.LENGTH
-    #
-    #     # Equation 14
-    #     num_cst = int(velocity * self.LENGTH / (2 * diffusion_coeff))
 
     def calc_friction_factor(self, re):
         """

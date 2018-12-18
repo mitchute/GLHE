@@ -61,7 +61,6 @@ class GFunction(SimulationEntryPoint):
         self.soil_resist = 0
         self.ground_temp = 0
         self.ave_fluid_temp = init_temp
-        self.prev_ave_fluid_temp = init_temp
         self.ave_fluid_temp_change = 0
         self.flow_fraction = 0
         self.transit_time = 0
@@ -77,7 +76,6 @@ class GFunction(SimulationEntryPoint):
         self.outlet_temp = init_temp
         self.inlet_temp_after_pipe = init_temp
         self.outlet_temp_after_pipe = init_temp
-        self.total_fluid_mass = 0
 
         self.total_pipe_mass = self.my_bh.PIPE_VOL * self.my_bh.pipe.density
         self.total_grout_mass = self.my_bh.GROUT_VOL * self.my_bh.grout.density
@@ -128,13 +126,6 @@ class GFunction(SimulationEntryPoint):
         else:
             return g
 
-    def calc_ave_fluid_temp_change(self, new_ave_fluid_temp):
-        self.ave_fluid_temp_change = new_ave_fluid_temp - self.prev_ave_fluid_temp
-
-    def calc_ave_fluid_temp_derivative(self, new_ave_fluid_temp, time_step):
-        self.calc_ave_fluid_temp_change(new_ave_fluid_temp)
-        return self.ave_fluid_temp_change / time_step
-
     def simulate_time_step(self, inlet_temp, mass_flow, time_step, first_pass, converged):
 
         vol_flow_rate = mass_flow / self.NUM_BH / self.fluid.density
@@ -151,11 +142,9 @@ class GFunction(SimulationEntryPoint):
 
             self.my_bh.set_flow_rate(mass_flow / self.NUM_BH)
             self.bh_resist = self.my_bh.resist_bh_ave
-            self.total_fluid_mass = self.my_bh.FLUID_VOL * self.fluid.density * self.NUM_BH
 
             self.load_aggregation.get_new_current_load_bin(width=time_step)
             self.load_aggregation.current_load.g = self.get_g_func(time_step)
-            self.prev_ave_fluid_temp = self.ave_fluid_temp
 
             flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
 
@@ -181,37 +170,17 @@ class GFunction(SimulationEntryPoint):
         load_den_1 = g_func_prev_bin / self.c_0
         load_den_2 = (1 - self.flow_fraction) * self.TOT_LENGTH / self.fluid_cap + self.bh_resist
 
-        iter_flag = True
-        prev_iter_temp = 0
+        load_num = load_num_1 + load_num_2
+        load_den = load_den_1 + load_den_2
 
-        while iter_flag:
-            dT_dt = self.calc_ave_fluid_temp_derivative(self.ave_fluid_temp, time_step)
+        self.load_per_meter = load_num / load_den
+        self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
+        energy_per_meter = self.load_per_meter * self.time_step
+        self.load_aggregation.set_current_load(load=energy_per_meter)
 
-            # heat rate (with capacitance)
-            if time_step < 1.5 * self.transit_time:
-                load_num_3 = (self.flow_fraction - 2) * self.total_fluid_mass * self.fluid.specific_heat * dT_dt
-            else:
-                iter_flag = False
-                load_num_3 = 0
-
-            load_num = load_num_1 + load_num_2 + load_num_3
-            load_den = load_den_1 + load_den_2
-
-            self.load_per_meter = load_num / load_den
-            self.curr_total_load = self.load_per_meter * self.TOT_LENGTH
-            energy_per_meter = self.load_per_meter * self.time_step
-            self.load_aggregation.set_current_load(load=energy_per_meter)
-
-            temp_rise_history = self.calc_temp_rise_history(include_current_timestep=True)
-            self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
-            self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
-
-            if iter_flag:
-                self.outlet_temp -= self.flow_fraction * self.total_fluid_mass * self.fluid.specific_heat * dT_dt
-                if (self.outlet_temp - prev_iter_temp) < 0.1:
-                    iter_flag = False
-                else:
-                    prev_iter_temp = self.outlet_temp
+        temp_rise_history = self.calc_temp_rise_history(include_current_timestep=True)
+        self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
+        self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
         self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(self.outlet_temp,
                                                                                     vol_flow_rate,
@@ -225,52 +194,6 @@ class GFunction(SimulationEntryPoint):
             self.fluid.update_properties(self.ave_fluid_temp)
 
         return self.outlet_temp_after_pipe
-
-    # def calc_outlet_temp(self):
-    #
-    #     return
-
-    # transit_time = self.my_bh.fluid_volume / self.my_bh.vol_flow_rate
-    #
-    # # if self.sim_time - self.time_of_prev_flow < 2 * transit_time:
-    #
-    # LoadData = namedtuple('LoadData', ['energy', 'width', 'f'])
-    #
-    # def my_hanby(time):
-    #     return hanby(time, self.my_bh.vol_flow_rate, self.my_bh.fluid_volume)
-    #
-    # outlet_temp_calc_vals = []
-    #
-    # curr = self.load_aggregation.current_load
-    # curr_load = curr.energy
-    # curr_width = curr.width
-    # curr_f = my_hanby(curr_width)
-    #
-    # outlet_temp_calc_vals.append(LoadData(curr_load, curr_width, curr_f))
-    #
-    # time = curr_width
-    #
-    # for load in self.load_aggregation.loads:
-    #     if time < 2 * transit_time:
-    #         time += load.width
-    #         outlet_temp_calc_vals.append(LoadData(load.energy, load.width, my_hanby(time)))
-    #     else:
-    #         break
-    #
-    # sum_energy_f = 0
-    # sum_width = 0
-    # sum_f = 0
-    # for data in outlet_temp_calc_vals:
-    #     sum_energy_f += data.energy * data.f
-    #     sum_width += data.width
-    #     sum_f += data.f
-    #
-    # outlet_temp_load = sum_energy_f / sum_width * self.TOT_LENGTH
-    #
-    # return self.ave_fluid_temp - self.flow_fraction * outlet_temp_load / self.fluid_cap
-
-    # else:
-    #     return self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
     def calc_flow_fraction(self):
         """

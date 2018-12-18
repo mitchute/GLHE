@@ -155,9 +155,10 @@ class RunGFunctions(object):
             raise SimulationError('Program failed')  # pragma: no cover
 
     def wrapped_sim_time_step(self, input_args):
-        outlet_temp = self.g.simulate_time_step(input_args[0], self.mass_flow_rate, gv.time_step, False,  # noqa: F841
-                                                False)  # noqa: F841
-        return abs(ret_response.heat_rate - self.current_load)  # noqa: F821
+        outlet_temp = self.g.simulate_time_step(input_args[0], self.mass_flow_rate, gv.time_step, False, False)
+        curr_load = self.fluid_cap * (input_args[0] - outlet_temp)
+
+        return abs(curr_load - self.current_load)
 
 
 if __name__ == '__main__':
