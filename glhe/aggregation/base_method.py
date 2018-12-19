@@ -13,7 +13,7 @@ class BaseMethod(ABC):
         time = 0
         for load in self.loads:
             if load.g_fixed:
-                break
+                break  # pragma: no cover
             time += load.width
             load.time = time
 

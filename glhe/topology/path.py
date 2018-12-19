@@ -1,3 +1,4 @@
+from glhe.globals.functions import merge_dicts
 from glhe.topology.borehole import Borehole
 
 
@@ -7,16 +8,19 @@ class Path(object):
     def __init__(self, inputs, fluid, soil):
 
         # Get inputs from json blob
-        self._name = inputs["name"]
+        self.NAME = inputs["name"]
 
         # Keep reference to instance for usage
-        self._fluid = fluid
-        self._soil = soil
+        self.fluid = fluid
+        self.soil = soil
 
         # Initialize boreholes
-        self._boreholes = []
+        self.boreholes = []
         for borehole in inputs["boreholes"]:
-            self._boreholes.append(Borehole(borehole['borehole-data'], fluid=fluid, soil=soil))
+            self.boreholes.append(Borehole(merge_dicts(borehole['borehole-data'],
+                                                       {'initial temp': inputs['initial temp']}),
+                                           fluid=fluid,
+                                           soil=soil))
 
         # Initialize other parameters
         self.mass_flow_rate = 0
@@ -28,12 +32,12 @@ class Path(object):
 
     def set_flow_resistance(self):
         self.flow_resistance = 0
-        for borehole in self._boreholes:
+        for borehole in self.boreholes:
             self.flow_resistance += borehole.get_flow_resistance()
 
     def set_mass_flow_rate(self, mass_flow_rate):
         self.mass_flow_rate = mass_flow_rate
-        for bh in self._boreholes:
+        for bh in self.boreholes:
             bh.set_flow_rate(mass_flow_rate)
 
     def simulate(self, inlet_temperature):

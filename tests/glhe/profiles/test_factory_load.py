@@ -8,7 +8,7 @@ from glhe.profiles.sinusoid import Sinusoid
 from glhe.profiles.synthetic import Synthetic
 
 
-class TestFactory(unittest.TestCase):
+class TestLoadFactory(unittest.TestCase):
 
     def test_factory_fixed(self):
         inputs = {'type': 'fixed', 'fixed': {'value': 2000}}

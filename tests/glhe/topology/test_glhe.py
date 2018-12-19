@@ -180,10 +180,10 @@ class TestGLHE(unittest.TestCase):
         tst = self.add_instance()
 
         tst.set_flow_rates(1)
-        self.assertAlmostEqual(tst._delta_p_path, 115402, delta=1)
+        self.assertAlmostEqual(tst.delta_p_path, 115402, delta=1)
 
     def test_flow_distribution(self):
         tst = self.add_instance()
         tst.set_flow_rates(1)
-        self.assertAlmostEqual(tst._paths[0].mass_flow_rate, 0.5, delta=0.01)
-        self.assertAlmostEqual(tst._paths[1].mass_flow_rate, 0.5, delta=0.01)
+        self.assertAlmostEqual(tst.paths[0].mass_flow_rate, 0.5, delta=0.01)
+        self.assertAlmostEqual(tst.paths[1].mass_flow_rate, 0.5, delta=0.01)

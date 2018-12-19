@@ -9,4 +9,4 @@ class TestSegment(unittest.TestCase):
 
     def test_init(self):
         tst = Segment(model_type="simple", fluid=Fluid({"type": "water", "concentration": 0}))
-        self.assertEqual(tst._type, SegmentType.SIMPLE)
+        self.assertEqual(tst.type, SegmentType.SIMPLE)

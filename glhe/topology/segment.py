@@ -8,12 +8,12 @@ class Segment(object):
     def __init__(self, model_type, fluid):
         # Initialize segment
         if model_type == "simple":
-            self._type = SegmentType.SIMPLE
-            self._model = BoreholeSimpleHX(None)
+            self.type = SegmentType.SIMPLE
+            self.model = BoreholeSimpleHX(None)
 
         # Keep reference to fluid instance here for usage
-        self._fluid = fluid
+        self.fluid = fluid
 
         # Track segment number
-        self._segment_num = Segment._count
+        self.segment_num = Segment._count
         Segment._count += 1

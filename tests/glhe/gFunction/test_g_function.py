@@ -8,7 +8,6 @@ from glhe.globals.functions import write_json
 from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import TimeStepSimulationResponse
 
 
 class TestGFunction(unittest.TestCase):
@@ -110,10 +109,10 @@ class TestGFunction(unittest.TestCase):
 
     def test_g_function_interp(self):
         tst = self.add_instance()
-        self.assertEqual(tst._g_function_interp(0.5), 0.5)
-        self.assertEqual(tst._g_function_interp(1.5), 1.5)
-        self.assertEqual(tst._g_function_interp(2.5), 2.5)
-        self.assertEqual(tst._g_function_interp(3.5), 3.5)
+        self.assertEqual(tst.g_function_interp(0.5), 0.5)
+        self.assertEqual(tst.g_function_interp(1.5), 1.5)
+        self.assertEqual(tst.g_function_interp(2.5), 2.5)
+        self.assertEqual(tst.g_function_interp(3.5), 3.5)
 
     def test_get_g_func(self):
         tst = self.add_instance()
@@ -124,55 +123,48 @@ class TestGFunction(unittest.TestCase):
     def test_simulate_time_step(self):
         tst = self.add_instance(file_number=1)
         gv.time_step = set_time_step(1)
-        response = tst.simulate_time_step(inlet_temp=20.0,
+        ret_temp = tst.simulate_time_step(inlet_temp=20.0,
                                           mass_flow=0,
                                           time_step=gv.time_step,
                                           first_pass=True,
                                           converged=False)
-        self.assertIsInstance(response, TimeStepSimulationResponse)
-        self.assertEqual(response.outlet_temp, 20.0)
-        self.assertEqual(response.heat_rate, 0)
+        self.assertEqual(ret_temp, 20.0)
 
         tst = self.add_instance(file_number=1)
         gv.time_step = set_time_step(1)
-        response = tst.simulate_time_step(inlet_temp=25.0,
+        ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow=0.2,
                                           time_step=gv.time_step,
                                           first_pass=True,
-                                          converged=False)
-        self.assertAlmostEqual(response.outlet_temp, 29.5, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 6113, delta=1)
+                                          converged=True)
+        self.assertAlmostEqual(ret_temp, 29.5, delta=0.1)
 
         tst = self.add_instance(file_number=1)
         gv.time_step = set_time_step(1)
-        response = tst.simulate_time_step(inlet_temp=25.0,
+        ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow=0.2,
                                           time_step=gv.time_step,
                                           first_pass=True,
-                                          converged=False)
-        self.assertAlmostEqual(response.outlet_temp, 29.5, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 6113, delta=1)
-
-        response = tst.simulate_time_step(inlet_temp=25.0,
-                                          mass_flow=0.2,
-                                          time_step=gv.time_step,
-                                          first_pass=False,
                                           converged=True)
-        self.assertAlmostEqual(response.outlet_temp, 29.5, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 6113, delta=1)
+        self.assertAlmostEqual(ret_temp, 29.5, delta=0.1)
 
-        response = tst.simulate_time_step(inlet_temp=25.0,
+        ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow=0.2,
                                           time_step=gv.time_step,
                                           first_pass=True,
-                                          converged=False)
-        self.assertAlmostEqual(response.outlet_temp, 22.8, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1863, delta=1)
+                                          converged=True)
+        self.assertAlmostEqual(ret_temp, 22.8, delta=0.1)
 
-        response = tst.simulate_time_step(inlet_temp=25.0,
+        ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow=0.2,
                                           time_step=gv.time_step,
-                                          first_pass=False,
+                                          first_pass=True,
                                           converged=True)
-        self.assertAlmostEqual(response.outlet_temp, 22.8, delta=0.1)
-        self.assertAlmostEqual(response.heat_rate, 1863, delta=1)
+        self.assertAlmostEqual(ret_temp, 23.1, delta=0.1)
+
+        ret_temp = tst.simulate_time_step(inlet_temp=25.0,
+                                          mass_flow=0.2,
+                                          time_step=gv.time_step,
+                                          first_pass=True,
+                                          converged=True)
+        self.assertAlmostEqual(ret_temp, 23.3, delta=0.1)

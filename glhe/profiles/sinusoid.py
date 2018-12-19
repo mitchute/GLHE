@@ -1,4 +1,4 @@
-from math import sin, pi
+from math import pi, sin
 
 from glhe.profiles.base import Base
 
