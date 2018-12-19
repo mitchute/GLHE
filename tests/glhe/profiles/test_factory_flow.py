@@ -5,7 +5,7 @@ from glhe.profiles.factory_flow import make_flow_profile
 from glhe.profiles.fixed import Fixed
 
 
-class TestFactory(unittest.TestCase):
+class TestFlowFactory(unittest.TestCase):
 
     def test_factory_fixed(self):
         inputs = {'type': 'fixed', 'fixed': {'value': 1}}
