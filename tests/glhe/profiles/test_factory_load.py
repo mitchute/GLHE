@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.profiles.external_load import ExternalLoad
-from glhe.profiles.factory_load import make_load_profile
+from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.fixed import Fixed
 from glhe.profiles.impulse import Impulse
 from glhe.profiles.sinusoid import Sinusoid

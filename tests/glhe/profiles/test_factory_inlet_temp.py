@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from glhe.profiles.external_inlet_temps import ExternalInletTemps
-from glhe.profiles.factory_inlet_temp import make_inlet_temp_profile
+from glhe.profiles.inlet_temp_factory import make_inlet_temp_profile
 
 
 class TestFactoryInletTemp(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.profiles.external_flow import ExternalFlow
-from glhe.profiles.factory_flow import make_flow_profile
+from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.fixed import Fixed
 
 

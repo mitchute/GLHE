@@ -32,7 +32,7 @@ class TestBorehole(unittest.TestCase):
                     'density': 1000,
                     'specific heat': 1000
                 },
-                'model': 'simple',
+                'model': 'single',
                 'pipe-data': {
                     'name': '32 mm SDR-11 HDPE',
                     'outer diameter': 0.032,

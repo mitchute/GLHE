@@ -39,7 +39,7 @@ class TestGLHEIntegration(unittest.TestCase):
                     "grout-type": "standard grout",
                     "pipe-type": "32 mm SDR-11 HDPE",
                     "segments": 10,
-                    "model": "simple"
+                    "model": "single"
                 }
             ],
             "grout-definitions": [

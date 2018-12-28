@@ -2,4 +2,4 @@ from enum import Enum
 
 
 class SegmentType(Enum):
-    SIMPLE = 1
+    SINGLE_U_TUBE = 1

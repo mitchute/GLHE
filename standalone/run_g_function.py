@@ -10,9 +10,9 @@ from glhe.globals.functions import set_time_step
 from glhe.globals.variables import gv
 from glhe.inputProcessor.processor import InputProcessor
 from glhe.outputProcessor.processor import OutputProcessor
-from glhe.profiles.factory_flow import make_flow_profile
-from glhe.profiles.factory_inlet_temp import make_inlet_temp_profile
-from glhe.profiles.factory_load import make_load_profile
+from glhe.profiles.flow_factory import make_flow_profile
+from glhe.profiles.inlet_temp_factory import make_inlet_temp_profile
+from glhe.profiles.load_factory import make_load_profile
 from glhe.properties.fluid import Fluid
 
 

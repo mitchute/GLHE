@@ -4,7 +4,7 @@ from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
 from glhe.topology.pipe import Pipe
-from glhe.topology.segment import Segment
+from glhe.topology.segment_factory import make_segment
 
 
 class Borehole(object):
@@ -36,7 +36,7 @@ class Borehole(object):
         # Initialize segments
         self.segments = []
         for segment in range(inputs['segments']):
-            self.segments.append(Segment(model_type=inputs['model'], fluid=fluid))
+            self.segments.append(make_segment(inputs=inputs, fluid=fluid))
 
         # Initialize other parameters
         self.mass_flow_rate = 0
