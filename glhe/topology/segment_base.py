@@ -5,4 +5,4 @@ class SegmentBase(ABC):
 
     @abstractmethod
     def update(self):
-        pass
+        pass  # pragma: no cover

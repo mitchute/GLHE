@@ -30,7 +30,7 @@ class TestPath(unittest.TestCase):
                             'density': 1500,
                             'specific heat': 2.6
                         },
-                        'model': 'simple',
+                        'model': 'single',
                         'pipe-data': {
                             'name': '32 mm SDR-11 HDPE',
                             'outer diameter': 0.0334,

@@ -18,7 +18,7 @@ class TestGLHE(unittest.TestCase):
                     "depth": 100,
                     "diameter": 0.1099,
                     "grout-type": "standard grout",
-                    "model": "simple",
+                    "model": "single",
                     "pipe-type": "32 mm SDR-11 HDPE",
                     "segments": 10,
                     "shank-spacing": 0.0521
