@@ -10,7 +10,5 @@ class SingleUTubeSegment(SegmentBase):
         self.type = SegmentType.SINGLE_U_TUBE
         self.fluid = fluid
 
-
-
     def update(self):
         pass  # pragma: no cover
