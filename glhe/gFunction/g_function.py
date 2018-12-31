@@ -11,7 +11,7 @@ from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
-from glhe.topology.borehole import Borehole
+from glhe.topology.single_u_tube_borehole import SingleUTubeBorehole
 
 
 class GFunction(SimulationEntryPoint):
@@ -39,10 +39,8 @@ class GFunction(SimulationEntryPoint):
                                                                          {'soil-diffusivity': self.soil.diffusivity}
                                                                          )).get_temp
 
-        self.my_bh = Borehole(merge_dicts(inputs['g-functions']['borehole-data'],
-                                          {'initial temp': self.get_ground_temp(0, 100)}),
-                              self.fluid,
-                              self.soil)
+        self.my_bh = SingleUTubeBorehole(merge_dicts(inputs['g-functions']['borehole-data'],
+                                                     {'initial temp': self.get_ground_temp(0, 100)}), self.fluid, self.soil)
 
         self.NUM_BH = inputs['g-functions']['number of boreholes']
         self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH
@@ -74,8 +72,7 @@ class GFunction(SimulationEntryPoint):
         self.time_step = 0
         self.curr_total_load = 0
         self.outlet_temp = init_temp
-        self.inlet_temp_after_pipe = init_temp
-        self.outlet_temp_after_pipe = init_temp
+        self.inlet_temp = init_temp
 
         self.total_pipe_mass = self.my_bh.PIPE_VOL * self.my_bh.pipe.density
         self.total_grout_mass = self.my_bh.GROUT_VOL * self.my_bh.grout.density
@@ -91,9 +88,8 @@ class GFunction(SimulationEntryPoint):
                     "Flow Fraction [-]": self.flow_fraction,
                     "Load on GHE [W/m]": self.load_per_meter,
                     "Average Fluid Temp [C]": self.ave_fluid_temp,
-                    "GHE Outlet Temp (Before Pipe) [C]": self.outlet_temp,
-                    "GHE Inlet Temp (After Pipe) [C]": self.inlet_temp_after_pipe,
-                    "GHE Outlet Temp (After Pipe) [C]": self.outlet_temp_after_pipe}
+                    "GHE Outlet Temp [C]": self.outlet_temp,
+                    "GHE Inlet Temp [C]": self.inlet_temp}
 
         return ret_vals
 
@@ -128,8 +124,6 @@ class GFunction(SimulationEntryPoint):
 
     def simulate_time_step(self, inlet_temp, mass_flow, time_step, first_pass, converged):
 
-        vol_flow_rate = mass_flow / self.NUM_BH / self.fluid.density
-
         if first_pass:
             self.time_step = time_step
             self.sim_time += time_step
@@ -137,8 +131,7 @@ class GFunction(SimulationEntryPoint):
             if mass_flow == 0:
                 return inlet_temp
 
-            self.inlet_temp_after_pipe = self.my_bh.inlet_pipe.calc_outlet_temp_hanby(inlet_temp, vol_flow_rate,
-                                                                                      time_step)
+            self.inlet_temp = inlet_temp
 
             self.my_bh.set_flow_rate(mass_flow / self.NUM_BH)
             self.bh_resist = self.my_bh.resist_bh_ave
@@ -164,7 +157,7 @@ class GFunction(SimulationEntryPoint):
         temp_rise_prev_bin, q_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
 
         # heat rate (original and Beier)
-        load_num_1 = self.inlet_temp_after_pipe - self.ground_temp
+        load_num_1 = self.inlet_temp - self.ground_temp
         load_num_2 = (q_prev_bin * g_func_prev_bin - self.calc_temp_rise_history()) / self.c_0
 
         load_den_1 = g_func_prev_bin / self.c_0
@@ -182,10 +175,6 @@ class GFunction(SimulationEntryPoint):
         self.ave_fluid_temp = self.ground_temp + temp_rise_history / self.c_0 + self.load_per_meter * self.bh_resist
         self.outlet_temp = self.ave_fluid_temp - self.flow_fraction * self.curr_total_load / self.fluid_cap
 
-        self.outlet_temp_after_pipe = self.my_bh.outlet_pipe.calc_outlet_temp_hanby(self.outlet_temp,
-                                                                                    vol_flow_rate,
-                                                                                    time_step)
-
         if converged:
             self.load_aggregation.aggregate()
             self.load_aggregation.update_time()
@@ -193,7 +182,7 @@ class GFunction(SimulationEntryPoint):
             self.prev_sim_time = self.sim_time
             self.fluid.update_properties(self.ave_fluid_temp)
 
-        return self.outlet_temp_after_pipe
+        return self.outlet_temp
 
     def calc_flow_fraction(self):
         """

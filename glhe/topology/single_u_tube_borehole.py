@@ -3,32 +3,19 @@ from numpy import log
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
+from glhe.topology.borehole_base import BoreholeBase
+from glhe.topology.borehole_types import BoreholeType
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment_factory import make_segment
 
 
-class Borehole(object):
-    count = 0
+class SingleUTubeBorehole(BoreholeBase):
 
     def __init__(self, inputs, fluid, soil):
-        self.DEPTH = inputs['depth']
-        self.DIAMETER = inputs['diameter']
-        self.RADIUS = self.DIAMETER / 2
+        BoreholeBase.__init__(self, inputs)
+        self.TYPE = BoreholeType.SINGLE_U_TUBE_GROUTED
         self.SHANK_SPACE = inputs['shank-spacing']
         self.NUM_PIPES = 2
-
-        self.grout = PropertiesBase(inputs=inputs['grout-data'])
-        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
-                                                                  'initial temp': inputs['initial temp']}),
-                         fluid=fluid)
-
-        self.inlet_pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
-                                                                        'initial temp': inputs['initial temp']}),
-                               fluid=fluid)
-
-        self.outlet_pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'],
-                                                                         'initial temp': inputs['initial temp']}),
-                                fluid=fluid)
 
         self.soil = soil
         self.fluid = fluid
@@ -37,6 +24,11 @@ class Borehole(object):
         self.segments = []
         for segment in range(inputs['segments']):
             self.segments.append(make_segment(inputs=inputs, fluid=fluid))
+
+        self.grout = PropertiesBase(inputs=inputs['grout-data'])
+        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
+                                                                  'initial temp': inputs['initial temp']}),
+                         fluid=fluid)
 
         # Initialize other parameters
         self.mass_flow_rate = 0
@@ -62,10 +54,6 @@ class Borehole(object):
         self.FLUID_VOL = self.pipe.FLUID_VOL
         self.PIPE_VOL = self.inlet_pipe.TOTAL_VOL + self.outlet_pipe.TOTAL_VOL
         self.GROUT_VOL = self.VOLUME - self.PIPE_VOL
-
-        # Track bh number
-        self.BH_NUM = Borehole.count
-        Borehole.count += 1
 
     def get_flow_resistance(self):
         numerator = 8.0 * self.pipe.friction_factor * (2 * self.DEPTH)
