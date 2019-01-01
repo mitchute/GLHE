@@ -5,7 +5,7 @@ from glhe.properties.fluid import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
-class TestBorehole(unittest.TestCase):
+class TestSingleUTubeGroutedBorehole(unittest.TestCase):
 
     @staticmethod
     def add_instance(my_inputs=None):

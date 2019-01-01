@@ -15,19 +15,19 @@ class Fluid(object):
     temperature = 0
 
     def __init__(self, inputs):
-        self._fluid_name = inputs["type"].upper()
+        self._fluid_name = inputs['type'].upper()
 
         if self._fluid_name == "WATER":
             self._fluid_type = FluidType.WATER
         elif self._fluid_name == "EA":
             self._fluid_type = FluidType.ETHYL_ALCOHOL
-            self._concentration = inputs["concentration"] / 100.0
+            self._concentration = inputs['concentration'] / 100.0
         elif self._fluid_name == "EG":
             self._fluid_type = FluidType.ETHYLENE_GLYCOL
-            self._concentration = inputs["concentration"] / 100.0
+            self._concentration = inputs['concentration'] / 100.0
         elif self._fluid_name == "PG":
             self._fluid_type = FluidType.PROPYLENE_GLYCOL
-            self._concentration = inputs["concentration"] / 100.0
+            self._concentration = inputs['concentration'] / 100.0
         else:
             raise ValueError("'{}' fluid is not supported".format(self._fluid_name))
 
