@@ -24,6 +24,6 @@ class PipeBase(PropertiesBase):
         self.AREA_S_INNER = PI * self.INNER_DIAMETER * self.LENGTH
         self.AREA_S_OUTER = PI * self.OUTER_DIAMETER * self.LENGTH
 
-        self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
         self.TOTAL_VOL = self.AREA_CR_OUTER * self.LENGTH
-        self.WALL_VOL = self.AREA_CR_PIPE * self.LENGTH
+        self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
+        self.PIPE_WALL_VOL = self.AREA_CR_PIPE * self.LENGTH

@@ -2,7 +2,7 @@ import unittest
 
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
-from glhe.topology.single_u_tube_borehole import SingleUTubeBorehole
+from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
 class TestBorehole(unittest.TestCase):
@@ -53,7 +53,7 @@ class TestBorehole(unittest.TestCase):
         fluid = Fluid({'type': 'water'})
         soil = PropertiesBase(soil_inputs)
 
-        return SingleUTubeBorehole(inputs=inputs['borehole-data'], fluid_inst=fluid, soil_inst=soil)
+        return SingleUTubeGroutedBorehole(inputs=inputs['borehole-data'], fluid_inst=fluid, soil_inst=soil)
 
     def test_init(self):
         tst = self.add_instance()

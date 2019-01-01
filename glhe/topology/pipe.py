@@ -19,6 +19,7 @@ class TempObject(object):
 class Pipe(PipeBase):
 
     def __init__(self, inputs, fluid_inst):
+
         PipeBase.__init__(self, inputs)
 
         self.fluid = fluid_inst

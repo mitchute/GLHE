@@ -11,7 +11,7 @@ from glhe.groundTemps.factory import make_ground_temperature_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
-from glhe.topology.single_u_tube_borehole import SingleUTubeBorehole
+from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
 class GFunction(SimulationEntryPoint):
@@ -39,8 +39,9 @@ class GFunction(SimulationEntryPoint):
                                                                          {'soil-diffusivity': self.soil.diffusivity}
                                                                          )).get_temp
 
-        self.my_bh = SingleUTubeBorehole(merge_dicts(inputs['g-functions']['borehole-data'],
-                                                     {'initial temp': self.get_ground_temp(0, 100)}), self.fluid, self.soil)
+        self.my_bh = SingleUTubeGroutedBorehole(merge_dicts(inputs['g-functions']['borehole-data'],
+                                                            {'initial temp': self.get_ground_temp(0, 100)}), self.fluid,
+                                                self.soil)
 
         self.NUM_BH = inputs['g-functions']['number of boreholes']
         self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH

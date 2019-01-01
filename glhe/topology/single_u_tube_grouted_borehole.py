@@ -27,8 +27,10 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
         # Initialize segments
         self.segments = []
+        seg_length = inputs['depth'] / inputs['segments']
+        seg_inputs = merge_dicts(inputs, {'length': seg_length})
         for segment in range(inputs['segments']):
-            self.segments.append(make_segment(inputs=inputs,
+            self.segments.append(make_segment(inputs=seg_inputs,
                                               fluid_inst=fluid_inst,
                                               grout_inst=self.grout,
                                               soil_inst=soil_inst))
@@ -57,10 +59,27 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.beta = None
 
         # Init volumes
-        self.VOLUME = PI / 4 * self.DIAMETER ** 2 * self.DEPTH
-        self.FLUID_VOL = self.pipe.FLUID_VOL
-        self.PIPE_VOL = self.inlet_pipe.TOTAL_VOL + self.outlet_pipe.TOTAL_VOL
-        self.GROUT_VOL = self.VOLUME - self.PIPE_VOL
+        self.FLUID_VOL = self.calc_fluid_volume()
+        self.GROUT_VOL = self.calc_grout_volume()
+        self.PIPE_VOL = self.calc_pipe_volume()
+
+    def calc_fluid_volume(self):
+        vol = 0
+        for seg in self.segments:
+            vol += seg.calc_fluid_volume()
+        return vol
+
+    def calc_grout_volume(self):
+        vol = 0
+        for seg in self.segments:
+            vol += seg.calc_grout_volume()
+        return vol
+
+    def calc_pipe_volume(self):
+        vol = 0
+        for seg in self.segments:
+            vol += seg.calc_pipe_volume()
+        return vol
 
     def get_flow_resistance(self):
         numerator = 8.0 * self.pipe.friction_factor * (2 * self.DEPTH)

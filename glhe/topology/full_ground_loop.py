@@ -22,15 +22,18 @@ class GLHE(SimulationEntryPoint):
         self.soil = PropertiesBase(inputs['soil'])
 
         self.delta_p_path = 100000
-        self.inlet_temp = 20
-        self.outlet_temp = 20
 
-        self.get_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
-                                                                         {'soil-diffusivity': self.soil.diffusivity}
-                                                                         )).get_temp
+        self.ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
+                                                                     {'soil-diffusivity': self.soil.diffusivity}
+                                                                     )).get_temp
+
+        init_temp = self.ground_temp(0, 100)
+
+        self.inlet_temp = init_temp
+        self.outlet_temp = init_temp
 
         for path in inputs["paths"]:
-            self.paths.append(Path(merge_dicts(path, {'initial temp': self.get_ground_temp(0, 100)}),
+            self.paths.append(Path(merge_dicts(path, {'initial temp': init_temp}),
                                    fluid_inst=self.fluid, soil_inst=self.soil))
 
     def set_flow_rates(self, plant_mass_flow_rate):

@@ -9,6 +9,10 @@ class SegmentBase(ABC):
         self.soil = soil_inst
 
     @abstractmethod
+    def calc_total_volume(self):
+        pass  # pragma: no cover
+
+    @abstractmethod
     def calc_fluid_volume(self):
         pass  # pragma: no cover
 

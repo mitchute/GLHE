@@ -24,12 +24,6 @@ class TestPipe(unittest.TestCase):
 
         return Pipe(inputs=inputs, fluid_inst=fluid)
 
-    def test_init(self):
-        tst = self.add_instance()
-        self.assertEqual(tst.conductivity, 0.389)
-        self.assertEqual(tst.density, 950)
-        self.assertEqual(tst.specific_heat, 1.623)
-
     def test_calc_friction_factor(self):
         tst = self.add_instance()
         tolerance = 0.00001
