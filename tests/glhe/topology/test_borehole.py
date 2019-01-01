@@ -53,7 +53,7 @@ class TestBorehole(unittest.TestCase):
         fluid = Fluid({'type': 'water'})
         soil = PropertiesBase(soil_inputs)
 
-        return SingleUTubeBorehole(inputs=inputs['borehole-data'], fluid=fluid, soil=soil)
+        return SingleUTubeBorehole(inputs=inputs['borehole-data'], fluid_inst=fluid, soil_inst=soil)
 
     def test_init(self):
         tst = self.add_instance()

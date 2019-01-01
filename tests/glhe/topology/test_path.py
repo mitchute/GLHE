@@ -49,7 +49,7 @@ class TestPath(unittest.TestCase):
         fluid = Fluid({'type': 'water'})
         soil = PropertiesBase({'conductivity': 2.4234, 'density': 1500, 'specific heat': 1466})
 
-        return Path(inputs, fluid, soil=soil)
+        return Path(inputs, fluid, soil_inst=soil)
 
     def test_init(self):
         tst = self.add_instance()

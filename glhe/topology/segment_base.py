@@ -3,9 +3,10 @@ from abc import ABC, abstractmethod
 
 class SegmentBase(ABC):
 
-    @abstractmethod
-    def update(self):
-        pass  # pragma: no cover
+    def __init__(self, fluid_inst=None, grout_inst=None, soil_inst=None):
+        self.fluid = fluid_inst
+        self.grout = grout_inst
+        self.soil = soil_inst
 
     @abstractmethod
     def calc_fluid_volume(self):

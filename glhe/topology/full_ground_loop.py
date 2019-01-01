@@ -12,7 +12,6 @@ from glhe.topology.path import Path
 
 
 class GLHE(SimulationEntryPoint):
-    count = 0
 
     def __init__(self, inputs):
 
@@ -32,10 +31,7 @@ class GLHE(SimulationEntryPoint):
 
         for path in inputs["paths"]:
             self.paths.append(Path(merge_dicts(path, {'initial temp': self.get_ground_temp(0, 100)}),
-                                   fluid=self.fluid, soil=self.soil))
-
-        self.glhe_num = GLHE.count
-        GLHE.count += 1
+                                   fluid_inst=self.fluid, soil_inst=self.soil))
 
     def set_flow_rates(self, plant_mass_flow_rate):
         for path in self.paths:

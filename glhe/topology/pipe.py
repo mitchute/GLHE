@@ -18,10 +18,10 @@ class TempObject(object):
 
 class Pipe(PipeBase):
 
-    def __init__(self, inputs, fluid):
+    def __init__(self, inputs, fluid_inst):
         PipeBase.__init__(self, inputs)
 
-        self.fluid = fluid
+        self.fluid = fluid_inst
 
         self.friction_factor = 0.02
         self.resist_pipe = 0

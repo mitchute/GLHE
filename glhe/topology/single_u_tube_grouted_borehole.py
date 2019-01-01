@@ -9,26 +9,33 @@ from glhe.topology.pipe import Pipe
 from glhe.topology.segment_factory import make_segment
 
 
-class SingleUTubeBorehole(BoreholeBase):
+class SingleUTubeGroutedBorehole(BoreholeBase):
 
-    def __init__(self, inputs, fluid, soil):
+    def __init__(self, inputs, fluid_inst, soil_inst):
+
         BoreholeBase.__init__(self, inputs)
+
         self.TYPE = BoreholeType.SINGLE_U_TUBE_GROUTED
         self.SHANK_SPACE = inputs['shank-spacing']
+        self.DEPTH = inputs['depth']
+
         self.NUM_PIPES = 2
 
-        self.soil = soil
-        self.fluid = fluid
+        self.fluid = fluid_inst
+        self.grout = PropertiesBase(inputs=inputs['grout-data'])
+        self.soil = soil_inst
 
         # Initialize segments
         self.segments = []
         for segment in range(inputs['segments']):
-            self.segments.append(make_segment(inputs=inputs, fluid=fluid))
+            self.segments.append(make_segment(inputs=inputs,
+                                              fluid_inst=fluid_inst,
+                                              grout_inst=self.grout,
+                                              soil_inst=soil_inst))
 
-        self.grout = PropertiesBase(inputs=inputs['grout-data'])
         self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
                                                                   'initial temp': inputs['initial temp']}),
-                         fluid=fluid)
+                         fluid_inst=fluid_inst)
 
         # Initialize other parameters
         self.mass_flow_rate = 0

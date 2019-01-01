@@ -22,7 +22,7 @@ class TestPipe(unittest.TestCase):
 
         fluid = Fluid({'type': 'water'})
 
-        return Pipe(inputs=inputs, fluid=fluid)
+        return Pipe(inputs=inputs, fluid_inst=fluid)
 
     def test_init(self):
         tst = self.add_instance()
