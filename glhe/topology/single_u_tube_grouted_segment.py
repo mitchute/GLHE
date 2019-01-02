@@ -1,3 +1,5 @@
+from numpy import ones, zeros
+
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.topology.borehole_types import BoreholeType
@@ -8,17 +10,16 @@ from glhe.topology.segment_base import SegmentBase
 class SingleUTubeGroutedSegment(SegmentBase):
 
     def __init__(self, inputs, fluid_inst, grout_inst, soil_inst):
-
         SegmentBase.__init__(self, fluid_inst=fluid_inst, grout_inst=grout_inst, soil_inst=soil_inst)
 
         self.type = BoreholeType.SINGLE_U_TUBE_GROUTED
-
-        self.NUM_PIPES = 2
 
         self.fluid = fluid_inst
         self.grout = grout_inst
         self.soil = soil_inst
 
+        self.NUM_PIPES = 2
+        self.INIT_TEMP = inputs['initial temp']
         self.LENGTH = inputs['length']
         self.DIAMETER = inputs['diameter']
 
@@ -35,6 +36,17 @@ class SingleUTubeGroutedSegment(SegmentBase):
         self.GROUT_VOL = self.calc_grout_volume()
         self.PIPE_VOL = self.calc_pipe_volume()
 
+        self.NUM_EQUATIONS = 4
+        self.y = ones(self.NUM_EQUATIONS) * self.INIT_TEMP
+
+        self.borehole_wall_temp = self.INIT_TEMP
+        self.inlet_temp_1 = self.INIT_TEMP
+        self.inlet_temp_2 = self.INIT_TEMP
+
+        self.mass_flow_rate = 0
+        self.bh_resist = 0
+        self.direct_coupling_resist = 0
+
     def calc_total_volume(self):
         return PI / 4 * self.DIAMETER ** 2 * self.LENGTH
 
@@ -46,3 +58,67 @@ class SingleUTubeGroutedSegment(SegmentBase):
 
     def calc_pipe_volume(self):
         return self.pipe_1.PIPE_WALL_VOL + self.pipe_2.PIPE_WALL_VOL
+
+    def runge_kutta_fourth(self, h, y):
+        r = self.right_hand_side(y)
+
+        k_1 = h * r
+
+        r = self.right_hand_side(y + k_1 / 2.0)
+
+        k_2 = h * r
+
+        r = self.right_hand_side(y + k_2 / 2.0)
+
+        k_3 = h * r
+
+        r = self.right_hand_side(y + k_3)
+
+        k_4 = h * r
+
+        y_ret = y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0
+
+        return y_ret
+
+    def right_hand_side(self, y):
+        num_equations = 4
+        r = zeros(num_equations)
+
+        dz = self.LENGTH
+        t_b = self.borehole_wall_temp
+        t_i_1 = self.inlet_temp_1
+        t_i_2 = self.inlet_temp_2
+
+        r_f = 1 / (self.mass_flow_rate * self.fluid.specific_heat)
+        r_b = self.bh_resist
+        r_12 = self.direct_coupling_resist
+
+        c_f_1 = self.fluid.heat_capacity * self.pipe_1.FLUID_VOL
+        c_f_2 = self.fluid.heat_capacity * self.pipe_2.FLUID_VOL
+
+        # spilt between inner and outer grout layer
+        f = 0.1
+        c_g_1 = f * self.grout.specific_heat * self.grout.density * self.GROUT_VOL
+        c_g_1 += self.pipe_1.specific_heat * self.pipe_1.density * self.pipe_1.PIPE_WALL_VOL
+
+        c_g_2 = (1 - f) * self.grout.specific_heat * self.grout.density * self.GROUT_VOL
+        c_g_2 += self.pipe_2.specific_heat * self.pipe_2.density * self.pipe_2.PIPE_WALL_VOL
+
+        r[0] = ((t_i_1 - y[0]) / r_f + (y[2] - y[0]) * dz / (r_12 / 2.0) + (y[3] - y[0]) * dz / r_b) / c_f_1
+        r[1] = ((t_i_2 - y[1]) / r_f + (y[2] - y[1]) * dz / (r_12 / 2.0) + (y[3] - y[1]) * dz / r_b) / c_f_2
+        r[2] = ((y[0] - y[2]) * dz / (r_12 / 2.0) + (y[1] - y[2]) * dz / (r_12 / 2.0)) / c_g_1
+        r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (t_b - y[3]) * dz / (r_b / 2.0)) / c_g_2
+
+        return r
+
+    def simulate(self, timestep, **kwargs):
+        self.borehole_wall_temp = kwargs['borehole wall temp']
+        self.inlet_temp_1 = kwargs['inlet 1 temp']
+        self.inlet_temp_2 = kwargs['inlet 2 temp']
+
+        self.mass_flow_rate = kwargs['mass flow rate']
+        self.bh_resist = kwargs['borehole resistance']
+        self.direct_coupling_resist = kwargs['direct coupling resistance']
+
+        self.y = self.runge_kutta_fourth(timestep, self.y)
+        return self.y

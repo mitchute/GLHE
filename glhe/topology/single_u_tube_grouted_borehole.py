@@ -194,3 +194,15 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.calc_bh_average_resistance()
         self.calc_bh_effective_resistance()
         self.calc_bh_grout_resistance()
+
+    def simulate_trcm(self, time, timestep, temp, flow, **kwargs):
+        inputs = kwargs['borehole wall temp']
+        kwargs['inlet 1 temp'] = temp
+        self.inlet_temp_2 = kwargs['inlet 2 temp']
+
+        self.mass_flow_rate = kwargs['mass flow rate']
+        self.bh_resist = kwargs['borehole resistance']
+        self.direct_coupling_resist = kwargs['direct coupling resistance']
+        for seg in self.segments:
+            seg.simulate(time, timestep, temp)
+

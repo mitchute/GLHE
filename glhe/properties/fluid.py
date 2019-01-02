@@ -12,6 +12,7 @@ class Fluid(object):
     conductivity = 0
     prandtl = 0
     viscosity = 0
+    heat_capacity = 0
     temperature = 0
 
     def __init__(self, inputs):
@@ -70,6 +71,7 @@ class Fluid(object):
         Fluid.conductivity = self.calc_conductivity(temperature)
         Fluid.specific_heat = self.calc_specific_heat(temperature)
         Fluid.density = self.calc_density(temperature)
+        Fluid.heat_capacity = self.calc_heat_capacity(temperature)
         Fluid.prandtl = self.calc_prandtl(temperature)
         Fluid.viscosity = self.calc_viscosity(temperature)
 
@@ -135,6 +137,19 @@ class Fluid(object):
         """
 
         return self._calc_property(FluidPropertyType.VISCOSITY, temperature)
+
+    def calc_heat_capacity(self, temperature):
+        """
+        Determines the fluid volume-specific heat capacity as a function of temperature, in Celsius.
+        Uses the CoolProp python library.
+
+        :returns fluid volume-specific heat capacity in [J/m3-K]
+        """
+
+        rho = self._calc_property(FluidPropertyType.DENSITY, temperature)
+        cp = self._calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
+
+        return rho * cp
 
     def _calc_property(self, _property, temperature):
         """

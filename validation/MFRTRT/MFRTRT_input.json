@@ -4,7 +4,7 @@
       "depth": 76.2,
       "diameter": 0.114,
       "grout-type": "standard grout",
-      "model": "simple",
+      "model": "single",
       "name": "borehole type 1",
       "pipe-type": "25 mm SDR-11 HDPE",
       "segments": 10,
@@ -55,7 +55,7 @@
       "inner diameter": 0.0218,
       "conductivity": 0.39,
       "density": 950,
-      "specific heat": 1.623,
+      "specific heat": 1900,
       "name": "25 mm SDR-11 HDPE"
     }
   ],

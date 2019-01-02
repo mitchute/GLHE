@@ -28,7 +28,7 @@ class TestPath(unittest.TestCase):
                             'name': 'standard grout',
                             'conductivity': 0.744,
                             'density': 1500,
-                            'specific heat': 2.6
+                            'specific heat': 800
                         },
                         'model': 'single',
                         'pipe-data': {
@@ -37,7 +37,7 @@ class TestPath(unittest.TestCase):
                             'inner diameter': 0.0269,
                             'conductivity': 0.389,
                             'density': 950,
-                            'specific heat': 1.623
+                            'specific heat': 1900
                         },
                         'segments': 10,
                         'shank-spacing': 0.0521
@@ -62,7 +62,7 @@ class TestPath(unittest.TestCase):
         self.assertEqual(tst_bh.DIAMETER, 0.1099)
         self.assertEqual(tst_bh.grout.conductivity, 0.744)
         self.assertEqual(tst_bh.grout.density, 1500)
-        self.assertEqual(tst_bh.grout.specific_heat, 2.6)
-        self.assertEqual(tst_bh.pipe.specific_heat, 1.623)
+        self.assertEqual(tst_bh.grout.specific_heat, 800)
+        self.assertEqual(tst_bh.pipe.specific_heat, 1900)
         self.assertEqual(tst_bh.pipe.density, 950)
         self.assertEqual(tst_bh.pipe.conductivity, 0.389)

@@ -15,7 +15,7 @@ class TestPipe(unittest.TestCase):
             'inner diameter': 0.0269,
             'conductivity': 0.389,
             'density': 950,
-            'specific heat': 1.623,
+            'specific heat': 1900,
             'length': 100,
             'initial temp': 20
         }

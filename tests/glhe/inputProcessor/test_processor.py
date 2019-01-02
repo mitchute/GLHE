@@ -26,7 +26,7 @@ class TestInputProcessor(unittest.TestCase):
                 "inner diameter": 0.0269,
                 "conductivity": 0.389,
                 "density": 950,
-                "specific heat": 1.623
+                "specific heat": 1900
             }]
         }
 
@@ -56,7 +56,7 @@ class TestInputProcessor(unittest.TestCase):
                 "name": "standard grout",
                 "conductivity": 0.744,
                 "density": 1500,
-                "specific heat": 2.6
+                "specific heat": 800
             }]
         }
 
@@ -238,7 +238,7 @@ class TestInputProcessor(unittest.TestCase):
                 "name": "standard grout",
                 "conductivity": 0.744,
                 "density": 1500,
-                "specific heat": 2.6
+                "specific heat": 800
             }],
             "g-functions": {
                 "file": "../glhe/examples/2x2_g_functions.csv",
