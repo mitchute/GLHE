@@ -205,4 +205,3 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.direct_coupling_resist = kwargs['direct coupling resistance']
         for seg in self.segments:
             seg.simulate(time, timestep, temp)
-

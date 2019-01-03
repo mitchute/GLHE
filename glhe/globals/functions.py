@@ -81,7 +81,7 @@ def hanby(time, vol_flow_rate, volume):
     assuming well mixed nodes. The model accounts for the thermal
     capacity of the fluid and diffusive mixing.
 
-    Hanby, V.I., J.A. Wright, D.W. Fetcher, D.N.T. Jones. 2002
+    Hanby, V.I., J.A. Wright, D.W. Fetcher, D.N.T. Jones. 2002.
     'Modeling the dynamic response of conduits.' HVAC&R Research 8(1): 1-12.
 
     The model is non-dimensional, so input parameters should have consistent units
@@ -112,3 +112,25 @@ def merge_dicts(d, d_append):
     """
 
     return {**d, **d_append}
+
+
+def runge_kutta_fourth(rhs, h, x, y):
+    """
+    Solves one step using a fourth-order Runge-Kutta method.
+
+    Moin, Parviz. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
+    Cambridge University Press. New York, New York.
+
+    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(x))
+    :param h: step size
+    :param x: step dimension
+    :param y: output dimension
+    :return:
+    """
+
+    k_1 = rhs(x, y)
+    k_2 = rhs(x + h / 2.0, y + k_1 / 2.0)
+    k_3 = rhs(x + h / 2.0, y + k_2 / 2.0)
+    k_4 = rhs(x + h, y + k_3)
+
+    return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h

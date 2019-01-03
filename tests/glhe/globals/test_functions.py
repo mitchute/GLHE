@@ -1,9 +1,13 @@
 import os
 import tempfile
 import unittest
+from math import cos, sin
+
+from numpy import arange, array
 
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
+from glhe.globals.functions import runge_kutta_fourth
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import temp_in_kelvin
@@ -61,3 +65,26 @@ class TestFunctions(unittest.TestCase):
         self.assertAlmostEqual(hanby(0.8, 1, 1), 0.07939, delta=tolerance)
         self.assertAlmostEqual(hanby(1.0, 1, 1), 0.5196, delta=tolerance)
         self.assertAlmostEqual(hanby(1.5, 1, 1), 0.99863, delta=tolerance)
+
+    def test_runge_kutta_fourth(self):
+        tol = 1E-4
+        omega = 4
+
+        def f(x):
+            return cos(omega * x)
+
+        def f_prime(x=None, y=None):
+            return -omega * sin(omega * x)
+
+        start = 0
+        stop = 6
+        step = 0.15
+
+        x_arr = arange(start=start, stop=stop, step=step)
+        y = array([1])
+
+        for x in x_arr:
+            y = runge_kutta_fourth(f_prime, step, x, y)
+            y_act = f(x + step)
+
+            self.assertAlmostEqual(y_act, y, delta=tol)
