@@ -5,6 +5,7 @@ from glhe.globals.functions import merge_dicts
 from glhe.topology.borehole_types import BoreholeType
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment_base import SegmentBase
+from glhe.globals.functions import runge_kutta_fourth
 
 
 class SingleUTubeGroutedSegment(SegmentBase):
@@ -59,27 +60,6 @@ class SingleUTubeGroutedSegment(SegmentBase):
     def calc_pipe_volume(self):
         return self.pipe_1.PIPE_WALL_VOL + self.pipe_2.PIPE_WALL_VOL
 
-    def runge_kutta_fourth(self, h, y):
-        r = self.right_hand_side(y)
-
-        k_1 = h * r
-
-        r = self.right_hand_side(y + k_1 / 2.0)
-
-        k_2 = h * r
-
-        r = self.right_hand_side(y + k_2 / 2.0)
-
-        k_3 = h * r
-
-        r = self.right_hand_side(y + k_3)
-
-        k_4 = h * r
-
-        y_ret = y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0
-
-        return y_ret
-
     def right_hand_side(self, y):
         num_equations = 4
         r = zeros(num_equations)
@@ -120,5 +100,5 @@ class SingleUTubeGroutedSegment(SegmentBase):
         self.bh_resist = kwargs['borehole resistance']
         self.direct_coupling_resist = kwargs['direct coupling resistance']
 
-        self.y = self.runge_kutta_fourth(timestep, self.y)
+        self.y = runge_kutta_fourth(self.right_hand_side, timestep, y=self.y)
         return self.y
