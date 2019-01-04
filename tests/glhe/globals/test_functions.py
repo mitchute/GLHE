@@ -7,7 +7,7 @@ from numpy import arange, array
 
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
-from glhe.globals.functions import runge_kutta_fourth
+from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import temp_in_kelvin
@@ -73,8 +73,8 @@ class TestFunctions(unittest.TestCase):
         def f(x):
             return cos(omega * x)
 
-        def f_prime(**kwargs):
-            return -omega * sin(omega * kwargs['x'])
+        def f_prime(x):
+            return -omega * sin(omega * x)
 
         start = 0
         stop = 6
@@ -84,7 +84,7 @@ class TestFunctions(unittest.TestCase):
         y = array([1])
 
         for x in x_arr:
-            y = runge_kutta_fourth(f_prime, step, x=x, y=y)
+            y = runge_kutta_fourth_x(f_prime, step, x=x, y=y)
             y_act = f(x + step)
 
             self.assertAlmostEqual(y_act, y, delta=tol)
