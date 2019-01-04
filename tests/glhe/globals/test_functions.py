@@ -73,8 +73,8 @@ class TestFunctions(unittest.TestCase):
         def f(x):
             return cos(omega * x)
 
-        def f_prime(x=None, y=None):
-            return -omega * sin(omega * x)
+        def f_prime(**kwargs):
+            return -omega * sin(omega * kwargs['x'])
 
         start = 0
         stop = 6
