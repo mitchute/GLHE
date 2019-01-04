@@ -4410,3 +4410,15 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         tst = self.add_instance()
         tst.set_flow_rate(0.5)
         self.assertAlmostEqual(tst.calc_bh_effective_resistance(), 0.21629, delta=tolerance)
+
+    def test_simulate_trcm(self):
+        tst = self.add_instance()
+
+        inputs = {'borehole wall temp': 20,
+                  'borehole resistance': 0.16,
+                  'mass flow rate': 0.2,
+                  'direct coupling resistance': 2.28}
+
+        tst.simulate_trcm(5000, 30, 0.2, inputs)
+
+        pass

@@ -1,5 +1,7 @@
 from numpy import log
 
+import os
+
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
@@ -27,13 +29,20 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
         # Initialize segments
         self.segments = []
+        self.NUM_SEGMENTS = inputs['segments']
         seg_length = inputs['depth'] / inputs['segments']
         seg_inputs = merge_dicts(inputs, {'length': seg_length})
-        for segment in range(inputs['segments']):
+        for _ in range(self.NUM_SEGMENTS):
             self.segments.append(make_segment(inputs=seg_inputs,
                                               fluid_inst=fluid_inst,
                                               grout_inst=self.grout,
                                               soil_inst=soil_inst))
+
+        self.segments.append(make_segment(inputs=seg_inputs,
+                                          fluid_inst=fluid_inst,
+                                          grout_inst=self.grout,
+                                          soil_inst=soil_inst,
+                                          final_seg=True))
 
         self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
                                                                   'initial temp': inputs['initial temp']}),
@@ -195,13 +204,52 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.calc_bh_effective_resistance()
         self.calc_bh_grout_resistance()
 
-    def simulate_trcm(self, time, timestep, temp, flow, **kwargs):
-        inputs = kwargs['borehole wall temp']
-        kwargs['inlet 1 temp'] = temp
-        self.inlet_temp_2 = kwargs['inlet 2 temp']
+    def simulate_trcm(self, timestep, temp, flow, inputs):
 
-        self.mass_flow_rate = kwargs['mass flow rate']
-        self.bh_resist = kwargs['borehole resistance']
-        self.direct_coupling_resist = kwargs['direct coupling resistance']
-        for seg in self.segments:
-            seg.simulate(time, timestep, temp)
+        if os.path.exists('segment_temps.csv'):
+            os.remove('segment_temps.csv')
+            with open('segment_temps.csv', 'w') as _:
+                pass
+
+        kwargs = {'borehole wall temp': inputs['borehole wall temp'],
+                  'borehole resistance': 0.16,
+                  'mass flow rate': flow,
+                  'direct coupling resistance': 2.28}
+
+        elapsed_time = 0
+        self.write_temps(elapsed_time)
+
+        while True:
+
+            for idx, seg in enumerate(self.segments):
+
+                if idx == 0:
+                    kwargs['inlet 1 temp'] = temp
+                    kwargs['inlet 2 temp'] = self.segments[idx + 1].get_outlet_2_temp()
+                elif idx == self.NUM_SEGMENTS:
+                    kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                else:
+                    kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                    kwargs['inlet 2 temp'] = self.segments[idx + 1].get_outlet_2_temp()
+
+                seg.simulate(1, **kwargs)
+
+            elapsed_time += 1
+            self.write_temps(elapsed_time)
+
+            if elapsed_time >= timestep:
+                break
+
+    def write_temps(self, time):
+        with open('segment_temps.csv', 'a') as f:
+            s_1 = '{}'.format(time)
+            s_2 = '{}'.format(time)
+            for seg in self.segments:
+                s_1 += ',{:0.2f}'.format(seg.get_outlet_1_temp())
+                s_2 += ',{:0.2f}'.format(seg.get_outlet_2_temp())
+
+            s_1 += '\n'
+            s_2 += '\n'
+
+            f.write(s_1)
+            f.write(s_2)

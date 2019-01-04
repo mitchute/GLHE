@@ -2,10 +2,10 @@ from numpy import ones, zeros
 
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
+from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.topology.borehole_types import BoreholeType
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment_base import SegmentBase
-from glhe.globals.functions import runge_kutta_fourth_y
 
 
 class SingleUTubeGroutedSegment(SegmentBase):
@@ -61,7 +61,6 @@ class SingleUTubeGroutedSegment(SegmentBase):
         return self.pipe_1.PIPE_WALL_VOL + self.pipe_2.PIPE_WALL_VOL
 
     def right_hand_side(self, y):
-
         num_equations = 4
         r = zeros(num_equations)
 
@@ -103,3 +102,9 @@ class SingleUTubeGroutedSegment(SegmentBase):
 
         self.y = runge_kutta_fourth_y(self.right_hand_side, timestep, y=self.y)
         return self.y
+
+    def get_outlet_1_temp(self):
+        return self.y[0]
+
+    def get_outlet_2_temp(self):
+        return self.y[1]
