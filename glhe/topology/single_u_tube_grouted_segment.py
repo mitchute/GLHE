@@ -60,7 +60,9 @@ class SingleUTubeGroutedSegment(SegmentBase):
     def calc_pipe_volume(self):
         return self.pipe_1.PIPE_WALL_VOL + self.pipe_2.PIPE_WALL_VOL
 
-    def right_hand_side(self, y):
+    def right_hand_side(self, **kwargs):
+        y = kwargs['y']
+
         num_equations = 4
         r = zeros(num_equations)
 

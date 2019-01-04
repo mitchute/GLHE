@@ -114,11 +114,11 @@ def merge_dicts(d, d_append):
     return {**d, **d_append}
 
 
-def runge_kutta_fourth(rhs, h, x, y):
+def runge_kutta_fourth(rhs, h, **kwargs):
     """
     Solves one step using a fourth-order Runge-Kutta method.
 
-    Moin, Parviz. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
+    Moin, P. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
     Cambridge University Press. New York, New York.
 
     :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(x))
@@ -128,9 +128,9 @@ def runge_kutta_fourth(rhs, h, x, y):
     :return:
     """
 
-    k_1 = rhs(x, y)
-    k_2 = rhs(x + h / 2.0, y + k_1 / 2.0)
-    k_3 = rhs(x + h / 2.0, y + k_2 / 2.0)
-    k_4 = rhs(x + h, y + k_3)
+    k_1 = rhs(kwargs['x'], kwargs['y'])
+    k_2 = rhs(kwargs['x'] + h / 2.0, kwargs['y'] + k_1 / 2.0)
+    k_3 = rhs(kwargs['x'] + h / 2.0, kwargs['y'] + k_2 / 2.0)
+    k_4 = rhs(kwargs['x'] + h, kwargs['y'] + k_3)
 
-    return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
+    return kwargs['y'] + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h

@@ -84,7 +84,7 @@ class TestFunctions(unittest.TestCase):
         y = array([1])
 
         for x in x_arr:
-            y = runge_kutta_fourth(f_prime, step, x, y)
+            y = runge_kutta_fourth(f_prime, step, x=x, y=y)
             y_act = f(x + step)
 
             self.assertAlmostEqual(y_act, y, delta=tol)
