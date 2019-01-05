@@ -32,12 +32,14 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.NUM_SEGMENTS = inputs['segments']
         seg_length = inputs['depth'] / inputs['segments']
         seg_inputs = merge_dicts(inputs, {'length': seg_length})
-        for _ in range(self.NUM_SEGMENTS):
+        for _ in range(self.NUM_SEGMENTS):  # noqa: F841
             self.segments.append(make_segment(inputs=seg_inputs,
                                               fluid_inst=fluid_inst,
                                               grout_inst=self.grout,
                                               soil_inst=soil_inst))
 
+        # final segment that ties the two legs of the u-tube together.
+        # segment has no thickness
         self.segments.append(make_segment(inputs=seg_inputs,
                                           fluid_inst=fluid_inst,
                                           grout_inst=self.grout,
