@@ -32,7 +32,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.NUM_SEGMENTS = inputs['segments']
         seg_length = inputs['depth'] / inputs['segments']
         seg_inputs = merge_dicts(inputs, {'length': seg_length})
-        for _ in range(self.NUM_SEGMENTS):  # noqa: F841
+        for _ in range(self.NUM_SEGMENTS):
             self.segments.append(make_segment(inputs=seg_inputs,
                                               fluid_inst=fluid_inst,
                                               grout_inst=self.grout,
@@ -210,8 +210,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
         if os.path.exists('segment_temps.csv'):
             os.remove('segment_temps.csv')
-            with open('segment_temps.csv', 'w') as _:
-                pass
+            open('segment_temps.csv', 'w+')
 
         kwargs = {'borehole wall temp': inputs['borehole wall temp'],
                   'borehole resistance': 0.16,
