@@ -208,14 +208,20 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
     def simulate_trcm(self, timestep, temp, flow, inputs):
 
+        self.set_flow_rate(flow)
+
         if os.path.exists('segment_temps.csv'):
             os.remove('segment_temps.csv')
             open('segment_temps.csv', 'w+')
 
+        resist_dc_num = 2 * self.resist_bh_total_internal * 2 * self.resist_bh_ave
+        resist_dc_den = 4 * self.resist_bh_ave - self.resist_bh_total_internal
+        resist_dc = resist_dc_num / resist_dc_den
+
         kwargs = {'borehole wall temp': inputs['borehole wall temp'],
-                  'borehole resistance': 0.16,
+                  'borehole resistance': self.resist_bh_ave,
                   'mass flow rate': flow,
-                  'direct coupling resistance': 2.28}
+                  'direct coupling resistance': resist_dc}
 
         elapsed_time = 0
         self.write_temps(elapsed_time)
