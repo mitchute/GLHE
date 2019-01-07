@@ -80,11 +80,10 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
     def test_calc_bh_total_internal_resistance(self):
         tolerance = 0.00001
 
-        inputs = {}
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.03200000
-        inputs['soil conductivity'] = 4.0
-        inputs['grout conductivity'] = 0.6
+        inputs = {'radius': 0.048,
+                  'shank-spacing': 0.03200000,
+                  'soil conductivity': 4.0,
+                  'grout conductivity': 0.6}
         tst = self.add_instance(my_inputs=inputs)
         tst.pipe.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
@@ -2244,11 +2243,10 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
     def test_calc_bh_grout_resistance(self):
         tolerance = 0.00001
 
-        inputs = {}
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.03200000
-        inputs['soil conductivity'] = 4.0
-        inputs['grout conductivity'] = 0.6
+        inputs = {'radius': 0.048,
+                  'shank-spacing': 0.03200000,
+                  'soil conductivity': 4.0,
+                  'grout conductivity': 0.6}
         tst = self.add_instance(my_inputs=inputs)
         tst.pipe.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
@@ -4419,6 +4417,6 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
                   'mass flow rate': 0.2,
                   'direct coupling resistance': 2.28}
 
-        tst.simulate_trcm(5000, 30, 0.2, inputs)
+        tst.simulate_trcm(1000, 30, 0.2, inputs)
 
         pass

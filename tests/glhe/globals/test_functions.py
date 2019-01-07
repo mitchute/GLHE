@@ -4,12 +4,14 @@ import unittest
 from math import cos, sin
 
 from numpy import arange, array
+from numpy.linalg import solve as lin_alg_solve
 
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
 from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
+from glhe.globals.functions import tdma
 from glhe.globals.functions import temp_in_kelvin
 from glhe.globals.functions import write_json
 
@@ -88,3 +90,21 @@ class TestFunctions(unittest.TestCase):
             y_act = f(x + step)
 
             self.assertAlmostEqual(y_act, y, delta=tol)
+
+    def test_tdma(self):
+
+        tol = 0.000001
+
+        A = array([[10, 2, 0, 0], [3, 10, 4, 0], [0, 1, 7, 5], [0, 0, 3, 4]], dtype=float)
+
+        a = array([3., 1, 3])
+        b = array([10., 10., 7., 4.])
+        c = array([2., 4., 5.])
+        d = array([3, 4, 5, 6.])
+
+        tst = tdma(a, b, c, d)
+
+        soln = lin_alg_solve(A, d)
+
+        for idx, _ in enumerate(tst):
+            self.assertAlmostEqual(tst[idx], soln[idx], delta=tol)
