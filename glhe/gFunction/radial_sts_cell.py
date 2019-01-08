@@ -7,11 +7,12 @@ class RadialCell(PropertiesBase):
     def __init__(self, inputs):
         PropertiesBase.__init__(self, inputs=inputs)
         self.radius_inner = inputs['inner radius']
-        self.radius_outer = self.calc_outer_radius()
-        self.radius_center = self.calc_center_radius()
         self.thickness = inputs['thickness']
         self.temperature = inputs['initial temperature']
         self.prev_temperature = inputs['initial temperature']
+
+        self.radius_outer = self.calc_outer_radius()
+        self.radius_center = self.calc_center_radius()
         self.volume = self.calc_volume()
 
     def calc_outer_radius(self):
