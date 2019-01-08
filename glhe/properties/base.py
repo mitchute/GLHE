@@ -4,7 +4,11 @@ class PropertiesBase(object):
         self.conductivity = inputs["conductivity"]
         self.density = inputs["density"]
         self.specific_heat = inputs["specific heat"]
+        self.vol_heat_capacity = self._vol_heat_capacity()
         self.diffusivity = self._diffusivity()
+
+    def _vol_heat_capacity(self):
+        return self.density * self.specific_heat
 
     def _diffusivity(self):
         return self.conductivity / (self.specific_heat * self.density)
