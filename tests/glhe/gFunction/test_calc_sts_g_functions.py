@@ -47,3 +47,9 @@ class TestSTSGFunctions(unittest.TestCase):
         for idx, cell in enumerate(tst.cells):
             vol = PI * (cell.radius_outer ** 2 - cell.radius_inner ** 2)
             self.assertAlmostEquals(cell.volume, vol, delta=tol)
+
+    def test_calc_sts_g_functions(self):
+
+        tst = self.add_instance()
+        tst.calc_sts_g_functions()
+        pass
