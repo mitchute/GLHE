@@ -210,9 +210,11 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
         self.set_flow_rate(flow)
 
-        if os.path.exists('segment_temps.csv'):
-            os.remove('segment_temps.csv')
-            open('segment_temps.csv', 'w+')
+        fname = 'segment_temps.csv'
+        if os.path.exists(fname):
+            os.remove(fname)
+            f = open(fname, 'w+')
+            f.close()
 
         resist_dc_num = 2 * self.resist_bh_total_internal * 2 * self.resist_bh_ave
         resist_dc_den = 4 * self.resist_bh_ave - self.resist_bh_total_internal
