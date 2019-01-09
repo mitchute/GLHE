@@ -18,61 +18,144 @@ class STSGFunctions(object):
     def __init__(self, inputs):
 
         # cell numbers
-        self.NUM_PIPE_CELLS = 4
-        self.NUM_CONV_CELLS = 1
-        self.NUM_FLUID_CELLS = 3
-        self.NUM_GROUT_CELLS = 27
-        self.NUM_SOIL_CELLS = 500
+        NUM_PIPE_CELLS = 4
+        NUM_CONV_CELLS = 1
+        NUM_FLUID_CELLS = 3
+        NUM_GROUT_CELLS = 27
+        NUM_SOIL_CELLS = 500
 
         # setup pipe, convection, and fluid geometries
         pipe_thickness = inputs['pipe thickness']
-        self.pcf_cell_thickness = pipe_thickness / self.NUM_PIPE_CELLS
-        self.pipe_inner_radius = sqrt(2) * inputs['pipe outer radius']
-        self.pipe_outer_radius = self.pipe_inner_radius - pipe_thickness
-        self.conv_radius = self.pipe_inner_radius - self.NUM_CONV_CELLS * self.pcf_cell_thickness
+        pcf_cell_thickness = pipe_thickness / NUM_PIPE_CELLS
+        pipe_outer_radius = sqrt(2) * inputs['pipe outer radius']
+        pipe_inner_radius = pipe_outer_radius - pipe_thickness
+        conv_radius = pipe_inner_radius - NUM_CONV_CELLS * pcf_cell_thickness
 
         # accounts for half thickness boundary cell
-        self.fluid_radius = self.conv_radius - (self.NUM_FLUID_CELLS - 0.5) * self.pcf_cell_thickness
+        fluid_radius = conv_radius - (NUM_FLUID_CELLS - 0.5) * pcf_cell_thickness
 
         # setup grout layer geometry
-        self.grout_radius = inputs['borehole radius']
-        self.grout_cell_thickness = (self.grout_radius - self.pipe_outer_radius) / self.NUM_GROUT_CELLS
+        grout_radius = inputs['borehole radius']
+        grout_cell_thickness = (grout_radius - pipe_outer_radius) / NUM_GROUT_CELLS
 
         # setup soil layer geometry
-        self.soil_radius = 10
-        self.soil_cell_thickness = (self.soil_radius - self.grout_radius) / self.NUM_SOIL_CELLS
+        soil_radius = 10
+        soil_cell_thickness = (soil_radius - grout_radius) / NUM_SOIL_CELLS
 
         # other
-        self.soil_temperature = inputs['soil temperature']
+        init_temp = inputs['initial temperature']
         bh_resist = inputs['borehole resistance']
         pipe_conv_resist = inputs['pipe-convection resistance']
-        self.bh_equiv_resist_tube_grout = bh_resist - pipe_conv_resist / 2.0
-        self.bh_equiv_resit_conv = bh_resist - self.bh_equiv_resist_tube_grout
+        bh_equiv_resist_tube_grout = bh_resist - pipe_conv_resist / 2.0
+        bh_equiv_resit_conv = bh_resist - bh_equiv_resist_tube_grout
 
         self.cells = []
 
         # initialize fluid cells
-        for i in range(self.NUM_FLUID_CELLS):
+        for idx in range(NUM_FLUID_CELLS):
 
-            inner_radius = self.bh_radius + i * self.soil_cell_thickness
+            cell_type = RadialCellType.FLUID
+            thickness = pcf_cell_thickness
+            center_radius = fluid_radius + idx * thickness
 
-            cell_inputs = {'type': RadialCellType.FLUID,
+
+            if idx == 0:
+                inner_radius = center_radius
+            else:
+                inner_radius = center_radius - thickness / 2.0
+
+            outer_radius = center_radius + thickness / 2.0
+
+            conductivity = 200
+
+            rho_cp_1 = 2.0 * input['fluid specific heat'] * inputs['fluid density']
+            rho_cp_2 = (pipe_inner_radius ** 2) / ((conv_radius ** 2) - (fluid_radius ** 2))
+            rho_cp = rho_cp_1 * rho_cp_2
+
+            cell_inputs = {'type': cell_type,
                            'inner radius': inner_radius,
-                           'thickness': self.pcf_cell_thickness,
-                           'conductivity': inputs['soil conductivity'],
-                           'density': inputs['soil density'],
-                           'specific heat': inputs['soil specific heat'],
-                           'initial temperature': inputs['soil temperature']}
+                           'center radius': center_radius,
+                           'outer radius': outer_radius,
+                           'thickness': thickness,
+                           'conductivity': conductivity,
+                           'vol heat capacity': rho_cp,
+                           'initial temperature': init_temp}
 
-            cells.append(RadialCell(cell_inputs))
+            self.cells.append(RadialCell(cell_inputs))
+
+
+        # initialize convection cells
+        for idx in range(NUM_CONV_CELLS):
+
+            cell_type = RadialCellType.CONVECTION
+            thickness = pcf_cell_thickness
+            inner_radius = conv_radius + idx * thickness
+            center_radius = inner_radius + thickness / 2.0
+            outer_radius = inner_radius + thickness
+            conductivity = log(pipe_inner_radius / conv_radius) / (2 * PI * bh_equiv_resit_conv)
+            rho_cp = 1
+
+            cell_inputs = {'type': cell_type,
+                           'inner radius': inner_radius,
+                           'center radius': center_radius,
+                           'outer radius': outer_radius,
+                           'thickness': thickness,
+                           'conductivity': conductivity,
+                           'vol heat capacity': rho_cp,
+                           'initial temperature': init_temp}
+
+            self.cells.append(RadialCell(cell_inputs))
+
+        # initialize pipe cells
+        for idx in range(NUM_PIPE_CELLS):
+
+            cell_type = RadialCellType.PIPE
+            thickness = pcf_cell_thickness
+            inner_radius = pipe_inner_radius + idx * thickness
+            center_radius = inner_radius + thickness / 2.0
+            outer_radius = inner_radius + thickness
+            conductivity = log(grout_radius / pipe_inner_radius) / (2 * PI * bh_equiv_resist_tube_grout)
+            rho_cp = inputs['pipe vol heat capcity']
+
+            cell_inputs = {'type': cell_type,
+                           'inner radius': inner_radius,
+                           'center radius': center_radius,
+                           'outer radius': outer_radius,
+                           'thickness': thickness,
+                           'conductivity': conductivity,
+                           'vol heat capacity': rho_cp,
+                           'initial temperature': init_temp}
+
+            self.cells.append(RadialCell(cell_inputs))
+
+            # initialize grout cells
+        for idx in range(NUM_GROUT_CELLS):
+            cell_type = RadialCellType.GROUT
+            thickness = grout_cell_thickness
+            inner_radius = pipe_outer_radius + idx * thickness
+            center_radius = inner_radius + thickness / 2.0
+            outer_radius = inner_radius + thickness
+            conductivity = log(grout_radius / pipe_inner_radius) / (2 * PI * bh_equiv_resist_tube_grout)
+            rho_cp = inputs['pipe vol heat capcity']
+
+            cell_inputs = {'type': cell_type,
+                           'inner radius': inner_radius,
+                           'center radius': center_radius,
+                           'outer radius': outer_radius,
+                           'thickness': thickness,
+                           'conductivity': conductivity,
+                           'vol heat capacity': rho_cp,
+                           'initial temperature': init_temp}
+
+            self.cells.append(RadialCell(cell_inputs))
 
 
     def calc_sts_g_functions(self):
 
-        a = np.zeros(self.NUM_SOIL_CELLS)
-        b = np.zeros(self.NUM_SOIL_CELLS)
-        c = np.zeros(self.NUM_SOIL_CELLS)
-        d = np.zeros(self.NUM_SOIL_CELLS)
+        a = np.zeros(len(self.cells))
+        b = np.zeros(len(self.cells))
+        c = np.zeros(len(self.cells))
+        d = np.zeros(len(self.cells))
 
         heat_flux = 40
 
