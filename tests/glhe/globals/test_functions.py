@@ -8,10 +8,11 @@ from numpy.linalg import solve as lin_alg_solve
 
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
+from glhe.globals.functions import tdma_2
 from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
-from glhe.globals.functions import tdma
+from glhe.globals.functions import tdma_1
 from glhe.globals.functions import temp_in_kelvin
 from glhe.globals.functions import write_json
 
@@ -91,18 +92,36 @@ class TestFunctions(unittest.TestCase):
 
             self.assertAlmostEqual(y_act, y, delta=tol)
 
-    def test_tdma(self):
+    def test_tdma_1(self):
 
         tol = 0.000001
 
         A = array([[10, 2, 0, 0], [3, 10, 4, 0], [0, 1, 7, 5], [0, 0, 3, 4]], dtype=float)
 
-        a = array([3., 1, 3])
-        b = array([10., 10., 7., 4.])
-        c = array([2., 4., 5.])
-        d = array([3, 4, 5, 6.])
+        a = array([3, 1, 3], dtype=float)
+        b = array([10, 10, 7, 4], dtype=float)
+        c = array([2, 4, 5], dtype=float)
+        d = array([3, 4, 5, 6], dtype=float)
 
-        tst = tdma(a, b, c, d)
+        tst = tdma_1(a, b, c, d)
+
+        soln = lin_alg_solve(A, d)
+
+        for idx, _ in enumerate(tst):
+            self.assertAlmostEqual(tst[idx], soln[idx], delta=tol)
+
+    def test_tdma_2(self):
+
+        tol = 0.000001
+
+        A = array([[10, 2, 0, 0], [3, 10, 4, 0], [0, 1, 7, 5], [0, 0, 3, 4]], dtype=float)
+
+        a = array([0, 3, 1, 3], dtype=float)
+        b = array([10, 10, 7, 4], dtype=float)
+        c = array([2, 4, 5, 0], dtype=float)
+        d = array([3, 4, 5, 6], dtype=float)
+
+        tst = tdma_2(a, b, c, d)
 
         soln = lin_alg_solve(A, d)
 

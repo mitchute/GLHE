@@ -181,14 +181,22 @@ def runge_kutta_fourth_y(rhs, h, y):
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
 
-def tdma(a, b, c, d):
+def tdma_1(a, b, c, d):
     """
-    TDMA solver, a b c d can be NumPy array type or Python list type.
-    refer to http://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
-    and to http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
+    Tri-diagonal matrix solver
 
-    Taken from https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9
+    This solver expects the ghost points at a(0) and c(n) be **eliminated**.
 
+    len(b) = len(d)
+    len(a) = len(c) = len(d) - 1
+
+    Taken from: https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9
+
+    :param a: west diagonal vector from coefficient matrix
+    :param b: center diagonal vector from coefficient matrix
+    :param c: east diagonal vector from coefficient matrix
+    :param d: column vector
+    :return: solution vecto
     """
     nf = len(d)  # number of equations
     ac, bc, cc, dc = map(np.array, (a, b, c, d))  # copy arrays
@@ -204,3 +212,40 @@ def tdma(a, b, c, d):
         xc[il] = (dc[il] - cc[il] * xc[il + 1]) / bc[il]
 
     return xc
+
+
+def tdma_2(a, b, c, d):
+    """
+    Tri-diagonal matrix solver
+
+    This solver expects the ghost points at a(0) and c(n) be **present**.
+
+    a(0) = 0
+    c(n) = 0
+
+    len(a) = len(b) = len(c) = len(d)
+
+    Adapted from: https://en.wikibooks.org/wiki/Algorithm_Implementation/Linear_Algebra/Tridiagonal_matrix_algorithm#C++
+    :param a: west diagonal vector from coefficient matrix
+    :param b: center diagonal vector from coefficient matrix
+    :param c: east diagonal vector from coefficient matrix
+    :param d: column vector
+    :return: solution vector
+    """
+
+    n = len(d) - 1
+    ac, bc, cc, dc = map(np.array, (a, b, c, d))  # copy arrays
+
+    cc[0] /= bc[0]
+    dc[0] /= bc[0]
+
+    for i in range(1, n):
+        cc[i] /= bc[i] - ac[i] * cc[i - 1]
+        dc[i] = (dc[i] - ac[i] * dc[i - 1]) / (bc[i] - ac[i] * cc[i - 1])
+
+    dc[n] = (dc[n] - ac[n] * dc[n - 1]) / (bc[n] - ac[n] * cc[n - 1])
+
+    for i in reversed(range(0, n)):
+        dc[i] -= cc[i] * dc[i + 1]
+
+    return dc

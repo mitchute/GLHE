@@ -1,7 +1,7 @@
-import enum
+from enum import Enum
 
 
-class RadialCellType(enum):
+class RadialCellType(Enum):
     FLUID = 1
     CONVECTION = 2
     PIPE = 3
