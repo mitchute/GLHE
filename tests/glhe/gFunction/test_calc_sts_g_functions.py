@@ -58,12 +58,12 @@ class TestSTSGFunctions(unittest.TestCase):
         conv_resist = bh.pipe.calc_convection_resistance(m_dot)
 
         inputs = {'borehole diameter': bh_inputs['diameter'],
+                  'borehole length': bh_inputs['depth'],
                   'borehole resistance': bh_resist,
                   'convection resistance': conv_resist,
                   'soil conductivity': soil_inputs['conductivity'],
                   'soil density': soil_inputs['density'],
                   'soil specific heat': soil_inputs['specific heat'],
-                  'initial temperature': 20,
                   'pipe outer diameter': bh_inputs['pipe-data']['outer diameter'],
                   'pipe inner diameter': bh_inputs['pipe-data']['inner diameter'],
                   'pipe density': bh_inputs['pipe-data']['density'],

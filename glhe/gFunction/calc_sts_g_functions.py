@@ -49,7 +49,7 @@ class STSGFunctions(object):
         soil_cell_thickness = (soil_radius - grout_radius) / num_soil_cells
 
         # other
-        init_temp = inputs['initial temperature']
+        init_temp = 20
         bh_resist = inputs['borehole resistance']
         conv_resist = inputs['convection resistance']
         bh_equiv_tube_grout_resist = bh_resist - conv_resist / 2.0
@@ -172,22 +172,32 @@ class STSGFunctions(object):
 
             self.cells.append(RadialCell(cell_inputs))
 
-    def calc_sts_g_functions(self):
+        # other
+        self.g = []
+        self.lntts = []
+        self.bh_resist = inputs['borehole resistance']
+        self.c_0 = 2 * PI * inputs['soil conductivity']
+        soil_diffusivity = inputs['soil conductivity'] / inputs['soil density'] * inputs['soil specific heat']
+        self.t_s = inputs['borehole length'] ** 2 / (9 * soil_diffusivity)
+
+    def calc_sts_g_functions(self, calculate_at_bh_wall=False):
 
         a = np.zeros(len(self.cells))
         b = np.zeros(len(self.cells))
         c = np.zeros(len(self.cells))
         d = np.zeros(len(self.cells))
 
-        heat_flux = 40.4
+        heat_flux = 40
+        init_temp = 20
 
         time = 0
-        time_step = 500
+        time_step = 60
         final_time = SEC_IN_HOUR * 5
+        num_cells = len(self.cells)
 
         while True:
 
-            num_cells = len(self.cells)
+            time += time_step
 
             # TDMA setup
             for idx, this_cell in enumerate(self.cells):
@@ -240,7 +250,37 @@ class STSGFunctions(object):
                 this_cell.prev_temperature = this_cell.temperature
                 this_cell.temperature = temps[idx]
 
-            time += time_step
+            if calculate_at_bh_wall:
+                bh_wall_temp = 0
+
+                # calculate bh wall temp
+                for idx, this_cell in enumerate(self.cells):
+                    west_cell = self.cells[idx]
+                    east_cell = self.cells[idx + 1]
+
+                    if west_cell.type == RadialCellType.GROUT and east_cell.type == RadialCellType.SOIL:
+                        west_conductance_num = 2 * PI * west_cell.conductivity
+                        west_conductance_den = log(west_cell.outer_radius / west_cell.inner_radius)
+                        west_conductance = west_conductance_num / west_conductance_den
+
+                        east_conductance_num = 2 * PI * east_cell.conductivity
+                        east_conductance_den = log(east_cell.center_radius / west_cell.inner_radius)
+                        east_conductance = east_conductance_num / east_conductance_den
+
+                        bh_wall_temp_num_1 = west_conductance * west_cell.temperature
+                        bh_wall_temp_num_2 = east_conductance * east_cell.temperature
+                        bh_wall_temp_num = bh_wall_temp_num_1 + bh_wall_temp_num_2
+                        bh_wall_temp_den = west_conductance + east_conductance
+                        bh_wall_temp = bh_wall_temp_num / bh_wall_temp_den
+
+                        break
+
+                self.g.append(self.c_0 * ((bh_wall_temp - init_temp) / heat_flux))
+            else:
+                self.g.append(self.c_0 * ((self.cells[0].temperature - init_temp) / heat_flux - self.bh_resist))
+
+            self.lntts.append(log(time / self.t_s))
+
             if time > final_time:
                 break
 

@@ -226,6 +226,7 @@ def tdma_2(a, b, c, d):
     len(a) = len(b) = len(c) = len(d)
 
     Adapted from: https://en.wikibooks.org/wiki/Algorithm_Implementation/Linear_Algebra/Tridiagonal_matrix_algorithm#C++
+
     :param a: west diagonal vector from coefficient matrix
     :param b: center diagonal vector from coefficient matrix
     :param c: east diagonal vector from coefficient matrix
@@ -234,7 +235,7 @@ def tdma_2(a, b, c, d):
     """
 
     n = len(d) - 1
-    ac, bc, cc, dc = map(np.array, (a, b, c, d))  # copy arrays
+    ac, bc, cc, dc = (x.astype(float) for x in (a, b, c, d))  # copy arrays
 
     cc[0] /= bc[0]
     dc[0] /= bc[0]
