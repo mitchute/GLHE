@@ -5,7 +5,7 @@ import numpy as np
 from glhe.gFunction.radial_cell_types import RadialCellType
 from glhe.gFunction.radial_sts_cell import RadialCell
 from glhe.globals.constants import PI
-from glhe.globals.constants import SEC_IN_HOUR
+from glhe.globals.constants import SEC_IN_DAY
 from glhe.globals.functions import tdma_2
 
 
@@ -173,14 +173,17 @@ class STSGFunctions(object):
             self.cells.append(RadialCell(cell_inputs))
 
         # other
-        self.g = []
-        self.lntts = []
+        self.g = np.array([], dtype=float)
+        self.lntts = np.array([], dtype=float)
         self.bh_resist = inputs['borehole resistance']
         self.c_0 = 2 * PI * inputs['soil conductivity']
-        soil_diffusivity = inputs['soil conductivity'] / inputs['soil density'] * inputs['soil specific heat']
+        soil_diffusivity = inputs['soil conductivity'] / (inputs['soil density'] * inputs['soil specific heat'])
         self.t_s = inputs['borehole length'] ** 2 / (9 * soil_diffusivity)
 
     def calc_sts_g_functions(self, calculate_at_bh_wall=False):
+
+        g = []
+        lntts = []
 
         a = np.zeros(len(self.cells))
         b = np.zeros(len(self.cells))
@@ -191,8 +194,8 @@ class STSGFunctions(object):
         init_temp = 20
 
         time = 0
-        time_step = 60
-        final_time = SEC_IN_HOUR * 5
+        time_step = 120
+        final_time = SEC_IN_DAY
         num_cells = len(self.cells)
 
         while True:
@@ -247,7 +250,7 @@ class STSGFunctions(object):
             temps = tdma_2(a, b, c, d)
 
             for idx, this_cell in enumerate(self.cells):
-                this_cell.prev_temperature = this_cell.temperature
+                this_cell.prev_temperature = temps[idx]
                 this_cell.temperature = temps[idx]
 
             if calculate_at_bh_wall:
@@ -275,13 +278,15 @@ class STSGFunctions(object):
 
                         break
 
-                self.g.append(self.c_0 * ((bh_wall_temp - init_temp) / heat_flux))
+                g.append(self.c_0 * ((bh_wall_temp - init_temp) / heat_flux))
             else:
-                self.g.append(self.c_0 * ((self.cells[0].temperature - init_temp) / heat_flux - self.bh_resist))
+                g.append(self.c_0 * ((self.cells[0].temperature - init_temp) / heat_flux - self.bh_resist))
 
-            self.lntts.append(log(time / self.t_s))
+            lntts.append(log(time / self.t_s))
 
             if time > final_time:
+                self.g = np.insert(self.g, 0, g, axis=0)
+                self.lntts = np.insert(self.lntts, 0, lntts, axis=0)
                 break
 
-        pass
+        return self.lntts, self.g

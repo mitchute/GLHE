@@ -103,6 +103,22 @@ class TestSTSGFunctions(unittest.TestCase):
 
     def test_calc_sts_g_functions(self):
 
+        tol = 0.01
+
         tst = self.add_instance()
-        tst.calc_sts_g_functions()
-        pass
+        lntts, g = tst.calc_sts_g_functions()
+
+        self.assertAlmostEqual(g[0], -2.83, delta=tol)
+        self.assertAlmostEqual(g[-1], 2.05, delta=tol)
+
+        self.assertAlmostEqual(lntts[0], -16.00, delta=tol)
+        self.assertAlmostEqual(lntts[-1], -9.42, delta=tol)
+
+        tst_2 = self.add_instance()
+        lntts_2, g_2 = tst_2.calc_sts_g_functions(calculate_at_bh_wall=True)
+
+        self.assertAlmostEqual(g_2[0], 0.00, delta=tol)
+        self.assertAlmostEqual(g_2[-1], 2.05, delta=tol)
+
+        self.assertAlmostEqual(lntts_2[0], -16.00, delta=tol)
+        self.assertAlmostEqual(lntts_2[-1], -9.42, delta=tol)
