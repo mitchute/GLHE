@@ -14,7 +14,8 @@ from glhe.topology.path import Path
 class GLHE(SimulationEntryPoint):
 
     def __init__(self, inputs):
-
+        # TODO: Pass in already created instances of parent objects like Fluid
+        # TODO: Only pass in dict object of GLHE stuff, not the whole input deck
         self.name = inputs["simulation"]["name"]
         self.paths = []
 
@@ -54,9 +55,11 @@ class GLHE(SimulationEntryPoint):
         return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
     def simulate_time_step(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
-        self.inlet_temp = plant_inlet_temperature
-        self.fluid.update_properties(mean([self.inlet_temp, self.outlet_temp]))
-        self.set_flow_rates(plant_mass_flow_rate)
-
-        for path in self.paths:
-            path.simulate(self.inlet_temp)
+        import random
+        return 18 + float(random.randint(1, 100)) / 50
+        # self.inlet_temp = plant_inlet_temperature
+        # self.fluid.update_properties(mean([self.inlet_temp, self.outlet_temp]))
+        # self.set_flow_rates(plant_mass_flow_rate)
+        #
+        # for path in self.paths:
+        #     path.simulate(self.inlet_temp)

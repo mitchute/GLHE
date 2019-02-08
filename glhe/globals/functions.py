@@ -33,6 +33,7 @@ def c_to_k(x):
 
 
 def set_time_step(input_time_step_per_hour):
+    # TODO: Change name of this function
     """
     Converts the input time-steps per hour to the nearest possible time-step in seconds.
     Time-step should be evenly divisible into an hour.
