@@ -6,7 +6,7 @@ import numpy as np
 from glhe.globals.constants import SEC_IN_HOUR
 
 
-def smoothing_function(x, a, b):
+def smoothing_function(x: float, a: float, b: float) -> float:
     """
     Sigmoid smoothing function
 
@@ -21,7 +21,18 @@ def smoothing_function(x, a, b):
     return 1 / (1 + exp(-(x - a) / b))
 
 
-def c_to_k(x):
+def k_to_c(x: float) -> float:
+    """
+    Converts Kelvin to Celsius
+
+    :param x: temperature in Kelvin
+    :return: temperature in Celsius
+    """
+
+    return x - 273.15
+
+
+def c_to_k(x: float) -> float:
     """
     Converts Celsius to Kelvin
 
@@ -32,17 +43,16 @@ def c_to_k(x):
     return x + 273.15
 
 
-def set_time_step(input_time_step_per_hour):
-    # TODO: Change name of this function
+def num_ts_per_hour_to_sec_per_ts(time_step_per_hour: int) -> int:
     """
     Converts the input time-steps per hour to the nearest possible time-step in seconds.
     Time-step should be evenly divisible into an hour.
 
-    :param input_time_step_per_hour:
+    :param time_step_per_hour:
     :return:
     """
     try:
-        input_time_step = int(SEC_IN_HOUR / input_time_step_per_hour)
+        input_time_step = int(SEC_IN_HOUR / time_step_per_hour)
     except ZeroDivisionError:
         raise ZeroDivisionError("Incorrect times-step specified")
 
@@ -57,28 +67,25 @@ def set_time_step(input_time_step_per_hour):
         return int(min(time_step_list, key=lambda x: abs(x - input_time_step)))
 
 
-def load_json(path):
+def load_json(input_path: str) -> dict:
     """
     Loads a json file
 
-    :param path: file path
+    :param input_path: file path
     :return: loaded json object as parsed dict object
     """
 
-    with open(path, 'r') as f:
+    with open(input_path, 'r') as f:
         json_blob = f.read()
     return json.loads(json_blob)
 
 
-def write_json(path, obj):
-    with open(path, 'w') as f:
-        f.write(json.dumps(obj,
-                           sort_keys=True,
-                           indent=2,
-                           separators=(',', ': ')))
+def write_json(write_path: str, input_dict: dict) -> None:
+    with open(write_path, 'w') as f:
+        f.write(json.dumps(input_dict, sort_keys=True, indent=2, separators=(',', ': ')))
 
 
-def hanby(time, vol_flow_rate, volume):
+def hanby(time: float, vol_flow_rate: float, volume: float) -> float:
     """
     Computes the non-dimensional response of a fluid conduit
     assuming well mixed nodes. The model accounts for the thermal
@@ -105,16 +112,16 @@ def hanby(time, vol_flow_rate, volume):
     return 1 - exp(-num_nodes * tau) * ret_sum
 
 
-def merge_dicts(d, d_append):
+def merge_dicts(d_root: dict, d_append: dict) -> dict:
     """
-    Return new dictionary with d_append added to d at the root level
+    Return new dictionary with d_append added to d_root at the root level
 
-    :param d: input dictionary
+    :param d_root: input dictionary
     :param d_append: dictionary to append
     :return: combined dict
     """
 
-    return {**d, **d_append}
+    return {**d_root, **d_append}
 
 
 def runge_kutta_fourth_xy(rhs, h, x, y):

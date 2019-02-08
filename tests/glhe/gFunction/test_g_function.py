@@ -3,10 +3,10 @@ import tempfile
 import unittest
 
 from glhe.gFunction.g_function import GFunction
-from glhe.globals.functions import set_time_step
+from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import write_json
 from glhe.globals.variables import gv
-from glhe.inputProcessor.processor import InputProcessor
+from glhe.inputProcessor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 
 
@@ -122,7 +122,7 @@ class TestGFunction(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance(file_number=1)
-        gv.time_step = set_time_step(1)
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(1)
         ret_temp = tst.simulate_time_step(inlet_temp=20.0,
                                           mass_flow_rate=0,
                                           time_step=gv.time_step,
@@ -131,7 +131,7 @@ class TestGFunction(unittest.TestCase):
         self.assertEqual(ret_temp, 20.0)
 
         tst = self.add_instance(file_number=1)
-        gv.time_step = set_time_step(1)
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(1)
         ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow_rate=0.2,
                                           time_step=gv.time_step,
@@ -140,7 +140,7 @@ class TestGFunction(unittest.TestCase):
         self.assertAlmostEqual(ret_temp, 29.5, delta=0.1)
 
         tst = self.add_instance(file_number=1)
-        gv.time_step = set_time_step(1)
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(1)
         ret_temp = tst.simulate_time_step(inlet_temp=25.0,
                                           mass_flow_rate=0.2,
                                           time_step=gv.time_step,

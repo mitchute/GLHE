@@ -11,20 +11,20 @@ class InputProcessor(object):
     def __init__(self):
         self._definitions = {}
 
-    def process_input(self, input_file_path):
+    def process_input(self, json_input_path: str) -> dict:
         """
         Process input file
 
-        :param input_file_path: input file path
+        :param json_input_path: input file path
         :return: expanded input file
         """
 
         # check if file exists
-        if not os.path.exists(input_file_path):
+        if not os.path.exists(json_input_path):
             raise FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))
 
         # load the input file
-        d = load_json(input_file_path)
+        d = load_json(json_input_path)
 
         # validate the inputs
         self._validate_inputs(d)
@@ -45,18 +45,18 @@ class InputProcessor(object):
         # expand objects
         return self._expand_dict(d)
 
-    def _expand_dict(self, inputs):
+    def _expand_dict(self, input_dict: dict) -> dict:
         """
         Expands dictionary objects by iterating over all key-value pairs.
 
         Only keys containing the "-type" string should be expanded.
 
-        :param inputs: compressed dictionary object
+        :param input_dict: compressed dictionary object
         :return: expanded dictionary object
         """
 
         d_ret = {}
-        for key, value in inputs.items():
+        for key, value in input_dict.items():
             if type(value) is dict:
                 d_ret[key] = self._expand_dict(value)
             elif type(value) is list:
@@ -74,18 +74,18 @@ class InputProcessor(object):
 
         return d_ret
 
-    def _expand_list(self, inputs):
+    def _expand_list(self, input_list: list) -> list:
         """
         Expands list objects by iterating over all items in the list.
 
         Expandable items are only found in dictionaries, no "expansion" is done here.
 
-        :param inputs: list object with compressed inputs
+        :param input_list: list object with compressed inputs
         :return: list object with expanded inputs
         """
 
         l_ret = []
-        for item in inputs:
+        for item in input_list:
             if type(item) is dict:
                 l_ret.append(self._expand_dict(item))
             elif type(item) is list:
@@ -95,7 +95,7 @@ class InputProcessor(object):
 
         return l_ret
 
-    def _get_input_definition_data(self, definition_type, definition_name):
+    def _get_input_definition_data(self, definition_type: str, definition_name: str) -> dict:
         """
         Searches the definitions lists for a matching name. If found, return
         so the object can be expanded.
@@ -114,18 +114,18 @@ class InputProcessor(object):
         raise ValueError("'{}' definition not found".format(definition_name))
 
     @staticmethod
-    def _validate_inputs(inputs):
+    def _validate_inputs(input_dict: dict) -> None:
         """
         Validates the input objects against the schema
 
-        :param inputs: input object
+        :param input_dict: input object
         :return: none
         """
 
         # shortcut
         fpath = os.path.join
 
-        for key, value in inputs.items():
+        for key, value in input_dict.items():
             # load proper the schema
             schema_path = fpath(os.path.dirname(os.path.abspath(__file__)), 'schema')
             schema = load_json(fpath(schema_path, '{}.jsonschema'.format(key)))

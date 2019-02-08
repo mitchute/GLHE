@@ -7,52 +7,27 @@ from glhe.properties.fluid_types import FluidType
 
 class Fluid(object):
     def __init__(self, inputs):
-        self._fluid_name = inputs['type'].upper()
-
-        if self._fluid_name == "WATER":
-            self._fluid_type = FluidType.WATER
-        elif self._fluid_name == "EA":
-            self._fluid_type = FluidType.ETHYL_ALCOHOL
-            self._concentration = inputs['concentration'] / 100.0
-        elif self._fluid_name == "EG":
-            self._fluid_type = FluidType.ETHYLENE_GLYCOL
-            self._concentration = inputs['concentration'] / 100.0
-        elif self._fluid_name == "PG":
-            self._fluid_type = FluidType.PROPYLENE_GLYCOL
-            self._concentration = inputs['concentration'] / 100.0
+        self.name = inputs['name'].upper()
+        self.type = inputs['type'].upper()
+        if self.type == "WATER":
+            self.fluid_enum = FluidType.WATER
+            concentration = 0
+        elif self.type == "EA":
+            self.fluid_enum = FluidType.ETHYL_ALCOHOL
+            concentration = inputs['concentration'] / 100.0
+        elif self.type == "EG":
+            self.fluid_enum = FluidType.ETHYLENE_GLYCOL
+            concentration = inputs['concentration'] / 100.0
+        elif self.type == "PG":
+            self.fluid_enum = FluidType.PROPYLENE_GLYCOL
+            concentration = inputs['concentration'] / 100.0
         else:
-            raise ValueError("'{}' fluid is not supported".format(self._fluid_name))
+            raise ValueError("'{}' fluid is not supported".format(self.type))
 
-        self._min_temperature = -200
-        self._max_temperature = 200
-        self._min_concentration = 0
-        self._max_concentration = 100
+        self.fluid_str = self.get_fluid_str(self.fluid_enum, concentration)
 
-        # Fluid definitions: http://www.coolprop.org/fluid_properties/Incompressibles.html#the-different-fluids
-        if self._fluid_type == FluidType.WATER:
-            self._fluid_str = "WATER"
-            self._min_temperature = 0
-            self._max_temperature = 200
-        elif self._fluid_type == FluidType.ETHYL_ALCOHOL:
-            self._fluid_str = "INCOMP::MEA[{0}]".format(self._concentration)
-            self._min_temperature = -100
-            self._max_temperature = 40
-            self._min_concentration = 0
-            self._max_concentration = 60
-        elif self._fluid_type == FluidType.ETHYLENE_GLYCOL:
-            self._fluid_str = "INCOMP::MEG[{0}]".format(self._concentration)
-            self._min_temperature = -100
-            self._max_temperature = 100
-            self._min_concentration = 0
-            self._max_concentration = 60
-        elif self._fluid_type == FluidType.PROPYLENE_GLYCOL:
-            self._fluid_str = "INCOMP::MPG[{0}]".format(self._concentration)
-            self._min_temperature = -100
-            self._max_temperature = 100
-            self._min_concentration = 0
-            self._max_concentration = 60
-
-        self.temp_freeze = self.calc_freezing_point()
+        self.min_temp = self.calc_min_temp()
+        self.max_temp = self.calc_max_temp()
 
         self.pressure = 120000
         self.specific_heat = 0
@@ -71,22 +46,54 @@ class Fluid(object):
         self.conductivity = self.calc_conductivity(temperature)
         self.specific_heat = self.calc_specific_heat(temperature)
         self.density = self.calc_density(temperature)
-        self.heat_capacity = self.calc_heat_capacity(temperature)
+        self.heat_capacity = self.calc_vol_heat_capacity(temperature)
         self.prandtl = self.calc_prandtl(temperature)
         self.viscosity = self.calc_viscosity(temperature)
 
-    def calc_freezing_point(self):
+    @staticmethod
+    def get_fluid_str(fluid_enum, concentration):
+        # Fluid definitions: http://www.coolprop.org/fluid_properties/Incompressibles.html#the-different-fluids
+
+        def get_concentration(c, min_c, max_c):
+            if c < min_c:
+                return min_c
+            elif c > max_c:
+                return max_c
+            else:
+                return c
+
+        if fluid_enum == FluidType.WATER:
+            return "WATER"
+        elif fluid_enum == FluidType.ETHYL_ALCOHOL:
+            return "INCOMP::MEA[{0}]".format(get_concentration(concentration, 0.0, 0.6))
+        elif fluid_enum == FluidType.ETHYLENE_GLYCOL:
+            return "INCOMP::MEG[{0}]".format(get_concentration(concentration, 0.0, 0.6))
+        elif fluid_enum == FluidType.PROPYLENE_GLYCOL:
+            return "INCOMP::MPG[{0}]".format(get_concentration(concentration, 0.0, 0.6))
+
+    def calc_max_temp(self):
+        """
+        Determines the maximum temperature of the fluid. Not to exceed 100 deg C.
+
+        :return: maximum fluid temperature, in Kelvin
+        """
+
+        if self.fluid_enum == FluidType.WATER:
+            return c_to_k(100)
+        else:
+            return PropsSI("T_FREEZE", self.fluid_str)
+
+    def calc_min_temp(self):
         """
         Determines the freezing point of the fluid.
-        Uses the CoolProp python library.
 
-        :returns fluid freezing point in [K]
+        :returns minimum fluid temperature, in Kelvin
         """
 
-        if self._fluid_type == FluidType.WATER:
-            return 273.2
+        if self.fluid_enum == FluidType.WATER:
+            return PropsSI("T_MIN", self.fluid_str)
         else:
-            return PropsSI("T_FREEZE", self._fluid_str)
+            return PropsSI("T_FREEZE", self.fluid_str)
 
     def calc_conductivity(self, temperature):
         """
@@ -138,7 +145,7 @@ class Fluid(object):
 
         return self._calc_property(FluidPropertyType.VISCOSITY, temperature)
 
-    def calc_heat_capacity(self, temperature):
+    def calc_vol_heat_capacity(self, temperature):
         """
         Determines the fluid volume-specific heat capacity as a function of temperature, in Celsius.
         Uses the CoolProp python library.
@@ -167,15 +174,12 @@ class Fluid(object):
                  FluidPropertyType.VISCOSITY: 'VISCOSITY'}
 
         try:
-            return PropsSI(props[_property],
-                           'T', c_to_k(temperature),
-                           'P', self.pressure,
-                           self._fluid_str)
+            return PropsSI(props[_property], 'T', c_to_k(temperature), 'P', self.pressure, self.fluid_str)
         except ValueError:  # pragma: no cover
             # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
             # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
             return PropsSI(props[_property],
-                           'T', self.temp_freeze,
+                           'T', self.min_temp,
                            'P', self.pressure,
-                           self._fluid_str)
+                           self.fluid_str)

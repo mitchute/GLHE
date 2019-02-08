@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.aggregation.static_method import StaticMethod
-from glhe.globals.functions import set_time_step
+from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.variables import gv
 
 
@@ -14,7 +14,7 @@ class TestStatic(unittest.TestCase):
     def test_add_load(self):
         d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4]}
 
-        gv.time_step = set_time_step(2)
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(2)
 
         tst = StaticMethod(d)
 
@@ -119,7 +119,7 @@ class TestStatic(unittest.TestCase):
 
     def test_add_load_with_sub_hour_loads(self):
         d = {'min number bins': [2, 2, 2], 'bin widths in hours': [1, 2, 4]}
-        gv.time_step = set_time_step(2)
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(2)
 
         tst = StaticMethod(d)
 

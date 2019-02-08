@@ -4,7 +4,7 @@ import unittest
 
 import pandas as pd
 
-from glhe.outputProcessor.processor import OutputProcessor
+from glhe.outputProcessor.output_processor import OutputProcessor
 
 
 class DummyClass(object):

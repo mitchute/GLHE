@@ -10,7 +10,7 @@ from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
 from glhe.globals.functions import tdma_2
 from glhe.globals.functions import runge_kutta_fourth_x
-from glhe.globals.functions import set_time_step
+from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
 from glhe.globals.functions import c_to_k
@@ -28,13 +28,13 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(c_to_k(30), 303.15)
 
     def test_set_time_step(self):
-        self.assertRaises(ZeroDivisionError, lambda: set_time_step(0))
-        self.assertEqual(set_time_step(600), 60)
-        self.assertEqual(set_time_step(60), 60)
-        self.assertEqual(set_time_step(30), 120)
-        self.assertEqual(set_time_step(15), 240)
-        self.assertEqual(set_time_step(10), 360)
-        self.assertEqual(set_time_step(1), 3600)
+        self.assertRaises(ZeroDivisionError, lambda: num_ts_per_hour_to_sec_per_ts(0))
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(600), 60)
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(60), 60)
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(30), 120)
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(15), 240)
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(10), 360)
+        self.assertEqual(num_ts_per_hour_to_sec_per_ts(1), 3600)
 
     def test_load_json(self):
         temp_directory = tempfile.mkdtemp()

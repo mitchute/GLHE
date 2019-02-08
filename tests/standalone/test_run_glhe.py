@@ -3,7 +3,7 @@ import tempfile
 import os
 
 from glhe.topology.full_ground_loop import GLHE
-from glhe.inputProcessor.processor import InputProcessor
+from glhe.inputProcessor.input_processor import InputProcessor
 from glhe.globals.functions import write_json
 
 

@@ -6,10 +6,10 @@ from scipy.optimize import minimize
 
 from glhe.gFunction.g_function import GFunction
 from glhe.globals.errors import SimulationError
-from glhe.globals.functions import set_time_step
+from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.variables import gv
-from glhe.inputProcessor.processor import InputProcessor
-from glhe.outputProcessor.processor import OutputProcessor
+from glhe.inputProcessor.input_processor import InputProcessor
+from glhe.outputProcessor.output_processor import OutputProcessor
 from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.inlet_temp_factory import make_inlet_temp_profile
 from glhe.profiles.load_factory import make_load_profile
@@ -26,7 +26,7 @@ class RunGFunctions(object):
         self.op = OutputProcessor()
 
         # set the global level time-step
-        gv.time_step = set_time_step(d['simulation']['time-steps per hour'])
+        gv.time_step = num_ts_per_hour_to_sec_per_ts(d['simulation']['time-steps per hour'])
 
         # init the g-function object and resister the output variables after init
         self.g = GFunction(d)

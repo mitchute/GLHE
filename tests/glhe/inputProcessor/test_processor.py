@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from jsonschema.exceptions import ValidationError
 
 from glhe.globals.functions import write_json
-from glhe.inputProcessor.processor import InputProcessor
+from glhe.inputProcessor.input_processor import InputProcessor
 
 
 class TestInputProcessor(unittest.TestCase):
@@ -255,7 +255,7 @@ class TestInputProcessor(unittest.TestCase):
 
     def test_expand_list(self):
         inputs = [[1, 2, 3], 2]
-        new_list = InputProcessor()._expand_list(inputs=inputs)
+        new_list = InputProcessor()._expand_list(input_list=inputs)
         self.assertEqual(inputs, new_list)
 
     def test_file_not_found(self):
