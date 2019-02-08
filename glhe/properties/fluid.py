@@ -1,20 +1,11 @@
 from CoolProp.CoolProp import PropsSI
 
-from glhe.globals.functions import temp_in_kelvin
+from glhe.globals.functions import c_to_k
 from glhe.properties.fluid_property_types import FluidPropertyType
 from glhe.properties.fluid_types import FluidType
 
 
 class Fluid(object):
-    pressure = 120000
-    specific_heat = 0
-    density = 0
-    conductivity = 0
-    prandtl = 0
-    viscosity = 0
-    heat_capacity = 0
-    temperature = 0
-
     def __init__(self, inputs):
         self._fluid_name = inputs['type'].upper()
 
@@ -63,17 +54,26 @@ class Fluid(object):
 
         self.temp_freeze = self.calc_freezing_point()
 
+        self.pressure = 120000
+        self.specific_heat = 0
+        self.density = 0
+        self.conductivity = 0
+        self.prandtl = 0
+        self.viscosity = 0
+        self.heat_capacity = 0
+        self.temperature = 0
+
         # init at 20 C
         self.update_properties(20)
 
     def update_properties(self, temperature):
-        Fluid.temperature = temperature
-        Fluid.conductivity = self.calc_conductivity(temperature)
-        Fluid.specific_heat = self.calc_specific_heat(temperature)
-        Fluid.density = self.calc_density(temperature)
-        Fluid.heat_capacity = self.calc_heat_capacity(temperature)
-        Fluid.prandtl = self.calc_prandtl(temperature)
-        Fluid.viscosity = self.calc_viscosity(temperature)
+        self.temperature = temperature
+        self.conductivity = self.calc_conductivity(temperature)
+        self.specific_heat = self.calc_specific_heat(temperature)
+        self.density = self.calc_density(temperature)
+        self.heat_capacity = self.calc_heat_capacity(temperature)
+        self.prandtl = self.calc_prandtl(temperature)
+        self.viscosity = self.calc_viscosity(temperature)
 
     def calc_freezing_point(self):
         """
@@ -168,7 +168,7 @@ class Fluid(object):
 
         try:
             return PropsSI(props[_property],
-                           'T', temp_in_kelvin(temperature),
+                           'T', c_to_k(temperature),
                            'P', self.pressure,
                            self._fluid_str)
         except ValueError:  # pragma: no cover

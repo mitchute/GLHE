@@ -13,7 +13,7 @@ from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import set_time_step
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
-from glhe.globals.functions import temp_in_kelvin
+from glhe.globals.functions import c_to_k
 from glhe.globals.functions import write_json
 
 
@@ -25,7 +25,7 @@ class TestFunctions(unittest.TestCase):
         self.assertAlmostEqual(smoothing_function(x=8, a=0, b=1), 1, delta=tolerance)
 
     def test_temp_in_kelvin(self):
-        self.assertEqual(temp_in_kelvin(30), 303.15)
+        self.assertEqual(c_to_k(30), 303.15)
 
     def test_set_time_step(self):
         self.assertRaises(ZeroDivisionError, lambda: set_time_step(0))

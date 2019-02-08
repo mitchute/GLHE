@@ -21,7 +21,7 @@ def smoothing_function(x, a, b):
     return 1 / (1 + exp(-(x - a) / b))
 
 
-def temp_in_kelvin(x):
+def c_to_k(x):
     """
     Converts Celsius to Kelvin
 
@@ -196,20 +196,22 @@ def tdma_1(a, b, c, d):
     :param b: center diagonal vector from coefficient matrix
     :param c: east diagonal vector from coefficient matrix
     :param d: column vector
-    :return: solution vecto
+    :return: solution vector
     """
-    nf = len(d)  # number of equations
+
+    n = len(d)  # number of equations
     ac, bc, cc, dc = map(np.array, (a, b, c, d))  # copy arrays
-    for it in range(1, nf):
-        mc = ac[it - 1] / bc[it - 1]
-        bc[it] = bc[it] - mc * cc[it - 1]
-        dc[it] = dc[it] - mc * dc[it - 1]
+
+    for i in range(1, n):
+        mc = ac[i - 1] / bc[i - 1]
+        bc[i] = bc[i] - mc * cc[i - 1]
+        dc[i] = dc[i] - mc * dc[i - 1]
 
     xc = bc
     xc[-1] = dc[-1] / bc[-1]
 
-    for il in range(nf - 2, -1, -1):
-        xc[il] = (dc[il] - cc[il] * xc[il + 1]) / bc[il]
+    for i in range(n - 2, -1, -1):
+        xc[i] = (dc[i] - cc[i] * xc[i + 1]) / bc[i]
 
     return xc
 

@@ -5,13 +5,14 @@ from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.factory import load_agg_factory
-from glhe.globals.constants import GAMMA, PI
+from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
-from glhe.groundTemps.factory import make_ground_temperature_model
+from glhe.groundTemps.factory import ground_temperature_model_factory
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
+from glhe.gFunction.flow_fraction import FlowFraction
 
 
 class GFunction(SimulationEntryPoint):
@@ -35,13 +36,15 @@ class GFunction(SimulationEntryPoint):
         self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
 
         # ground temperature model
-        self.get_ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
-                                                                         {'soil-diffusivity': self.soil.diffusivity}
-                                                                         )).get_temp
+        self.get_ground_temp = ground_temperature_model_factory(merge_dicts(inputs['ground-temperature'],
+                                                                            {'soil-diffusivity': self.soil.diffusivity}
+                                                                            )).get_temp
 
         self.my_bh = SingleUTubeGroutedBorehole(merge_dicts(inputs['g-functions']['borehole-data'],
                                                             {'initial temp': self.get_ground_temp(0, 100)}), self.fluid,
                                                 self.soil)
+
+        self.flow_frac = FlowFraction()
 
         self.NUM_BH = inputs['g-functions']['number of boreholes']
         self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH
@@ -57,15 +60,13 @@ class GFunction(SimulationEntryPoint):
         # other inits
         self.fluid_cap = 0
         self.bh_resist = 0.15
-        self.soil_resist = 0
         self.ground_temp = 0
         self.ave_fluid_temp = init_temp
         self.ave_fluid_temp_change = 0
         self.flow_fraction = 0
-        self.transit_time = 0
         self.load_per_meter = 0
         self.prev_mass_flow_rate = -999
-        self.prev_flow_frac = 0
+        self.mass_flow_change_fraction_tolerance = 0.05
         self.time_of_curr_flow = 0
         self.time_of_prev_flow = 0
         self.flow_change_fraction_limit = 0.1
@@ -85,7 +86,6 @@ class GFunction(SimulationEntryPoint):
     def report_output(self):
         ret_vals = {"Local Borehole Resistance 'Rb' [K/(W/m)]": self.bh_resist,
                     "Total Internal Borehole Resistance 'Ra' [K/(W/m)]": self.my_bh.resist_bh_total_internal,
-                    "Soil Resistance 'Rs' [K/(W/m)]": self.soil_resist,
                     "Flow Fraction [-]": self.flow_fraction,
                     "Load on GHE [W/m]": self.load_per_meter,
                     "Average Fluid Temp [C]": self.ave_fluid_temp,
@@ -123,37 +123,37 @@ class GFunction(SimulationEntryPoint):
         else:
             return g
 
-    def simulate_time_step(self, inlet_temp, mass_flow, time_step, first_pass, converged):
+    def simulate_time_step(self, sim_time, time_step, mass_flow_rate, inlet_temp):
 
-        if first_pass:
-            self.time_step = time_step
-            self.sim_time += time_step
+        if mass_flow_rate == 0:
+            return sim_time, time_step, mass_flow_rate, inlet_temp
 
-            if mass_flow == 0:
-                return inlet_temp
+        mass_flow_change_fraction = abs(mass_flow_rate - self.prev_mass_flow_rate) / self.prev_mass_flow_rate
 
-            self.inlet_temp = inlet_temp
-
-            self.my_bh.set_flow_rate(mass_flow / self.NUM_BH)
+        if mass_flow_change_fraction > self.mass_flow_change_fraction_tolerance:
+            self.my_bh.set_flow_rate(mass_flow_rate / self.NUM_BH)
             self.bh_resist = self.my_bh.resist_bh_ave
+
+        self.time_step = time_step
+        self.inlet_temp = inlet_temp
+
+        if sim_time != self.sim_time:
+            self.sim_time = sim_time
 
             self.load_aggregation.get_new_current_load_bin(width=time_step)
             self.load_aggregation.current_load.g = self.get_g_func(time_step)
 
-            flow_change_frac = abs((mass_flow - self.prev_mass_flow_rate) / mass_flow)
+            flow_change_frac = abs((mass_flow_rate - self.prev_mass_flow_rate) / mass_flow_rate)
 
             if flow_change_frac > self.flow_change_fraction_limit:
                 self.time_of_prev_flow = self.time_of_curr_flow
                 self.time_of_curr_flow = self.sim_time
-                self.prev_flow_frac = self.flow_fraction
-                self.prev_flow_frac = self.flow_fraction
-                self.prev_mass_flow_rate = mass_flow
+                self.prev_mass_flow_rate = mass_flow_rate
 
-            self.soil_resist = self.calc_soil_resist()
             self.flow_fraction = self.calc_flow_fraction()
             # self.flow_fraction = 0.5
             self.ground_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
-            self.fluid_cap = mass_flow * self.fluid.specific_heat
+            self.fluid_cap = mass_flow_rate * self.fluid.specific_heat
 
         temp_rise_prev_bin, q_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
 
@@ -185,118 +185,7 @@ class GFunction(SimulationEntryPoint):
 
         return self.outlet_temp
 
-    def calc_flow_fraction(self):
-        """
-        Computes the flow fraction based on the method outlined in:
 
-        Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
-        exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
-
-        :return flow fraction
-        """
-
-        # Define base variables
-        t_i = self.sim_time
-        t_i_minus_1 = self.time_of_prev_flow
-        cf = self.fluid.specific_heat * self.fluid.density
-        cs = self.soil.specific_heat * self.soil.density
-        v_f = self.my_bh.FLUID_VOL
-        w = self.my_bh.vol_flow_rate
-        l_bh = self.my_bh.DEPTH
-        r_b = self.my_bh.RADIUS
-        k_s = self.soil.conductivity
-
-        # Transit time
-        t_tr = v_f / w
-        self.transit_time = t_tr
-
-        # Equation 3a
-        if t_i - t_i_minus_1 <= 0.02 * t_tr:
-            return self.prev_flow_frac  # pragma: no cover
-
-        # total internal borehole resistance
-        resist_a = self.my_bh.calc_bh_total_internal_resistance()
-
-        # borehole resistance
-        resist_b = self.my_bh.resist_bh_ave
-        resist_b1 = resist_b * 2
-
-        # Equation 9
-        cd_num = v_f * cf
-        cd_den = 2 * PI * l_bh * cs * r_b ** 2
-        cd = cd_num / cd_den
-
-        # Equation 10
-        resist_db = 2 * PI * k_s * resist_b
-
-        psi = cd * exp(2 * resist_db)
-        phi = log(psi)
-
-        # Equations 11
-        if 0.2 < psi <= 1.2:
-            tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004  # pragma: no cover
-        elif 1.2 < phi <= 160:
-            tdsf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
-        elif 160 < phi <= 2E5:  # pragma: no cover
-            tdsf_over_cd = 12.506 * phi + 45.051  # pragma: no cover
-        else:
-            raise ValueError  # pragma: no cover
-
-        # Equation 12
-        t_sf_num = tdsf_over_cd * cf * v_f
-        t_sf_den = 2 * PI * l_bh * k_s
-        t_sf = t_sf_num / t_sf_den + t_i_minus_1
-
-        resist_s1 = self.soil_resist
-
-        # Equation A.11
-        n_a = l_bh / (w * cf * resist_a)
-
-        # Equation A.12, A.13
-        n_s1 = l_bh / (w * cf * (resist_b1 + resist_s1))
-
-        # Equation A.5
-        a_1 = (sqrt(4 * ((n_a + n_s1) ** 2 - n_a ** 2))) / 2
-
-        # Equation A.6
-        a_2 = -a_1
-
-        # Equation A.7
-        c_1 = (n_s1 + a_2) * exp(a_2) / (((n_s1 + a_2) * exp(a_2)) - ((n_s1 + a_1) * exp(a_1)))
-
-        # Equation A.8
-        c_2 = 1 - c_1
-
-        # Equation A.9
-        c_3 = c_1 * (n_s1 + n_a + a_1) / n_a
-
-        # Equation A.10
-        c_4 = c_2 * (n_s1 + n_a + a_2) / n_a
-
-        # Equation A.15
-        c_5 = c_1 * (1 + (n_a + n_s1 + a_1) / n_a) * (exp(a_1) - 1) / a_1
-
-        # Equation A.16
-        c_6 = (1 - c_1) * (1 + (n_a + n_s1 + a_2) / n_a) * (exp(a_2) - 1) / a_2
-
-        # Equation 5
-        f_sf = (0.5 * (c_5 + c_6) - (c_3 + c_4)) / (1 - (c_3 + c_4))
-
-        f_old = self.prev_flow_frac
-
-        # Equations 3b and 3c
-        if 0.02 * t_tr <= t_i - t_i_minus_1 < t_sf:
-            _part_1 = (f_sf - f_old) / 2
-            log_num = log((t_i - t_i_minus_1) / (0.02 * t_tr))
-            log_den = log(t_sf / (0.02 * t_tr))
-            _part_2 = 1 + sin(PI * (log_num / log_den - 0.5))
-            f = _part_1 * _part_2 + f_old
-        else:
-            f = f_sf  # pragma: no cover
-
-        self.prev_flow_frac = f
-
-        return f
 
     def calc_prev_bin_temp_rise(self):
 
@@ -347,14 +236,3 @@ class GFunction(SimulationEntryPoint):
 
         return temp_rise_sum
 
-    def calc_soil_resist(self):
-        part_1 = 2 / (4 * PI * self.soil.conductivity)
-        part_2_num = 4 * self.soil.diffusivity * self.sim_time
-        if part_2_num == 0:
-            self.soil_resist = 0  # pragma: no cover
-        else:
-            part_2_den = GAMMA * self.bh_resist ** 2
-            self.soil_resist = part_1 * log(part_2_num / part_2_den)
-            if self.soil_resist < 0:
-                self.soil_resist = 0
-        return self.soil_resist

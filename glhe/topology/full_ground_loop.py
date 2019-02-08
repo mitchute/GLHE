@@ -4,7 +4,7 @@ from numpy import mean
 from scipy.optimize import minimize_scalar
 
 from glhe.globals.functions import merge_dicts
-from glhe.groundTemps.factory import make_ground_temperature_model
+from glhe.groundTemps.factory import ground_temperature_model_factory
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
@@ -23,9 +23,9 @@ class GLHE(SimulationEntryPoint):
 
         self.delta_p_path = 100000
 
-        self.ground_temp = make_ground_temperature_model(merge_dicts(inputs['ground-temperature'],
-                                                                     {'soil-diffusivity': self.soil.diffusivity}
-                                                                     )).get_temp
+        self.ground_temp = ground_temperature_model_factory(merge_dicts(inputs['ground-temperature'],
+                                                                        {'soil-diffusivity': self.soil.diffusivity}
+                                                                        )).get_temp
 
         init_temp = self.ground_temp(0, 100)
 
