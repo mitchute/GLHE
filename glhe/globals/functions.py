@@ -1,5 +1,6 @@
 import json
 from math import exp, factorial
+from typing import Union
 
 import numpy as np
 
@@ -21,7 +22,7 @@ def smoothing_function(x: float, a: float, b: float) -> float:
     return 1 / (1 + exp(-(x - a) / b))
 
 
-def k_to_c(x: float) -> float:
+def k_to_c(x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     """
     Converts Kelvin to Celsius
 

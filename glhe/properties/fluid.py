@@ -1,6 +1,8 @@
 from CoolProp.CoolProp import PropsSI
+from numpy import arange
+from scipy.interpolate import interp1d
 
-from glhe.globals.functions import c_to_k
+from glhe.globals.functions import c_to_k, k_to_c
 from glhe.properties.fluid_property_types import FluidPropertyType
 from glhe.properties.fluid_types import FluidType
 
@@ -25,30 +27,25 @@ class Fluid(object):
             raise ValueError("'{}' fluid is not supported".format(self.type))
 
         self.fluid_str = self.get_fluid_str(self.fluid_enum, concentration)
+        self.min_temp = k_to_c(self.calc_min_temp())
+        self.max_temp = k_to_c(self.calc_max_temp())
+        self.pressure = 101325
 
-        self.min_temp = self.calc_min_temp()
-        self.max_temp = self.calc_max_temp()
+        temps = arange(self.min_temp, self.max_temp, 0.5)
 
-        self.pressure = 120000
-        self.specific_heat = 0
-        self.density = 0
-        self.conductivity = 0
-        self.prandtl = 0
-        self.viscosity = 0
-        self.heat_capacity = 0
-        self.temperature = 0
+        cp_vals = [self.calc_specific_heat(x) for _, x in enumerate(temps)]
+        k_vals = [self.calc_conductivity(x) for _, x in enumerate(temps)]
+        mu_vals = [self.calc_viscosity(x) for _, x in enumerate(temps)]
+        pr_vals = [self.calc_prandtl(x) for _, x in enumerate(temps)]
+        rho_vals = [self.calc_density(x) for _, x in enumerate(temps)]
+        rho_cp_vals = [self.calc_vol_heat_capacity(x) for _, x in enumerate(temps)]
 
-        # init at 20 C
-        self.update_properties(20)
-
-    def update_properties(self, temperature):
-        self.temperature = temperature
-        self.conductivity = self.calc_conductivity(temperature)
-        self.specific_heat = self.calc_specific_heat(temperature)
-        self.density = self.calc_density(temperature)
-        self.heat_capacity = self.calc_vol_heat_capacity(temperature)
-        self.prandtl = self.calc_prandtl(temperature)
-        self.viscosity = self.calc_viscosity(temperature)
+        self.cp_interp = interp1d(temps, cp_vals)
+        self.k_interp = interp1d(temps, k_vals)
+        self.mu_interp = interp1d(temps, mu_vals)
+        self.pr_interp = interp1d(temps, pr_vals)
+        self.rho_interp = interp1d(temps, rho_vals)
+        self.rho_cp_interp = interp1d(temps, rho_cp_vals)
 
     @staticmethod
     def get_fluid_str(fluid_enum, concentration):
@@ -81,7 +78,7 @@ class Fluid(object):
         if self.fluid_enum == FluidType.WATER:
             return c_to_k(100)
         else:
-            return PropsSI("T_FREEZE", self.fluid_str)
+            return PropsSI("T_MAX", self.fluid_str)
 
     def calc_min_temp(self):
         """
@@ -95,11 +92,71 @@ class Fluid(object):
         else:
             return PropsSI("T_FREEZE", self.fluid_str)
 
+    def get_cp(self, temperature):
+        """
+        Looks up the fluid specific heat from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :returns fluid specific heat in [J/kg-K]
+        """
+
+        return self.cp_interp(temperature)
+
+    def get_k(self, temperature):
+        """
+        Looks up the fluid conductivity from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :return: fluid conductivity in [W/m-K]
+        """
+
+        return self.k_interp(temperature)
+
+    def get_mu(self, temperature):
+        """
+        Looks up the fluid viscosity from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :return: fluid viscosity in [Pa-s]
+        """
+
+        return self.mu_interp(temperature)
+
+    def get_pr(self, temperature):
+        """
+        Looks up the fluid Prandtl number from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :return: fluid Prandtl number
+        """
+
+        return self.pr_interp(temperature)
+
+    def get_rho(self, temperature):
+        """
+        Looks up the fluid density from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :return: fluid density in [kg/m^3]
+        """
+
+        return self.rho_interp(temperature)
+
+    def get_rho_cp(self, temperature):
+        """
+        Looks up the fluid volume-specific heat capacity from the interpolation
+
+        :param temperature: temperature, in Celsius
+        :return: fluid volume-specific heat capacity in [J/m3-K]
+        """
+
+        return self.rho_cp_interp(temperature)
+
     def calc_conductivity(self, temperature):
         """
         Determines the fluid conductivity as a function of temperature, in Celsius.
-        Uses the CoolProp python library.
 
+        :param temperature: temperature, in Celsius
         :returns fluid conductivity in [W/m-K]
         """
 
@@ -108,8 +165,8 @@ class Fluid(object):
     def calc_specific_heat(self, temperature):
         """
         Determines the fluid specific heat as a function of temperature, in Celsius.
-        Uses the CoolProp python library to find the fluid specific heat.
 
+        :param temperature: temperature, in Celsius
         :returns fluid specific heat in [J/kg-K]
         """
 
@@ -118,8 +175,8 @@ class Fluid(object):
     def calc_density(self, temperature):
         """
         Determines the fluid density as a function of temperature, in Celsius.
-        Uses the CoolProp python library.
 
+        :param temperature: temperature, in Celsius
         :returns fluid density in [kg/m3]
         """
 
@@ -128,8 +185,8 @@ class Fluid(object):
     def calc_prandtl(self, temperature):
         """
         Determines the fluid Prandtl as a function of temperature, in Celsius.
-        Uses the CoolProp python library.
 
+        :param temperature: temperature, in Celsius
         :returns fluid Prandtl number
         """
 
@@ -138,8 +195,8 @@ class Fluid(object):
     def calc_viscosity(self, temperature):
         """
         Determines the fluid viscosity as a function of temperature, in Celsius.
-        Uses the CoolProp python library.
 
+        :param temperature: temperature, in Celsius
         :returns fluid viscosity in [Pa-s]
         """
 
@@ -148,8 +205,8 @@ class Fluid(object):
     def calc_vol_heat_capacity(self, temperature):
         """
         Determines the fluid volume-specific heat capacity as a function of temperature, in Celsius.
-        Uses the CoolProp python library.
 
+        :param temperature: temperature, in Celsius
         :returns fluid volume-specific heat capacity in [J/m3-K]
         """
 
@@ -179,7 +236,4 @@ class Fluid(object):
             # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
             # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
-            return PropsSI(props[_property],
-                           'T', self.min_temp,
-                           'P', self.pressure,
-                           self.fluid_str)
+            return PropsSI(props[_property], 'T', self.min_temp, 'P', self.pressure, self.fluid_str)
