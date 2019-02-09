@@ -53,7 +53,7 @@ class TestPath(unittest.TestCase):
 
     def test_init(self):
         tst = self.add_instance()
-        self.assertEqual(tst.NAME, 'path 1')
+        self.assertEqual(tst.name, 'path 1')
         self.assertEqual(len(tst.boreholes), 1)
 
         tst_bh = tst.boreholes[0]

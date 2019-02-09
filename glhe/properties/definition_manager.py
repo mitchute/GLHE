@@ -17,6 +17,21 @@ class DefinitionsMGR(object):
                 cls._add_pipe_defs(inputs[key])
 
     @classmethod
+    def get_definition(cls, def_type: str, name: str) -> dict:
+        if def_type == 'borehole':
+            for definition in cls.borehole_defs:
+                if definition['name'] == name:
+                    return definition
+        elif def_type == 'grout':
+            for definition in cls.grout_defs:
+                if definition['name'] == name:
+                    return definition
+        elif def_type == 'pipe':
+            for definition in cls.pipe_defs:
+                if definition['name'] == name:
+                    return definition
+
+    @classmethod
     def _add_borehole_defs(cls, definitions):
         for _, definition in enumerate(definitions):
             new_def_name = definition['name']

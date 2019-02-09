@@ -4,8 +4,10 @@ import sys
 from jsonschema import validate
 
 from glhe.globals.functions import load_json
+from glhe.groundTemps.factory import get_ground_temp_model
 from glhe.properties.definition_manager import DefinitionsMGR
 from glhe.properties.props_manager import PropsMGR
+from glhe.globals.functions import merge_dicts
 
 
 class InputProcessor(object):
@@ -13,6 +15,7 @@ class InputProcessor(object):
     def __init__(self):
         self.definition_mgr = None
         self.props_mgr = None
+        self.gtm = None
 
     def process_input(self, json_input_path: str) -> dict:
         """
@@ -39,6 +42,10 @@ class InputProcessor(object):
         # load properties for later use
         self.props_mgr = PropsMGR()
         self.props_mgr.load_properties(d)
+
+        # load ground temperature model
+        self.gtm = get_ground_temp_model(merge_dicts(d['ground-temperature'],
+                                                     {'soil-diffusivity': self.props_mgr.soil.diffusivity}))
 
         return d
 

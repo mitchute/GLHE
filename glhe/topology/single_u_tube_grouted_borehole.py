@@ -13,17 +13,26 @@ from glhe.topology.segment_factory import make_segment
 
 class SingleUTubeGroutedBorehole(BoreholeBase):
 
-    def __init__(self, inputs, fluid_inst, soil_inst):
+    def __init__(self, inputs, ip, op):
 
-        BoreholeBase.__init__(self, inputs)
+        # input processor
+        self.ip = ip
+
+        # output processor
+        self.op = op
+
+        # get borehole definition data
+        bh_inputs = ip.definition_mgr.get_definition('borehole', inputs['borehole-type'])
+
+        # set up base class
+        BoreholeBase.__init__(self, bh_inputs)
 
         self.TYPE = BoreholeType.SINGLE_U_TUBE_GROUTED
-        self.SHANK_SPACE = inputs['shank-spacing']
-        self.DEPTH = inputs['depth']
-
+        self.SHANK_SPACE = bh_inputs['shank-spacing']
+        self.DEPTH = bh_inputs['depth']
         self.NUM_PIPES = 2
 
-        self.fluid = fluid_inst
+        self.fluid = ip.props_mgr.fluid
         self.grout = PropertiesBase(inputs=inputs['grout-data'])
         self.soil = soil_inst
 

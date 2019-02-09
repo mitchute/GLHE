@@ -7,10 +7,7 @@ from glhe.inputProcessor.input_processor import InputProcessor
 from glhe.outputProcessor.output_processor import OutputProcessor
 from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.load_factory import make_load_profile
-from glhe.properties.fluid import Fluid
-
-
-# from glhe.topology.full_ground_loop import GLHE
+from glhe.topology.full_ground_loop import GLHE
 
 
 class PlantLoop(object):
@@ -29,22 +26,21 @@ class PlantLoop(object):
         
         :param json_file_path: Path to the JSON input file
         """
-        ip = InputProcessor()
-        self.inputs = ip.process_input(json_file_path)
+        self.ip = InputProcessor()
+        self.inputs = self.ip.process_input(json_file_path)
         self.op = OutputProcessor()
         self.flow_profile = make_flow_profile(self.inputs['flow-profile'])
         self.load_profile = make_load_profile(self.inputs['load-profile'])
-        self.fluid = ip.props_mgr.fluid
-        # TODO: Fix GLHE so that we can construct it
-        # self.glhe = GLHE(self.inputs)
-        self.demand_inlet_temperature = 25.0
-        self.demand_outlet_temperature = 25.0
-        self.supply_inlet_temperature = 25.0
-        self.supply_outlet_temperature = 25.0
+        self.fluid = self.ip.props_mgr.fluid
+        self.soil = self.ip.props_mgr.soil
+        self.glhe = GLHE(self.inputs, self.ip, self.op)
+        init_temp = self.ip.gtm.get_temp(0, 100)
+        self.demand_inlet_temperature = init_temp
+        self.demand_outlet_temperature = init_temp
+        self.supply_inlet_temperature = init_temp
+        self.supply_outlet_temperature = init_temp
         self.flow_rate = 0.0
         self.load = 0.0
-        self.raw_output_file = open('/tmp/my.csv', 'w')
-        self.output_file = csv.writer(self.raw_output_file)
 
     def simulate(self) -> bool:
         """
@@ -52,11 +48,11 @@ class PlantLoop(object):
         
         :return: True if successful, False if not
         """
-        time_step_in_seconds = num_ts_per_hour_to_sec_per_ts(self.inputs['simulation']['time-steps per hour'])
+        time_step = num_ts_per_hour_to_sec_per_ts(self.inputs['simulation']['time-steps per hour'])
         end_sim_time = self.inputs['simulation']['runtime']
         current_sim_time = 0
         while True:
-            end_of_this_time_step = current_sim_time + time_step_in_seconds
+            end_of_this_time_step = current_sim_time + time_step
             if not self.do_one_time_step(current_sim_time):
                 return False
             if end_of_this_time_step >= end_sim_time:

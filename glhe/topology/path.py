@@ -4,22 +4,26 @@ from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBoreh
 
 class Path(object):
 
-    def __init__(self, inputs, fluid_inst, soil_inst):
+    def __init__(self, inputs, ip, op):
 
-        # Get inputs from json blob
-        self.NAME = inputs["name"]
+        # input processor
+        self.ip = ip
 
-        # Keep reference to instance for usage
-        self.fluid = fluid_inst
-        self.soil = soil_inst
+        # output processor
+        self.op = op
+
+        self.name = inputs["name"]
+
+        self.fluid = ip.props_mgr.fluid
+        self.soil = ip.props_mgr.soil
 
         # Initialize boreholes
         self.boreholes = []
         for borehole in inputs["boreholes"]:
-            self.boreholes.append(SingleUTubeGroutedBorehole(merge_dicts(borehole['borehole-data'],
+            self.boreholes.append(SingleUTubeGroutedBorehole(merge_dicts(borehole,
                                                                          {'initial temp': inputs['initial temp']}),
-                                                             fluid_inst=fluid_inst,
-                                                             soil_inst=soil_inst))
+                                                             self.ip,
+                                                             self.op))
 
         # Initialize other parameters
         self.mass_flow_rate = 0

@@ -3,7 +3,7 @@ from glhe.groundTemps.single_harmonic import SingleHarmonic
 from glhe.groundTemps.two_harmonic import TwoHarmonic
 
 
-def ground_temperature_model_factory(inputs):
+def get_ground_temp_model(inputs):
     """
     Factory method to make ground temperature model objects
 
