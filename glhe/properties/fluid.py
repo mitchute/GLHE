@@ -9,7 +9,6 @@ from glhe.properties.fluid_types import FluidType
 
 class Fluid(object):
     def __init__(self, inputs):
-        self.name = inputs['name'].upper()
         self.type = inputs['type'].upper()
         if self.type == "WATER":
             self.fluid_enum = FluidType.WATER
