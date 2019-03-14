@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import csv
+import sys
 
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.inputProcessor.input_processor import InputProcessor
@@ -97,3 +97,7 @@ class PlantLoop(object):
         # Advance time
         self.demand_inlet_temperature = self.supply_outlet_temperature  # could do mass here
         return True
+
+
+if __name__ == "__main__":
+    PlantLoop(sys.argv[1]).simulate()

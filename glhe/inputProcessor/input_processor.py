@@ -1,7 +1,7 @@
 import os
 import sys
 
-from jsonschema import validate
+from jsonschema import validate, ValidationError, SchemaError
 
 from glhe.globals.functions import load_json
 from glhe.groundTemps.factory import get_ground_temp_model
@@ -69,5 +69,7 @@ class InputProcessor(object):
             # validate
             try:
                 validate(value, schema)
-            except ValueError:
-                raise ValueError("Input object '{}' cannot validate against the schema".format(key))
+            except ValidationError:
+                raise ValidationError("Input object '{}' instance is invalid.".format(key))
+            except SchemaError:
+                raise SchemaError("Schema for object '{}' is in valid.".format(key))

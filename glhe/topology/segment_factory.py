@@ -2,7 +2,7 @@ from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegmen
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
 
 
-def make_segment(inputs, fluid_inst=None, grout_inst=None, soil_inst=None, final_seg=False):
+def make_segment(inputs, ip=None, op=None, final_seg=False):
     if inputs['model'] == 'single':
         if final_seg:
             return SingleUTubePassThroughSegment(inputs)

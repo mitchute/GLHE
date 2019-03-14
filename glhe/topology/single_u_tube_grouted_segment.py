@@ -10,8 +10,8 @@ from glhe.topology.segment_base import SegmentBase
 
 class SingleUTubeGroutedSegment(SegmentBase):
 
-    def __init__(self, inputs, fluid_inst, grout_inst, soil_inst):
-        SegmentBase.__init__(self, fluid_inst=fluid_inst, grout_inst=grout_inst, soil_inst=soil_inst)
+    def __init__(self, inputs, ip, op):
+        SegmentBase.__init__(self, ip, op)
 
         self.type = BoreholeType.SINGLE_U_TUBE_GROUTED
 

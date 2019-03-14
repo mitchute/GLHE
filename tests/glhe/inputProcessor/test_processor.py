@@ -1,11 +1,9 @@
 import os
-import tempfile
 import unittest
 from contextlib import contextmanager
 
 from jsonschema.exceptions import ValidationError
 
-from glhe.globals.functions import write_json
 from glhe.inputProcessor.input_processor import InputProcessor
 
 
@@ -221,42 +219,6 @@ class TestInputProcessor(unittest.TestCase):
         schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'inputProcessor', 'schema'))
         schema_count = len([name for name in os.listdir(schema_dir) if os.path.isfile(os.path.join(schema_dir, name))])
         self.assertEqual(test_count, schema_count)
-
-    def test_get_input_definition_data(self):
-        d = {
-            "borehole-definitions": [{
-                "name": "borehole type 1",
-                "depth": 100,
-                "diameter": 0.1099,
-                "grout-type": "standard grout",
-                "model": "simple",
-                "pipe-type": "32 mm SDR-11 HDPE",
-                "segments": 10,
-                "shank-spacing": 0.0521
-            }],
-            "grout-definitions": [{
-                "name": "standard grout",
-                "conductivity": 0.744,
-                "density": 1500,
-                "specific heat": 800
-            }],
-            "g-functions": {
-                "file": "../glhe/examples/2x2_g_functions.csv",
-                "borehole-type": "borehole type 2"
-            }
-        }
-
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
-
-        write_json(temp_file, d)
-
-        self.assertRaises(ValueError, lambda: InputProcessor().process_input(temp_file))
-
-    def test_expand_list(self):
-        inputs = [[1, 2, 3], 2]
-        new_list = InputProcessor()._expand_list(input_list=inputs)
-        self.assertEqual(inputs, new_list)
 
     def test_file_not_found(self):
         self.assertRaises(FileNotFoundError, lambda: InputProcessor().process_input('some path'))

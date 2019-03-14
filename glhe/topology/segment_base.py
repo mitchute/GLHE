@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class SegmentBase(ABC):
 
-    def __init__(self, fluid_inst=None, grout_inst=None, soil_inst=None):
+    def __init__(self, ip=None, op=None):
         self.fluid = fluid_inst
         self.grout = grout_inst
         self.soil = soil_inst
