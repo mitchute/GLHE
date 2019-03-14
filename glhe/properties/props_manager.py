@@ -15,8 +15,8 @@ class PropsMGR(object):
             elif key == 'soil':
                 self._add_soil_props_inst(inputs[key])
 
-    def _add_fluid_props_inst(self, inputs):
+    def _add_fluid_props_inst(self, inputs: dict) -> None:
         self.fluid = Fluid(inputs)
 
-    def _add_soil_props_inst(self, inputs):
+    def _add_soil_props_inst(self, inputs: dict) -> None:
         self.soil = PropertiesBase(inputs)
