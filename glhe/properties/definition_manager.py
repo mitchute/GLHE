@@ -16,17 +16,32 @@ class DefinitionsMGR(object):
 
     def get_definition(self, def_type: str, name: str) -> dict:
         if def_type == 'borehole':
-            for definition in self.borehole_defs:
-                if definition['name'] == name:
-                    return definition
+            return self._get_borehole_def(name)
         elif def_type == 'grout':
-            for definition in self.grout_defs:
-                if definition['name'] == name:
-                    return definition
+            return self._get_grout_def(name)
         elif def_type == 'pipe':
-            for definition in self.pipe_defs:
-                if definition['name'] == name:
-                    return definition
+            return self._get_pipe_def(name)
+
+    def _raise_def_not_found_error(self, name: str) -> None:
+        raise KeyError("Definition '{}' not found.".format(name))
+
+    def _get_borehole_def(self, name: str) -> dict:
+        for definition in self.borehole_defs:
+            if definition['name'] == name:
+                return definition
+        self._raise_def_not_found_error(name)
+
+    def _get_grout_def(self, name: str) -> dict:
+        for definition in self.grout_defs:
+            if definition['name'] == name:
+                return definition
+        self._raise_def_not_found_error(name)
+
+    def _get_pipe_def(self, name: str) -> dict:
+        for definition in self.pipe_defs:
+            if definition['name'] == name:
+                return definition
+        self._raise_def_not_found_error(name)
 
     def _add_borehole_defs(self, definitions):
         for _, definition in enumerate(definitions):
