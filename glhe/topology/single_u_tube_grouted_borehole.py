@@ -22,7 +22,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.op = op
 
         # get borehole definition data
-        bh_inputs = ip.definition_mgr.get_definition('borehole', inputs['borehole-type'])
+        bh_inputs = ip.definition_mgr.get_definition('borehole', inputs['borehole-def-name'])
 
         # set up base class
         BoreholeBase.__init__(self, bh_inputs)

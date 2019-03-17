@@ -3,24 +3,14 @@
   "items": {
     "type": "object",
     "properties": {
-      "name": {
-        "type": "string"
-      },
-      "outer diameter": {
-        "type": "number"
-      },
-      "inner diameter": {
-        "type": "number"
-      },
-      "conductivity": {
-        "type": "number"
-      },
-      "density": {
-        "type": "number"
-      },
-      "specific heat": {
-        "type": "number"
-      }
-    }
+      "name": {"type": "string"},
+      "outer-diameter": {"type": "number"},
+      "inner-diameter": {"type": "number"},
+      "conductivity": {"type": "number"},
+      "density": {"type": "number"},
+      "specific-heat": {"type": "number"}
+    },
+    "required" : ["name", "outer-diameter", "inner-diameter", "conductivity", "density", "specific-heat"],
+    "additionalProperties" : false
   }
 }

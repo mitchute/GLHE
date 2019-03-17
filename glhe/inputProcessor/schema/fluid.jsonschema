@@ -1,11 +1,25 @@
 {
   "type": "object",
   "properties": {
-    "type": {
-      "type": "string"
+    "fluid-type": {"enum": ["WATER", "EA", "EG", "PG"]},
+    "concentration": {"type": "number"}
+  },
+  "anyOf": [
+    {
+      "properties": {"fluid-type": {"enum": ["WATER"]}}
     },
-    "concentration": {
-      "type": "number"
+    {
+      "properties": {"fluid-type": {"enum": ["EA"]}},
+      "required": ["concentration"]
+    },
+    {
+      "properties": {"fluid-type": {"enum": ["EG"]}},
+      "required": ["concentration"]
+    },
+    {
+      "properties": {"fluid-type": {"enum": ["PG"]}},
+      "required": ["concentration"]
     }
-  }
+  ],
+  "additionalProperties" : false
 }

@@ -1,13 +1,13 @@
 import os
 import sys
 
-from jsonschema import validate, ValidationError, SchemaError
+from jsonschema import SchemaError, ValidationError, validate
 
-from glhe.globals.functions import load_json
+from glhe.globals.functions import load_json, lower_obj
+from glhe.globals.functions import merge_dicts
 from glhe.groundTemps.factory import get_ground_temp_model
 from glhe.properties.definition_manager import DefinitionsMGR
 from glhe.properties.props_manager import PropsMGR
-from glhe.globals.functions import merge_dicts
 
 
 class InputProcessor(object):
@@ -44,7 +44,7 @@ class InputProcessor(object):
         self.props_mgr.load_properties(d)
 
         # load ground temperature model
-        self.gtm = get_ground_temp_model(merge_dicts(d['ground-temperature'],
+        self.gtm = get_ground_temp_model(merge_dicts(d['ground-temperature-model'],
                                                      {'soil-diffusivity': self.props_mgr.soil.diffusivity}))
 
         return d
@@ -68,8 +68,8 @@ class InputProcessor(object):
 
             # validate
             try:
-                validate(value, schema)
+                validate(lower_obj(value), lower_obj(schema))
             except ValidationError:
-                raise ValidationError("Input object '{}' instance is invalid.".format(key))
+                raise ValidationError("Input object '{}' is invalid.".format(key))
             except SchemaError:
-                raise SchemaError("Schema for object '{}' is in valid.".format(key))
+                raise SchemaError("Schema for object '{}' is invalid.".format(key))

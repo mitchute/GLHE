@@ -1,17 +1,10 @@
 {
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
-    },
-    "conductivity": {
-      "type": "number"
-    },
-    "density": {
-      "type": "number"
-    },
-    "specific heat": {
-      "type": "number"
-    }
-  }
+    "conductivity": {"type": "number"},
+    "density": {"type": "number"},
+    "specific-heat": {"type": "number"}
+  },
+  "required" : ["conductivity", "density", "specific-heat"],
+  "additionalProperties" : false
 }

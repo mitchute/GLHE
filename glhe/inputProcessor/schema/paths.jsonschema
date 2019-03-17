@@ -3,29 +3,19 @@
   "items": {
     "type": "object",
     "properties": {
-      "name": {
-        "type": "string"
-      },
+      "path-name": {"type": "string"},
       "boreholes": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "borehole-type": {
-              "type": "string"
-            },
+            "borehole-def-name": {"type": "string"},
             "location": {
               "type": "object",
               "properties": {
-                "x": {
-                  "type": "number"
-                },
-                "y": {
-                  "type": "number"
-                },
-                "z": {
-                  "type": "number"
-                }
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "z": {"type": "number"}
               }
             }
           }

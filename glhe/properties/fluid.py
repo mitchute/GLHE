@@ -9,7 +9,7 @@ from glhe.properties.fluid_types import FluidType
 
 class Fluid(object):
     def __init__(self, inputs):
-        self.type = inputs['type'].upper()
+        self.type = inputs['fluid-type'].upper()
         if self.type == "WATER":
             self.fluid_enum = FluidType.WATER
             concentration = 0
@@ -23,7 +23,7 @@ class Fluid(object):
             self.fluid_enum = FluidType.PROPYLENE_GLYCOL
             concentration = inputs['concentration'] / 100.0
         else:
-            raise ValueError("'{}' fluid is not supported".format(self.type))
+            raise ValueError("Fluid '{}' fluid is not valid.".format(self.type))
 
         self.fluid_str = self.get_fluid_str(self.fluid_enum, concentration)
         self.min_temp = k_to_c(self.calc_min_temp())

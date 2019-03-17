@@ -27,18 +27,14 @@ class PlantLoop(object):
         :param json_file_path: Path to the JSON input file
         """
         self.ip = InputProcessor()
-        self.inputs = self.ip.process_input(json_file_path)
+        inputs = self.ip.process_input(json_file_path)
         self.op = OutputProcessor()
-        self.flow_profile = make_flow_profile(self.inputs['flow-profile'])
-        self.load_profile = make_load_profile(self.inputs['load-profile'])
-        self.fluid = self.ip.props_mgr.fluid
-        self.soil = self.ip.props_mgr.soil
-        self.glhe = GLHE(self.inputs, self.ip, self.op)
-        init_temp = self.ip.gtm.get_temp(0, 100)
-        self.demand_inlet_temperature = init_temp
-        self.demand_outlet_temperature = init_temp
-        self.supply_inlet_temperature = init_temp
-        self.supply_outlet_temperature = init_temp
+        self.flow_profile = make_flow_profile(inputs['flow-profile'])
+        self.load_profile = make_load_profile(inputs['load-profile'])
+        self.demand_inlet_temperature = inputs['simulation']['initial-temperature']
+        self.demand_outlet_temperature = inputs['simulation']['initial-temperature']
+        self.supply_inlet_temperature = inputs['simulation']['initial-temperature']
+        self.supply_outlet_temperature = inputs['simulation']['initial-temperature']
         self.flow_rate = 0.0
         self.load = 0.0
 

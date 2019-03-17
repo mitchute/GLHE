@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "ground-temperature-model-type": {"enum": ["CONSTANT", "SINGLE-HARMONIC", "TWO-HARMONIC"]},
+    "temperature": {"type": "number"},
+    "average-temperature": {"type": "number"},
+    "amplitude": {"type": "number"},
+    "phase-shift": {"type": "number"},
+    "amplitude-1": {"type": "number"},
+    "amplitude-2": {"type": "number"},
+    "phase-shift-1": {"type": "number"},
+    "phase-shift-2": {"type": "number"}
+  },
+  "anyOf": [
+    {
+      "properties": {"ground-temperature-model-type": {"enum": ["CONSTANT"]}},
+      "required": ["temperature"]
+    },
+    {
+      "properties": {"ground-temperature-model-type": {"enum": ["SINGLE-HARMONIC"]}},
+      "required": ["average-temperature", "amplitude", "phase-shift"]
+    },
+    {
+      "properties": {"ground-temperature-model-type": {"enum": ["TWO-HARMONIC"]}},
+      "required": ["average-temperature", "amplitude-1", "amplitude-2", "phase-shift-1", "phase-shift-2"]
+    }
+  ],
+  "additionalProperties" : false
+}

@@ -1,5 +1,5 @@
 from glhe.globals.functions import merge_dicts
-from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
+from glhe.topology.borehole_factory import make_borehole
 
 
 class Path(object):
@@ -12,7 +12,7 @@ class Path(object):
         # output processor
         self.op = op
 
-        self.name = inputs["name"]
+        self.name = inputs["path-name"]
 
         self.fluid = ip.props_mgr.fluid
         self.soil = ip.props_mgr.soil
@@ -20,10 +20,10 @@ class Path(object):
         # Initialize boreholes
         self.boreholes = []
         for borehole in inputs["boreholes"]:
-            self.boreholes.append(SingleUTubeGroutedBorehole(merge_dicts(borehole,
-                                                                         {'initial temp': inputs['initial temp']}),
-                                                             self.ip,
-                                                             self.op))
+            self.boreholes.append(make_borehole(merge_dicts(borehole,
+                                                            {'initial temp': inputs['initial temp']}),
+                                                self.ip,
+                                                self.op))
 
         # Initialize other parameters
         self.mass_flow_rate = 0

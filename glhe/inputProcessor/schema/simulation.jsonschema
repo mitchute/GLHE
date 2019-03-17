@@ -1,14 +1,11 @@
 {
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
-    },
-    "time-step": {
-      "type": "number"
-    },
-    "runtime": {
-      "type": "number"
-    }
-  }
+    "name": {"type": "string"},
+    "time-steps-per-hour": {"type": "number"},
+    "runtime": {"type": "number"},
+    "initial-temperature": {"type": "number}
+  },
+  "required" : ["time-steps-per-hour", "runtime", "initial-temperature"],
+  "additionalProperties" : false
 }

@@ -8,7 +8,7 @@ class PropertiesBase(object):
 
         self.conductivity = inputs["conductivity"]
         self.density = inputs["density"]
-        self.specific_heat = inputs["specific heat"]
+        self.specific_heat = inputs["specific-heat"]
 
         self.vol_heat_capacity = self._vol_heat_capacity()
         self.diffusivity = self._diffusivity()

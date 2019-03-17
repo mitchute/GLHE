@@ -6,26 +6,26 @@ from glhe.profiles.synthetic import Synthetic
 
 
 def make_load_profile(inputs):
-    load_profile_type = inputs['type']
+    load_profile_type = inputs['load-profile-type']
     if load_profile_type == 'fixed':
-        load_value = inputs['fixed']['value']
+        load_value = inputs['value']
         return Fixed(load_value)
     elif load_profile_type == 'single_impulse':
-        load_start_time = inputs['single_impulse']['start-time']
-        load_end_time = inputs['single_impulse']['end-time']
-        load_value = inputs['single_impulse']['load-value']
+        load_start_time = inputs['start-time']
+        load_end_time = inputs['end-time']
+        load_value = inputs['load-value']
         return Impulse(load_value, load_start_time, load_end_time)
     elif load_profile_type == 'external':
-        path = inputs['external']['path']
+        path = inputs['path']
         return ExternalLoad(path)
     elif load_profile_type == 'sinusoid':
-        amplitude = inputs['sinusoid']['amplitude']
-        offset = inputs['sinusoid']['offset']
-        period = inputs['sinusoid']['period']
+        amplitude = inputs['amplitude']
+        offset = inputs['offset']
+        period = inputs['period']
         return Sinusoid(amplitude, offset, period)
     elif load_profile_type == 'synthetic':
-        type = inputs['synthetic']['type']
-        amplitude = inputs['synthetic']['amplitude']
+        type = inputs['type']
+        amplitude = inputs['amplitude']
         return Synthetic(type, amplitude)
     else:
-        raise ValueError("'{}' load profile type is not supported".format(load_profile_type))
+        raise ValueError("Load profile '{}' is not valid.".format(load_profile_type))

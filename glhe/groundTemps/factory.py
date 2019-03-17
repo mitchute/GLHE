@@ -11,20 +11,20 @@ def get_ground_temp_model(inputs):
     :return: ground temperature model object
     """
 
-    gtm_type = inputs["type"]
+    gtm_type = inputs["ground-temperature-model-type"]
     if gtm_type == "constant":
-        return Constant(inputs["constant"]["temperature"])
+        return Constant(inputs["temperature"])
     elif gtm_type == "single-harmonic":
-        return SingleHarmonic(inputs["single-harmonic"]["ave-temperature"],
-                              inputs["single-harmonic"]["amplitude"],
-                              inputs["single-harmonic"]["phase-shift"],
+        return SingleHarmonic(inputs["average-temperature"],
+                              inputs["amplitude"],
+                              inputs["phase-shift"],
                               inputs["soil-diffusivity"])
     elif gtm_type == "two-harmonic":
-        return TwoHarmonic(inputs["two-harmonic"]["ave-temperature"],
-                           inputs["two-harmonic"]["amplitude-1"],
-                           inputs["two-harmonic"]["amplitude-2"],
-                           inputs["two-harmonic"]["phase-shift-1"],
-                           inputs["two-harmonic"]["phase-shift-2"],
+        return TwoHarmonic(inputs["average-temperature"],
+                           inputs["amplitude-1"],
+                           inputs["amplitude-2"],
+                           inputs["phase-shift-1"],
+                           inputs["phase-shift-2"],
                            inputs["soil-diffusivity"])
     else:
-        raise ValueError("'{}' ground temperature type is not supported".format(gtm_type))
+        raise ValueError("Ground temperature model '{}' is not valid.".format(gtm_type))

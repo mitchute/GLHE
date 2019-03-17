@@ -261,3 +261,23 @@ def tdma_2(a, b, c, d):
         dc[i] -= cc[i] * dc[i + 1]
 
     return dc
+
+
+def lower_obj(x):
+    """
+    Lower cases objects, including nested objects.
+
+    Adapted from here: https://stackoverflow.com/a/4223871/5965685
+
+    :param x: input object
+    :return: output object lower-cased
+    """
+
+    if isinstance(x, list):
+        return [lower_obj(v) for v in x]
+    elif isinstance(x, dict):
+        return dict((k.lower(), lower_obj(v)) for k, v in x.items())
+    elif isinstance(x, str):
+        return x.lower()
+    else:
+        return x

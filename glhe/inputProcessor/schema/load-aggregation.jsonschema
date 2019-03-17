@@ -1,28 +1,26 @@
 {
   "type": "object",
   "properties": {
-    "type": {
-      "type": "string"
+    "load-aggregation-type": {"enum": ["NONE", "STATIC", "DYNAMIC"]},
+    "bin-duration-in-hours": {"type": "array", "items": {"type": "number"}},
+    "min-number-bins": {"type": "array", "items": {"type": "number"}},
+    "depth": {"type": "number"},
+    "expansion-rate": {"type": "number"},
+    "start-duration-in-hours": {"type": "number"},
+    "end-duration-in-hours": {"type": "number"}
+  },
+  "anyOf": [
+    {
+      "properties": {"load-aggregation-type": {"enum": ["NONE"]}}
     },
-    "static": {
-      "type": "object",
-      "properties": {
-        "min sub-hour bins": {
-          "type": "number"
-        },
-        "bin widths in hours": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          }
-        },
-        "min number bins": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          }
-        }
-      }
+    {
+      "properties": {"load-aggregation-type": {"enum": ["STATIC"]}},
+      "required": ["bin-duration-in-hours", "min-number-bins"]
+    },
+    {
+      "properties": {"load-aggregation-type": {"enum": ["DYNAMIC"]}},
+      "required": ["depth", "expansion-rate", "start-duration-in-hours", "end-duration-in-hours"]
     }
-  }
+  ],
+  "additionalProperties" : false
 }

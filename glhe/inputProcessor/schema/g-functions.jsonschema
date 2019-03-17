@@ -1,14 +1,10 @@
 {
   "type": "object",
   "properties": {
-    "file": {
-      "type": "string"
-    },
-    "borehole-type": {
-      "type": "string"
-    },
-    "number of boreholes": {
-      "type": "number"
-    }
-  }
+    "path": {"type": "string"},
+    "borehole-type": {"type": "string"},
+    "number-boreholes": {"type": "number"}
+  },
+  "required" : ["path", "borehole-type", "number-boreholes"],
+  "additionalProperties" : false
 }
