@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.gFunction.flow_fraction import FlowFraction
+from glhe.g_function.flow_fraction import FlowFraction
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole

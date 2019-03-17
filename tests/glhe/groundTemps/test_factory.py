@@ -1,9 +1,9 @@
 import unittest
 
-from glhe.groundTemps.constant import Constant
-from glhe.groundTemps.ground_temp_factory import get_ground_temp_model
-from glhe.groundTemps.single_harmonic import SingleHarmonic
-from glhe.groundTemps.two_harmonic import TwoHarmonic
+from glhe.ground_temps.constant import Constant
+from glhe.ground_temps.ground_temp_factory import get_ground_temp_model
+from glhe.ground_temps.single_harmonic import SingleHarmonic
+from glhe.ground_temps.two_harmonic import TwoHarmonic
 
 
 class TestGTMFactory(unittest.TestCase):

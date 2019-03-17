@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from glhe.gFunction.g_function import GFunction
+from glhe.g_function.g_function import GFunction
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import write_json
 from glhe.globals.variables import gv

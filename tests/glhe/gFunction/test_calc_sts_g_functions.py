@@ -1,7 +1,7 @@
 import unittest
 
-from glhe.gFunction.calc_sts_g_functions import STSGFunctions
-from glhe.gFunction.radial_sts_cell import RadialCell
+from glhe.g_function.calc_sts_g_functions import STSGFunctions
+from glhe.g_function.radial_sts_cell import RadialCell
 from glhe.globals.constants import PI
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid

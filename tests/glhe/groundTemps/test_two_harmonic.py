@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.groundTemps.two_harmonic import TwoHarmonic
+from glhe.ground_temps.two_harmonic import TwoHarmonic
 
 
 class TestTwoHarmonic(unittest.TestCase):

@@ -2,8 +2,8 @@ from math import log, sqrt
 
 import numpy as np
 
-from glhe.gFunction.radial_cell_types import RadialCellType
-from glhe.gFunction.radial_sts_cell import RadialCell
+from glhe.g_function.radial_cell_types import RadialCellType
+from glhe.g_function.radial_sts_cell import RadialCell
 from glhe.globals.constants import PI
 from glhe.globals.constants import SEC_IN_DAY
 from glhe.globals.functions import tdma_2

@@ -7,12 +7,12 @@ from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.aggregation_factory import load_agg_factory
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
-from glhe.groundTemps.ground_temp_factory import get_ground_temp_model
+from glhe.ground_temps.ground_temp_factory import get_ground_temp_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
-from glhe.gFunction.flow_fraction import FlowFraction
+from glhe.g_function.flow_fraction import FlowFraction
 
 
 class GFunction(SimulationEntryPoint):

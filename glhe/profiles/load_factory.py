@@ -1,5 +1,5 @@
-from glhe.inputProcessor.input_processor import InputProcessor
-from glhe.outputProcessor.output_processor import OutputProcessor
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.external_load import ExternalLoad
 from glhe.profiles.impulse_load import ImpulseLoad

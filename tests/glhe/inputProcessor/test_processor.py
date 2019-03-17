@@ -211,12 +211,12 @@ class TestInputProcessor(unittest.TestCase):
 
     def test_all_schema_tests_implemented(self):
         # this count should match the number of schema validations implemented here
-        # it will match against the count of all schema files in 'glhe/inputProcessor/schema'
+        # it will match against the count of all schema files in 'glhe/input_processor/schema'
         # not great, but OK for now
         test_count = 12
 
         fpath = os.path.dirname(os.path.abspath(__file__))
-        schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'inputProcessor', 'schema'))
+        schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'input_processor', 'schema'))
         schema_count = len([name for name in os.listdir(schema_dir) if os.path.isfile(os.path.join(schema_dir, name))])
         self.assertEqual(test_count, schema_count)
 

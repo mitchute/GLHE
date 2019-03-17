@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.groundTemps.constant import Constant
+from glhe.ground_temps.constant import Constant
 
 
 class TestConstantGroundTemp(unittest.TestCase):

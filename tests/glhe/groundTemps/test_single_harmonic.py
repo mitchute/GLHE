@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.groundTemps.single_harmonic import SingleHarmonic
+from glhe.ground_temps.single_harmonic import SingleHarmonic
 
 
 class TestSingleHarmonic(unittest.TestCase):

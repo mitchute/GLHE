@@ -1,4 +1,4 @@
-from glhe.groundTemps.base import BaseGroundTemp
+from glhe.ground_temps.base import BaseGroundTemp
 
 
 class Constant(BaseGroundTemp):

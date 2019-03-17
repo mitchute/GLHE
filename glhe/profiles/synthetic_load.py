@@ -3,10 +3,10 @@ from typing import Union
 
 import numpy as np
 
-from glhe.inputProcessor.input_processor import InputProcessor
+from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
-from glhe.outputProcessor.output_processor import OutputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.base_load import BaseLoad
 
 

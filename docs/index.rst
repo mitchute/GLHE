@@ -15,7 +15,7 @@ Hey, here's the documentation
    aggregation/index
    borehole/index
    examples/index
-   gFunction/index
+   g_function/index
    groundTemps/index
    interface/index
    profiles/index

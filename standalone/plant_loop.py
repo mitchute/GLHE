@@ -4,9 +4,9 @@ import os
 import sys
 
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
-from glhe.inputProcessor.component_factory import make_component
-from glhe.inputProcessor.input_processor import InputProcessor
-from glhe.outputProcessor.output_processor import OutputProcessor
+from glhe.input_processor.component_factory import make_component
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
 
 
 class PlantLoop(object):
