@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.aggregation.dynamic_method import DynamicMethod
-from glhe.aggregation.factory import load_agg_factory
+from glhe.aggregation.aggregation_factory import load_agg_factory
 from glhe.aggregation.no_aggregation_method import NoAggMethod
 from glhe.aggregation.static_method import StaticMethod
 

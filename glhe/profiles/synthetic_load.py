@@ -1,11 +1,16 @@
 from abc import ABCMeta
+from typing import Union
 
 import numpy as np
 
-from glhe.profiles.base import Base
+from glhe.inputProcessor.input_processor import InputProcessor
+from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import SimulationResponse
+from glhe.outputProcessor.output_processor import OutputProcessor
+from glhe.profiles.base_load import BaseLoad
 
 
-class SyntheticBase(Base):
+class SyntheticBase(BaseLoad):
     """
     Pinel, P. 2003. 'Amelioration, Validation et Implantation _d'un Algorithme
     de Calcul pour Evaluer le Transfert Thermique Dans les Puits Verticaux de
@@ -22,7 +27,7 @@ class SyntheticBase(Base):
     __metaclass__ = ABCMeta
 
     def __init__(self, inputs):
-        Base.__init__(self)
+        BaseLoad.__init__(self)
         self._a = inputs["a"]
         self._b = inputs["b"]
         self._c = inputs["c"]
@@ -71,25 +76,36 @@ class SyntheticBase(Base):
         return (q_1 * q_2) + pow(-1.0, floor) * np.abs(q_1 * q_2) + self._d * pow(-1.0, floor) * sig_num
 
 
-class Synthetic(SyntheticBase):
-    def __init__(self, type, amplitude):
-        if type == 'asymmetric':
-            inputs = {'a': amplitude,
+class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
+
+    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+        self.ip = ip
+        self.op = op
+
+        if inputs['synthetic-method'] == 'asymmetric':
+            params = {'a': inputs['amplitude'],
                       'b': 1000,
                       'c': 80,
                       'd': 0.01,
                       'e': 0.95,
                       'f': 4 / 3,
                       'g': 2190}
-            SyntheticBase.__init__(self, inputs)
-        elif type == 'symmetric':
-            inputs = {'a': amplitude,
+            SyntheticBase.__init__(self, params)
+        elif inputs['synthetic-method'] == 'symmetric':
+            params = {'a': inputs['amplitude'],
                       'b': 2190,
                       'c': 80,
                       'd': 0.01,
                       'e': 0.95,
                       'f': 2,
                       'g': 0}
-            SyntheticBase.__init__(self, inputs)
+            SyntheticBase.__init__(self, params)
         else:
-            raise ValueError("'{}' Synthetic object not supported. Check input.".format(type))
+            raise ValueError("Synthetic method '{}' is not valid.".format(type))
+
+    def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
+                           mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
+        load = self.get_value(sim_time)
+        specific_heat = self.ip.props_mgr.fluid.get_cp()
+        outlet_temp = load / (mass_flow_rate * specific_heat) + inlet_temp
+        return SimulationResponse(sim_time, time_step, mass_flow_rate, outlet_temp)

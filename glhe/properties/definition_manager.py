@@ -6,6 +6,12 @@ class DefinitionsMGR(object):
         self.pipe_defs = []
 
     def load_definitions(self, inputs: dict) -> None:
+        """
+        Loads the definitions for the boreholes, grout, and pipe.
+
+        :param inputs:
+        :return:
+        """
         for _, key in enumerate(inputs):
             if key == 'borehole-definitions':
                 self._add_borehole_defs(inputs[key])
@@ -15,6 +21,14 @@ class DefinitionsMGR(object):
                 self._add_pipe_defs(inputs[key])
 
     def get_definition(self, def_type: str, name: str) -> dict:
+        """
+        Return the definition by name for the boreholes, grout, and pipe.
+
+        :param def_type: Definition type. "borehole", "grout", or "pipe"
+        :param name: Definition name
+        :return: Definition, as dictionary
+        """
+
         if def_type == 'borehole':
             return self._get_borehole_def(name)
         elif def_type == 'grout':

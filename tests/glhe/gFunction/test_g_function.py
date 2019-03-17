@@ -6,7 +6,7 @@ from glhe.gFunction.g_function import GFunction
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import write_json
 from glhe.globals.variables import gv
-from glhe.inputProcessor.input_processor import InputProcessor
+from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 
 

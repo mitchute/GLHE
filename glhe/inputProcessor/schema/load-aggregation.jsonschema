@@ -4,10 +4,8 @@
     "load-aggregation-type": {"enum": ["NONE", "STATIC", "DYNAMIC"]},
     "bin-duration-in-hours": {"type": "array", "items": {"type": "number"}},
     "min-number-bins": {"type": "array", "items": {"type": "number"}},
-    "depth": {"type": "number"},
     "expansion-rate": {"type": "number"},
-    "start-duration-in-hours": {"type": "number"},
-    "end-duration-in-hours": {"type": "number"}
+    "number-bins-per-level": {"type": "number"}
   },
   "anyOf": [
     {
@@ -19,7 +17,7 @@
     },
     {
       "properties": {"load-aggregation-type": {"enum": ["DYNAMIC"]}},
-      "required": ["depth", "expansion-rate", "start-duration-in-hours", "end-duration-in-hours"]
+      "required": ["expansion-rate", "number-bins-per-level"]
     }
   ],
   "additionalProperties" : false

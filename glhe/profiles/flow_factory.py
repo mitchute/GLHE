@@ -1,12 +1,12 @@
 from glhe.profiles.external_flow import ExternalFlow
-from glhe.profiles.fixed import Fixed
+from glhe.profiles.constant_flow import ConstantFlow
 
 
-def make_flow_profile(inputs):
+def make_flow_profile(inputs: dict) -> object:
     load_profile_type = inputs['flow-profile-type']
-    if load_profile_type == 'fixed':
-        load_value = inputs['value']
-        return Fixed(load_value)
+    if load_profile_type == 'constant':
+        flow_value = inputs['value']
+        return ConstantFlow(flow_value)
     elif load_profile_type == 'external':
         path = inputs['path']
         return ExternalFlow(path)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Base(ABC):
+class BaseLoad(ABC):
 
     @abstractmethod
     def get_value(self, time):

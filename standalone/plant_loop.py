@@ -1,69 +1,78 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.inputProcessor.component_factory import make_component
 from glhe.inputProcessor.input_processor import InputProcessor
 from glhe.outputProcessor.output_processor import OutputProcessor
-from glhe.profiles.flow_factory import make_flow_profile
-from glhe.profiles.load_factory import make_load_profile
-from glhe.topology.full_ground_loop import GLHE
 
 
 class PlantLoop(object):
-    """
-    Do a plant loop simulation.  Responsibilities include:
-    1. Get Inputs for the whole plant loop
-    2. Instantiate components
-    3. Setup topology, connections
-    4. Initialize the loop
-    5. Simulate the loop flow-wise
-    6. Control?
-    """
 
-    def __init__(self, json_file_path: str):
+    def __init__(self, json_file_path: str) -> None:
         """
-        
+        Initialize the plant loop and all components on it.
+
         :param json_file_path: Path to the JSON input file
+        :return None
         """
-        self.ip = InputProcessor()
-        inputs = self.ip.process_input(json_file_path)
-        self.op = OutputProcessor()
-        self.flow_profile = make_flow_profile(inputs['flow-profile'])
-        self.load_profile = make_load_profile(inputs['load-profile'])
-        self.demand_inlet_temperature = inputs['simulation']['initial-temperature']
-        self.demand_outlet_temperature = inputs['simulation']['initial-temperature']
-        self.supply_inlet_temperature = inputs['simulation']['initial-temperature']
-        self.supply_outlet_temperature = inputs['simulation']['initial-temperature']
-        self.flow_rate = 0.0
-        self.load = 0.0
 
-    def simulate(self) -> bool:
+        # process inputs
+        self.ip = InputProcessor(json_file_path)
+
+        # setup output processor
+        try:
+            self.op = OutputProcessor(self.ip.inputs['simulation']['output-path'],
+                                      self.ip.inputs['simulation']['output-csv-name'])
+        except KeyError:
+            self.op = OutputProcessor(os.getcwd(), 'out.csv')
+
+        # init plant-level variables
+        self.demand_inlet_temperature = self.ip.inputs['simulation']['initial-temperature']
+        self.demand_outlet_temperature = self.ip.inputs['simulation']['initial-temperature']
+        self.supply_inlet_temperature = self.ip.inputs['simulation']['initial-temperature']
+        self.supply_outlet_temperature = self.ip.inputs['simulation']['initial-temperature']
+        self.end_sim_time = self.ip.inputs['simulation']['runtime']
+        self.time_step = num_ts_per_hour_to_sec_per_ts(self.ip.inputs['simulation']['time-steps-per-hour'])
+        self.demand_comps = []
+        self.supply_comps = []
+
+        # initialize all of the plant loop components
+        self.initialize_plant_loop_components()
+
+    def initialize_plant_loop_components(self) -> None:
+
+        for comp in self.ip.inputs['components']['supply-side']:
+            self.supply_comps.append(make_component(comp, self.ip, self.op))
+
+        for comp in self.ip.inputs['components']['demand-side']:
+            self.demand_comps.append(make_component(comp, self.ip, self.op))
+
+    def simulate(self) -> None:
         """
         Do the entire time stepping simulation of the plant loop
-        
-        :return: True if successful, False if not
         """
-        time_step = num_ts_per_hour_to_sec_per_ts(self.inputs['simulation']['time-steps per hour'])
-        end_sim_time = self.inputs['simulation']['runtime']
+
         current_sim_time = 0
         while True:
-            end_of_this_time_step = current_sim_time + time_step
-            if not self.do_one_time_step(current_sim_time):
-                return False
-            if end_of_this_time_step >= end_sim_time:
+            end_of_this_time_step = current_sim_time + self.time_step
+
+            self.do_one_time_step(current_sim_time)
+
+            if end_of_this_time_step >= self.end_sim_time:
                 break
+
             current_sim_time = end_of_this_time_step
 
             self.op.collect_output({'Time': current_sim_time,
                                     'Demand Inlet Temperature': self.demand_inlet_temperature,
                                     'Demand Outlet Temperature': self.demand_outlet_temperature,
                                     'Supply Inlet Temperature': self.supply_inlet_temperature,
-                                    'Supply Outlet Temperature': self.supply_outlet_temperature,
-                                    'Plant Flow Rate': self.flow_rate,
-                                    'Plant Load': self.load})
+                                    'Supply Outlet Temperature': self.supply_outlet_temperature})
 
-        return True
+        self.op.write_to_file()
 
     def do_one_time_step(self, current_sim_time: int) -> bool:
         """

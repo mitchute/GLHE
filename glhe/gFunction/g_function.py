@@ -4,10 +4,10 @@ from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
-from glhe.aggregation.factory import load_agg_factory
+from glhe.aggregation.aggregation_factory import load_agg_factory
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
-from glhe.groundTemps.factory import get_ground_temp_model
+from glhe.groundTemps.ground_temp_factory import get_ground_temp_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid

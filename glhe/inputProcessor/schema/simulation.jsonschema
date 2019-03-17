@@ -4,7 +4,9 @@
     "name": {"type": "string"},
     "time-steps-per-hour": {"type": "number"},
     "runtime": {"type": "number"},
-    "initial-temperature": {"type": "number}
+    "initial-temperature": {"type": "number"},
+    "output-path": {"type": "string"},
+    "output-csv-name": {"type": "string"}
   },
   "required" : ["time-steps-per-hour", "runtime", "initial-temperature"],
   "additionalProperties" : false

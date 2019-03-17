@@ -2,7 +2,7 @@ import unittest
 
 from glhe.profiles.external_flow import ExternalFlow
 from glhe.profiles.flow_factory import make_flow_profile
-from glhe.profiles.fixed import Fixed
+from glhe.profiles.constant_flow import ConstantFlow
 
 
 class TestFlowFactory(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestFlowFactory(unittest.TestCase):
     def test_factory_fixed(self):
         inputs = {'type': 'fixed', 'fixed': {'value': 1}}
         profile = make_flow_profile(inputs=inputs)
-        self.assertIsInstance(profile, Fixed)
+        self.assertIsInstance(profile, ConstantFlow)
 
     def test_factory_external(self):
         inputs = {

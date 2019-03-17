@@ -1,58 +1,46 @@
 import os
-import sys
 
 from jsonschema import SchemaError, ValidationError, validate
-
+from glhe.globals.functions import lower_obj
 from glhe.globals.functions import load_json, lower_obj
-from glhe.globals.functions import merge_dicts
-from glhe.groundTemps.factory import get_ground_temp_model
 from glhe.properties.definition_manager import DefinitionsMGR
 from glhe.properties.props_manager import PropsMGR
 
 
 class InputProcessor(object):
 
-    def __init__(self):
-        self.definition_mgr = None
-        self.props_mgr = None
-        self.gtm = None
-
-    def process_input(self, json_input_path: str) -> dict:
+    def __init__(self, json_input_path: str) -> None:
         """
-        Process input file
+        Initialize the input processor, process input file, and store the input information.
+
+        :raises FileNotFoundError when input file not found.
 
         :param json_input_path: input file path
-        :return: expanded input file
+        :return none
         """
 
         # check if file exists
         if not os.path.exists(json_input_path):
-            raise FileNotFoundError("Input file: '{}' does not exist".format(sys.argv[1]))
+            raise FileNotFoundError("Input file: '{}' does not exist.".format(json_input_path))
 
         # load the input file
-        d = load_json(json_input_path)
+        self.inputs = lower_obj(load_json(json_input_path))
 
         # validate the inputs
-        self._validate_inputs(d)
+        self.validate_inputs(self.inputs)
 
         # load definitions for later use
-        self.definition_mgr = DefinitionsMGR()
-        self.definition_mgr.load_definitions(d)
+        self.defs_mgr = DefinitionsMGR()
+        self.defs_mgr.load_definitions(self.inputs)
 
         # load properties for later use
         self.props_mgr = PropsMGR()
-        self.props_mgr.load_properties(d)
-
-        # load ground temperature model
-        self.gtm = get_ground_temp_model(merge_dicts(d['ground-temperature-model'],
-                                                     {'soil-diffusivity': self.props_mgr.soil.diffusivity}))
-
-        return d
+        self.props_mgr.load_properties(self.inputs)
 
     @staticmethod
-    def _validate_inputs(input_dict: dict) -> None:
+    def validate_inputs(input_dict: dict) -> None:
         """
-        Validates the input objects against the schema
+        Validates the input objects against the schema.
 
         :param input_dict: input object
         :return: none

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 from jsonschema.exceptions import ValidationError
 
-from glhe.inputProcessor.input_processor import InputProcessor
+from glhe.input_processor.input_processor import InputProcessor
 
 
 class TestInputProcessor(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_borehole_definitions(self):
         d = {
@@ -46,7 +46,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_grout_definitions(self):
         d = {
@@ -59,7 +59,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_flow_profile(self):
         d = {
@@ -74,7 +74,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_fluid(self):
         d = {
@@ -85,7 +85,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_g_functions(self):
         d = {
@@ -96,7 +96,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_ground_temperature(self):
         d = {
@@ -121,7 +121,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_load_aggregations(self):
         d = {
@@ -134,7 +134,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_load_profile(self):
         d = {
@@ -164,7 +164,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_validate_paths(self):
         d = {
@@ -182,7 +182,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_simulation(self):
         d = {
@@ -194,7 +194,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_soil(self):
         d = {
@@ -207,7 +207,7 @@ class TestInputProcessor(unittest.TestCase):
         }
 
         with self.assertNotRaise(ValidationError):
-            InputProcessor()._validate_inputs(d)
+            InputProcessor().validate_inputs(d)
 
     def test_all_schema_tests_implemented(self):
         # this count should match the number of schema validations implemented here

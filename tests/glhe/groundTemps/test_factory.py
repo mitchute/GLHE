@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.groundTemps.constant import Constant
-from glhe.groundTemps.factory import get_ground_temp_model
+from glhe.groundTemps.ground_temp_factory import get_ground_temp_model
 from glhe.groundTemps.single_harmonic import SingleHarmonic
 from glhe.groundTemps.two_harmonic import TwoHarmonic
 

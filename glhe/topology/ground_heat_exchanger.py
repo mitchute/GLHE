@@ -7,7 +7,7 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.topology.path import Path
 
 
-class GLHE(SimulationEntryPoint):
+class GroundHeatExchanger(SimulationEntryPoint):
 
     def __init__(self, inputs, ip, op):
         self.paths = []

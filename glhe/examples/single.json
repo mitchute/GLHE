@@ -12,16 +12,11 @@
     }
   ],
   "flow-profile": {
-    "flow-profile-type": "fixed",
+    "flow-profile-type": "constant",
     "value": 0.2
   },
   "fluid": {
     "fluid-type": "water"
-  },
-  "g-functions": {
-    "path": "../glhe/examples/single_g_functions.csv",
-    "borehole-type": "borehole type 1",
-    "number-boreholes": 1
   },
   "ground-temperature-model": {
     "ground-temperature-model-type": "constant",
@@ -35,29 +30,31 @@
       "specific-heat": 1560
     }
   ],
-  "load-aggregation": {
-    "load-aggregation-type": "static",
-    "bin-duration-in-hours": [1, 2, 4, 8, 16, 32, 64],
-    "min-number-bins": [10, 10, 10, 10, 10, 10, 10]
-  },
   "load-profile": {
-    "load-profile-type": "fixed",
+    "load-profile-type": "constant",
     "value": 4000
   },
-  "paths": [
-    {
-      "path-name": "path 1",
-      "boreholes": [
-        {"location": {"x": 0, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"},
-        {"location": {"x": 1, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"}]
+  "ground-heat-exchanger": {
+    "load-aggregation": {
+      "method": "dynamic",
+      "expansion-rate": 1.5,
+      "number-bins-per-level": 9
     },
-    {
-      "path-name": "path 2",
-      "boreholes": [
-        {"location": {"x": 0, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"},
-        {"location": {"x": 1, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"}]
-    }
-  ],
+    "g-function-path": "../glhe/examples/single_g_functions.csv",
+    "flow-paths": [
+      {
+        "path-name": "path 1",
+        "boreholes": [
+          {"location": {"x": 0, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"},
+          {"location": {"x": 1, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"}]
+      },
+      {
+        "path-name": "path 2",
+        "boreholes": [
+          {"location": {"x": 0, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"},
+          {"location": {"x": 1, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"}]
+      }]
+  },
   "pipe-definitions": [
     {
       "name": "26 mm SDR-11 HDPE",
@@ -70,9 +67,13 @@
   ],
   "simulation": {
     "name": "Basic GLHE",
-    "initial-temperature": 16.1,
+    "initial-temperature": 16,
     "time-steps-per-hour": 60,
     "runtime": 86400
+  },
+  "components": {
+    "supply-side": ["flow-profile", "load-profile"],
+    "demand-side": ["ground-heat-exchanger"]
   },
   "soil": {
     "conductivity": 2.6,

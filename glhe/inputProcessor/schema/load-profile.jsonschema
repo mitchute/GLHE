@@ -1,7 +1,7 @@
 {
   "type": "object",
   "properties": {
-    "load-profile-type": {"enum": ["FIXED", "SINGLE-IMPULSE", "EXTERNAL", "SINUSOID", "SYNTHETIC"]},
+    "load-profile-type": {"enum": ["CONSTANT", "SINGLE-IMPULSE", "EXTERNAL", "SINUSOID", "SYNTHETIC"]},
     "value": {"type": "number"},
     "start-time": {"type": "number"},
     "end-time": {"type": "number"},
@@ -13,7 +13,7 @@
   },
   "anyOf": [
     {
-      "properties": {"load-profile-type": {"enum": ["FIXED"]}},
+      "properties": {"load-profile-type": {"enum": ["CONSTANT"]}},
       "required": ["value"]
     },
     {

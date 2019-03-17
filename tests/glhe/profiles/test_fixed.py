@@ -1,10 +1,10 @@
 import unittest
 
-from glhe.profiles.fixed import Fixed
+from glhe.profiles.constant_flow import ConstantFlow
 
 
 class TestFixed(unittest.TestCase):
 
     def test_get_value(self):
-        tst = Fixed(1)
+        tst = ConstantFlow(1)
         self.assertEqual(tst.get_value(), 1)
