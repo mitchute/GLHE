@@ -3,7 +3,7 @@ from glhe.aggregation.no_aggregation_method import NoAggMethod
 from glhe.aggregation.static_method import StaticMethod
 
 
-def load_agg_factory(inputs):
+def make_aggregation(inputs):
     """
     Factory method for creating load aggregation objects
 

@@ -1,7 +1,7 @@
 import unittest
 
 from glhe.ground_temps.constant import Constant
-from glhe.ground_temps.ground_temp_factory import get_ground_temp_model
+from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.ground_temps.single_harmonic import SingleHarmonic
 from glhe.ground_temps.two_harmonic import TwoHarmonic
 
@@ -13,7 +13,7 @@ class TestGTMFactory(unittest.TestCase):
                       "temperature": 20}
                   }
 
-        model = get_ground_temp_model(inputs=inputs)
+        model = make_ground_temp_model(inputs=inputs)
         self.assertIsInstance(model, Constant)
 
         inputs = {"type": "single-harmonic",
@@ -24,7 +24,7 @@ class TestGTMFactory(unittest.TestCase):
                       "phase-shift": 0}
                   }
 
-        model = get_ground_temp_model(inputs=inputs)
+        model = make_ground_temp_model(inputs=inputs)
         self.assertIsInstance(model, SingleHarmonic)
 
         inputs = {"type": "two-harmonic",
@@ -37,8 +37,8 @@ class TestGTMFactory(unittest.TestCase):
                       "phase-shift-2": 0}
                   }
 
-        model = get_ground_temp_model(inputs=inputs)
+        model = make_ground_temp_model(inputs=inputs)
         self.assertIsInstance(model, TwoHarmonic)
 
         inputs = {'type': 'bob'}
-        self.assertRaises(ValueError, lambda: get_ground_temp_model(inputs=inputs))
+        self.assertRaises(ValueError, lambda: make_ground_temp_model(inputs=inputs))

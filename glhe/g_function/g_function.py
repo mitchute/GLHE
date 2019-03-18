@@ -4,10 +4,10 @@ from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
 from glhe.aggregation.dynamic_bin import DynamicBin
-from glhe.aggregation.aggregation_factory import load_agg_factory
+from glhe.aggregation.aggregation_factory import make_aggregation
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
-from glhe.ground_temps.ground_temp_factory import get_ground_temp_model
+from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
@@ -33,12 +33,12 @@ class GFunction(SimulationEntryPoint):
         self.sim_time = 0
 
         # init load aggregation method
-        self.load_aggregation = load_agg_factory(inputs['load-aggregation'])
+        self.load_aggregation = make_aggregation(inputs['load-aggregation'])
 
         # ground temperature model
-        self.get_ground_temp = get_ground_temp_model(merge_dicts(inputs['ground-temperature'],
-                                                                 {'soil-diffusivity': self.soil.diffusivity}
-                                                                 )).get_temp
+        self.get_ground_temp = make_ground_temp_model(merge_dicts(inputs['ground-temperature'],
+                                                                  {'soil-diffusivity': self.soil.diffusivity}
+                                                                  )).get_temp
 
         self.my_bh = SingleUTubeGroutedBorehole(merge_dicts(inputs['g-functions']['borehole-data'],
                                                             {'initial temp': self.get_ground_temp(0, 100)}), self.fluid,

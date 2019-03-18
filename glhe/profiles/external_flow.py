@@ -10,8 +10,8 @@ from glhe.profiles.external_base import ExternalBase
 class ExternalFlow(ExternalBase, SimulationEntryPoint):
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        path = inputs['value']
-        ExternalBase.__init__(self, input_file_path=path, col_num=1)
+        path = inputs['path']
+        ExternalBase.__init__(self, path, col_num=1)
         self.ip = ip
         self.op = op
 

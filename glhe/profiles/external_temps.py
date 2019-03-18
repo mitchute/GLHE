@@ -7,7 +7,7 @@ from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.external_base import ExternalBase
 
 
-class ExternalInletTemps(ExternalBase, SimulationEntryPoint):
+class ExternalTemps(ExternalBase, SimulationEntryPoint):
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         ExternalBase.__init__(self, input_file_path=inputs['path'], col_num=2)

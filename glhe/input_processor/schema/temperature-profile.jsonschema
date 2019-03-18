@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "temperature-profile-type": {"enum": ["CONSTANT", "EXTERNAL"]},
+    "value": {"type": "number"},
+    "path": {"type": "string"}
+  },
+  "anyOf": [
+    {
+      "properties": {"temperature-profile-type": {"enum": ["CONSTANT"]}},
+      "required": ["value"]
+    },
+    {
+      "properties": {"temperature-profile-type": {"enum": ["EXTERNAL"]}},
+      "required": ["path"]
+    }
+  ],
+  "additionalProperties" : false
+}

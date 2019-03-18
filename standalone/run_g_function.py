@@ -11,7 +11,6 @@ from glhe.globals.variables import gv
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.flow_factory import make_flow_profile
-from glhe.profiles.inlet_temp_factory import make_inlet_temp_profile
 from glhe.profiles.load_factory import make_load_profile
 from glhe.properties.fluid import Fluid
 
@@ -50,10 +49,10 @@ class RunGFunctions(object):
         except KeyError:
             pass
 
-        if self.drive_sim_with_inlet_temps:
-            self.inlet_temp_profile = make_inlet_temp_profile(d['flow-profile'])
-        else:
-            self.load_profile = make_load_profile(d['load-profile'])
+        # if self.drive_sim_with_inlet_temps:
+        #     self.inlet_temp_profile = make_inlet_temp_profile(d['flow-profile'])
+        # else:
+        #     self.load_profile = make_load_profile(d['load-profile'])
 
         self.flow_profile = make_flow_profile(d['flow-profile'])
 
