@@ -16,3 +16,6 @@ class ConstantFlow(SimulationEntryPoint):
     def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
                            mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
         return SimulationResponse(sim_time, time_step, self.flow_rate, inlet_temp)
+
+    def report_outputs(self):
+        return {'ConstantFlow: flow rate [kg/s]': self.flow_rate}

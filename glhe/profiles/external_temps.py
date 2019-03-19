@@ -14,7 +14,13 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
+        # report variables
+        self.outlet_temp = 0
+
     def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
                            mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
-        temp = self.get_value(sim_time)
-        return SimulationResponse(sim_time, time_step, mass_flow_rate, temp)
+        self.outlet_temp = self.get_value(sim_time)
+        return SimulationResponse(sim_time, time_step, mass_flow_rate, self.outlet_temp)
+
+    def report_outputs(self):
+        return {'ExternalTemps: temperature [C]': self.outlet_temp}

@@ -3,6 +3,7 @@
 import os
 import sys
 
+from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.input_processor.component_factory import make_component
 from glhe.input_processor.input_processor import InputProcessor
@@ -58,19 +59,13 @@ class PlantLoop(object):
         current_sim_time = 0
         while True:
             end_of_this_time_step = current_sim_time + self.time_step
-
             self.do_one_time_step(current_sim_time)
+            self.collect_outputs(current_sim_time)
 
             if end_of_this_time_step >= self.end_sim_time:
                 break
 
             current_sim_time = end_of_this_time_step
-
-            self.op.collect_output({'Time': current_sim_time,
-                                    'Demand Inlet Temperature': self.demand_inlet_temperature,
-                                    'Demand Outlet Temperature': self.demand_outlet_temperature,
-                                    'Supply Inlet Temperature': self.supply_inlet_temperature,
-                                    'Supply Outlet Temperature': self.supply_outlet_temperature})
 
         self.op.write_to_file()
 
@@ -102,6 +97,29 @@ class PlantLoop(object):
         # Advance time
         self.demand_inlet_temperature = self.supply_outlet_temperature  # could do mass here
         return True
+
+    def report_outputs(self):
+
+        d = {'Demand Inlet Temperature': self.demand_inlet_temperature,
+             'Demand Outlet Temperature': self.demand_outlet_temperature,
+             'Supply Inlet Temperature': self.supply_inlet_temperature,
+             'Supply Outlet Temperature': self.supply_outlet_temperature}
+
+        return d
+
+    def collect_outputs(self, sim_time):
+
+        d = {'Time': sim_time}
+
+        d = merge_dicts(d, self.report_outputs())
+
+        for comp in self.supply_comps:
+            d = merge_dicts(d, comp.report_outputs())
+
+        for comp in self.demand_comps:
+            d = merge_dicts(d, comp.report_outputs())
+
+        self.op.collect_output(d)
 
 
 if __name__ == "__main__":

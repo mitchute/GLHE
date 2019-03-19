@@ -10,3 +10,7 @@ class SimulationEntryPoint(ABC):
     def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
                            mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]) -> SimulationResponse:
         pass  # pragma: no cover
+
+    @abstractmethod
+    def report_outputs(self):
+        pass  # pragma: no cover

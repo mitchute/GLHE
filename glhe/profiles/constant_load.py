@@ -13,8 +13,15 @@ class ConstantLoad(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
+        # report variables
+        self.outlet_temp = 0
+
     def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
                            mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
         specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
-        outlet_temp = self.load / (mass_flow_rate * specific_heat) + inlet_temp
-        return SimulationResponse(sim_time, time_step, mass_flow_rate, outlet_temp)
+        self.outlet_temp = self.load / (mass_flow_rate * specific_heat) + inlet_temp
+        return SimulationResponse(sim_time, time_step, mass_flow_rate, self.outlet_temp)
+
+    def report_outputs(self):
+        return {'ConstantLoad: temperature [C]': self.outlet_temp,
+                'ConstantLoad: load [W]': self.load}
