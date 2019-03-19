@@ -31,5 +31,5 @@ class TestConstantFlow(unittest.TestCase):
 
         self.assertEqual(res.sim_time, 0)
         self.assertEqual(res.time_step, 10)
-        self.assertEqual(res.mass_flow_rate, 0.1)
+        self.assertEqual(res.flow_rate, 0.1)
         self.assertEqual(res.temperature, 10)
