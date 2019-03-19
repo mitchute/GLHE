@@ -1,5 +1,3 @@
-from typing import Union
-
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -13,9 +11,8 @@ class ConstantFlow(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
-    def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
-                           mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
-        return SimulationResponse(sim_time, time_step, self.flow_rate, inlet_temp)
+    def simulate_time_step(self, inputs: SimulationResponse):
+        return SimulationResponse(inputs.sim_time, inputs.time_step, self.flow_rate, inputs.temperature)
 
     def report_outputs(self):
         return {'ConstantFlow: flow rate [kg/s]': self.flow_rate}

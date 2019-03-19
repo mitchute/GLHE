@@ -1,5 +1,4 @@
 from math import pi, sin
-from typing import Union
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
@@ -25,12 +24,13 @@ class SinusoidLoad(BaseLoad, SimulationEntryPoint):
     def get_value(self, time):
         return self.amplitude * sin(2 * pi * time / self.period) + self.offset
 
-    def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
-                           mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
-        self.load = self.get_value(sim_time)
-        specific_heat = self.ip.props_mgr.fluid.get_cp()
-        self.outlet_temp = self.load / (mass_flow_rate * specific_heat) + inlet_temp
-        return SimulationResponse(sim_time, time_step, mass_flow_rate, self.outlet_temp)
+    def simulate_time_step(self, inputs: SimulationResponse):
+        self.load = self.get_value(inputs.sim_time)
+        inlet_temp = inputs.temperature
+        flow_rate = inputs.mass_flow_rate
+        specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
+        self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
+        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.mass_flow_rate, self.outlet_temp)
 
     def report_outputs(self):
         return {'SinusoidLoad: temperature [C]': self.outlet_temp,

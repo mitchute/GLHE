@@ -4,6 +4,7 @@ import unittest
 
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.impulse_load import ImpulseLoad
 
@@ -27,13 +28,13 @@ class TestImpulseLoad(unittest.TestCase):
 
     def test_get_value(self):
         tst = self.add_instance()
-        res = tst.simulate_time_step(0, 10, 0.01, 10)
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0.01, 10))
         self.assertEqual(res.sim_time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.mass_flow_rate, 0.01)
         self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)
 
-        res = tst.simulate_time_step(300, 10, 0.01, 10)
+        res = tst.simulate_time_step(SimulationResponse(300, 10, 0.01, 10))
         self.assertEqual(res.sim_time, 300)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.mass_flow_rate, 0.01)

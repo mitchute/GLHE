@@ -72,8 +72,8 @@
     "runtime": 86400
   },
   "components": {
-    "supply-side": ["flow-profile", "load-profile"],
-    "demand-side": ["ground-heat-exchanger"]
+    "demand-side": ["flow-profile", "load-profile"],
+    "supply-side": ["ground-heat-exchanger"]
   },
   "soil": {
     "conductivity": 2.6,

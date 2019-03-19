@@ -4,6 +4,7 @@ import unittest
 
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.external_flow import ExternalFlow
 
@@ -85,7 +86,7 @@ class TestExternalFlow(unittest.TestCase):
                     '2018-01-01 03:00:00, 4, 4\n')
 
         tst = self.add_instance(temp_data)
-        res = tst.simulate_time_step(0, 10, 0.00001, 10)
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0.00001, 10))
         self.assertEqual(res.sim_time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.mass_flow_rate, 1)

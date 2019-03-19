@@ -1,10 +1,5 @@
-from math import sqrt
-
-from scipy.optimize import minimize_scalar
-
-from glhe.globals.functions import merge_dicts
 from glhe.interface.entry import SimulationEntryPoint
-from glhe.topology.path import Path
+from glhe.interface.response import SimulationResponse
 
 
 class GroundHeatExchanger(SimulationEntryPoint):
@@ -13,16 +8,22 @@ class GroundHeatExchanger(SimulationEntryPoint):
         self.paths = []
         self.ip = ip
         self.op = op
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
-        self.gnd_temp = ip.gtm.get_temp
+        # self.fluid = ip.props_mgr.fluid
+        # self.soil = ip.props_mgr.soil
+        # self.gnd_temp = ip.gtm.get_temp
+        #
+        # init_temp = self.gnd_temp(0, 100)
+        # self.inlet_temp = init_temp
+        # self.outlet_temp = init_temp
+        #
+        # for path in inputs["paths"]:
+        #     self.paths.append(Path(merge_dicts(path, {'initial temp': init_temp}), ip, op))
 
-        init_temp = self.gnd_temp(0, 100)
-        self.inlet_temp = init_temp
-        self.outlet_temp = init_temp
+    def simulate_time_step(self, inputs: SimulationResponse):
+        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.mass_flow_rate, inputs.temperature)
 
-        for path in inputs["paths"]:
-            self.paths.append(Path(merge_dicts(path, {'initial temp': init_temp}), ip, op))
+    def report_outputs(self):
+        pass
 
     # def set_flow_rates(self, plant_mass_flow_rate):
     #     for path in self.paths:
@@ -41,12 +42,12 @@ class GroundHeatExchanger(SimulationEntryPoint):
     #         path_mass_flow.append(sqrt(delta_p / path.flow_resistance))
     #     return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
-    def simulate_time_step(self, plant_inlet_temperature, plant_mass_flow_rate, curr_simulation_time):
-        import random
-        return 18 + float(random.randint(1, 100)) / 50
-        # self.inlet_temp = plant_inlet_temperature
-        # self.fluid.update_properties(mean([self.inlet_temp, self.outlet_temp]))
-        # self.set_flow_rates(plant_mass_flow_rate)
-        #
-        # for path in self.paths:
-        #     path.simulate(self.inlet_temp)
+    # def simulate_time_step(self, sim_time, time_step, ):
+    #     import random
+    #     return 18 + float(random.randint(1, 100)) / 50
+    # self.inlet_temp = plant_inlet_temperature
+    # self.fluid.update_properties(mean([self.inlet_temp, self.outlet_temp]))
+    # self.set_flow_rates(plant_mass_flow_rate)
+    #
+    # for path in self.paths:
+    #     path.simulate(self.inlet_temp)

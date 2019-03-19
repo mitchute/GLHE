@@ -14,14 +14,16 @@ class ImpulseLoad(SimulationEntryPoint):
         # report variables
         self.outlet_temp = 0
 
-    def simulate_time_step(self, sim_time, time_step, mass_flow_rate, inlet_temp):
-        if self.start_time <= sim_time < self.end_time:
+    def simulate_time_step(self, inputs: SimulationResponse):
+        if self.start_time <= inputs.sim_time < self.end_time:
+            inlet_temp = inputs.temperature
+            flow_rate = inputs.mass_flow_rate
             specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
-            self.outlet_temp = self.load / (mass_flow_rate * specific_heat) + inlet_temp
-            return SimulationResponse(sim_time, time_step, mass_flow_rate, self.outlet_temp)
+            self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
+            return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.mass_flow_rate, self.outlet_temp)
         else:
             self.load = 0
-            return SimulationResponse(sim_time, time_step, mass_flow_rate, inlet_temp)
+            return inputs
 
     def report_outputs(self):
         return {'ImpulseLoad: temperature [C]': self.outlet_temp,

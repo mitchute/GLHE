@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Union
 
 from glhe.interface.response import SimulationResponse
 
@@ -7,10 +6,9 @@ from glhe.interface.response import SimulationResponse
 class SimulationEntryPoint(ABC):
 
     @abstractmethod
-    def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
-                           mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]) -> SimulationResponse:
+    def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
         pass  # pragma: no cover
 
     @abstractmethod
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         pass  # pragma: no cover

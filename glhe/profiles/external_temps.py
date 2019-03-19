@@ -1,5 +1,3 @@
-from typing import Union
-
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -17,10 +15,9 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         # report variables
         self.outlet_temp = 0
 
-    def simulate_time_step(self, sim_time: Union[int, float], time_step: Union[int, float],
-                           mass_flow_rate: Union[int, float], inlet_temp: Union[int, float]):
-        self.outlet_temp = self.get_value(sim_time)
-        return SimulationResponse(sim_time, time_step, mass_flow_rate, self.outlet_temp)
+    def simulate_time_step(self, inputs: SimulationResponse):
+        self.outlet_temp = self.get_value(inputs.sim_time)
+        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.mass_flow_rate, self.outlet_temp)
 
     def report_outputs(self):
         return {'ExternalTemps: temperature [C]': self.outlet_temp}

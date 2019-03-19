@@ -2,11 +2,13 @@
 
 import os
 import sys
+from typing import Union
 
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.input_processor.component_factory import make_component
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 
 
@@ -57,46 +59,27 @@ class PlantLoop(object):
         """
 
         current_sim_time = 0
+
         while True:
             end_of_this_time_step = current_sim_time + self.time_step
             self.do_one_time_step(current_sim_time)
-            self.collect_outputs(current_sim_time)
+            self.collect_outputs(end_of_this_time_step)
+            current_sim_time = end_of_this_time_step
 
             if end_of_this_time_step >= self.end_sim_time:
                 break
 
-            current_sim_time = end_of_this_time_step
-
         self.op.write_to_file()
 
-    def do_one_time_step(self, current_sim_time: int) -> bool:
+    def do_one_time_step(self, current_sim_time: Union[int, float]):
         """
         Simulate one time step of the entire plant loop
-        Consists of:
-        
-        - Adding a load
-        - Looping over components
-        
-        :return: True if successful, False if not
         """
 
-        self.flow_rate = self.flow_profile.get_value(current_sim_time)
-        self.load = self.load_profile.get_value(current_sim_time)
+        response = SimulationResponse(current_sim_time, self.time_step, 0, self.demand_inlet_temperature)
 
-        # Simulate demand side
-        demand_cp = self.fluid.calc_specific_heat(self.demand_inlet_temperature)
-        self.demand_outlet_temperature = self.demand_inlet_temperature + self.load / (self.flow_rate * demand_cp)
-        # Simulate supply side
-        self.supply_inlet_temperature = self.demand_outlet_temperature  # could do mass here?
-        # TODO: Fix GLHE so we can call it
-        import random
-        self.supply_outlet_temperature = 18 + float(random.randint(1, 100)) / 50
-        # self.supply_outlet_temperature = self.glhe.simulate_time_step(
-        #     self.supply_inlet_temperature, self.flow_rate, current_sim_time
-        # )
-        # Advance time
-        self.demand_inlet_temperature = self.supply_outlet_temperature  # could do mass here
-        return True
+        for comp in self.demand_comps:
+            response = comp.simulate_time_step(response)
 
     def report_outputs(self):
 
