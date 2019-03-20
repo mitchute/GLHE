@@ -62,7 +62,7 @@ class PlantLoop(object):
 
         while True:
             end_of_this_time_step = current_sim_time + self.time_step
-            self.do_one_time_step(current_sim_time)
+            self.do_one_time_step(current_sim_time, self.time_step)
             self.collect_outputs(end_of_this_time_step)
             current_sim_time = end_of_this_time_step
 
@@ -71,14 +71,14 @@ class PlantLoop(object):
 
         self.op.write_to_file()
 
-    def do_one_time_step(self, current_sim_time: Union[int, float]):
+    def do_one_time_step(self, current_sim_time: Union[int, float], time_step: Union[int, float]):
         """
         Simulate one time step of the entire plant loop
         """
 
         # update demand inlet node and initial conditions
         self.demand_inlet_temperature = self.supply_outlet_temperature
-        response = SimulationResponse(current_sim_time, self.time_step, 0, self.demand_inlet_temperature)
+        response = SimulationResponse(current_sim_time, time_step, 0, self.demand_inlet_temperature)
 
         # simulate demand components flow-wise
         for comp in self.demand_comps:

@@ -34,12 +34,12 @@ class Fluid(object):
 
         temps = arange(self.min_temp, self.max_temp, 0.5)
 
-        cp_vals = [self.calc_specific_heat(x) for _, x in enumerate(temps)]
-        k_vals = [self.calc_conductivity(x) for _, x in enumerate(temps)]
-        mu_vals = [self.calc_viscosity(x) for _, x in enumerate(temps)]
-        pr_vals = [self.calc_prandtl(x) for _, x in enumerate(temps)]
-        rho_vals = [self.calc_density(x) for _, x in enumerate(temps)]
-        rho_cp_vals = [self.calc_vol_heat_capacity(x) for _, x in enumerate(temps)]
+        cp_vals = [self.calc_specific_heat(x) for x in temps]
+        k_vals = [self.calc_conductivity(x) for x in temps]
+        mu_vals = [self.calc_viscosity(x) for x in temps]
+        pr_vals = [self.calc_prandtl(x) for x in temps]
+        rho_vals = [self.calc_density(x) for x in temps]
+        rho_cp_vals = [self.calc_vol_heat_capacity(x) for x in temps]
 
         self.cp_interp = interp1d(temps, cp_vals)
         self.k_interp = interp1d(temps, k_vals)
