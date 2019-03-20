@@ -9,7 +9,7 @@ class PropsMGR(object):
         self.soil = None
 
     def load_properties(self, inputs: dict) -> None:
-        for _, key in enumerate(inputs):
+        for key in inputs:
             if key == 'fluid':
                 self._add_fluid_props_inst(inputs[key])
             elif key == 'soil':

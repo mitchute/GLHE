@@ -12,6 +12,8 @@ class DefinitionsMGR(object):
         :param inputs:
         :return:
         """
+
+        # TODO: remove enumerate EVERYWHERE
         for _, key in enumerate(inputs):
             if key == 'borehole-definitions':
                 self._add_borehole_defs(inputs[key])
