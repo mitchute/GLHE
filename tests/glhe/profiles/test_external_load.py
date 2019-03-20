@@ -90,5 +90,5 @@ class TestExternalLoad(unittest.TestCase):
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0.00001, 10))
         self.assertEqual(res.sim_time, 0)
         self.assertEqual(res.time_step, 10)
-        self.assertEqual(res.mass_flow_rate, 0.00001)
+        self.assertEqual(res.flow_rate, 0.00001)
         self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)

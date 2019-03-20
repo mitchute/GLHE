@@ -76,10 +76,24 @@ class PlantLoop(object):
         Simulate one time step of the entire plant loop
         """
 
+        # update demand inlet node and initial conditions
+        self.demand_inlet_temperature = self.supply_outlet_temperature
         response = SimulationResponse(current_sim_time, self.time_step, 0, self.demand_inlet_temperature)
 
+        # simulate demand components flow-wise
         for comp in self.demand_comps:
             response = comp.simulate_time_step(response)
+
+        # update interface nodes
+        self.demand_outlet_temperature = response.temperature
+        self.supply_inlet_temperature = response.temperature
+
+        # simulate supply components flow-wise
+        for comp in self.supply_comps:
+            response = comp.simulate_time_step(response)
+
+        # supply outlet node
+        self.supply_outlet_temperature = response.temperature
 
     def report_outputs(self):
 
@@ -92,16 +106,21 @@ class PlantLoop(object):
 
     def collect_outputs(self, sim_time):
 
+        # record current time
         d = {'Time': sim_time}
 
+        # report outputs from the PlantLoop object
         d = merge_dicts(d, self.report_outputs())
 
-        for comp in self.supply_comps:
-            d = merge_dicts(d, comp.report_outputs())
-
+        # collect reports from demand components
         for comp in self.demand_comps:
             d = merge_dicts(d, comp.report_outputs())
 
+        # collect outputs from the supply components
+        for comp in self.supply_comps:
+            d = merge_dicts(d, comp.report_outputs())
+
+        # finalize collection by by the OutputProcessor
         self.op.collect_output(d)
 
 
