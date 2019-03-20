@@ -4,9 +4,9 @@ from abc import abstractmethod
 class BoreholeBase(object):
 
     def __init__(self, inputs):
-        self.DEPTH = inputs['depth']
-        self.DIAMETER = inputs['diameter']
-        self.RADIUS = self.DIAMETER / 2
+        self.length = inputs['depth']
+        self.diameter = inputs['diameter']
+        self.radius = self.diameter / 2
 
     @abstractmethod
     def calc_fluid_volume(self):

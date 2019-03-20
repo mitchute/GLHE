@@ -14,9 +14,6 @@ class Path(object):
 
         self.name = inputs["path-name"]
 
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
-
         # Initialize boreholes
         self.boreholes = []
         for borehole in inputs["boreholes"]:

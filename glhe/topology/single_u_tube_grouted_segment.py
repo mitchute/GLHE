@@ -52,13 +52,13 @@ class SingleUTubeGroutedSegment(SegmentBase):
         return PI / 4 * self.DIAMETER ** 2 * self.LENGTH
 
     def calc_fluid_volume(self):
-        return self.pipe_1.FLUID_VOL + self.pipe_2.FLUID_VOL
+        return self.pipe_1.fluid_vol + self.pipe_2.fluid_vol
 
     def calc_grout_volume(self):
-        return self.calc_total_volume() - self.pipe_1.TOTAL_VOL - self.pipe_2.TOTAL_VOL
+        return self.calc_total_volume() - self.pipe_1.total_vol - self.pipe_2.total_vol
 
     def calc_pipe_volume(self):
-        return self.pipe_1.PIPE_WALL_VOL + self.pipe_2.PIPE_WALL_VOL
+        return self.pipe_1.pipe_wall_vol + self.pipe_2.pipe_wall_vol
 
     def right_hand_side(self, y):
         num_equations = 4
@@ -73,16 +73,16 @@ class SingleUTubeGroutedSegment(SegmentBase):
         r_b = self.bh_resist
         r_12 = self.direct_coupling_resist
 
-        c_f_1 = self.fluid.heat_capacity * self.pipe_1.FLUID_VOL
-        c_f_2 = self.fluid.heat_capacity * self.pipe_2.FLUID_VOL
+        c_f_1 = self.fluid.heat_capacity * self.pipe_1.fluid_vol
+        c_f_2 = self.fluid.heat_capacity * self.pipe_2.fluid_vol
 
         # spilt between inner and outer grout layer
         f = 0.1
         c_g_1 = f * self.grout.specific_heat * self.grout.density * self.GROUT_VOL
-        c_g_1 += self.pipe_1.specific_heat * self.pipe_1.density * self.pipe_1.PIPE_WALL_VOL
+        c_g_1 += self.pipe_1.specific_heat * self.pipe_1.density * self.pipe_1.pipe_wall_vol
 
         c_g_2 = (1 - f) * self.grout.specific_heat * self.grout.density * self.GROUT_VOL
-        c_g_2 += self.pipe_2.specific_heat * self.pipe_2.density * self.pipe_2.PIPE_WALL_VOL
+        c_g_2 += self.pipe_2.specific_heat * self.pipe_2.density * self.pipe_2.pipe_wall_vol
 
         r[0] = ((t_i_1 - y[0]) / r_f + (y[2] - y[0]) * dz / (r_12 / 2.0) + (y[3] - y[0]) * dz / r_b) / c_f_1
         r[1] = ((t_i_2 - y[1]) / r_f + (y[2] - y[1]) * dz / (r_12 / 2.0) + (y[3] - y[1]) * dz / r_b) / c_f_2

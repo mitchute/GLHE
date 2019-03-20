@@ -47,15 +47,15 @@ class GFunction(SimulationEntryPoint):
         self.flow_frac = FlowFraction()
 
         self.NUM_BH = inputs['g-functions']['number of boreholes']
-        self.TOT_LENGTH = self.my_bh.DEPTH * self.NUM_BH
+        self.TOT_LENGTH = self.my_bh.length * self.NUM_BH
 
         # time constant
-        self.t_s = self.my_bh.DEPTH ** 2 / (9 * self.soil.diffusivity)
+        self.t_s = self.my_bh.length ** 2 / (9 * self.soil.diffusivity)
 
         self.c_0 = 2 * PI * self.soil.conductivity
 
         # initial temperature
-        init_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
+        init_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.length)
 
         # other inits
         self.fluid_cap = 0
@@ -152,7 +152,7 @@ class GFunction(SimulationEntryPoint):
 
             self.flow_fraction = self.calc_flow_fraction()
             # self.flow_fraction = 0.5
-            self.ground_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.DEPTH)
+            self.ground_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.length)
             self.fluid_cap = mass_flow_rate * self.fluid.specific_heat
 
         temp_rise_prev_bin, q_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()

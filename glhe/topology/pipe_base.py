@@ -8,22 +8,22 @@ class PipeBase(PropertiesBase):
 
         PropertiesBase.__init__(self, inputs=inputs)
 
-        self.INNER_DIAMETER = inputs["inner diameter"]
-        self.OUTER_DIAMETER = inputs["outer diameter"]
-        self.LENGTH = inputs['length']
-        self.INIT_TEMP = inputs['initial temp']
+        self.inner_diameter = inputs["inner diameter"]
+        self.outer_diameter = inputs["outer diameter"]
+        self.length = inputs['length']
+        self.init_temp = inputs['initial temp']
 
-        self.THICKNESS = (self.OUTER_DIAMETER - self.INNER_DIAMETER) / 2
-        self.INNER_RADIUS = self.INNER_DIAMETER / 2
-        self.OUTER_RADIUS = self.OUTER_DIAMETER / 2
+        self.wall_thickness = (self.outer_diameter - self.inner_diameter) / 2
+        self.inner_radius = self.inner_diameter / 2
+        self.outer_radius = self.outer_diameter / 2
 
-        self.AREA_CR_INNER = PI / 4 * self.INNER_DIAMETER ** 2
-        self.AREA_CR_OUTER = PI / 4 * self.OUTER_DIAMETER ** 2
-        self.AREA_CR_PIPE = self.AREA_CR_OUTER - self.AREA_CR_INNER
+        self.area_cr_inner = PI / 4 * self.inner_diameter ** 2
+        self.area_cr_outer = PI / 4 * self.outer_diameter ** 2
+        self.area_cr_pipe = self.area_cr_outer - self.area_cr_inner
 
-        self.AREA_S_INNER = PI * self.INNER_DIAMETER * self.LENGTH
-        self.AREA_S_OUTER = PI * self.OUTER_DIAMETER * self.LENGTH
+        self.area_s_inner = PI * self.inner_diameter * self.length
+        self.area_s_outer = PI * self.outer_diameter * self.length
 
-        self.TOTAL_VOL = self.AREA_CR_OUTER * self.LENGTH
-        self.FLUID_VOL = self.AREA_CR_INNER * self.LENGTH
-        self.PIPE_WALL_VOL = self.AREA_CR_PIPE * self.LENGTH
+        self.total_vol = self.area_cr_outer * self.length
+        self.fluid_vol = self.area_cr_inner * self.length
+        self.pipe_wall_vol = self.area_cr_pipe * self.length

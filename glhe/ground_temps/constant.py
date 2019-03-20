@@ -13,7 +13,7 @@ class Constant(BaseGroundTemp):
         :param temp: Temperature of the soil [C]
         """
 
-        self._temp = temp
+        self.temperature = temp
 
     def get_temp(self, time=None, depth=None):
-        return self._temp
+        return self.temperature

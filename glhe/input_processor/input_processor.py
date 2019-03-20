@@ -61,3 +61,11 @@ class InputProcessor(object):
                 raise ValidationError("Input object '{}' is invalid.".format(key))
             except SchemaError:
                 raise SchemaError("Schema for object '{}' is invalid.".format(key))
+
+    def init_temp(self):
+        """
+        Initial temperature for all temperature variables. Valid at t=0.
+
+        :return: Initial temperature
+        """
+        return self.inputs['simulation']['initial-temperature']

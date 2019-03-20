@@ -3,10 +3,8 @@ from abc import ABC, abstractmethod
 
 class SegmentBase(ABC):
 
-    def __init__(self, ip=None, op=None):
-        self.fluid = fluid_inst
-        self.grout = grout_inst
-        self.soil = soil_inst
+    def __init__(self):
+        pass
 
     @abstractmethod
     def calc_total_volume(self):

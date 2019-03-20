@@ -2,7 +2,7 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 
 
-class GroundHeatExchanger(SimulationEntryPoint):
+class GroundHeatExchangerLTS(SimulationEntryPoint):
 
     def __init__(self, inputs, ip, op):
         self.paths = []

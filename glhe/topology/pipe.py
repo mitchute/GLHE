@@ -33,9 +33,9 @@ class Pipe(PipeBase):
     def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
 
         def my_hanby(time):
-            return hanby(time, v_dot, self.FLUID_VOL)
+            return hanby(time, v_dot, self.fluid_vol)
 
-        transit_time = self.FLUID_VOL / v_dot
+        transit_time = self.fluid_vol / v_dot
 
         if self.start_up:
             idx = 1
@@ -44,7 +44,7 @@ class Pipe(PipeBase):
                 time = time_step * idx
                 f = my_hanby(time)
                 tau = time / transit_time
-                self.temps.append(TempObject(self.INIT_TEMP, time_step, time, f, tau))
+                self.temps.append(TempObject(self.init_temp, time_step, time, f, tau))
 
                 idx += 1
 
@@ -113,7 +113,7 @@ class Pipe(PipeBase):
         for Grouted Single U-tube Ground Heat Exchangers.' J. Energy Engineering. Draft in progress.
         """
 
-        return log(self.OUTER_DIAMETER / self.INNER_DIAMETER) / (2 * PI * self.conductivity)
+        return log(self.outer_diameter / self.inner_diameter) / (2 * PI * self.conductivity)
 
     def calc_convection_resistance(self, mass_flow_rate):
         """
@@ -126,7 +126,7 @@ class Pipe(PipeBase):
         LOWER_LIMIT = 2000
         UPPER_LIMIT = 4000
 
-        re = 4 * mass_flow_rate / (self.fluid.viscosity * PI * self.INNER_DIAMETER)
+        re = 4 * mass_flow_rate / (self.fluid.viscosity * PI * self.inner_diameter)
 
         if re < LOWER_LIMIT:
             nu = self.laminar_nusselt()

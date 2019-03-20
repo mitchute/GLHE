@@ -13,6 +13,6 @@ class TestBorehole(unittest.TestCase):
 
     def test_init(self):
         tst = self.add_instance()
-        self.assertEqual(tst.DIAMETER, inputs['diameter'])
-        self.assertEqual(tst.RADIUS, inputs['diameter'] / 2)
-        self.assertEqual(tst.DEPTH, inputs['depth'])
+        self.assertEqual(tst.diameter, inputs['diameter'])
+        self.assertEqual(tst.radius, inputs['diameter'] / 2)
+        self.assertEqual(tst.length, inputs['depth'])

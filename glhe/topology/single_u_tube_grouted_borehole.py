@@ -13,6 +13,8 @@ from glhe.topology.segment_factory import make_segment
 
 class SingleUTubeGroutedBorehole(BoreholeBase):
 
+    Type = BoreholeType.SINGLE_U_TUBE_GROUTED
+
     def __init__(self, inputs, ip, op):
 
         # input processor
@@ -27,10 +29,9 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         # set up base class
         BoreholeBase.__init__(self, bh_inputs)
 
-        self.TYPE = BoreholeType.SINGLE_U_TUBE_GROUTED
-        self.SHANK_SPACE = bh_inputs['shank-spacing']
-        self.DEPTH = bh_inputs['depth']
-        self.NUM_PIPES = 2
+        self.shank_space = bh_inputs['shank-spacing']
+        self.length = bh_inputs['depth']
+        self.num_pipes = 2
 
         self.fluid = ip.props_mgr.fluid
         self.grout = PropertiesBase(inputs=inputs['grout-data'])
@@ -38,10 +39,10 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
         # Initialize segments
         self.segments = []
-        self.NUM_SEGMENTS = inputs['segments']
+        self.num_segments = inputs['segments']
         seg_length = inputs['depth'] / inputs['segments']
         seg_inputs = merge_dicts(inputs, {'length': seg_length})
-        for _ in range(self.NUM_SEGMENTS):
+        for _ in range(self.num_segments):
             self.segments.append(make_segment(inputs=seg_inputs,
                                               fluid_inst=fluid_inst,
                                               grout_inst=self.grout,
@@ -55,7 +56,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
                                           soil_inst=soil_inst,
                                           final_seg=True))
 
-        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.NUM_PIPES,
+        self.pipe = Pipe(inputs=merge_dicts(inputs['pipe-data'], {'length': inputs['depth'] * self.num_pipes,
                                                                   'initial temp': inputs['initial temp']}),
                          fluid_inst=fluid_inst)
 
@@ -70,8 +71,8 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
         self.resist_bh_effective = None
-        self.theta_1 = self.SHANK_SPACE / (2 * self.RADIUS)
-        self.theta_2 = self.RADIUS / self.pipe.OUTER_RADIUS
+        self.theta_1 = self.shank_space / (2 * self.radius)
+        self.theta_2 = self.radius / self.pipe.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
         sigma_num = self.grout.conductivity - self.soil.conductivity
         sigma_den = self.grout.conductivity + self.soil.conductivity
@@ -102,8 +103,8 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         return vol
 
     def get_flow_resistance(self):
-        numerator = 8.0 * self.pipe.friction_factor * (2 * self.DEPTH)
-        denominator = (pow(self.pipe.INNER_DIAMETER, 5) * self.fluid.density * pow(PI, 2))
+        numerator = 8.0 * self.pipe.friction_factor * (2 * self.length)
+        denominator = (pow(self.pipe.inner_diameter, 5) * self.fluid.density * pow(PI, 2))
         return numerator / denominator
 
     def calc_bh_average_resistance(self):
@@ -194,7 +195,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.calc_bh_total_internal_resistance()
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.DEPTH / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
+        pt_2 = (self.length / (self.fluid.specific_heat * self.mass_flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -244,7 +245,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
                 if idx == 0:
                     kwargs['inlet 1 temp'] = temp
                     kwargs['inlet 2 temp'] = self.segments[idx + 1].get_outlet_2_temp()
-                elif idx == self.NUM_SEGMENTS:
+                elif idx == self.num_segments:
                     kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()
                 else:
                     kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()

@@ -4,7 +4,7 @@ from glhe.topology.segment_base import SegmentBase
 class SingleUTubePassThroughSegment(SegmentBase):
 
     def __init__(self, inputs):
-        SegmentBase.__init__(self, ip=None, op=None)
+        SegmentBase.__init__(self)
         self.temp = inputs['initial temp']
 
     def calc_total_volume(self):

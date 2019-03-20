@@ -14,7 +14,7 @@ class DefinitionsMGR(object):
         """
 
         # TODO: remove enumerate EVERYWHERE
-        for _, key in enumerate(inputs):
+        for key in inputs:
             if key == 'borehole-definitions':
                 self._add_borehole_defs(inputs[key])
             elif key == 'grout-definitions':
