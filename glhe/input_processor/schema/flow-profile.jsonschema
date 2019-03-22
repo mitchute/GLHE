@@ -1,18 +1,22 @@
 {
-  "type": "object",
-  "properties": {
-    "flow-profile-type": { "enum": ["CONSTANT", "EXTERNAL"]},
-    "value": {"type": "number"},
-    "path":{"type": "string"}
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {"type":  "string"},
+      "flow-profile-type": {"enum": ["CONSTANT", "EXTERNAL"]},
+      "path": {"type":  "string"},
+      "value": {"type":  "number"}
+    }
   },
   "anyOf": [
     {
       "properties": {"flow-profile-type": {"enum": ["CONSTANT"]}},
-      "required": ["value"]
+      "required": ["value", "name"]
     },
     {
       "properties": {"flow-profile-type": {"enum": ["EXTERNAL"]}},
-      "required": ["path"]
+      "required": ["path", "name"]
     }
   ],
   "additionalProperties" : false

@@ -3,7 +3,7 @@ from numpy import ones, zeros
 from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import runge_kutta_fourth_y
-from glhe.topology.borehole_types import BoreholeType
+from glhe.topology.borehole_types import BoreholeTypes
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment_base import SegmentBase
 
@@ -13,7 +13,7 @@ class SingleUTubeGroutedSegment(SegmentBase):
     def __init__(self, inputs, ip, op):
         SegmentBase.__init__(self, ip, op)
 
-        self.type = BoreholeType.SINGLE_U_TUBE_GROUTED
+        self.type = BoreholeTypes.SINGLE_U_TUBE_GROUTED
 
         self.fluid = fluid_inst
         self.grout = grout_inst

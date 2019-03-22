@@ -7,7 +7,7 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.external_load import ExternalLoad
-from glhe.profiles.impulse_load import ImpulseLoad
+from glhe.profiles.pulse_load import PulseLoad
 from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.sinusoid_load import SinusoidLoad
 from glhe.profiles.synthetic_load import SyntheticLoad
@@ -45,7 +45,7 @@ class TestLoadFactory(unittest.TestCase):
 
     def test_factory_single_impulse(self):
         tst = self.add_instance('single-impulse')
-        self.assertIsInstance(tst, ImpulseLoad)
+        self.assertIsInstance(tst, PulseLoad)
 
     def test_factory_external(self):
         tst = self.add_instance('external')

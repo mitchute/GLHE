@@ -2,6 +2,7 @@ from abc import ABCMeta
 
 import numpy as np
 
+from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -76,8 +77,10 @@ class SyntheticBase(BaseLoad):
 
 
 class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
+    Type = ComponentTypes.SyntheticLoad
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+        SimulationEntryPoint.__init__(self, inputs['name'])
         self.ip = ip
         self.op = op
 
@@ -115,5 +118,5 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
-        return {'SyntheticLoad: temperature [C]': self.outlet_temp,
-                'SyntheticLoad: load [W]': self.load}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp. [C]'): float(self.outlet_temp),
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Load [W]'): float(self.load)}

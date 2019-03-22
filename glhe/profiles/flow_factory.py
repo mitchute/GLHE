@@ -10,3 +10,5 @@ def make_flow_profile(inputs: dict, ip: InputProcessor, op: OutputProcessor) -> 
         return ConstantFlow(inputs, ip, op)
     elif load_profile_type == 'external':
         return ExternalFlow(inputs, ip, op)
+    else:
+        raise ValueError("Flow profile '{}' is not valid.".format(load_profile_type))

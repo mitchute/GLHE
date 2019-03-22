@@ -1,10 +1,3 @@
-class BoreholeType(object):
-    """
-    All borehole types, alphabetically
-    """
-    SINGLE_U_TUBE_GROUTED = 1
-
-
 class ComponentTypes(object):
     """
     All simulatable component types, alphabetically
@@ -13,9 +6,11 @@ class ComponentTypes(object):
     ConstantLoad = 'ConstantLoad'
     ExternalFlow = 'ExternalFlow'
     ExternalLoad = 'ExternalLoad'
+    ExternalTemps = 'ExternalTemps'
     GroundHeatExchanger = 'GroundHeatExchanger'
     GroundHeatExchangerLTS = 'GroundHeatExchangerLTS'
     GroundHeatExchangerSTS = 'GroundHeatExchangerSTS'
-    ImpulseLoad = 'ImpulseLoad'
+    PlantLoop = 'PlantLoop'
+    PulseLoad = 'ImpulseLoad'
     SinusoidLoad = 'SinusoidLoad'
     SyntheticLoad = 'SyntheticLoad'

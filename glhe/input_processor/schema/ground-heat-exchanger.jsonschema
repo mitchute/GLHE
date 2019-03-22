@@ -1,37 +1,62 @@
 {
-  "type": "object",
-  "properties": {
-    "load-aggregation":
-      {"type": "object",
-      "properties":
-        {"method": {"type": "string"}},
-        "expansion-rate": {"type": "number"},
-        "number-bins-per-level": {"type": "number"}
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
       },
-    "flow-paths": {
-      "type": "array",
-      "items": {
+      "load-aggregation": {
         "type": "object",
         "properties": {
-        "path-name": {"type": "string"},
-        "boreholes": {
-          "type": "array",
-          "items": {
+          "method": {
+            "type": "string"
+          },
+          "expansion-rate": {
+            "type": "number"
+          },
+          "number-bins-per-level": {
+            "type": "number"
+          }
+        }
+      },
+      "flow-paths": {
+        "type": "array",
+        "items": {
           "type": "object",
           "properties": {
-            "borehole-def-name": {"type": "string"},
-            "location": {
-              "type": "object",
-              "properties": {
-                "x": {"type": "number"},
-                "y": {"type": "number"},
-                "z": {"type": "number"}
+            "path-name": {
+              "type": "string"
+            },
+            "boreholes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "borehole-def-name": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "z": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
               }
             }
-          }}}
+          }
         }
       }
     }
   },
-  "additionalProperties" : false
+  "additionalProperties": false
 }

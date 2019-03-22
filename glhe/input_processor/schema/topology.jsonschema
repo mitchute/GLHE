@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "supply-side": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {"comp-type": {"type": "string"}, "name": {"type": "string"}}}},
+    "demand-side": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {"comp-type": {"type": "string"}, "name": {"type": "string"}}}}
+  },
+  "required": ["supply-side", "demand-side"],
+  "additionalProperties": false
+}

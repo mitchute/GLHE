@@ -11,9 +11,9 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 
-
+from glhe.input_processor.component_types import ComponentTypes
 class PlantLoop(object):
-
+    Type = ComponentTypes.PlantLoop
     def __init__(self, json_file_path: str) -> None:
         """
         Initialize the plant loop and all components on it.
@@ -27,30 +27,30 @@ class PlantLoop(object):
 
         # setup output processor
         try:
-            self.op = OutputProcessor(self.ip.inputs['simulation']['output-path'],
-                                      self.ip.inputs['simulation']['output-csv-name'])
+            self.op = OutputProcessor(self.ip.input_dict['simulation']['output-path'],
+                                      self.ip.input_dict['simulation']['output-csv-name'])
         except KeyError:
             self.op = OutputProcessor(os.getcwd(), 'out.csv')
 
         # init plant-level variables
-        self.demand_inlet_temperature = self.ip.inputs['simulation']['initial-temperature']
-        self.demand_outlet_temperature = self.ip.inputs['simulation']['initial-temperature']
-        self.supply_inlet_temperature = self.ip.inputs['simulation']['initial-temperature']
-        self.supply_outlet_temperature = self.ip.inputs['simulation']['initial-temperature']
-        self.end_sim_time = self.ip.inputs['simulation']['runtime']
-        self.time_step = num_ts_per_hour_to_sec_per_ts(self.ip.inputs['simulation']['time-steps-per-hour'])
+        self.demand_inlet_temp = self.ip.input_dict['simulation']['initial-temperature']
+        self.demand_outlet_temp = self.ip.input_dict['simulation']['initial-temperature']
+        self.supply_inlet_temp = self.ip.input_dict['simulation']['initial-temperature']
+        self.supply_outlet_temp = self.ip.input_dict['simulation']['initial-temperature']
+        self.end_sim_time = self.ip.input_dict['simulation']['runtime']
+        self.time_step = num_ts_per_hour_to_sec_per_ts(self.ip.input_dict['simulation']['time-steps-per-hour'])
         self.demand_comps = []
         self.supply_comps = []
 
-        # initialize all of the plant loop components
-        self.initialize_plant_loop_components()
+        # initialize plant loop components
+        self.initialize_plant_loop_topology()
 
-    def initialize_plant_loop_components(self) -> None:
+    def initialize_plant_loop_topology(self) -> None:
 
-        for comp in self.ip.inputs['components']['supply-side']:
+        for comp in self.ip.input_dict['topology']['supply-side']:
             self.supply_comps.append(make_component(comp, self.ip, self.op))
 
-        for comp in self.ip.inputs['components']['demand-side']:
+        for comp in self.ip.input_dict['topology']['demand-side']:
             self.demand_comps.append(make_component(comp, self.ip, self.op))
 
     def simulate(self) -> None:
@@ -77,30 +77,30 @@ class PlantLoop(object):
         """
 
         # update demand inlet node and initial conditions
-        self.demand_inlet_temperature = self.supply_outlet_temperature
-        response = SimulationResponse(current_sim_time, time_step, 0, self.demand_inlet_temperature)
+        self.demand_inlet_temp = self.supply_outlet_temp
+        response = SimulationResponse(current_sim_time, time_step, 0, self.demand_inlet_temp)
 
         # simulate demand components flow-wise
         for comp in self.demand_comps:
             response = comp.simulate_time_step(response)
 
         # update interface nodes
-        self.demand_outlet_temperature = response.temperature
-        self.supply_inlet_temperature = response.temperature
+        self.demand_outlet_temp = response.temperature
+        self.supply_inlet_temp = response.temperature
 
         # simulate supply components flow-wise
         for comp in self.supply_comps:
             response = comp.simulate_time_step(response)
 
         # supply outlet node
-        self.supply_outlet_temperature = response.temperature
+        self.supply_outlet_temp = response.temperature
 
     def report_outputs(self):
 
-        d = {'Demand Inlet Temperature': self.demand_inlet_temperature,
-             'Demand Outlet Temperature': self.demand_outlet_temperature,
-             'Supply Inlet Temperature': self.supply_inlet_temperature,
-             'Supply Outlet Temperature': self.supply_outlet_temperature}
+        d = {'{:s}:{:s}'.format(self.Type, 'Demand Inlet Temp. [C]'): self.demand_inlet_temp,
+             '{:s}:{:s}'.format(self.Type, 'Demand Outlet Temp. [C]'): self.demand_outlet_temp,
+             '{:s}:{:s}'.format(self.Type, 'Supply Inlet Temp. [C]'): self.supply_inlet_temp,
+             '{:s}:{:s}'.format(self.Type, 'Supply Outlet Temp. [C]'): self.supply_outlet_temp}
 
         return d
 

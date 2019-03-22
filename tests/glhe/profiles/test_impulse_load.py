@@ -6,7 +6,7 @@ from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
-from glhe.profiles.impulse_load import ImpulseLoad
+from glhe.profiles.pulse_load import PulseLoad
 
 
 class TestImpulseLoad(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestImpulseLoad(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ImpulseLoad(d['load-profile'], ip, op)
+        return PulseLoad(d['load-profile'], ip, op)
 
     def test_get_value(self):
         tst = self.add_instance()

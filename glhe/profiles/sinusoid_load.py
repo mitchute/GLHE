@@ -1,5 +1,6 @@
 from math import pi, sin
 
+from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -8,9 +9,11 @@ from glhe.profiles.base_load import BaseLoad
 
 
 class SinusoidLoad(BaseLoad, SimulationEntryPoint):
+    Type = ComponentTypes.SinusoidLoad
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         BaseLoad.__init__(self)
+        SimulationEntryPoint.__init__(self, inputs['name'])
         self.amplitude = inputs['amplitude']
         self.offset = inputs['offset']
         self.period = inputs['period']
@@ -33,5 +36,5 @@ class SinusoidLoad(BaseLoad, SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
-        return {'SinusoidLoad: temperature [C]': self.outlet_temp,
-                'SinusoidLoad: load [W]': self.load}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp. [C]'): float(self.outlet_temp),
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Load [W]'): float(self.load)}

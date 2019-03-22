@@ -4,9 +4,9 @@ from scipy.interpolate.interpolate import interp1d
 
 class ExternalBase(object):
 
-    def __init__(self, input_file_path, col_num):
+    def __init__(self, path, col_num):
 
-        df = pd.read_csv(input_file_path, index_col=0, parse_dates=True)
+        df = pd.read_csv(path, index_col=0, parse_dates=True)
         df['delta t'] = df.index.to_series().diff().dt.total_seconds()
         df['delta t'].iloc[0] = 0
         x_range = df['delta t'].cumsum().tolist()

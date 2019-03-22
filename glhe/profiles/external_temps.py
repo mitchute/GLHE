@@ -1,3 +1,4 @@
+from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -6,9 +7,11 @@ from glhe.profiles.external_base import ExternalBase
 
 
 class ExternalTemps(ExternalBase, SimulationEntryPoint):
+    Type = ComponentTypes.ExternalTemps
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        ExternalBase.__init__(self, input_file_path=inputs['path'], col_num=2)
+        ExternalBase.__init__(self, inputs['path'], col_num=2)
+        SimulationEntryPoint.__init__(self, inputs['name'])
         self.ip = ip
         self.op = op
 
@@ -20,4 +23,4 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
-        return {'ExternalTemps: temperature [C]': self.outlet_temp}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp. [C]'): float(self.outlet_temp)}

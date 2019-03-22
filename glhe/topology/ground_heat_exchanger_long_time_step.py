@@ -20,7 +20,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         #     self.paths.append(Path(merge_dicts(path, {'initial temp': init_temp}), ip, op))
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, inputs.temperature)
+        return inputs
 
     def report_outputs(self):
         pass

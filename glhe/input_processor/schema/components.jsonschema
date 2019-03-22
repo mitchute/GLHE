@@ -1,8 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "supply-side": {"type": "array", "items": {"type": "string"}},
-    "demand-side": {"type": "array", "items": {"type": "string"}}
-  },
-  "additionalProperties" : false
-}

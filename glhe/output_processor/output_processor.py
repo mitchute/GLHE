@@ -19,23 +19,16 @@ class OutputProcessor(object):
         """
         Collect output data and log it in a DataFrame until it's written to a file.
 
-        :param data_dict:
-        :return: None
+        :param data_dict: dictionary of data to be logged
         """
-        temp_dict = {}
-        for data in data_dict:
-            for key, val in data.items():
-                temp_dict[key] = val
 
-        df_temp = pd.DataFrame(temp_dict, index=[self.idx_count])
+        df_temp = pd.DataFrame(data_dict, index=[self.idx_count])
         self.df = pd.concat([self.df, df_temp], axis=0, sort=True)
         self.idx_count += 1
 
     def write_to_file(self) -> None:
         """
         Write the DataFrame holding the simulation data to a file.
-
-        :return: None
         """
         if os.path.exists(self.write_path):
             os.remove(self.write_path)

@@ -6,14 +6,14 @@ from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
 from glhe.topology.borehole_base import BoreholeBase
-from glhe.topology.borehole_types import BoreholeType
+from glhe.topology.borehole_types import BoreholeTypes
 from glhe.topology.pipe import Pipe
 from glhe.topology.segment_factory import make_segment
 
 
 class SingleUTubeGroutedBorehole(BoreholeBase):
 
-    Type = BoreholeType.SINGLE_U_TUBE_GROUTED
+    Type = BoreholeTypes.SINGLE_U_TUBE_GROUTED
 
     def __init__(self, inputs, ip, op):
 

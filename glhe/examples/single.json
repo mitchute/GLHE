@@ -11,10 +11,13 @@
       "shank-spacing": 0.0469
     }
   ],
-  "flow-profile": {
-    "flow-profile-type": "constant",
-    "value": 0.2
-  },
+  "flow-profile": [
+    {
+      "name": "constant 0.2",
+      "flow-profile-type": "constant",
+      "value": 0.2
+    }
+  ],
   "fluid": {
     "fluid-type": "water"
   },
@@ -30,31 +33,72 @@
       "specific-heat": 1560
     }
   ],
-  "load-profile": {
-    "load-profile-type": "constant",
-    "value": 4000
-  },
-  "ground-heat-exchanger": {
-    "load-aggregation": {
-      "method": "dynamic",
-      "expansion-rate": 1.5,
-      "number-bins-per-level": 9
-    },
-    "g-function-path": "../glhe/examples/single_g_functions.csv",
-    "flow-paths": [
-      {
-        "path-name": "path 1",
-        "boreholes": [
-          {"location": {"x": 0, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"},
-          {"location": {"x": 1, "y": 0, "z": 1}, "borehole-def-name": "borehole type 1"}]
-      },
-      {
-        "path-name": "path 2",
-        "boreholes": [
-          {"location": {"x": 0, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"},
-          {"location": {"x": 1, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1"}]
-      }]
-  },
+  "load-profile": [
+    {
+      "name": "constant 4000",
+      "load-profile-type": "constant",
+      "value": 4000
+    }
+  ],
+  "ground-heat-exchanger": [
+    {
+      "name": "GHE 1",
+      "g-function-path": "../glhe/examples/single_g_functions.csv",
+      "flow-paths": [
+        {
+          "path-name": "path 1",
+          "boreholes": [
+            {
+              "location": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              },
+              "borehole-def-name": "borehole type 1",
+              "name": "BH 1"
+            },
+            {
+              "location": {
+                "x": 1,
+                "y": 0,
+                "z": 1
+              },
+              "borehole-def-name": "borehole type 1",
+              "name": "BH 2"
+            }
+          ]
+        },
+        {
+          "path-name": "path 2",
+          "boreholes": [
+            {
+              "location": {
+                "x": 0,
+                "y": 1,
+                "z": 1
+              },
+              "borehole-def-name": "borehole type 1",
+              "name": "BH 3"
+            },
+            {
+              "location": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+              },
+              "borehole-def-name": "borehole type 1",
+              "name": "BH 4"
+            }
+          ]
+        }
+      ],
+      "load-aggregation": {
+        "method": "dynamic",
+        "expansion-rate": 1.5,
+        "number-bins-per-level": 9
+      }
+    }
+  ],
   "pipe-definitions": [
     {
       "name": "26 mm SDR-11 HDPE",
@@ -69,13 +113,28 @@
     "name": "Basic GLHE",
     "initial-temperature": 16,
     "time-steps-per-hour": 60,
-    "runtime": 86400
+    "runtime": 3600
   },
-  "components": {
-    "demand-side": ["flow-profile", "load-profile"],
-    "supply-side": ["ground-heat-exchanger"]
+  "topology": {
+    "demand-side": [
+      {
+        "comp-type": "flow-profile",
+        "name": "constant 0.2"
+      },
+      {
+        "comp-type": "load-profile",
+        "name": "constant 4000"
+      }
+    ],
+    "supply-side": [
+      {
+        "comp-type": "ground-heat-exchanger",
+        "name": "GHE 1"
+      }
+    ]
   },
   "soil": {
+    "name": "dirt",
     "conductivity": 2.6,
     "density": 2500,
     "specific-heat": 880
