@@ -1,83 +1,100 @@
-from collections import deque
 from math import pi
 
 from numpy import log
 
-from glhe.globals.functions import hanby, smoothing_function
-from glhe.topology.pipe_base import PipeBase
+from glhe.globals.functions import smoothing_function
+from glhe.properties.base import PropertiesBase
 
 
-class TempObject(object):
-    def __init__(self, temp=0, timestep=0, time=0, f=0, tau=0):
-        self.temp = temp
-        self.timestep = timestep
-        self.time = time
-        self.f = f
-        self.tau = tau
+class Pipe(PropertiesBase):
 
+    def __init__(self, inputs, ip, op):
+        PropertiesBase.__init__(self, inputs)
 
-class Pipe(PipeBase):
+        # input/output processor
+        self.ip = ip
+        self.op = op
 
-    def __init__(self, inputs, fluid_inst):
+        # fluids instance
+        self.fluid = self.ip.props_mgr.fluid
 
-        PipeBase.__init__(self, inputs)
+        # key geometric parameters
+        self.inner_diameter = inputs["inner diameter"]
+        self.outer_diameter = inputs["outer diameter"]
+        self.length = inputs['length']
+        self.init_temp = self.ip.init_temp()
 
-        self.fluid = fluid_inst
+        # compute radii and thickness
+        self.wall_thickness = (self.outer_diameter - self.inner_diameter) / 2
+        self.inner_radius = self.inner_diameter / 2
+        self.outer_radius = self.outer_diameter / 2
 
-        self.friction_factor = 0.02
+        # compute cross-sectional areas
+        self.area_cr_inner = pi / 4 * self.inner_diameter ** 2
+        self.area_cr_outer = pi / 4 * self.outer_diameter ** 2
+        self.area_cr_pipe = self.area_cr_outer - self.area_cr_inner
+
+        # compute surface areas
+        self.area_s_inner = pi * self.inner_diameter * self.length
+        self.area_s_outer = pi * self.outer_diameter * self.length
+
+        # compute volumes
+        self.total_vol = self.area_cr_outer * self.length
+        self.fluid_vol = self.area_cr_inner * self.length
+        self.pipe_wall_vol = self.area_cr_pipe * self.length
+
+        # other inits
+        self.friction_factor = 0
         self.resist_pipe = 0
 
-        self.temps = deque()
-        self.start_up = True
-
-    def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
-
-        def my_hanby(time):
-            return hanby(time, v_dot, self.fluid_vol)
-
-        transit_time = self.fluid_vol / v_dot
-
-        if self.start_up:
-            idx = 1
-            while True:
-
-                time = time_step * idx
-                f = my_hanby(time)
-                tau = time / transit_time
-                self.temps.append(TempObject(self.init_temp, time_step, time, f, tau))
-
-                idx += 1
-
-                if self.temps[-1].tau > 1.3:
-                    self.start_up = False
-                    break
-
-        self.temps.appendleft(TempObject(temp, time_step, 0, my_hanby(time_step), 0))
-
-        pop_idxs = []
-        sum_temp_f = 0
-        sum_f = 0
-
-        for idx, obj in enumerate(self.temps):
-            obj.time += time_step
-            obj.f = my_hanby(obj.time)
-            tau = obj.time / transit_time
-            obj.tau = tau
-            if obj.tau > 1.3 and idx != 0:
-                pop_idxs.append(idx)
-            else:
-                sum_temp_f += obj.temp * obj.f
-                sum_f += obj.f
-
-        for idx in reversed(pop_idxs):
-            if idx == 0:
-                pass
-            else:
-                del self.temps[idx]
-
-        ret_temp = sum_temp_f / sum_f
-
-        return ret_temp
+    # def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
+    #
+    #     def my_hanby(time):
+    #         return hanby(time, v_dot, self.fluid_vol)
+    #
+    #     transit_time = self.fluid_vol / v_dot
+    #
+    #     if self.start_up:
+    #         idx = 1
+    #         while True:
+    #
+    #             time = time_step * idx
+    #             f = my_hanby(time)
+    #             tau = time / transit_time
+    #             self.temps.append(TempObject(self.init_temp, time_step, time, f, tau))
+    #
+    #             idx += 1
+    #
+    #             if self.temps[-1].tau > 1.3:
+    #                 self.start_up = False
+    #                 break
+    #
+    #     self.temps.appendleft(TempObject(temp, time_step, 0, my_hanby(time_step), 0))
+    #
+    #     pop_idxs = []
+    #     sum_temp_f = 0
+    #     sum_f = 0
+    #
+    #     for idx, obj in enumerate(self.temps):
+    #         obj.time += time_step
+    #         obj.f = my_hanby(obj.time)
+    #         tau = obj.time / transit_time
+    #         obj.tau = tau
+    #         if obj.tau > 1.3 and idx != 0:
+    #             pop_idxs.append(idx)
+    #         else:
+    #             sum_temp_f += obj.temp * obj.f
+    #             sum_f += obj.f
+    #
+    #     for idx in reversed(pop_idxs):
+    #         if idx == 0:
+    #             pass
+    #         else:
+    #             del self.temps[idx]
+    #
+    #     ret_temp = sum_temp_f / sum_f
+    #
+    #     return ret_temp
 
     def calc_friction_factor(self, re):
         """
@@ -88,12 +105,12 @@ class Pipe(PipeBase):
         """
 
         # limits picked be within about 1% of actual values
-        LOWER_LIMIT = 1500
-        UPPER_LIMIT = 5000
+        low_reynolds = 1500
+        high_reynolds = 5000
 
-        if re < LOWER_LIMIT:
+        if re < low_reynolds:
             self.friction_factor = self.laminar_friction_factor(re)
-        elif LOWER_LIMIT <= re < UPPER_LIMIT:
+        elif low_reynolds <= re < high_reynolds:
             f_low = self.laminar_friction_factor(re)
 
             # pure turbulent flow
@@ -123,14 +140,14 @@ class Pipe(PipeBase):
         International Chemical Engineering 16(1976), pp. 359-368.
         """
 
-        LOWER_LIMIT = 2000
-        UPPER_LIMIT = 4000
+        low_reynolds = 2000
+        high_reynolds = 4000
 
         re = 4 * mass_flow_rate / (self.fluid.viscosity * pi * self.inner_diameter)
 
-        if re < LOWER_LIMIT:
+        if re < low_reynolds:
             nu = self.laminar_nusselt()
-        elif LOWER_LIMIT <= re < UPPER_LIMIT:
+        elif low_reynolds <= re < high_reynolds:
             nu_low = self.laminar_nusselt()
             nu_high = self.turbulent_nusselt(re)
             sigma = smoothing_function(re, a=3000, b=150)

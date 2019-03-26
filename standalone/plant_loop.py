@@ -21,7 +21,6 @@ class PlantLoop(object):
         Initialize the plant loop and all components on it.
 
         :param json_file_path: Path to the JSON input file
-        :return None
         """
 
         # process inputs
