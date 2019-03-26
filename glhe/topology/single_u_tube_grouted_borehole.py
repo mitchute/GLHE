@@ -1,8 +1,8 @@
+import os
+from math import pi
+
 from numpy import log
 
-import os
-
-from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.properties.base import PropertiesBase
 from glhe.topology.borehole_base import BoreholeBase
@@ -12,7 +12,6 @@ from glhe.topology.segment_factory import make_segment
 
 
 class SingleUTubeGroutedBorehole(BoreholeBase):
-
     Type = BoreholeTypes.SINGLE_U_TUBE_GROUTED
 
     def __init__(self, inputs, ip, op):
@@ -104,7 +103,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
 
     def get_flow_resistance(self):
         numerator = 8.0 * self.pipe.friction_factor * (2 * self.length)
-        denominator = (pow(self.pipe.inner_diameter, 5) * self.fluid.density * pow(PI, 2))
+        denominator = (pow(self.pipe.inner_diameter, 5) * self.fluid.density * pow(pi, 2))
         return numerator / denominator
 
     def calc_bh_average_resistance(self):
@@ -117,7 +116,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         Equation 13
         """
 
-        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+        self.beta = 2 * pi * self.grout.conductivity * self.pipe.resist_pipe
 
         final_term_1 = log(self.theta_2 / (2 * self.theta_1 * (1 - self.theta_1 ** 4) ** self.sigma))
 
@@ -127,7 +126,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         term_2_den = term_2_den_pt_1 + term_2_den_pt_2
         final_term_2 = term_2_num / term_2_den
 
-        self.resist_bh_ave = (1 / (4 * PI * self.grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
+        self.resist_bh_ave = (1 / (4 * pi * self.grout.conductivity)) * (self.beta + final_term_1 - final_term_2)
 
         return self.resist_bh_ave
 
@@ -141,7 +140,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         Equation 26
         """
 
-        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+        self.beta = 2 * pi * self.grout.conductivity * self.pipe.resist_pipe
 
         term_1_num = (1 + self.theta_1 ** 2) ** self.sigma
         term_1_den = self.theta_3 * (1 - self.theta_1 ** 2) ** self.sigma
@@ -154,7 +153,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         term_2_den = term_2_den_pt_1 - term_2_den_pt_2 + term_2_den_pt_3
         final_term_2 = term_2_num / term_2_den
 
-        self.resist_bh_total_internal = 1 / (PI * self.grout.conductivity) * (self.beta + final_term_1 - final_term_2)
+        self.resist_bh_total_internal = 1 / (pi * self.grout.conductivity) * (self.beta + final_term_1 - final_term_2)
 
         return self.resist_bh_total_internal
 
@@ -168,7 +167,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         Equation 3
         """
 
-        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+        self.beta = 2 * pi * self.grout.conductivity * self.pipe.resist_pipe
 
         self.resist_bh_grout = self.calc_bh_average_resistance() - self.pipe.resist_pipe / 2.0
         return self.resist_bh_grout
@@ -190,7 +189,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         Equation 14
         """
 
-        self.beta = 2 * PI * self.grout.conductivity * self.pipe.resist_pipe
+        self.beta = 2 * pi * self.grout.conductivity * self.pipe.resist_pipe
 
         self.calc_bh_total_internal_resistance()
 
@@ -203,7 +202,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         return self.resist_bh_effective
 
     def update_beta(self, pipe_resist):
-        self.beta = 2 * PI * self.grout.conductivity * pipe_resist
+        self.beta = 2 * pi * self.grout.conductivity * pipe_resist
         return self.beta
 
     def set_flow_rate(self, mass_flow_rate):

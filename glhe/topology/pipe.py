@@ -1,8 +1,8 @@
 from collections import deque
+from math import pi
 
 from numpy import log
 
-from glhe.globals.constants import PI
 from glhe.globals.functions import hanby, smoothing_function
 from glhe.topology.pipe_base import PipeBase
 
@@ -113,7 +113,7 @@ class Pipe(PipeBase):
         for Grouted Single U-tube Ground Heat Exchangers.' J. Energy Engineering. Draft in progress.
         """
 
-        return log(self.outer_diameter / self.inner_diameter) / (2 * PI * self.conductivity)
+        return log(self.outer_diameter / self.inner_diameter) / (2 * pi * self.conductivity)
 
     def calc_convection_resistance(self, mass_flow_rate):
         """
@@ -126,7 +126,7 @@ class Pipe(PipeBase):
         LOWER_LIMIT = 2000
         UPPER_LIMIT = 4000
 
-        re = 4 * mass_flow_rate / (self.fluid.viscosity * PI * self.inner_diameter)
+        re = 4 * mass_flow_rate / (self.fluid.viscosity * pi * self.inner_diameter)
 
         if re < LOWER_LIMIT:
             nu = self.laminar_nusselt()
@@ -137,7 +137,7 @@ class Pipe(PipeBase):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re)
-        return 1 / (nu * PI * self.fluid.conductivity)
+        return 1 / (nu * pi * self.fluid.conductivity)
 
     def set_resistance(self, pipe_resistance):
         self.resist_pipe = pipe_resistance

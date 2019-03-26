@@ -1,4 +1,4 @@
-from glhe.globals.constants import PI
+from math import pi
 
 
 class RadialCell(object):
@@ -21,4 +21,4 @@ class RadialCell(object):
         self.volume = self.calc_volume()
 
     def calc_volume(self):
-        return PI * (self.outer_radius ** 2 - self.inner_radius ** 2)
+        return pi * (self.outer_radius ** 2 - self.inner_radius ** 2)

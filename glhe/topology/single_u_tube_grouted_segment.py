@@ -1,6 +1,7 @@
+from math import pi
+
 from numpy import ones, zeros
 
-from glhe.globals.constants import PI
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.topology.borehole_types import BoreholeTypes
@@ -49,7 +50,7 @@ class SingleUTubeGroutedSegment(SegmentBase):
         self.direct_coupling_resist = 0
 
     def calc_total_volume(self):
-        return PI / 4 * self.DIAMETER ** 2 * self.LENGTH
+        return pi / 4 * self.DIAMETER ** 2 * self.LENGTH
 
     def calc_fluid_volume(self):
         return self.pipe_1.fluid_vol + self.pipe_2.fluid_vol

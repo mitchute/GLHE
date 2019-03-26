@@ -1,11 +1,11 @@
-from glhe.globals.constants import PI
+from math import pi
+
 from glhe.properties.base import PropertiesBase
 
 
 class PipeBase(PropertiesBase):
 
     def __init__(self, inputs):
-
         PropertiesBase.__init__(self, inputs=inputs)
 
         self.inner_diameter = inputs["inner diameter"]
@@ -17,12 +17,12 @@ class PipeBase(PropertiesBase):
         self.inner_radius = self.inner_diameter / 2
         self.outer_radius = self.outer_diameter / 2
 
-        self.area_cr_inner = PI / 4 * self.inner_diameter ** 2
-        self.area_cr_outer = PI / 4 * self.outer_diameter ** 2
+        self.area_cr_inner = pi / 4 * self.inner_diameter ** 2
+        self.area_cr_outer = pi / 4 * self.outer_diameter ** 2
         self.area_cr_pipe = self.area_cr_outer - self.area_cr_inner
 
-        self.area_s_inner = PI * self.inner_diameter * self.length
-        self.area_s_outer = PI * self.outer_diameter * self.length
+        self.area_s_inner = pi * self.inner_diameter * self.length
+        self.area_s_outer = pi * self.outer_diameter * self.length
 
         self.total_vol = self.area_cr_outer * self.length
         self.fluid_vol = self.area_cr_inner * self.length

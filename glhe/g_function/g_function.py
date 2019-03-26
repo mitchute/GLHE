@@ -1,18 +1,17 @@
-from math import exp, log, sin, sqrt
+from math import log, pi
 
 from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
-from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.aggregation.aggregation_factory import make_aggregation
-from glhe.globals.constants import PI
+from glhe.aggregation.dynamic_bin import DynamicBin
+from glhe.g_function.flow_fraction import FlowFraction
 from glhe.globals.functions import merge_dicts
 from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.properties.base import PropertiesBase
 from glhe.properties.fluid import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
-from glhe.g_function.flow_fraction import FlowFraction
 
 
 class GFunction(SimulationEntryPoint):
@@ -52,7 +51,7 @@ class GFunction(SimulationEntryPoint):
         # time constant
         self.t_s = self.my_bh.length ** 2 / (9 * self.soil.diffusivity)
 
-        self.c_0 = 2 * PI * self.soil.conductivity
+        self.c_0 = 2 * pi * self.soil.conductivity
 
         # initial temperature
         init_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.length)
@@ -118,8 +117,8 @@ class GFunction(SimulationEntryPoint):
 
         g = float(self.g_function_interp(lntts))
 
-        if (g / (2 * PI * self.soil.conductivity) + self.bh_resist) < 0:
-            return -self.bh_resist * 2 * PI * self.soil.conductivity  # pragma: no cover
+        if (g / (2 * pi * self.soil.conductivity) + self.bh_resist) < 0:
+            return -self.bh_resist * 2 * pi * self.soil.conductivity  # pragma: no cover
         else:
             return g
 
@@ -185,8 +184,6 @@ class GFunction(SimulationEntryPoint):
 
         return self.outlet_temp
 
-
-
     def calc_prev_bin_temp_rise(self):
 
         try:
@@ -235,4 +232,3 @@ class GFunction(SimulationEntryPoint):
                 temp_rise_sum += bin_i.get_load() * bin_i.g
 
         return temp_rise_sum
-

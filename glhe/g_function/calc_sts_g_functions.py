@@ -1,10 +1,10 @@
 from math import log, sqrt
+from math import pi
 
 import numpy as np
 
 from glhe.g_function.radial_cell_types import RadialCellType
 from glhe.g_function.radial_sts_cell import RadialCell
-from glhe.globals.constants import PI
 from glhe.globals.constants import SEC_IN_DAY
 from glhe.globals.functions import tdma_2
 
@@ -95,7 +95,7 @@ class STSGFunctions(object):
             inner_radius = conv_radius + idx * thickness
             center_radius = inner_radius + thickness / 2.0
             outer_radius = inner_radius + thickness
-            conductivity = log(pipe_inner_radius / conv_radius) / (2 * PI * bh_equiv_conv_resist)
+            conductivity = log(pipe_inner_radius / conv_radius) / (2 * pi * bh_equiv_conv_resist)
             rho_cp = 1
 
             cell_inputs = {'type': cell_type,
@@ -116,7 +116,7 @@ class STSGFunctions(object):
             inner_radius = pipe_inner_radius + idx * thickness
             center_radius = inner_radius + thickness / 2.0
             outer_radius = inner_radius + thickness
-            conductivity = log(grout_radius / pipe_inner_radius) / (2 * PI * bh_equiv_tube_grout_resist)
+            conductivity = log(grout_radius / pipe_inner_radius) / (2 * pi * bh_equiv_tube_grout_resist)
             rho_cp = inputs['pipe density'] * inputs['pipe specific heat']
 
             cell_inputs = {'type': cell_type,
@@ -137,7 +137,7 @@ class STSGFunctions(object):
             inner_radius = pipe_outer_radius + idx * thickness
             center_radius = inner_radius + thickness / 2.0
             outer_radius = inner_radius + thickness
-            conductivity = log(grout_radius / pipe_inner_radius) / (2 * PI * bh_equiv_tube_grout_resist)
+            conductivity = log(grout_radius / pipe_inner_radius) / (2 * pi * bh_equiv_tube_grout_resist)
             rho_cp = inputs['grout density'] * inputs['grout specific heat']
 
             cell_inputs = {'type': cell_type,
@@ -176,7 +176,7 @@ class STSGFunctions(object):
         self.g = np.array([], dtype=float)
         self.lntts = np.array([], dtype=float)
         self.bh_resist = inputs['borehole resistance']
-        self.c_0 = 2 * PI * inputs['soil conductivity']
+        self.c_0 = 2 * pi * inputs['soil conductivity']
         soil_diffusivity = inputs['soil conductivity'] / (inputs['soil density'] * inputs['soil specific heat'])
         self.t_s = inputs['borehole length'] ** 2 / (9 * soil_diffusivity)
 
@@ -209,8 +209,8 @@ class STSGFunctions(object):
 
                     east_cell = self.cells[idx + 1]
 
-                    FE1 = log(this_cell.outer_radius / this_cell.center_radius) / (2 * PI * this_cell.conductivity)
-                    FE2 = log(east_cell.center_radius / east_cell.inner_radius) / (2 * PI * east_cell.conductivity)
+                    FE1 = log(this_cell.outer_radius / this_cell.center_radius) / (2 * pi * this_cell.conductivity)
+                    FE2 = log(east_cell.center_radius / east_cell.inner_radius) / (2 * pi * east_cell.conductivity)
                     AE = 1 / (FE1 + FE2)
 
                     AD = this_cell.rho_cp * this_cell.volume / time_step
@@ -232,12 +232,12 @@ class STSGFunctions(object):
                     west_cell = self.cells[idx - 1]
                     east_cell = self.cells[idx + 1]
 
-                    FE1 = log(this_cell.outer_radius / this_cell.center_radius) / (2 * PI * this_cell.conductivity)
-                    FE2 = log(east_cell.center_radius / east_cell.inner_radius) / (2 * PI * east_cell.conductivity)
+                    FE1 = log(this_cell.outer_radius / this_cell.center_radius) / (2 * pi * this_cell.conductivity)
+                    FE2 = log(east_cell.center_radius / east_cell.inner_radius) / (2 * pi * east_cell.conductivity)
                     AE = 1 / (FE1 + FE2)
 
-                    FW1 = log(west_cell.outer_radius / west_cell.center_radius) / (2 * PI * west_cell.conductivity)
-                    FW2 = log(this_cell.center_radius / this_cell.inner_radius) / (2 * PI * this_cell.conductivity)
+                    FW1 = log(west_cell.outer_radius / west_cell.center_radius) / (2 * pi * west_cell.conductivity)
+                    FW2 = log(this_cell.center_radius / this_cell.inner_radius) / (2 * pi * this_cell.conductivity)
                     AW = -1 / (FW1 + FW2)
 
                     AD = this_cell.rho_cp * this_cell.volume / time_step
@@ -262,11 +262,11 @@ class STSGFunctions(object):
                     east_cell = self.cells[idx + 1]
 
                     if west_cell.type == RadialCellType.GROUT and east_cell.type == RadialCellType.SOIL:
-                        west_conductance_num = 2 * PI * west_cell.conductivity
+                        west_conductance_num = 2 * pi * west_cell.conductivity
                         west_conductance_den = log(west_cell.outer_radius / west_cell.inner_radius)
                         west_conductance = west_conductance_num / west_conductance_den
 
-                        east_conductance_num = 2 * PI * east_cell.conductivity
+                        east_conductance_num = 2 * pi * east_cell.conductivity
                         east_conductance_den = log(east_cell.center_radius / west_cell.inner_radius)
                         east_conductance = east_conductance_num / east_conductance_den
 

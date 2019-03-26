@@ -1,6 +1,6 @@
 from math import exp, log, sin, sqrt
 
-from glhe.globals.constants import GAMMA, PI
+from glhe.globals.constants import gamma_const, pi
 
 
 class FlowFraction(object):
@@ -51,11 +51,11 @@ class FlowFraction(object):
 
         # Equation 9
         cd_num = self.v_f * self.c_f
-        cd_den = 2 * PI * self.l_bh * self.c_s * self.r_b ** 2
+        cd_den = 2 * pi * self.l_bh * self.c_s * self.r_b ** 2
         cd = cd_num / cd_den
 
         # Equation 10
-        resist_db = 2 * PI * self.k_s * resist_b
+        resist_db = 2 * pi * self.k_s * resist_b
 
         psi = cd * exp(2 * resist_db)
         phi = log(psi)
@@ -72,7 +72,7 @@ class FlowFraction(object):
 
         # Equation 12
         t_sf_num = tdsf_over_cd * self.c_f * self.v_f
-        t_sf_den = 2 * PI * self.l_bh * self.k_s
+        t_sf_den = 2 * pi * self.l_bh * self.k_s
         t_sf = t_sf_num / t_sf_den + self.t_i_minus_1
 
         resist_s1 = self.calc_soil_resist(sim_time, bh_ave_resist, self.k_s, self.alpha_s)
@@ -117,7 +117,7 @@ class FlowFraction(object):
             _part_1 = (f_sf - f_old) / 2
             log_num = log((t_i - self.t_i_minus_1) / (0.02 * t_tr))
             log_den = log(t_sf / (0.02 * t_tr))
-            _part_2 = 1 + sin(PI * (log_num / log_den - 0.5))
+            _part_2 = 1 + sin(pi * (log_num / log_den - 0.5))
             f = _part_1 * _part_2 + f_old
         else:
             f = f_sf  # pragma: no cover
@@ -128,12 +128,12 @@ class FlowFraction(object):
 
     @staticmethod
     def calc_soil_resist(sim_time, bh_resist, soil_cond, soil_diff):
-        part_1 = 2 / (4 * PI * soil_cond)
+        part_1 = 2 / (4 * pi * soil_cond)
         part_2_num = 4 * soil_diff * sim_time
         if part_2_num == 0:
             soil_resist = 0  # pragma: no cover
         else:
-            part_2_den = GAMMA * bh_resist ** 2
+            part_2_den = gamma_const * bh_resist ** 2
             soil_resist = part_1 * log(part_2_num / part_2_den)
             if soil_resist < 0:
                 soil_resist = 0
