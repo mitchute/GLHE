@@ -7,47 +7,37 @@ import pandas as pd
 from glhe.output_processor.output_processor import OutputProcessor
 
 
-class DummyClass(object):
-    def __init__(self):
-        self.foo = 1
-
-    def report_output(self):
-        return {"foo": self.foo}
-
-
 class TestOutputProcessor(unittest.TestCase):
 
-    def __init__(self, *args, **kwargs):
-        super(TestOutputProcessor, self).__init__(*args, **kwargs)
-        self.op = OutputProcessor()
-        self.bar = 2
-
-    def report_output(self):
-        return {"bar": self.bar}
+    @staticmethod
+    def add_instance():
+        temp_dir = tempfile.mkdtemp()
+        temp_file_name = 'temp.csv'
+        return OutputProcessor(temp_dir, temp_file_name)
 
     def test_collect_output(self):
-        d = DummyClass()
+        tst = self.add_instance()
 
-        self.op.collect_output([d.report_output(), self.report_output()])
+        d = {'foo': 1,
+             'bar': 2}
 
-        self.assertEqual(self.op.df['foo'][0], 1)
-        self.assertEqual(self.op.df['bar'][0], 2)
+        tst.collect_output(d)
+
+        self.assertEqual(tst.df['foo'][0], 1)
+        self.assertEqual(tst.df['bar'][0], 2)
 
     def test_write_to_file(self):
-        d = DummyClass()
+        tst = self.add_instance()
 
-        self.op.collect_output([d.report_output(), self.report_output()])
+        d = {'foo': 1,
+             'bar': 2}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp_data.csv')
-        with open(temp_file, 'w') as f:
-            f.write('Some, data, here\n')
+        tst.collect_output(d)
+        tst.write_to_file()
 
-        self.op.write_to_file(temp_file)
+        self.assertTrue(os.path.exists(tst.write_path))
 
-        self.assertTrue(os.path.exists(temp_file))
-
-        df = pd.read_csv(temp_file)
+        df = pd.read_csv(tst.write_path)
 
         self.assertEqual(df['foo'].iloc[0], 1)
         self.assertEqual(df['bar'].iloc[0], 2)

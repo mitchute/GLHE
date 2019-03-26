@@ -14,10 +14,11 @@ class TestSinusoidLoad(unittest.TestCase):
     @staticmethod
     def add_instance():
         d = {'fluid': {'fluid-type': 'water'},
-             'load-profile': {'load-profile-type': 'sinusoid',
-                              'amplitude': 1,
-                              'offset': 0,
-                              'period': 2 * pi}}
+             'load-profile': [{'load-profile-type': 'sinusoid',
+                               'name': 'my name',
+                               'amplitude': 1,
+                               'offset': 0,
+                               'period': 2 * pi}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -27,7 +28,7 @@ class TestSinusoidLoad(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return SinusoidLoad(d['load-profile'], ip, op)
+        return SinusoidLoad(d['load-profile'][0], ip, op)
 
     def test_simulate_time_step(self):
         tol = 1e-10

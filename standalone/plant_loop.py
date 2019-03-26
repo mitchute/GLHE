@@ -7,13 +7,15 @@ from typing import Union
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.input_processor.component_factory import make_component
+from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 
-from glhe.input_processor.component_types import ComponentTypes
+
 class PlantLoop(object):
     Type = ComponentTypes.PlantLoop
+
     def __init__(self, json_file_path: str) -> None:
         """
         Initialize the plant loop and all components on it.

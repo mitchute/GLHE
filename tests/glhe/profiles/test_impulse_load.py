@@ -14,7 +14,11 @@ class TestImpulseLoad(unittest.TestCase):
     @staticmethod
     def add_instance():
         d = {'fluid': {'fluid-type': 'water'},
-             'load-profile': {'load-profile-type': 'single-impulse', 'value': 1000, 'start-time': 0, 'end-time': 200}}
+             'load-profile': [{'load-profile-type': 'single-impulse',
+                               'name': 'my name',
+                               'value': 1000,
+                               'start-time': 0,
+                               'end-time': 200}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -24,7 +28,7 @@ class TestImpulseLoad(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return PulseLoad(d['load-profile'], ip, op)
+        return PulseLoad(d['load-profile'][0], ip, op)
 
     def test_get_value(self):
         tst = self.add_instance()

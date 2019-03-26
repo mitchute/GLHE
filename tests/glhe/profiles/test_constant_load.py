@@ -14,7 +14,7 @@ class TestConstantLoad(unittest.TestCase):
     @staticmethod
     def add_instance():
         d = {'fluid': {'fluid-type': 'water'},
-             'load-profile': {'load-profile-type': 'constant', 'value': 4000}}
+             'load-profile': [{'load-profile-type': 'constant', 'name': 'my name', 'value': 4000}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -24,7 +24,7 @@ class TestConstantLoad(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ConstantLoad(d['load-profile'], ip, op)
+        return ConstantLoad(d['load-profile'][0], ip, op)
 
     def test_simulate_time_step(self):
         tst = self.add_instance()

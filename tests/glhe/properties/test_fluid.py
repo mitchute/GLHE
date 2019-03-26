@@ -7,23 +7,23 @@ from glhe.properties.fluid_types import FluidType
 class TestFluid(unittest.TestCase):
 
     def test_init(self):
-        tst_w = Fluid({'type': 'water'})
+        tst_w = Fluid({'fluid-type': 'water'})
         self.assertEqual(tst_w.fluid_enum, FluidType.WATER)
         self.assertEqual(tst_w.fluid_str, 'WATER')
 
-        tst_ea = Fluid({'type': 'EA', 'concentration': 50})
+        tst_ea = Fluid({'fluid-type': 'EA', 'concentration': 50})
         self.assertEqual(tst_ea.fluid_enum, FluidType.ETHYL_ALCOHOL)
         self.assertEqual(tst_ea.fluid_str, 'INCOMP::MEA[0.5]')
 
-        tst_eg = Fluid({'type': 'EG', 'concentration': 50})
+        tst_eg = Fluid({'fluid-type': 'EG', 'concentration': 50})
         self.assertEqual(tst_eg.fluid_enum, FluidType.ETHYLENE_GLYCOL)
         self.assertEqual(tst_eg.fluid_str, 'INCOMP::MEG[0.5]')
 
-        tst_pg = Fluid({'type': 'PG', 'concentration': 50})
+        tst_pg = Fluid({'fluid-type': 'PG', 'concentration': 50})
         self.assertEqual(tst_pg.fluid_enum, FluidType.PROPYLENE_GLYCOL)
         self.assertEqual(tst_pg.fluid_str, 'INCOMP::MPG[0.5]')
 
-        self.assertRaises(ValueError, lambda: Fluid({'type': 'Not A Fluid', 'concentration': 0}))
+        self.assertRaises(ValueError, lambda: Fluid({'fluid-type': 'Not A Fluid', 'concentration': 0}))
 
     def test_cond(self):
         """
@@ -37,7 +37,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-2
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.calc_conductivity(20), 0.598, delta=tolerance)
         self.assertAlmostEqual(tst.calc_conductivity(40), 0.631, delta=tolerance)
         self.assertAlmostEqual(tst.calc_conductivity(60), 0.654, delta=tolerance)
@@ -55,7 +55,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 4.0
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.calc_specific_heat(20), 4182, delta=tolerance)
         self.assertAlmostEqual(tst.calc_specific_heat(40), 4179, delta=tolerance)
         self.assertAlmostEqual(tst.calc_specific_heat(60), 4185, delta=tolerance)
@@ -73,7 +73,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1.0
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.calc_density(20), 998.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_density(40), 992.1, delta=tolerance)
         self.assertAlmostEqual(tst.calc_density(60), 983.3, delta=tolerance)
@@ -91,7 +91,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-1
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.calc_prandtl(20), 7.01, delta=tolerance)
         self.assertAlmostEqual(tst.calc_prandtl(40), 4.32, delta=tolerance)
         self.assertAlmostEqual(tst.calc_prandtl(60), 2.99, delta=tolerance)
@@ -109,7 +109,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-4
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.calc_viscosity(20), 1.002E-3, delta=tolerance)
         self.assertAlmostEqual(tst.calc_viscosity(40), 0.653E-3, delta=tolerance)
         self.assertAlmostEqual(tst.calc_viscosity(60), 0.467E-3, delta=tolerance)
@@ -127,7 +127,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-2
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.get_k(20), 0.598, delta=tolerance)
         self.assertAlmostEqual(tst.get_k(40), 0.631, delta=tolerance)
         self.assertAlmostEqual(tst.get_k(60), 0.654, delta=tolerance)
@@ -145,7 +145,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 4.0
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.get_cp(20), 4182, delta=tolerance)
         self.assertAlmostEqual(tst.get_cp(40), 4179, delta=tolerance)
         self.assertAlmostEqual(tst.get_cp(60), 4185, delta=tolerance)
@@ -163,7 +163,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1.0
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.get_rho(20), 998.0, delta=tolerance)
         self.assertAlmostEqual(tst.get_rho(40), 992.1, delta=tolerance)
         self.assertAlmostEqual(tst.get_rho(60), 983.3, delta=tolerance)
@@ -181,7 +181,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-1
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.get_pr(20), 7.01, delta=tolerance)
         self.assertAlmostEqual(tst.get_pr(40), 4.32, delta=tolerance)
         self.assertAlmostEqual(tst.get_pr(60), 2.99, delta=tolerance)
@@ -199,7 +199,7 @@ class TestFluid(unittest.TestCase):
 
         tolerance = 1E-4
 
-        tst = Fluid({'type': 'water'})
+        tst = Fluid({'fluid-type': 'water'})
         self.assertAlmostEqual(tst.get_mu(20), 1.002E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(40), 0.653E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(60), 0.467E-3, delta=tolerance)

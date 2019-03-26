@@ -23,14 +23,14 @@ class TestExternalTemps(unittest.TestCase):
                     '2018-01-01 02:00:00, 3, 3, 3\n'
                     '2018-01-01 03:00:00, 4, 4, 4\n')
 
-        d = {'temperature-profile': {'temperature-profile-type': 'external', 'path': temp_data}}
+        d = {'temperature-profile': [{'temperature-profile-type': 'external', 'name': 'my name', 'path': temp_data}]}
         temp_file = os.path.join(temp_dir, 'temp.json')
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ExternalTemps(d['temperature-profile'], ip, op)
+        return ExternalTemps(d['temperature-profile'][0], ip, op)
 
     def test_start_end_points(self):
         tst = self.add_instance()

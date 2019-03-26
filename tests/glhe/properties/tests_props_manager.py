@@ -11,13 +11,13 @@ class TestPropsMGR(unittest.TestCase):
     def add_instance():
         d = {
             "fluid": {
-                "type": "water",
+                "fluid-type": "water",
                 "concentration": 100},
             "soil": {
                 "name": "Some Rock",
                 "conductivity": 2.6,
                 "density": 2500,
-                "specific heat": 880
+                "specific-heat": 880
             }
         }
 

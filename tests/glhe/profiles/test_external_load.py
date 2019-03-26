@@ -14,7 +14,7 @@ class TestExternalLoad(unittest.TestCase):
     @staticmethod
     def add_instance(path):
         d = {'fluid': {'fluid-type': 'water'},
-             'load-profile': {'load-profile-type': 'external', 'path': path}}
+             'load-profile': [{'load-profile-type': 'external', 'name': 'my name', 'path': path}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -24,7 +24,7 @@ class TestExternalLoad(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ExternalLoad(d['load-profile'], ip, op)
+        return ExternalLoad(d['load-profile'][0], ip, op)
 
     def test_get_value(self):
         dir_name = os.path.dirname(__file__)

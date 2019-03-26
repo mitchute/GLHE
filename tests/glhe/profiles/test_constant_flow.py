@@ -13,7 +13,7 @@ class TestConstantFlow(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        d = {'flow-profile': {'load-profile-type': 'constant', 'value': 0.1}}
+        d = {'flow-profile': [{'flow-profile-type': 'constant', 'name': 'my name', 'value': 0.1}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -23,7 +23,7 @@ class TestConstantFlow(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ConstantFlow(d['flow-profile'], ip, op)
+        return ConstantFlow(d['flow-profile'][0], ip, op)
 
     def test_simulate_time_step(self):
         tst = self.add_instance()

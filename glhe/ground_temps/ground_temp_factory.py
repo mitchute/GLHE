@@ -13,18 +13,10 @@ def make_ground_temp_model(inputs):
 
     gtm_type = inputs["ground-temperature-model-type"]
     if gtm_type == "constant":
-        return Constant(inputs["temperature"])
+        return Constant(inputs)
     elif gtm_type == "single-harmonic":
-        return SingleHarmonic(inputs["average-temperature"],
-                              inputs["amplitude"],
-                              inputs["phase-shift"],
-                              inputs["soil-diffusivity"])
+        return SingleHarmonic(inputs)
     elif gtm_type == "two-harmonic":
-        return TwoHarmonic(inputs["average-temperature"],
-                           inputs["amplitude-1"],
-                           inputs["amplitude-2"],
-                           inputs["phase-shift-1"],
-                           inputs["phase-shift-2"],
-                           inputs["soil-diffusivity"])
+        return TwoHarmonic(inputs)
     else:
         raise ValueError("Ground temperature model '{}' is not valid.".format(gtm_type))

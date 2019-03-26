@@ -13,9 +13,10 @@ class TestSynthetic(unittest.TestCase):
     @staticmethod
     def add_instance(method):
         d = {'fluid': {'fluid-type': 'water'},
-             'load-profile': {'load-profile-type': 'synthetic',
-                              'amplitude': 1000,
-                              'synthetic-method': method}}
+             'load-profile': [{'load-profile-type': 'synthetic',
+                               'name': 'my name',
+                               'amplitude': 1000,
+                               'synthetic-method': method}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -25,7 +26,7 @@ class TestSynthetic(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return SyntheticLoad(d['load-profile'], ip, op)
+        return SyntheticLoad(d['load-profile'][0], ip, op)
 
     def test_get_value(self):
         tol = 1e-1

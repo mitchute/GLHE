@@ -21,38 +21,27 @@ class TwoHarmonic(BaseGroundTemp):
     Science and Technology for the Built Environment 23(5): 826-842.
     """
 
-    def __init__(self, ave_temp, amplitude_1, amplitude_2, phase_shift_1, phase_shift_2, soil_diffusivity):
-        """
-        Constructor parameters:
-
-        :param ave_temp: Average temperature of the soil [C]
-        :param amplitude_1: First soil surface temperature amplitude [C]
-        :param amplitude_2: Second soil surface temperature amplitude parameter [C]
-        :param phase_shift_1: Phase shift of surface temperature amplitude 1 [days]
-        :param phase_shift_2: Phase shift of surface temperature amplitude 2 [days]
-        :param soil_diffusivity: Soil thermal diffusivity [m2/s]
-        """
-
-        self._ave_ground_temp = ave_temp
-        self._amplitude_1 = amplitude_1
-        self._amplitude_2 = amplitude_2
-        self._phase_shift_1 = phase_shift_1
-        self._phase_shift_2 = phase_shift_2
-        self._soil_diffusivity = soil_diffusivity
+    def __init__(self, inputs):
+        self.ave_ground_temp = inputs['average-temperature']
+        self.amplitude_1 = inputs['amplitude-1']
+        self.amplitude_2 = inputs['amplitude-2']
+        self.phase_shift_1 = inputs['phase-shift-1']
+        self.phase_shift_2 = inputs['phase-shift-2']
+        self.soil_diffusivity = inputs['soil-diffusivity']
 
     def get_temp(self, time, depth):
         term1 = self._exp_term(n=1, depth=depth)
         term2 = self._cos_term(n=1, time=time, depth=depth)
         term3 = self._exp_term(n=2, depth=depth)
         term4 = self._cos_term(n=2, time=time, depth=depth)
-        summation = exp(term1) * self._amplitude_1 * cos(term2) + exp(term3) * self._amplitude_2 * cos(term4)
-        return self._ave_ground_temp - summation
+        summation = exp(term1) * self.amplitude_1 * cos(term2) + exp(term3) * self.amplitude_2 * cos(term4)
+        return self.ave_ground_temp - summation
 
     def _exp_term(self, n, depth):
-        return -depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+        return -depth * sqrt((n * pi) / (self.soil_diffusivity * DAYS_IN_YEAR))
 
     def _cos_term(self, n, time, depth):
         time_in_days = time / SEC_IN_DAY
-        term_2_pt_1 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self._phase_shift_1)
-        term_2_pt_2 = depth * sqrt((n * pi) / (self._soil_diffusivity * DAYS_IN_YEAR))
+        term_2_pt_1 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self.phase_shift_1)
+        term_2_pt_2 = depth * sqrt((n * pi) / (self.soil_diffusivity * DAYS_IN_YEAR))
         return term_2_pt_1 - term_2_pt_2

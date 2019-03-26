@@ -13,7 +13,7 @@ class TestExternalFlow(unittest.TestCase):
 
     @staticmethod
     def add_instance(path):
-        d = {'flow-profile': {'flow-profile-type': 'external', 'path': path}}
+        d = {'flow-profile': [{'flow-profile-type': 'external', 'name': 'my name', 'path': path}]}
 
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, 'temp.json')
@@ -23,7 +23,7 @@ class TestExternalFlow(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ExternalFlow(d['flow-profile'], ip, op)
+        return ExternalFlow(d['flow-profile'][0], ip, op)
 
     def test_get_value(self):
         dir_name = os.path.dirname(__file__)
