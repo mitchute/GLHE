@@ -190,7 +190,8 @@ def runge_kutta_fourth_y(rhs, h, y):
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
 
-def tdma_1(a, b, c, d):
+def tdma_1(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
+           c: Union[list, np.ndarray], d: Union[list, np.ndarray]) -> np.ndarray:
     """
     Tri-diagonal matrix solver
 
@@ -225,7 +226,8 @@ def tdma_1(a, b, c, d):
     return xc
 
 
-def tdma_2(a, b, c, d):
+def tdma_2(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
+           c: Union[list, np.ndarray], d: Union[list, np.ndarray]) -> np.ndarray:
     """
     Tri-diagonal matrix solver
 

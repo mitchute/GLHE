@@ -1,15 +1,17 @@
 from math import pi
-
 from numpy import log
 
 from glhe.globals.functions import smoothing_function
-from glhe.properties.base import PropertiesBase
+from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import SimulationResponse
+from glhe.properties.base_properties import PropertiesBase
 
 
-class Pipe(PropertiesBase):
+class Pipe(PropertiesBase, SimulationEntryPoint):
 
     def __init__(self, inputs, ip, op):
         PropertiesBase.__init__(self, inputs)
+        SimulationEntryPoint.__init__(self)
 
         # input/output processor
         self.ip = ip
@@ -46,6 +48,14 @@ class Pipe(PropertiesBase):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
+
+    def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
+
+
+
+
+    def report_outputs(self) -> dict:
+        return {}
 
     # def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
     #

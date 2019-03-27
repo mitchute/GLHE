@@ -5,7 +5,7 @@ from glhe.interface.response import SimulationResponse
 
 class SimulationEntryPoint(ABC):
 
-    def __init__(self, name: str):
+    def __init__(self, name: str = ''):
         self.name = name.upper()
 
     @abstractmethod

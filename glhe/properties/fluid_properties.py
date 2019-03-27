@@ -63,11 +63,11 @@ class Fluid(object):
         if fluid_enum == FluidType.WATER:
             return "WATER"
         elif fluid_enum == FluidType.ETHYL_ALCOHOL:
-            return "INCOMP::MEA[{}]".format(get_concentration(concentration, 0.0, 0.6))
+            return "INCOMP::MEA[{:0.4f}]".format(get_concentration(concentration, 0.0, 0.6))
         elif fluid_enum == FluidType.ETHYLENE_GLYCOL:
-            return "INCOMP::MEG[{}]".format(get_concentration(concentration, 0.0, 0.6))
+            return "INCOMP::MEG[{:0.4f}]".format(get_concentration(concentration, 0.0, 0.6))
         elif fluid_enum == FluidType.PROPYLENE_GLYCOL:
-            return "INCOMP::MPG[{}]".format(get_concentration(concentration, 0.0, 0.6))
+            return "INCOMP::MPG[{:0.4f}]".format(get_concentration(concentration, 0.0, 0.6))
 
     def calc_max_temp(self):
         """
@@ -161,7 +161,7 @@ class Fluid(object):
         :returns fluid conductivity in [W/m-K]
         """
 
-        return self._calc_property(FluidPropertyType.CONDUCTIVITY, temperature)
+        return self.calc_property(FluidPropertyType.CONDUCTIVITY, temperature)
 
     def calc_specific_heat(self, temperature: Union[int, float]):
         """
@@ -171,7 +171,7 @@ class Fluid(object):
         :returns fluid specific heat in [J/kg-K]
         """
 
-        return self._calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
+        return self.calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
 
     def calc_density(self, temperature: Union[int, float]):
         """
@@ -181,7 +181,7 @@ class Fluid(object):
         :returns fluid density in [kg/m3]
         """
 
-        return self._calc_property(FluidPropertyType.DENSITY, temperature)
+        return self.calc_property(FluidPropertyType.DENSITY, temperature)
 
     def calc_prandtl(self, temperature: Union[int, float]):
         """
@@ -191,7 +191,7 @@ class Fluid(object):
         :returns fluid Prandtl number
         """
 
-        return self._calc_property(FluidPropertyType.PRANDTL, temperature)
+        return self.calc_property(FluidPropertyType.PRANDTL, temperature)
 
     def calc_viscosity(self, temperature: Union[int, float]):
         """
@@ -201,7 +201,7 @@ class Fluid(object):
         :returns fluid viscosity in [Pa-s]
         """
 
-        return self._calc_property(FluidPropertyType.VISCOSITY, temperature)
+        return self.calc_property(FluidPropertyType.VISCOSITY, temperature)
 
     def calc_vol_heat_capacity(self, temperature: Union[int, float]):
         """
@@ -211,16 +211,16 @@ class Fluid(object):
         :returns fluid volume-specific heat capacity in [J/m3-K]
         """
 
-        rho = self._calc_property(FluidPropertyType.DENSITY, temperature)
-        cp = self._calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
+        rho = self.calc_property(FluidPropertyType.DENSITY, temperature)
+        cp = self.calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
 
         return rho * cp
 
-    def _calc_property(self, _property, temperature: Union[int, float]):
+    def calc_property(self, prop_type, temperature: Union[int, float]):
         """
         Worker function to call the CoolProp library
 
-        :param _property: Fluid property enum value
+        :param prop_type: Fluid property enum value
         :param temperature: Fluid temperature in Celsius
         :return: Property Value
         """
@@ -232,9 +232,9 @@ class Fluid(object):
                  FluidPropertyType.VISCOSITY: 'VISCOSITY'}
 
         try:
-            return PropsSI(props[_property], 'T', c_to_k(temperature), 'P', self.pressure, self.fluid_str)
+            return PropsSI(props[prop_type], 'T', c_to_k(temperature), 'P', self.pressure, self.fluid_str)
         except ValueError:  # pragma: no cover
             # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
             # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
-            return PropsSI(props[_property], 'T', self.min_temp, 'P', self.pressure, self.fluid_str)
+            return PropsSI(props[prop_type], 'T', self.min_temp, 'P', self.pressure, self.fluid_str)

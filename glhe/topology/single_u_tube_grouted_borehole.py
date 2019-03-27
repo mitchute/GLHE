@@ -4,7 +4,7 @@ from math import pi
 from numpy import log
 
 from glhe.globals.functions import merge_dicts
-from glhe.properties.base import PropertiesBase
+from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.borehole_base import BoreholeBase
 from glhe.topology.borehole_types import BoreholeTypes
 from glhe.topology.pipe import Pipe

@@ -9,8 +9,8 @@ from glhe.g_function.flow_fraction import FlowFraction
 from glhe.globals.functions import merge_dicts
 from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.interface.entry import SimulationEntryPoint
-from glhe.properties.base import PropertiesBase
-from glhe.properties.fluid import Fluid
+from glhe.properties.base_properties import PropertiesBase
+from glhe.properties.fluid_properties import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
