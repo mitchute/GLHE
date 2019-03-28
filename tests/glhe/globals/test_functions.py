@@ -1,19 +1,20 @@
 import os
 import tempfile
 import unittest
-from math import cos, sin
 
+from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
+from glhe.globals.functions import c_to_k
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
-from glhe.globals.functions import tdma_2
-from glhe.globals.functions import runge_kutta_fourth_x
+from glhe.globals.functions import lower_obj
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
-from glhe.globals.functions import c_to_k
+from glhe.globals.functions import tdma_2
 from glhe.globals.functions import write_json
 
 
@@ -127,3 +128,21 @@ class TestFunctions(unittest.TestCase):
 
         for idx, _ in enumerate(tst):
             self.assertAlmostEqual(tst[idx], soln[idx], delta=tol)
+
+    def test_lower_obj(self):
+
+        d = {'Outer Key 1': 'VAL',
+             'Outer Key 2': 2,
+             'Nested Obj': {'Inner Key 1': [1, 2.3, 5],
+                            'Inner Key 2': 2.635,
+                            'Inner Key 3': ['Red', 'tEd', 2.3]}}
+
+        ret = lower_obj(d)
+
+        self.assertEqual(d['Outer Key 1'].lower(), ret['outer key 1'])
+        self.assertEqual(d['Outer Key 2'], ret['outer key 2'])
+        self.assertEqual(d['Nested Obj']['Inner Key 1'], ret['nested obj']['inner key 1'])
+        self.assertEqual(d['Nested Obj']['Inner Key 2'], ret['nested obj']['inner key 2'])
+        self.assertEqual(d['Nested Obj']['Inner Key 3'][0].lower(), ret['nested obj']['inner key 3'][0])
+        self.assertEqual(d['Nested Obj']['Inner Key 3'][1].lower(), ret['nested obj']['inner key 3'][1])
+        self.assertEqual(d['Nested Obj']['Inner Key 3'][2], ret['nested obj']['inner key 3'][2])

@@ -204,11 +204,19 @@ class TestInputProcessor(unittest.TestCase):
 
         self.run_validate(d)
 
+    def test_validate_pipe(self):
+        d = {'pipe': [
+            {'pipe-def-name': '32 mm SDR-11 HDPE',
+             'name': 'my name',
+             'length': 100}]}
+
+        self.run_validate(d)
+
     def test_all_schema_tests_implemented(self):
         # this count should match the number of schema validations implemented here
         # it will match against the count of all schema files in 'glhe/input_processor/schema'
         # not great, but OK for now
-        test_count = 13
+        test_count = 14
 
         fpath = os.path.dirname(os.path.abspath(__file__))
         schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'input_processor', 'schema'))

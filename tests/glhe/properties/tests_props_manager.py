@@ -1,7 +1,7 @@
 import unittest
 
-from glhe.properties.base import PropertiesBase
-from glhe.properties.fluid import Fluid
+from glhe.properties.base_properties import PropertiesBase
+from glhe.properties.fluid_properties import Fluid
 from glhe.properties.props_manager import PropsMGR
 
 

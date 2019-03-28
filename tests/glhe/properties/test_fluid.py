@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.properties.fluid import Fluid
+from glhe.properties.fluid_properties import Fluid
 from glhe.properties.fluid_types import FluidType
 
 

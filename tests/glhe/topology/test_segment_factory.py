@@ -1,7 +1,7 @@
 import unittest
 
-from glhe.properties.base import PropertiesBase
-from glhe.properties.fluid import Fluid
+from glhe.properties.base_properties import PropertiesBase
+from glhe.properties.fluid_properties import Fluid
 from glhe.topology.segment_factory import make_segment
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
 

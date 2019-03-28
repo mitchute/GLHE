@@ -1,6 +1,6 @@
 import unittest
 
-from glhe.properties.base import PropertiesBase
+from glhe.properties.base_properties import PropertiesBase
 
 
 class TestBaseProperties(unittest.TestCase):

@@ -3,8 +3,8 @@ import unittest
 from glhe.g_function.calc_sts_g_functions import STSGFunctions
 from glhe.g_function.radial_sts_cell import RadialCell
 from glhe.globals.constants import pi
-from glhe.properties.base import PropertiesBase
-from glhe.properties.fluid import Fluid
+from glhe.properties.base_properties import PropertiesBase
+from glhe.properties.fluid_properties import Fluid
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
@@ -55,7 +55,7 @@ class TestSTSGFunctions(unittest.TestCase):
         bh.set_flow_rate(m_dot)
 
         bh_resist = bh.calc_bh_average_resistance()
-        conv_resist = bh.pipe.calc_convection_resistance(m_dot)
+        conv_resist = bh.pipe.calc_conv_resist(m_dot)
 
         inputs = {'borehole diameter': bh_inputs['diameter'],
                   'borehole length': bh_inputs['depth'],

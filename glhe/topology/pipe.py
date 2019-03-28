@@ -1,28 +1,36 @@
-from math import pi
-from numpy import log
+import numpy as np
+from math import log, pi, sqrt
 
 from glhe.globals.functions import smoothing_function
+from glhe.globals.functions import tdma_1
+from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.properties.base_properties import PropertiesBase
 
 
 class Pipe(PropertiesBase, SimulationEntryPoint):
+    Type = ComponentTypes.Pipe
 
     def __init__(self, inputs, ip, op):
-        PropertiesBase.__init__(self, inputs)
-        SimulationEntryPoint.__init__(self)
+        SimulationEntryPoint.__init__(self, inputs['name'])
 
         # input/output processor
         self.ip = ip
         self.op = op
 
-        # fluids instance
+        # load the properties from the definitions
+        pipe_props = ip.get_input_object('pipe-definitions', inputs['pipe-def-name'])
+
+        # init the properties
+        PropertiesBase.__init__(self, pipe_props)
+
+        # local fluids reference
         self.fluid = self.ip.props_mgr.fluid
 
         # key geometric parameters
-        self.inner_diameter = inputs["inner diameter"]
-        self.outer_diameter = inputs["outer diameter"]
+        self.inner_diameter = pipe_props["inner-diameter"]
+        self.outer_diameter = pipe_props["outer-diameter"]
         self.length = inputs['length']
         self.init_temp = self.ip.init_temp()
 
@@ -48,65 +56,89 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
+        self.num_pipe_cells = 64
+        self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
 
-    def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
+    def calc_transit_time(self, flow_rate: float, temperature: float) -> float:
+        """
+        Compute transit time of pipe.
 
+        :param flow_rate: mass flow rate, kg/s
+        :param temperature: temperature, C
+        :return: transit time, s
+        """
+        v_dot = flow_rate / self.fluid.get_rho(temperature)
+        return self.fluid_vol / v_dot
 
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
+        """
+        Simulate the temperature response of an adiabatic pipe with internal fluid mixing.
 
+        Rees, S.J. 2015. 'An extended two-dimensional borehole heat exchanger model for
+        simulation of short and medium timescale thermal response.' Renewable Energy. 83: 518-526.
+
+        Skoglund, T, and P. Dejmek. 2007. 'A dynamic object-oriented model for efficient
+        simulation of fluid dispersion in turbulent flow with varying fluid properties.'
+        Chem. Eng. Sci.. 62: 2168-2178.
+
+        Bischoff, K.B., and O. Levenspiel. 1962. 'Fluid dispersion--generalization and comparision
+        of mathematical models--II; Comparison of models.' Chem. Eng. Sci.. 17: 257-264.
+
+        :param inputs: inlet conditions
+        :return: outlet conditions
+        """
+
+        # recommendation by Skoglund
+        num_cells = self.num_pipe_cells
+
+        m_dot = inputs.flow_rate
+        temp = inputs.temperature
+        dt = inputs.time_step
+
+        tau = self.calc_transit_time(m_dot, temp)
+        re = self.m_dot_to_re(m_dot, temp)
+        r_p = self.inner_radius
+        l = self.length
+
+        # Rees Eq. 18
+        # Peclet number
+        peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
+
+        # Rees Eq. 17
+        # transit time per cell
+        tau_n = tau * sqrt(2 / (num_cells * peclet))
+
+        # volume flow rate
+        v_dot = m_dot / self.fluid.get_rho(temp)
+
+        # volume per cell
+        v_n = tau_n * v_dot
+
+        a = np.full(num_cells - 1, -v_dot)
+        b = np.full(num_cells, v_n / dt + v_dot)
+        b[0] = 1
+        c = np.full(num_cells - 1, 0)
+        d = np.full(num_cells, v_n / dt) * self.cell_temps
+        d[0] = temp
+
+        self.cell_temps = tdma_1(a, b, c, d)
+
+        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.cell_temps[-1])
 
     def report_outputs(self) -> dict:
         return {}
 
-    # def calc_outlet_temp_hanby(self, temp, v_dot, time_step):
-    #
-    #     def my_hanby(time):
-    #         return hanby(time, v_dot, self.fluid_vol)
-    #
-    #     transit_time = self.fluid_vol / v_dot
-    #
-    #     if self.start_up:
-    #         idx = 1
-    #         while True:
-    #
-    #             time = time_step * idx
-    #             f = my_hanby(time)
-    #             tau = time / transit_time
-    #             self.temps.append(TempObject(self.init_temp, time_step, time, f, tau))
-    #
-    #             idx += 1
-    #
-    #             if self.temps[-1].tau > 1.3:
-    #                 self.start_up = False
-    #                 break
-    #
-    #     self.temps.appendleft(TempObject(temp, time_step, 0, my_hanby(time_step), 0))
-    #
-    #     pop_idxs = []
-    #     sum_temp_f = 0
-    #     sum_f = 0
-    #
-    #     for idx, obj in enumerate(self.temps):
-    #         obj.time += time_step
-    #         obj.f = my_hanby(obj.time)
-    #         tau = obj.time / transit_time
-    #         obj.tau = tau
-    #         if obj.tau > 1.3 and idx != 0:
-    #             pop_idxs.append(idx)
-    #         else:
-    #             sum_temp_f += obj.temp * obj.f
-    #             sum_f += obj.f
-    #
-    #     for idx in reversed(pop_idxs):
-    #         if idx == 0:
-    #             pass
-    #         else:
-    #             del self.temps[idx]
-    #
-    #     ret_temp = sum_temp_f / sum_f
-    #
-    #     return ret_temp
+    def m_dot_to_re(self, flow_rate, temp):
+        """
+        Convert mass flow rate to Reynolds number
 
-    def calc_friction_factor(self, re):
+        :param flow_rate: mass flow rate, kg/s
+        :param temp: temperature, C
+        :return: Reynolds number
+        """
+        return 4 * flow_rate / (self.fluid.get_mu(temp) * pi * self.inner_diameter)
+
+    def calc_friction_factor(self, re: float):
         """
         Calculates the friction factor in smooth tubes
 
@@ -132,55 +164,59 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
         return self.friction_factor
 
-    def calc_conduction_resistance(self):
+    def calc_cond_resist(self):
         """
         Calculates the thermal resistance of a pipe, in [K/(W/m)].
 
-        Javed, S. & Spitler, J.D. 2016. 'Accuracy of Borehole Thermal Resistance Calculation Methods
-        for Grouted Single U-tube Ground Heat Exchangers.' J. Energy Engineering. Draft in progress.
+        Javed, S. and Spitler, J.D. 2017. 'Accuracy of borehole thermal resistance calculation methods
+        for grouted single U-tube ground heat exchangers.' Applied Energy. 187: 790-806.
         """
 
         return log(self.outer_diameter / self.inner_diameter) / (2 * pi * self.conductivity)
 
-    def calc_convection_resistance(self, mass_flow_rate):
+    def calc_conv_resist(self, flow_rate: float, temp: float):
         """
         Calculates the convection resistance using Gnielinski and Petukov, in [k/(W/m)]
 
-        Gneilinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
+        Gnielinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
         International Chemical Engineering 16(1976), pp. 359-368.
+
+        :param flow_rate: mass flow rate, kg/s
+        :param temp: temperature, C
+        :return convection resistance, K/(W/m)
         """
 
         low_reynolds = 2000
         high_reynolds = 4000
 
-        re = 4 * mass_flow_rate / (self.fluid.viscosity * pi * self.inner_diameter)
+        re = self.m_dot_to_re(flow_rate, temp)
 
         if re < low_reynolds:
             nu = self.laminar_nusselt()
         elif low_reynolds <= re < high_reynolds:
             nu_low = self.laminar_nusselt()
-            nu_high = self.turbulent_nusselt(re)
+            nu_high = self.turbulent_nusselt(re, temp)
             sigma = smoothing_function(re, a=3000, b=150)
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
-            nu = self.turbulent_nusselt(re)
-        return 1 / (nu * pi * self.fluid.conductivity)
+            nu = self.turbulent_nusselt(re, temp)
+        return 1 / (nu * pi * self.fluid.get_k(temp))
 
-    def set_resistance(self, pipe_resistance):
-        self.resist_pipe = pipe_resistance
+    def set_resist(self, pipe_resist: float):
+        self.resist_pipe = pipe_resist
         return self.resist_pipe
 
-    def calc_resistance(self, mass_flow_rate):
+    def calc_resist(self, mass_flow_rate: float, temp: float):
         """
         Calculates the combined conduction and convection pipe resistance
 
-        Javed, S. & Spitler, J.D. 2016. 'Accuracy of Borehole Thermal Resistance Calculation Methods
-        for Grouted Single U-tube Ground Heat Exchangers.' J. Energy Engineering. Draft in progress.
+        Javed, S. and Spitler, J.D. 2017. 'Accuracy of borehole thermal resistance calculation methods
+        for grouted single U-tube ground heat exchangers.' Applied Energy. 187: 790-806.
 
         Equation 3
         """
 
-        self.resist_pipe = self.calc_convection_resistance(mass_flow_rate) + self.calc_conduction_resistance()
+        self.resist_pipe = self.calc_conv_resist(mass_flow_rate, temp) + self.calc_cond_resist()
         return self.resist_pipe
 
     @staticmethod
@@ -193,23 +229,24 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
         return 4.01
 
-    def turbulent_nusselt(self, re):
+    def turbulent_nusselt(self, re: float, temp: float):
         """
         Turbulent Nusselt number for smooth pipes
 
-        Gneilinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
+        Gnielinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
         International Chemical Engineering 16(1976), pp. 359-368.
 
         :param re: Reynolds number
+        :param temp: Temperature, C
         :return: Nusselt number
         """
 
         f = self.calc_friction_factor(re)
-        pr = self.fluid.prandtl
+        pr = self.fluid.get_pr(temp)
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
     @staticmethod
-    def laminar_friction_factor(re):
+    def laminar_friction_factor(re: float):
         """
         Laminar friction factor
 
@@ -220,11 +257,12 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         return 64.0 / re
 
     @staticmethod
-    def turbulent_friction_factor(re):
+    def turbulent_friction_factor(re: float):
         """
+        Turbulent friction factor
 
-        :param re:
-        :return:
+        :param re: Reynolds number
+        :return: friction factor
         """
 
         return (0.79 * log(re) - 1.64) ** (-2.0)

@@ -209,7 +209,7 @@ class SingleUTubeGroutedBorehole(BoreholeBase):
         self.mass_flow_rate_prev = self.mass_flow_rate
         self.mass_flow_rate = mass_flow_rate
         self.vol_flow_rate = mass_flow_rate / self.fluid.density
-        self.update_beta(self.pipe.calc_resistance(self.mass_flow_rate))
+        self.update_beta(self.pipe.calc_resist(self.mass_flow_rate))
         self.calc_bh_total_internal_resistance()
         self.calc_bh_average_resistance()
         self.calc_bh_effective_resistance()

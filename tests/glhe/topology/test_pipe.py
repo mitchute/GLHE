@@ -1,8 +1,13 @@
+import os
+import tempfile
 import unittest
 
-from numpy import log
+from math import log
 
-from glhe.properties.fluid import Fluid
+from glhe.globals.functions import write_json
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.pipe import Pipe
 
 
@@ -10,19 +15,27 @@ class TestPipe(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        inputs = {
-            'outer diameter': 0.0334,
-            'inner diameter': 0.0269,
+        inputs = {'pipe-definitions': [{
+            'name': '32 mm sdr-11 hdpe',
+            'outer-diameter': 0.0334,
+            'inner-diameter': 0.0269,
             'conductivity': 0.389,
             'density': 950,
-            'specific heat': 1900,
-            'length': 100,
-            'initial temp': 20
-        }
+            'specific-heat': 1900}],
+            'fluid': {'fluid-type': 'water'},
+            'pipe': [
+                {'pipe-def-name': '32 mm sdr-11 hdpe',
+                 'name': 'pipe 1',
+                 'length': 100}]}
 
-        fluid = Fluid({'type': 'water'})
+        temp_dir = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_dir, 'temp.json')
+        write_json(temp_file, inputs)
 
-        return Pipe(inputs=inputs, fluid_inst=fluid)
+        ip = InputProcessor(temp_file)
+        op = OutputProcessor(temp_dir, 'out.csv')
+
+        return Pipe(inputs['pipe'][0], ip, op)
 
     def test_calc_friction_factor(self):
         tst = self.add_instance()
@@ -61,33 +74,34 @@ class TestPipe(unittest.TestCase):
     def test_calc_conduction_resistance(self):
         tst = self.add_instance()
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_conduction_resistance(), 0.088549, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_cond_resist(), 0.088549, delta=tolerance)
 
     def test_calc_convection_resistance(self):
         tst = self.add_instance()
+        temp = 20
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_convection_resistance(0), 0.13273, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_convection_resistance(0.07), 0.02645, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_convection_resistance(2), 0.00094, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_conv_resist(0, temp), 0.13273, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_conv_resist(0.07, temp), 0.02645, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_conv_resist(2, temp), 0.00094, delta=tolerance)
 
     def test_calc_resistance(self):
         tst = self.add_instance()
+        temp = 20
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_resistance(0), 0.22128, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_resistance(0.07), 0.11500, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_resistance(2), 0.08948, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0, temp), 0.22128, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11500, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(2, temp), 0.08948, delta=tolerance)
 
     def test_set_resistance(self):
         tst = self.add_instance()
-        tst.set_resistance(1)
+        tst.set_resist(1)
         self.assertEqual(tst.resist_pipe, 1)
 
-    def test_calc_outlet_temp_hanby(self):
+    def test_calc_transit_time(self):
         tst = self.add_instance()
-        tol = 0.05
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.0, delta=tol)
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 20.4, delta=tol)
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 22.3, delta=tol)
-        self.assertAlmostEqual(tst.calc_outlet_temp_hanby(25, 0.0002, 60), 25.0, delta=tol)
+        tol = 0.1
+        self.assertAlmostEqual(tst.calc_transit_time(0.1, 20), 567.3, delta=tol)
+
+    def test_simulate_time_step(self):
+        tst = self.add_instance()
+        tst.simulate_time_step(SimulationResponse(0, 250, 0.1, 25))

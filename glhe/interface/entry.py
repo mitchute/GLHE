@@ -5,8 +5,11 @@ from glhe.interface.response import SimulationResponse
 
 class SimulationEntryPoint(ABC):
 
-    def __init__(self, name: str = ''):
-        self.name = name.upper()
+    def __init__(self, name):
+        try:
+            self.name = name.upper()
+        except KeyError:
+            pass
 
     @abstractmethod
     def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:

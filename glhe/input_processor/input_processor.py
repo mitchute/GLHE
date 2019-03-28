@@ -80,4 +80,7 @@ class InputProcessor(object):
 
         :return: Initial temperature
         """
-        return self.input_dict['simulation']['initial-temperature']
+        try:
+            return self.input_dict['simulation']['initial-temperature']
+        except KeyError:
+            return 20

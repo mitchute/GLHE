@@ -1,0 +1,13 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "pipe-def-name": {"type": "string"},
+      "name": {"type": "string"},
+      "length": {"type": "number"}
+    }
+  },
+  "required": ["pipe-def-name", "name", "length"],
+  "additionalProperties" : false
+}
