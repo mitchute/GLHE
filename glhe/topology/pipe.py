@@ -56,7 +56,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
-        self.num_pipe_cells = 64
+        self.num_pipe_cells = 16
         self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
 
     def calc_transit_time(self, flow_rate: float, temperature: float) -> float:
@@ -95,7 +95,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         temp = inputs.temperature
         dt = inputs.time_step
 
-        tau = self.calc_transit_time(m_dot, temp)
+        # tau = self.calc_transit_time(m_dot, temp)
         re = self.m_dot_to_re(m_dot, temp)
         r_p = self.inner_radius
         l = self.length
@@ -104,23 +104,34 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # Peclet number
         peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
 
+        # total transit time
+        tau = self.calc_transit_time(m_dot, temp)
+
         # Rees Eq. 17
-        # transit time per cell
+        # transit time for ideal-mixed cells
         tau_n = tau * sqrt(2 / (num_cells * peclet))
+
+        # transit time for plug-flow cell
+        tau_0 = tau - num_cells * tau_n
 
         # volume flow rate
         v_dot = m_dot / self.fluid.get_rho(temp)
 
-        # volume per cell
+        # volume for plug-flow cell
+        v_0 = tau_0 * v_dot
+
+        # volume for ideal-mixed cells
         v_n = tau_n * v_dot
 
+        # setup tri-diagonal equations
         a = np.full(num_cells - 1, -v_dot)
         b = np.full(num_cells, v_n / dt + v_dot)
-        b[0] = 1
+        b[0] = v_0 / dt + v_dot
         c = np.full(num_cells - 1, 0)
         d = np.full(num_cells, v_n / dt) * self.cell_temps
-        d[0] = temp
+        d[0] = v_0 / dt * temp
 
+        # solve for cell temps
         self.cell_temps = tdma_1(a, b, c, d)
 
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.cell_temps[-1])
