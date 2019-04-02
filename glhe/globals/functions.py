@@ -1,8 +1,8 @@
 import json
-from math import exp, factorial
 from typing import Union
 
 import numpy as np
+from math import exp, factorial
 
 from glhe.globals.constants import SEC_IN_HOUR
 
@@ -283,3 +283,30 @@ def lower_obj(x):
         return x.lower()
     else:
         return x
+
+
+def lin_interp(x: float, x_l: float, x_h: float, y_l: float, y_h: float) -> float:
+    """
+    Simple linear interpolation.
+
+    :param x: independent input variable
+    :param x_l: low independent interval bound
+    :param x_h: high independent interval bound
+    :param y_l: low dependent interval bound
+    :param y_h: high dependent interval bound
+    :return: interpolated value
+    """
+
+    return y_l + x * (y_h - y_l) / (x_h - x_l)
+
+
+def un_reverse_idx(length: int, reversed_idx: int) -> int:
+    """
+    For a reversed list-like object, this will return the index for the entry within the original un-reversed list
+
+    :param length: length of list-like object
+    :param reversed_idx: index of item in reversed list
+    :return: index of the same object in the un-reversed list
+    """
+
+    return length - 1 - reversed_idx

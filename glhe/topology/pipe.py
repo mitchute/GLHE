@@ -1,8 +1,12 @@
+from collections import deque
+
 import numpy as np
 from math import log, pi, sqrt
 
+from glhe.globals.functions import lin_interp
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
+from glhe.globals.functions import un_reverse_idx
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -56,8 +60,11 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
-        self.num_pipe_cells = 16
+        self.num_pipe_cells = 16  # recommendation by Skoglund
         self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
+        self.inlet_temps = deque([ip.init_temp()])
+        self.inlet_temps_times = deque([0.0])
+        self.outlet_temperature = ip.init_temp()
 
     def calc_transit_time(self, flow_rate: float, temperature: float) -> float:
         """
@@ -88,24 +95,24 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :return: outlet conditions
         """
 
-        # recommendation by Skoglund
         num_cells = self.num_pipe_cells
-
         m_dot = inputs.flow_rate
-        temp = inputs.temperature
+        inlet_temp = inputs.temperature
+        t = inputs.sim_time
         dt = inputs.time_step
 
-        # tau = self.calc_transit_time(m_dot, temp)
-        re = self.m_dot_to_re(m_dot, temp)
+        re = self.m_dot_to_re(m_dot, inlet_temp)
         r_p = self.inner_radius
         l = self.length
+
+        self.inlet_temp_history(inlet_temp, t + dt)
 
         # Rees Eq. 18
         # Peclet number
         peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
 
         # total transit time
-        tau = self.calc_transit_time(m_dot, temp)
+        tau = self.calc_transit_time(m_dot, inlet_temp)
 
         # Rees Eq. 17
         # transit time for ideal-mixed cells
@@ -115,10 +122,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         tau_0 = tau - num_cells * tau_n
 
         # volume flow rate
-        v_dot = m_dot / self.fluid.get_rho(temp)
+        v_dot = m_dot / self.fluid.get_rho(inlet_temp)
 
         # volume for plug-flow cell
-        v_0 = tau_0 * v_dot
+        # v_0 = tau_0 * v_dot
 
         # volume for ideal-mixed cells
         v_n = tau_n * v_dot
@@ -126,18 +133,55 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # setup tri-diagonal equations
         a = np.full(num_cells - 1, -v_dot)
         b = np.full(num_cells, v_n / dt + v_dot)
-        b[0] = v_0 / dt + v_dot
+        b[0] = 1
         c = np.full(num_cells - 1, 0)
         d = np.full(num_cells, v_n / dt) * self.cell_temps
-        d[0] = v_0 / dt * temp
+        d[0] = self.plug_flow_outlet_temp(t + dt - tau_0)
 
         # solve for cell temps
         self.cell_temps = tdma_1(a, b, c, d)
 
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.cell_temps[-1])
+        # save outlet temp
+        self.outlet_temperature = self.cell_temps[-1]
+
+        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
+
+    def plug_flow_outlet_temp(self, time):
+        """
+        Simulation time for inlet temperature
+
+        :param time: simulation time
+        :return: inlet temperature
+        """
+
+        if time < 0:
+            return self.inlet_temps[0]
+
+        num_temps = len(self.inlet_temps)
+
+        for idx, t_l in enumerate(reversed(self.inlet_temps_times)):
+            if t_l < time:
+                idx_l = un_reverse_idx(num_temps, idx)
+                idx_h = idx_l + 1
+                t_l = self.inlet_temps_times[idx_l]
+                t_h = self.inlet_temps_times[idx_h]
+                temp_l = self.inlet_temps[idx_l]
+                temp_h = self.inlet_temps[idx_h]
+                return lin_interp(time, t_l, t_h, temp_l, temp_h)
+
+    def inlet_temp_history(self, inlet_temp: float, time: float):
+        """
+        Save inlet temp history for later use.
+
+        :param inlet_temp: Current inlet temperature
+        :param time: Current simulation time.
+        """
+
+        self.inlet_temps.append(inlet_temp)
+        self.inlet_temps_times.append(time)
 
     def report_outputs(self) -> dict:
-        return {}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp.'): self.outlet_temperature}
 
     def m_dot_to_re(self, flow_rate, temp):
         """

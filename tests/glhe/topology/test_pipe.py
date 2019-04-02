@@ -104,4 +104,5 @@ class TestPipe(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        tst.simulate_time_step(SimulationResponse(0, 20, 0.1, 25))
+        for t in range(0, 800, 100):
+            tst.simulate_time_step(SimulationResponse(t, 100, 0.1, 25))

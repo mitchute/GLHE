@@ -21,7 +21,5 @@ class GroundHeatExchanger(SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.ip.init_temp())
 
     def report_outputs(self):
-        return {
-            '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Inlet Temp.'): self.inlet_temperature,
-            '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp.'): self.inlet_temperature
-        }
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Inlet Temp.'): self.inlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp.'): self.inlet_temperature}
