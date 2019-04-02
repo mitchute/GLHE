@@ -104,5 +104,21 @@ class TestPipe(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        for t in range(0, 800, 100):
-            tst.simulate_time_step(SimulationResponse(t, 100, 0.1, 25))
+        tol = 0.01
+
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(0, 100, 0.1, 25)).temperature,
+                               20, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(100, 100, 0.1, 25)).temperature,
+                               20, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(200, 100, 0.1, 25)).temperature,
+                               20, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(300, 100, 0.1, 25)).temperature,
+                               20, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(400, 100, 0.1, 25)).temperature,
+                               20, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(500, 100, 0.1, 25)).temperature,
+                               22.63, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(600, 100, 0.1, 25)).temperature,
+                               24.34, delta=tol)
+        self.assertAlmostEqual(tst.simulate_time_step(SimulationResponse(700, 100, 0.1, 25)).temperature,
+                               24.87, delta=tol)
