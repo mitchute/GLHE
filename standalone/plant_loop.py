@@ -46,6 +46,9 @@ class PlantLoop(object):
         # initialize plant loop components
         self.initialize_plant_loop_topology()
 
+        # log initial conditions
+        self.collect_outputs(0)
+
     def initialize_plant_loop_topology(self) -> None:
 
         for comp in self.ip.input_dict['topology']['supply-side']:
@@ -64,7 +67,7 @@ class PlantLoop(object):
         while True:
             end_of_this_time_step = current_sim_time + self.time_step
             self.do_one_time_step(current_sim_time, self.time_step)
-            self.collect_outputs(end_of_this_time_step)
+            self.collect_outputs(current_sim_time)
             current_sim_time = end_of_this_time_step
 
             if end_of_this_time_step >= self.end_sim_time:

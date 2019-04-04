@@ -7,7 +7,7 @@ class NoAggMethod(BaseMethod):
 
     def __init__(self):
         BaseMethod.__init__(self)
-        self.type = AggregationType.NOAGG
+        self.type = AggregationType.NO_AGG
 
     def get_new_current_load_bin(self, energy=0, width=0):
         self.current_load = BaseBin(energy=energy, width=width)

@@ -11,7 +11,7 @@ def make_component(comp: dict, ip: InputProcessor, op: OutputProcessor) -> objec
     comp_type = comp['comp-type']
     comp_name = comp['name']
 
-    inputs = ip.get_input_object(comp_type, comp_name)
+    inputs = ip.get_definition_object(comp_type, comp_name)
 
     if comp_type == 'flow-profile':
         return make_flow_profile(inputs, ip, op)

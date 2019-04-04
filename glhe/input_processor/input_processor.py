@@ -58,7 +58,7 @@ class InputProcessor(object):
             except SchemaError:
                 raise SchemaError("Schema for object '{}' is invalid.".format(key))
 
-    def get_input_object(self, obj_type_to_find: str, obj_name: str) -> dict:
+    def get_definition_object(self, obj_type_to_find: str, obj_name: str) -> dict:
         """
         Loads the definitions for the boreholes, grout, and pipe.
 

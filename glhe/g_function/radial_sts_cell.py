@@ -18,7 +18,4 @@ class RadialCell(object):
         self.conductivity = inputs['conductivity']
         self.rho_cp = inputs['vol heat capacity']
 
-        self.volume = self.calc_volume()
-
-    def calc_volume(self):
-        return pi * (self.outer_radius ** 2 - self.inner_radius ** 2)
+        self.volume = pi * (self.outer_radius ** 2 - self.inner_radius ** 2)

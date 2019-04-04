@@ -22,7 +22,7 @@ def smoothing_function(x: float, a: float, b: float) -> float:
     return 1 / (1 + exp(-(x - a) / b))
 
 
-def k_to_c(x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+def k_to_c(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
     """
     Converts Kelvin to Celsius
 
@@ -33,7 +33,7 @@ def k_to_c(x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     return x - 273.15
 
 
-def c_to_k(x: float) -> float:
+def c_to_k(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
     """
     Converts Celsius to Kelvin
 
@@ -44,13 +44,35 @@ def c_to_k(x: float) -> float:
     return x + 273.15
 
 
+def sec_to_hr(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+    """
+    Converts seconds to hours
+
+    :param x: input in seconds
+    :return: output in hours
+    """
+
+    return x / SEC_IN_HOUR
+
+
+def hr_to_sec(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+    """
+    Converts hours to seconds
+
+    :param x: input in hours
+    :return: output in seconds
+    """
+
+    return x * SEC_IN_HOUR
+
+
 def num_ts_per_hour_to_sec_per_ts(time_step_per_hour: int) -> int:
     """
     Converts the input time-steps per hour to the nearest possible time-step in seconds.
     Time-step should be evenly divisible into an hour.
 
-    :param time_step_per_hour:
-    :return:
+    :param time_step_per_hour: number of simulation time steps per hour
+    :return: time step in seconds
     """
     try:
         input_time_step = int(SEC_IN_HOUR / time_step_per_hour)

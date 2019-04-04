@@ -113,7 +113,7 @@
     "name": "Basic GLHE",
     "initial-temperature": 16,
     "time-steps-per-hour": 60,
-    "runtime": 3600
+    "runtime": 36000
   },
   "topology": {
     "demand-side": [

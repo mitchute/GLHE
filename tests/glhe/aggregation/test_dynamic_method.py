@@ -1,33 +1,47 @@
+import os
+import tempfile
 import unittest
 
-from glhe.aggregation.dynamic_method import DynamicMethod
-from glhe.globals.variables import gv
+from glhe.aggregation.agg_method_factory import make_agg_method
+from glhe.globals.functions import write_json
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
 
 
 class TestDynamic(unittest.TestCase):
 
-    def test_init(self):
-        tst = DynamicMethod()
-        self.assertEqual(len(tst.loads), 65)
+    @staticmethod
+    def add_instance():
+        d_to_file = {'simulation': {'name': 'test dynamic',
+                                    'initial-temperature': 16,
+                                    'time-steps-per-hour': 60,
+                                    'runtime': 36000}}
 
-        d = {'expansion rate': 2, 'bins per level': 5, 'runtime': 7200}
-        tst = DynamicMethod(d)
-        self.assertEqual(len(tst.loads), 10)
+        temp_dir = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_dir, 'temp.json')
 
-    def test_add_load(self):
-        gv.time_step = 900
+        write_json(temp_file, d_to_file)
 
-        tst = DynamicMethod(inputs={'runtime': 7200})
+        ip = InputProcessor(temp_file)
+        op = OutputProcessor(temp_dir, 'out.csv')
+ 
+        d = {'method': 'dynamic', 'expansion-rate': 2, 'number-bins-per-level': 9}
+        
+        return make_agg_method(d, ip, op)
 
-        tst.get_new_current_load_bin(width=gv.time_step)
-        tst.set_current_load(1)
-        tst.aggregate()
+    def test_aggregate(self):
+
+        tst = self.add_instance()
+
+        delta_t = 3600
+        time = 0
+
+        tst.aggregate(time + delta_t, delta_t, 1)
         self.assertEqual(tst.loads[0].energy, 1)
         self.assertEqual(tst.loads[1].energy, 0)
 
-        tst.get_new_current_load_bin(width=gv.time_step)
-        tst.set_current_load(1)
-        tst.aggregate()
+        time += delta_t
+        tst.aggregate(time + delta_t, delta_t)
         self.assertEqual(tst.loads[0].energy, 1)
         self.assertEqual(tst.loads[1].energy, 1)
         self.assertEqual(tst.loads[2].energy, 0)
