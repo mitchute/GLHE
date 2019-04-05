@@ -7,9 +7,10 @@ class BaseMethod(ABC):
 
     def __init__(self):
         self.loads = np.empty((0,))
-        self.durations = np.empty((0,))
-        self.g_vals = None
+        self.times = np.empty((0,))
+        self.g_vals = np.empty((0,))
+        self.prev_update_time = 0
 
     @abstractmethod
-    def aggregate(self, time, time_step, load):
+    def aggregate(self, time, load):
         pass  # pragma: no cover

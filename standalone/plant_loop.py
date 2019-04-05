@@ -65,12 +65,11 @@ class PlantLoop(object):
         current_sim_time = 0
 
         while True:
-            end_of_this_time_step = current_sim_time + self.time_step
             self.do_one_time_step(current_sim_time, self.time_step)
+            current_sim_time += self.time_step
             self.collect_outputs(current_sim_time)
-            current_sim_time = end_of_this_time_step
 
-            if end_of_this_time_step >= self.end_sim_time:
+            if current_sim_time >= self.end_sim_time:
                 break
 
         self.op.write_to_file()

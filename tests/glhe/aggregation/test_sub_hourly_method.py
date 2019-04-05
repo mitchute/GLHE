@@ -8,5 +8,17 @@ class TestSubHourMethod(unittest.TestCase):
     def test_method(self):
         tst = SubHourMethod()
 
-        tst.aggregate(900, 900, 1)
-        pass
+        # assuming t = 0 has already happened
+        t = 1200
+        dt = 1200
+        tst.aggregate(t, 1)
+        t += dt
+        tst.aggregate(t, 1)
+        t += dt
+        tst.aggregate(t, 1)
+        t += dt
+        tst.aggregate(t, 1)
+        t += dt
+        tst.aggregate(t, 1)
+        t += dt
+        tst.aggregate(t, 1)
