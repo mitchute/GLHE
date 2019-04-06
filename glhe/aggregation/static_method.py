@@ -2,12 +2,12 @@ from collections import defaultdict, deque
 
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
-from glhe.aggregation.types import AggregationType
+from glhe.aggregation.types import AggregationTypes
 from glhe.globals.constants import SEC_IN_HOUR
 
 
 class StaticMethod(BaseMethod):
-    Type = AggregationType.STATIC
+    Type = AggregationTypes.STATIC
 
     def __init__(self, inputs, ip, op):
 

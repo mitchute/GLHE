@@ -1,7 +1,7 @@
 import numpy as np
 
 from glhe.aggregation.base_method import BaseMethod
-from glhe.aggregation.types import AggregationType
+from glhe.aggregation.types import AggregationTypes
 from glhe.globals.functions import hr_to_sec
 from glhe.globals.functions import sec_to_hr
 from glhe.input_processor.input_processor import InputProcessor
@@ -9,18 +9,20 @@ from glhe.output_processor.output_processor import OutputProcessor
 
 
 class DynamicMethod(BaseMethod):
-    Type = AggregationType.DYNAMIC
+    Type = AggregationTypes.DYNAMIC
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         BaseMethod.__init__(self)
         self.ip = ip
         self.op = op
 
+        # set expansion rate. apply default if needed.
         try:
             self.exp_rate = inputs['expansion-rate']
         except KeyError:
             self.exp_rate = 1.5
 
+        # set the number of bins per level. apply default if needed.
         try:
             self.bins_per_level = inputs['number-bins-per-level']
         except KeyError:
@@ -52,24 +54,25 @@ class DynamicMethod(BaseMethod):
         self.g_vals = np.zeros(num_bins, dtype=float)
         self.prev_update_time = 0
 
-    def aggregate(self, time: int, time_step: int, load: float):
+    def aggregate(self, time: int, energy: float):
         """
         Aggregate loads. Check for a new time step and aggregate.
 
         :param time: current simulation time, in seconds
-        :param time_step: time step of current iteration, in seconds
-        :param load: new load to be stored, in Watts
+        :param energy: new load to be stored, in Watts
         """
 
         # check for iteration
         if self.prev_update_time == time:
             return
 
+        dt = time - self.prev_update_time
+
         # aggregate
-        delta = self.loads * time_step / self.durations
+        delta = self.loads * dt / self.durations
         self.loads - delta
         delta = np.roll(delta, 1)
-        delta[0] = load * time_step
+        delta[0] = energy * dt
         self.loads + delta
 
         # update sim time
