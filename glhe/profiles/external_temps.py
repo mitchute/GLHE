@@ -3,6 +3,7 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
+from glhe.output_processor.report_types import ReportTypes
 from glhe.profiles.external_base import ExternalBase
 
 
@@ -23,4 +24,4 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp. [C]'): float(self.outlet_temp)}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp)}

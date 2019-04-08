@@ -4,6 +4,8 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 
+from glhe.output_processor.report_types import ReportTypes
+
 
 class ConstantFlow(SimulationEntryPoint):
     Type = ComponentTypes.ConstantFlow
@@ -18,4 +20,4 @@ class ConstantFlow(SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, self.flow_rate, inputs.temperature)
 
     def report_outputs(self):
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Flow Rate [kg/s]'): float(self.flow_rate)}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): float(self.flow_rate)}

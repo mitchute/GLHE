@@ -10,6 +10,7 @@ from glhe.globals.functions import un_reverse_idx
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
+from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 
 
@@ -181,7 +182,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.inlet_temps_times.append(time)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp.'): self.outlet_temperature}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
 
     def m_dot_to_re(self, flow_rate, temp):
         """

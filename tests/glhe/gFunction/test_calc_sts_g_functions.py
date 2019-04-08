@@ -40,9 +40,9 @@ class TestSTSGFunctions(unittest.TestCase):
 
         soil_inputs = {'conductivity': 2.423,
                        'density': 1500,
-                       'specific heat': 1562}
+                       'specific-heat': 1562}
 
-        fluid = Fluid({'type': 'water'})
+        fluid = Fluid({'fluid-type': 'water'})
         soil = PropertiesBase(soil_inputs)
 
         bh = SingleUTubeGroutedBorehole(inputs=bh_inputs, fluid_inst=fluid, soil_inst=soil)

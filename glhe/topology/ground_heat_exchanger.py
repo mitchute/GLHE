@@ -1,6 +1,7 @@
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
+from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
 
@@ -21,5 +22,5 @@ class GroundHeatExchanger(SimulationEntryPoint):
         return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.ip.init_temp())
 
     def report_outputs(self):
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Inlet Temp.'): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp.'): self.inlet_temperature}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature}

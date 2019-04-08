@@ -2,6 +2,8 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 
+from glhe.output_processor.report_types import ReportTypes
+
 
 class PulseLoad(SimulationEntryPoint):
     Type = ComponentTypes.PulseLoad
@@ -29,5 +31,5 @@ class PulseLoad(SimulationEntryPoint):
             return inputs
 
     def report_outputs(self):
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Outlet Temp. [C]'): float(self.outlet_temp),
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'Load [W]'): float(self.load)}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): float(self.load)}
