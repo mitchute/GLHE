@@ -14,6 +14,7 @@ class SubHourMethod(BaseMethod):
 
     def __init__(self):
         BaseMethod.__init__(self)
+        del self.times
         self.prev_update_time = 0
 
     def aggregate(self, time: int, energy: float):
@@ -32,12 +33,13 @@ class SubHourMethod(BaseMethod):
 
         # append current values
         self.loads = np.append(self.loads, energy)
-        self.times = np.append(self.times, time)
+
+        # respective time steps for each bin
         self.dts = np.append(self.dts, time - self.prev_update_time)
 
         # upper and lower bin edges referenced from current time
-        dt_u = time - self.times + self.dts
-        dt_l = time - self.times
+        dt_u = np.flipud(np.cumsum(np.flipud(self.dts)))
+        dt_l = dt_u - self.dts
 
         # indices from bins where all or part of the load has to be shifted
         idx_full = np.where((dt_l >= SEC_IN_HOUR))[0]
@@ -59,11 +61,10 @@ class SubHourMethod(BaseMethod):
 
             # update the partial bin
             self.loads[idx] = (1 - f) * self.loads[idx]
-            self.times[idx] = (1 - f) * (u_edge - l_edge) + l_edge
+            self.dts[idx] = (1 - f) * self.dts[idx]
 
         # finally, delete the values
         self.loads = np.delete(self.loads, idx_full)
-        self.times = np.delete(self.times, idx_full)
         self.dts = np.delete(self.dts, idx_full)
 
         # update time
