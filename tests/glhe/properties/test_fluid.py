@@ -13,15 +13,15 @@ class TestFluid(unittest.TestCase):
 
         tst_ea = Fluid({'fluid-type': 'EA', 'concentration': 50})
         self.assertEqual(tst_ea.fluid_enum, FluidType.ETHYL_ALCOHOL)
-        self.assertEqual(tst_ea.fluid_str, 'INCOMP::MEA[0.5]')
+        self.assertEqual(tst_ea.fluid_str, 'INCOMP::MEA[0.5000]')
 
         tst_eg = Fluid({'fluid-type': 'EG', 'concentration': 50})
         self.assertEqual(tst_eg.fluid_enum, FluidType.ETHYLENE_GLYCOL)
-        self.assertEqual(tst_eg.fluid_str, 'INCOMP::MEG[0.5]')
+        self.assertEqual(tst_eg.fluid_str, 'INCOMP::MEG[0.5000]')
 
         tst_pg = Fluid({'fluid-type': 'PG', 'concentration': 50})
         self.assertEqual(tst_pg.fluid_enum, FluidType.PROPYLENE_GLYCOL)
-        self.assertEqual(tst_pg.fluid_str, 'INCOMP::MPG[0.5]')
+        self.assertEqual(tst_pg.fluid_str, 'INCOMP::MPG[0.5000]')
 
         self.assertRaises(ValueError, lambda: Fluid({'fluid-type': 'Not A Fluid', 'concentration': 0}))
 

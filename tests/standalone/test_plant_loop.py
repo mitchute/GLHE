@@ -1,7 +1,7 @@
-import unittest
-from standalone.plant_loop import PlantLoop
-import csv
 import os
+import unittest
+
+from standalone.plant_loop import PlantLoop
 
 
 class TestPlantLoop(unittest.TestCase):

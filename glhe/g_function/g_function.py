@@ -3,7 +3,7 @@ from math import log, pi
 from numpy import genfromtxt
 from scipy.interpolate import interp1d
 
-from glhe.aggregation.aggregation_factory import make_aggregation
+from glhe.aggregation.agg_method_factory import make_agg_method
 from glhe.aggregation.dynamic_bin import DynamicBin
 from glhe.g_function.flow_fraction import FlowFraction
 from glhe.globals.functions import merge_dicts
