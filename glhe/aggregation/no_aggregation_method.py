@@ -1,6 +1,6 @@
 from glhe.aggregation.base_bin import BaseBin
 from glhe.aggregation.base_method import BaseMethod
-from glhe.aggregation.types import AggregationTypes
+from glhe.aggregation.agg_types import AggregationTypes
 
 
 class NoAggMethod(BaseMethod):

@@ -2,7 +2,7 @@ from collections import defaultdict, deque
 
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.static_bin import StaticBin
-from glhe.aggregation.types import AggregationTypes
+from glhe.aggregation.agg_types import AggregationTypes
 from glhe.globals.constants import SEC_IN_HOUR
 
 

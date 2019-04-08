@@ -1,7 +1,7 @@
 import numpy as np
 
 from glhe.aggregation.base_method import BaseMethod
-from glhe.aggregation.types import AggregationTypes
+from glhe.aggregation.agg_types import AggregationTypes
 from glhe.globals.constants import SEC_IN_HOUR
 
 
@@ -14,7 +14,6 @@ class SubHourMethod(BaseMethod):
 
     def __init__(self):
         BaseMethod.__init__(self)
-        del self.times
         self.prev_update_time = 0
 
     def aggregate(self, time: int, energy: float):
@@ -38,6 +37,7 @@ class SubHourMethod(BaseMethod):
         self.dts = np.append(self.dts, time - self.prev_update_time)
 
         # upper and lower bin edges referenced from current time
+        # also, FFR dt_u = time referenced backwards from current time
         dt_u = np.flipud(np.cumsum(np.flipud(self.dts)))
         dt_l = dt_u - self.dts
 

@@ -5,14 +5,14 @@ from glhe.aggregation.sub_hourly_method import SubHourMethod
 
 class TestSubHourMethod(unittest.TestCase):
 
-    def test_method(self):
+    def test_aggregate(self):
         tst = SubHourMethod()
 
         # assuming t = 0 has already happened
-        dt_sml = 900
-        dt_med = 1800
-        dt_lrg = 3150
         dt_huge = 3600
+        dt_lrg = 3150
+        dt_med = 1800
+        dt_sml = 900
 
         # no shift
         t = 900
