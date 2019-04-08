@@ -1,16 +1,27 @@
-from glhe.aggregation.base_bin import BaseBin
-from glhe.aggregation.base_method import BaseMethod
+import numpy as np
+
 from glhe.aggregation.agg_types import AggregationTypes
+from glhe.aggregation.base_method import BaseMethod
 
 
 class NoAggMethod(BaseMethod):
+    """
+    No aggregation. Just keep all of the values.
+    """
+
+    Type = AggregationTypes.NO_AGG
 
     def __init__(self):
         BaseMethod.__init__(self)
-        self.type = AggregationTypes.NO_AGG
 
-    def get_new_current_load_bin(self, energy=0, width=0):
-        self.current_load = BaseBin(energy=energy, width=width)
+    def aggregate(self, time: int, energy: float):
+        # check for iteration
+        if self.prev_update_time == time:
+            return
 
-    def aggregate(self):
-        self.aggregate_current_load()
+        # log the values
+        self.loads = np.append(self.loads, energy)
+        self.dts = np.append(self.dts, time - self.prev_update_time)
+
+        # update time
+        self.prev_update_time = time
