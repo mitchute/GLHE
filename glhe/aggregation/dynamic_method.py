@@ -19,6 +19,7 @@ class DynamicMethod(BaseMethod):
     def __init__(self, inputs: dict):
         BaseMethod.__init__(self)
 
+        # sub-hourly tracker for the first hour
         self.sub_hr = SubHourMethod()
 
         # set expansion rate. apply default if needed.

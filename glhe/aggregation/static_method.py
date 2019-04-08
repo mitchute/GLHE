@@ -1,73 +1,70 @@
-from collections import defaultdict, deque
+import numpy as np
 
 from glhe.aggregation.agg_types import AggregationTypes
 from glhe.aggregation.base_method import BaseMethod
+from glhe.aggregation.sub_hourly_method import SubHourMethod
 from glhe.globals.constants import SEC_IN_HOUR
 
 
 class StaticMethod(BaseMethod):
+    """
+    Static aggregation method.
+
+    Yavuzturk, C. and Spitler, J.D. 1999. 'A short time step response factor model for
+    vertical ground loop heat exchangers.' ASHRAE Transactions. 105(2):475-485.
+    """
+
     Type = AggregationTypes.STATIC
 
     def __init__(self, inputs):
+        BaseMethod.__init__(self)
 
+        # sub-hourly tracker for the first hour
+        self.sub_hr = SubHourMethod()
+
+        # set the minimum bins for each level. apply default if needed.
         try:
             self.min_num_bins = inputs['minimum-num-bins-for-each-level']
         except KeyError:
-            self.min_num_bins = [6, 10, 10, 10, 10]
+            self.min_num_bins = [10, 10, 10]
 
+        # set the bin durations for each level. apply default if needed.
         try:
             self.bin_durations = inputs['bin-durations-in-hours']
         except KeyError:
-            self.bin_durations = [1, 6, 24, 168, 840]
+            self.bin_durations = [1, 24, 96, 384]
 
-        self.min_sub_hour_bins = int(SEC_IN_HOUR / gv.time_step)
+        # initial values
+        self.loads = np.append(self.loads, 0)
+        self.dts = np.append(self.dts, self.bin_durations[0] * SEC_IN_HOUR)
 
-        self.bin_durations = [x * SEC_IN_HOUR for x in self.bin_durations]
+        # previous update hour
+        self.prev_update_time_hr = 0
 
-        if gv.time_step != SEC_IN_HOUR:
-            self.bin_durations.insert(0, gv.time_step)
-            self.min_num_bins.insert(0, self.min_sub_hour_bins)
-
-    def get_new_current_load_bin(self, energy=0, width=0):
-        self.current_load = StaticBin(energy=energy, width=width)
-
-    def aggregate(self):
+    def aggregate(self, time: int, energy: float):
         """
-        Aggregates the current aggregation
+        Aggregate loads. Check for a new time step and aggregate.
 
-        :return: none
+        :param time: end sim time of energy value, in seconds. This should be the current sim time.
+        :param energy: energy to be logged, in Joules
         """
 
-        self.aggregate_current_load()
+        # check for iteration
+        if self.prev_update_time == time:
+            return
 
-        # bin the current bin objects into sub-lists to they can be combined as needed
-        d = defaultdict(list)
-        for i, curr_obj in enumerate(self.loads):
-            d[curr_obj.width].append(curr_obj)
+        # run through sub-hourly method to track the first hour
+        e_1 = self.sub_hr.aggregate(time, energy)
 
-        # aggregate within each sub-list, except the last one, which is allowed to grow as needed
-        for i, width in enumerate(self.bin_durations[:-1]):
-            len_bin = len(d[width])
-            if len_bin == 0:
-                break
-            elif len_bin < int(self.min_num_bins[i] + self.bin_durations[i + 1] / self.bin_durations[i]):
-                pass
-            else:
-                # merge the aggregation within this sub-list
-                merge_on_obj_index = self.min_num_bins[i]
-                merge_obj_index_start = merge_on_obj_index + 1
-                merge_on_obj = d[width][merge_on_obj_index]
-                indices_to_pop = []
-                for j, obj in enumerate(d[width][merge_obj_index_start:]):
-                    merge_on_obj.merge(obj)
-                    indices_to_pop.append(j + merge_obj_index_start)
+        # only update the long time step aggregation method once per simulation hour
+        if int(time / SEC_IN_HOUR) == self.prev_update_time_hr:
+            # store whatever rolls off of the sub-hourly method
+            self.loads[-1] += e_1
+            return
+        else:
+            # aggregate
+            pass
 
-                # throw away unused aggregation
-                for j in reversed(indices_to_pop):
-                    d[width].pop(j)
-
-        # redefine the loads
-        self.loads = deque()
-        for i, bin_width in enumerate(sorted(d)):
-            for j in d[bin_width]:
-                self.loads.append(j)
+        # update times
+        self.prev_update_time = time
+        self.prev_update_time_hr = int(time / SEC_IN_HOUR)
