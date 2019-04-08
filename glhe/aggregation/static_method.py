@@ -1,18 +1,14 @@
 from collections import defaultdict, deque
 
-from glhe.aggregation.base_method import BaseMethod
-from glhe.aggregation.static_bin import StaticBin
 from glhe.aggregation.agg_types import AggregationTypes
+from glhe.aggregation.base_method import BaseMethod
 from glhe.globals.constants import SEC_IN_HOUR
 
 
 class StaticMethod(BaseMethod):
     Type = AggregationTypes.STATIC
 
-    def __init__(self, inputs, ip, op):
-
-        self.ip = ip
-        self.op = op
+    def __init__(self, inputs):
 
         try:
             self.min_num_bins = inputs['minimum-num-bins-for-each-level']

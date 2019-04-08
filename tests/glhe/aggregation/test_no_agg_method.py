@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from glhe.aggregation.no_aggregation_method import NoAggMethod
+from glhe.aggregation.no_agg_method import NoAggMethod
 
 
 class TestNoAgg(unittest.TestCase):

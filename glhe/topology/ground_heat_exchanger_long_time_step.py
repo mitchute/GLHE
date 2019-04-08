@@ -11,7 +11,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         SimulationEntryPoint.__init__(self, inputs['name'])
         self.ip = ip
         self.op = op
-        self.load_agg = make_agg_method(inputs['load-aggregation'], ip, op)
+        self.load_agg = make_agg_method(inputs['load-aggregation'], ip)
 
     def simulate_time_step(self, inputs: SimulationResponse):
         return inputs

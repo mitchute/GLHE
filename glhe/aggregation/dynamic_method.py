@@ -4,8 +4,6 @@ from glhe.aggregation.agg_types import AggregationTypes
 from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.sub_hourly_method import SubHourMethod
 from glhe.globals.constants import SEC_IN_HOUR
-from glhe.input_processor.input_processor import InputProcessor
-from glhe.output_processor.output_processor import OutputProcessor
 
 
 class DynamicMethod(BaseMethod):
@@ -18,10 +16,8 @@ class DynamicMethod(BaseMethod):
 
     Type = AggregationTypes.DYNAMIC
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+    def __init__(self, inputs: dict):
         BaseMethod.__init__(self)
-        self.ip = ip
-        self.op = op
 
         self.sub_hr = SubHourMethod()
 
