@@ -6,10 +6,11 @@ from glhe.globals.constants import SEC_IN_HOUR
 
 
 class SubHourMethod(BaseMethod):
-    Type = AggregationTypes.SUB_HOUR
     """
     Sub-hourly load aggregation method. Handles all sub-hourly loads for the first simulation hour.
     """
+
+    Type = AggregationTypes.SUB_HOUR
 
     def __init__(self):
         BaseMethod.__init__(self)
@@ -32,14 +33,7 @@ class SubHourMethod(BaseMethod):
         # append current values
         self.loads = np.append(self.loads, energy)
         self.times = np.append(self.times, time)
-
-        # note that these time steps are not recording the current time steps.
-        # they are logging the elapsed time between updates which may be different depending on the current time step.
         self.dts = np.append(self.dts, time - self.prev_update_time)
-
-        # upper and lower bin edges in absolute time
-        u_edges = np.flipud(self.times)
-        l_edges = u_edges - self.dts
 
         # upper and lower bin edges referenced from current time
         dt_u = time - self.times + self.dts
@@ -62,9 +56,10 @@ class SubHourMethod(BaseMethod):
             l_edge = dt_l[idx]
             f = (u_edge - SEC_IN_HOUR) / (u_edge - l_edge)
             load_to_shift += f * self.loads[idx]
+
+            # update the partial bin
             self.loads[idx] = (1 - f) * self.loads[idx]
             self.times[idx] = (1 - f) * (u_edge - l_edge) + l_edge
-            self.dts[idx] = ((1 - f) * (u_edge - l_edge) + l_edge) * self.dts[idx]
 
         # finally, delete the values
         self.loads = np.delete(self.loads, idx_full)

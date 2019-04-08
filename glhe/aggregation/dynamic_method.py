@@ -6,9 +6,17 @@ from glhe.globals.functions import hr_to_sec
 from glhe.globals.functions import sec_to_hr
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
+from glhe.aggregation.sub_hourly_method import SubHourMethod
 
 
 class DynamicMethod(BaseMethod):
+    """
+    Dynamic aggregation method.
+
+    Claesson, J. and Javed, S. 2011. 'A load-aggregation method to calculate extraction temperatures
+    of borehole heat exchangers.' ASHRAE Winter Conference, Chicago, IL. Jan. 21-25, 2012.
+    """
+
     Type = AggregationTypes.DYNAMIC
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
@@ -29,7 +37,7 @@ class DynamicMethod(BaseMethod):
             self.bins_per_level = 9
 
         # initialize the dynamic method bins
-        sim_time = sec_to_hr(ip.input_dict['simulation']['runtime'])
+        sim_time = sec_to_hr(inputs['runtime'])
         cumulative_time = 0
         num_bins = 0
         duration = 1  # hr
@@ -48,10 +56,9 @@ class DynamicMethod(BaseMethod):
 
             duration *= self.exp_rate
 
-        self.loads = np.append(self.loads, np.zeros(num_bins, dtype=float))
+        self.loads = np.append(self.loads, np.zeros(num_bins))
         durations = hr_to_sec(np.array(durations))
-        self.durations = np.append(self.durations, durations)
-        self.g_vals = np.zeros(num_bins, dtype=float)
+        self.g_vals = np.zeros(num_bins)
         self.prev_update_time = 0
 
     def aggregate(self, time: int, energy: float):
@@ -67,6 +74,8 @@ class DynamicMethod(BaseMethod):
             return
 
         dt = time - self.prev_update_time
+
+
 
         # aggregate
         delta = self.loads * dt / self.durations
