@@ -1,10 +1,10 @@
 import numpy as np
 
 from glhe.aggregation.agg_types import AggregationTypes
-from glhe.aggregation.base_method import BaseMethod
+from glhe.aggregation.base_agg import BaseAgg
 
 
-class NoAggMethod(BaseMethod):
+class NoAgg(BaseAgg):
     """
     No aggregation. Just keep all of the values.
     """
@@ -12,7 +12,7 @@ class NoAggMethod(BaseMethod):
     Type = AggregationTypes.NO_AGG
 
     def __init__(self):
-        BaseMethod.__init__(self)
+        BaseAgg.__init__(self)
 
     def aggregate(self, time: int, energy: float):
         # check for iteration

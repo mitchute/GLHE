@@ -1,24 +1,24 @@
 import numpy as np
 
-from glhe.aggregation.base_method import BaseMethod
 from glhe.aggregation.agg_types import AggregationTypes
+from glhe.aggregation.base_agg import BaseAgg
 from glhe.globals.constants import SEC_IN_HOUR
 
 
-class SubHourMethod(BaseMethod):
+class SubHour(BaseAgg):
     """
-    Sub-hourly load aggregation method. Handles all sub-hourly loads for the first simulation hour.
+    Sub-hourly load aggregation method. Handles all sub-hourly energy for the first simulation hour.
     """
 
     Type = AggregationTypes.SUB_HOUR
 
-    def __init__(self):
-        BaseMethod.__init__(self)
+    def __init__(self, inputs):
+        BaseAgg.__init__(self, inputs)
         self.prev_update_time = 0
 
     def aggregate(self, time: int, energy: float):
         """
-        Aggregate sub-hourly loads
+        Aggregate sub-hourly energy
 
         :param time: end sim time of energy value, in seconds. This should be the current sim time.
         :param energy: energy to be logged, in Joules
@@ -31,7 +31,7 @@ class SubHourMethod(BaseMethod):
             return 0
 
         # append current values
-        self.loads = np.append(self.loads, energy)
+        self.energy = np.append(self.energy, energy)
 
         # respective time steps for each bin
         self.dts = np.append(self.dts, time - self.prev_update_time)
@@ -49,7 +49,7 @@ class SubHourMethod(BaseMethod):
 
         # full bins to shift
         if len(idx_full) > 0:
-            load_to_shift = np.sum(self.loads[idx_full])
+            load_to_shift = np.sum(self.energy[idx_full])
 
         # partial bin to shift
         if len(idx_part) > 0:
@@ -57,17 +57,27 @@ class SubHourMethod(BaseMethod):
             u_edge = dt_u[idx]
             l_edge = dt_l[idx]
             f = (u_edge - SEC_IN_HOUR) / (u_edge - l_edge)
-            load_to_shift += f * self.loads[idx]
+            load_to_shift += f * self.energy[idx]
 
             # update the partial bin
-            self.loads[idx] = (1 - f) * self.loads[idx]
+            self.energy[idx] = (1 - f) * self.energy[idx]
             self.dts[idx] = (1 - f) * self.dts[idx]
 
         # finally, delete the values
-        self.loads = np.delete(self.loads, idx_full)
+        self.energy = np.delete(self.energy, idx_full)
         self.dts = np.delete(self.dts, idx_full)
 
         # update time
         self.prev_update_time = time
 
         return load_to_shift
+
+    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
+
+        if time == 0:
+            return self.interp_g(np.log(time_step / self.ts)), 0
+
+        times = np.flipud(np.cumsum(np.flipud(self.dts))) + time_step
+        lntts = np.log(times / self.ts)
+        self.g_vals = self.interp_g(lntts)
+        return self.g_vals[-1], self.energy[-1] / self.dts[-1]

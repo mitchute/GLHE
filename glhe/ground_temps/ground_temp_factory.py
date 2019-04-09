@@ -11,12 +11,12 @@ def make_ground_temp_model(inputs):
     :return: ground temperature model object
     """
 
-    gtm_type = inputs["ground-temperature-model-type"]
-    if gtm_type == "constant":
+    gtm_type = inputs['ground-temperature-model-type']
+    if gtm_type == 'constant':
         return Constant(inputs)
-    elif gtm_type == "single-harmonic":
+    elif gtm_type == 'single-harmonic':
         return SingleHarmonic(inputs)
-    elif gtm_type == "two-harmonic":
+    elif gtm_type == 'two-harmonic':
         return TwoHarmonic(inputs)
     else:
         raise ValueError("Ground temperature model '{}' is not valid.".format(gtm_type))

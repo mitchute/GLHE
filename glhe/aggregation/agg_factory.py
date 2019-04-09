@@ -1,6 +1,6 @@
-from glhe.aggregation.dynamic_method import DynamicMethod
-from glhe.aggregation.no_agg_method import NoAggMethod
-from glhe.aggregation.static_method import StaticMethod
+from glhe.aggregation.dynamic import Dynamic
+from glhe.aggregation.no_agg import NoAgg
+from glhe.aggregation.static import Static
 from glhe.globals.functions import merge_dicts
 from glhe.input_processor.input_processor import InputProcessor
 
@@ -16,11 +16,11 @@ def make_agg_method(inputs: dict, ip: InputProcessor):
 
     method = inputs['method']
     if method == 'static':
-        return StaticMethod(inputs)
+        return Static(inputs)
     elif method == 'dynamic':
         inputs = merge_dicts(inputs, {'runtime': ip.input_dict['simulation']['runtime']})
-        return DynamicMethod(inputs)
+        return Dynamic(inputs)
     elif method == 'none':
-        return NoAggMethod()
+        return NoAgg()
     else:
         raise ValueError("Load aggregation method '{}' not found.".format(method))

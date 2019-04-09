@@ -1,13 +1,25 @@
+import os
 from abc import ABC, abstractmethod
 
 import numpy as np
+from scipy.interpolate import interp1d
+
+join = os.path.join
+norm = os.path.normpath
+cwd = os.getcwd()
 
 
-class BaseMethod(ABC):
+class BaseAgg(ABC):
 
-    def __init__(self):
+    def __init__(self, inputs):
+        # g-function values
+        path = norm(join(cwd, inputs['g-function-path']))
+        data = np.genfromtxt(path, delimiter=',')
+        self.interp_g = interp1d(data[:, 0], data[:, 1], fill_value='extrapolate')
+        self.ts = inputs['time-scale']
+
         # energy values to be tracked
-        self.loads = np.empty((0,), dtype=float)
+        self.energy = np.empty((0,), dtype=float)
 
         # time referenced from current simulation time
         # most recent values appended to array
@@ -24,4 +36,8 @@ class BaseMethod(ABC):
 
     @abstractmethod
     def aggregate(self, time: int, energy: float):
+        pass  # pragma: no cover
+
+    @abstractmethod
+    def calc_superposition_coeffs(self, time: int, time_step: int) -> float:
         pass  # pragma: no cover

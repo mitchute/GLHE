@@ -19,8 +19,9 @@ class GroundHeatExchanger(SimulationEntryPoint):
         self.outlet_temperature = self.ip.init_temp()
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.ip.init_temp())
+        response = self.lts_ghe.simulate_time_step(inputs)
+        return response
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}

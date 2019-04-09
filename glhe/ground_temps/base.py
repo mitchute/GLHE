@@ -7,7 +7,7 @@ class BaseGroundTemp(ABC):
     """
 
     @abstractmethod
-    def get_temp(self, time, depth):
+    def get_temp(self, time: int, depth: float):
         """
          Getter method for ground temperatures
 

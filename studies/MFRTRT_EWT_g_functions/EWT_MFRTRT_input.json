@@ -43,7 +43,7 @@
   "ground-heat-exchanger": [
     {
       "name": "GHE 1",
-      "g-function-path": "../glhe/examples/single_g_functions.csv",
+      "g-function-path": "../studies/MFRTRT_EWT_g_functions/EWT_experimental_g_functions.csv",
       "flow-paths": [
         {
           "path-name": "path 1",

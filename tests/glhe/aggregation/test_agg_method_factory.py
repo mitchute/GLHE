@@ -1,9 +1,9 @@
 import unittest
 
-from glhe.aggregation.dynamic_method import DynamicMethod
+from glhe.aggregation.dynamic import Dynamic
 from glhe.aggregation.aggregation_factory import make_aggregation
-from glhe.aggregation.no_agg_method import NoAggMethod
-from glhe.aggregation.static_method import StaticMethod
+from glhe.aggregation.no_agg import NoAgg
+from glhe.aggregation.static import Static
 
 
 class TestFactory(unittest.TestCase):
@@ -11,17 +11,17 @@ class TestFactory(unittest.TestCase):
     def test_static(self):
         inputs = {'type': 'static'}
         agg_method = make_aggregation(inputs=inputs)
-        self.assertIsInstance(agg_method, StaticMethod)
+        self.assertIsInstance(agg_method, Static)
 
     def test_dynamic(self):
         inputs = {'type': 'dynamic'}
         agg_method = make_aggregation(inputs=inputs)
-        self.assertIsInstance(agg_method, DynamicMethod)
+        self.assertIsInstance(agg_method, Dynamic)
 
     def test_no_aggregation(self):
         inputs = {'type': 'none'}
         agg_method = make_aggregation(inputs=inputs)
-        self.assertIsInstance(agg_method, NoAggMethod)
+        self.assertIsInstance(agg_method, NoAgg)
 
     def test_error(self):
         inputs = {'type': 'bob'}

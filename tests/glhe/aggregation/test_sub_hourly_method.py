@@ -1,12 +1,12 @@
 import unittest
 
-from glhe.aggregation.sub_hourly_method import SubHourMethod
+from glhe.aggregation.sub_hourly import SubHour
 
 
 class TestSubHourMethod(unittest.TestCase):
 
     def test_aggregate(self):
-        tst = SubHourMethod()
+        tst = SubHour()
 
         # assuming t = 0 has already happened
         dt_huge = 3600

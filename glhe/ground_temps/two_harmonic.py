@@ -21,7 +21,7 @@ class TwoHarmonic(BaseGroundTemp):
     Science and Technology for the Built Environment 23(5): 826-842.
     """
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: dict):
         self.ave_ground_temp = inputs['average-temperature']
         self.amplitude_1 = inputs['amplitude-1']
         self.amplitude_2 = inputs['amplitude-2']
@@ -29,7 +29,7 @@ class TwoHarmonic(BaseGroundTemp):
         self.phase_shift_2 = inputs['phase-shift-2']
         self.soil_diffusivity = inputs['soil-diffusivity']
 
-    def get_temp(self, time, depth):
+    def get_temp(self, time: int, depth: float) -> float:
         term1 = self._exp_term(n=1, depth=depth)
         term2 = self._cos_term(n=1, time=time, depth=depth)
         term3 = self._exp_term(n=2, depth=depth)
@@ -37,10 +37,10 @@ class TwoHarmonic(BaseGroundTemp):
         summation = exp(term1) * self.amplitude_1 * cos(term2) + exp(term3) * self.amplitude_2 * cos(term4)
         return self.ave_ground_temp - summation
 
-    def _exp_term(self, n, depth):
+    def _exp_term(self, n: int, depth: float) -> float:
         return -depth * sqrt((n * pi) / (self.soil_diffusivity * DAYS_IN_YEAR))
 
-    def _cos_term(self, n, time, depth):
+    def _cos_term(self, n: int, time: int, depth: float) -> float:
         time_in_days = time / SEC_IN_DAY
         term_2_pt_1 = (2 * pi * n) / DAYS_IN_YEAR * (time_in_days - self.phase_shift_1)
         term_2_pt_2 = depth * sqrt((n * pi) / (self.soil_diffusivity * DAYS_IN_YEAR))

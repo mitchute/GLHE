@@ -1,12 +1,12 @@
 import numpy as np
 
 from glhe.aggregation.agg_types import AggregationTypes
-from glhe.aggregation.base_method import BaseMethod
-from glhe.aggregation.sub_hourly_method import SubHourMethod
+from glhe.aggregation.base_agg import BaseAgg
+from glhe.aggregation.sub_hourly import SubHour
 from glhe.globals.constants import SEC_IN_HOUR
 
 
-class StaticMethod(BaseMethod):
+class Static(BaseAgg):
     """
     Static aggregation method.
 
@@ -17,10 +17,10 @@ class StaticMethod(BaseMethod):
     Type = AggregationTypes.STATIC
 
     def __init__(self, inputs):
-        BaseMethod.__init__(self)
+        BaseAgg.__init__(self, inputs)
 
         # sub-hourly tracker for the first hour
-        self.sub_hr = SubHourMethod()
+        self.sub_hr = SubHour(inputs)
 
         # set the minimum bins for each level. apply default if needed.
         try:
@@ -37,7 +37,7 @@ class StaticMethod(BaseMethod):
         self.dts_bins = np.array(dts_bins, dtype=int) * SEC_IN_HOUR
 
         # initial values
-        self.loads = np.append(self.loads, 0)
+        self.energy = np.append(self.energy, 0)
         self.dts = np.append(self.dts, self.dts_bins[0])
 
         # previous update hour
@@ -45,7 +45,7 @@ class StaticMethod(BaseMethod):
 
     def aggregate(self, time: int, energy: float):
         """
-        Aggregate loads. Check for a new time step and aggregate.
+        Aggregate energy. Check for a new time step and aggregate.
 
         :param time: end sim time of energy value, in seconds. This should be the current sim time.
         :param energy: energy to be logged, in Joules
@@ -63,13 +63,13 @@ class StaticMethod(BaseMethod):
             # store whatever rolls off of the sub-hourly method
 
             # need to think about this
-            self.loads[-1] += e_1
+            self.energy[-1] += e_1
             return
         else:
             # aggregate
             dts_flip = np.flipud(self.dts)
             vals, idxs, cnts = np.unique(dts_flip, return_counts=True, return_index=True)
-            self.loads[-1] += e_1
+            self.energy[-1] += e_1
 
             # numpy split will do a lot of work too
 

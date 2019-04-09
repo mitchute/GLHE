@@ -101,7 +101,7 @@ class Fluid(object):
         :returns fluid specific heat in [J/kg-K]
         """
 
-        return self.cp_interp(temperature)
+        return float(self.cp_interp(temperature))
 
     def get_k(self, temperature: Union[int, float]):
         """
@@ -111,7 +111,7 @@ class Fluid(object):
         :return: fluid conductivity in [W/m-K]
         """
 
-        return self.k_interp(temperature)
+        return float(self.k_interp(temperature))
 
     def get_mu(self, temperature: Union[int, float]):
         """
@@ -121,7 +121,7 @@ class Fluid(object):
         :return: fluid viscosity in [Pa-s]
         """
 
-        return self.mu_interp(temperature)
+        return float(self.mu_interp(temperature))
 
     def get_pr(self, temperature: Union[int, float]):
         """
@@ -131,7 +131,7 @@ class Fluid(object):
         :return: fluid Prandtl number
         """
 
-        return self.pr_interp(temperature)
+        return float(self.pr_interp(temperature))
 
     def get_rho(self, temperature: Union[int, float]):
         """
@@ -141,7 +141,7 @@ class Fluid(object):
         :return: fluid density in [kg/m^3]
         """
 
-        return self.rho_interp(temperature)
+        return float(self.rho_interp(temperature))
 
     def get_rho_cp(self, temperature: Union[int, float]):
         """
@@ -151,7 +151,7 @@ class Fluid(object):
         :return: fluid volume-specific heat capacity in [J/m3-K]
         """
 
-        return self.rho_cp_interp(temperature)
+        return float(self.rho_cp_interp(temperature))
 
     def calc_conductivity(self, temperature: Union[int, float]):
         """

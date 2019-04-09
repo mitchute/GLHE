@@ -2,13 +2,13 @@ import unittest
 
 import numpy as np
 
-from glhe.aggregation.no_agg_method import NoAggMethod
+from glhe.aggregation.no_agg import NoAgg
 
 
 class TestNoAgg(unittest.TestCase):
 
     def test_aggregate(self):
-        tst = NoAggMethod()
+        tst = NoAgg()
 
         dt = 900
         t = 0

@@ -9,5 +9,5 @@ class Constant(BaseGroundTemp):
     def __init__(self, inputs):
         self.temperature = inputs['temperature']
 
-    def get_temp(self, time=None, depth=None):
+    def get_temp(self, time: int = None, depth: float = None) -> float:
         return self.temperature
