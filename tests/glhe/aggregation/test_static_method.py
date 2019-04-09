@@ -16,7 +16,25 @@ class TestStatic(unittest.TestCase):
         tst = self.add_instance()
 
         t = 0
-        dt = 900
+        dt = 3600
 
         t += dt
-        tst.aggregate(t, 1)
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
+
+        t += dt
+        tst.aggregate(t, 4)
