@@ -26,17 +26,19 @@ class StaticMethod(BaseMethod):
         try:
             self.min_num_bins = inputs['minimum-num-bins-for-each-level']
         except KeyError:
-            self.min_num_bins = [10, 10, 10]
+            self.min_num_bins = [10, 10, 10, 10]
 
         # set the bin durations for each level. apply default if needed.
         try:
-            self.bin_durations = inputs['bin-durations-in-hours']
+            dts_bins = inputs['bin-durations-in-hours']
         except KeyError:
-            self.bin_durations = [1, 24, 96, 384]
+            dts_bins = [1, 24, 96, 384]
+
+        self.dts_bins = np.array(dts_bins, dtype=int) * SEC_IN_HOUR
 
         # initial values
         self.loads = np.append(self.loads, 0)
-        self.dts = np.append(self.dts, self.bin_durations[0] * SEC_IN_HOUR)
+        self.dts = np.append(self.dts, self.dts_bins[0])
 
         # previous update hour
         self.prev_update_time_hr = 0
@@ -59,11 +61,18 @@ class StaticMethod(BaseMethod):
         # only update the long time step aggregation method once per simulation hour
         if int(time / SEC_IN_HOUR) == self.prev_update_time_hr:
             # store whatever rolls off of the sub-hourly method
+
+            # need to think about this
             self.loads[-1] += e_1
             return
         else:
             # aggregate
-            pass
+            dts_flip = np.flipud(self.dts)
+            vals, idxs, cnts = np.unique(dts_flip, return_counts=True, return_index=True)
+            self.loads[-1] += e_1
+
+            # numpy split will do a lot of work too
+
 
         # update times
         self.prev_update_time = time
