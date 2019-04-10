@@ -73,7 +73,6 @@ class Static(BaseAgg):
 
             # numpy split will do a lot of work too
 
-
         # update times
         self.prev_update_time = time
         self.prev_update_time_hr = int(time / SEC_IN_HOUR)
