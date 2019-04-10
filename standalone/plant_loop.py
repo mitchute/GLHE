@@ -113,7 +113,7 @@ class PlantLoop(object):
     def collect_outputs(self, sim_time):
 
         # record current time
-        d = {'Time': sim_time}
+        d = {'Elapsed Time [s]': sim_time}
 
         # report outputs from the PlantLoop object
         d = merge_dicts(d, self.report_outputs())

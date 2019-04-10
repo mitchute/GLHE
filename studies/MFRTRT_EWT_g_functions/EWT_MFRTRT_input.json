@@ -2,7 +2,7 @@
   "borehole-definitions": [
     {
       "borehole-type": "single-grouted",
-      "depth": 100,
+      "depth": 76.2,
       "diameter": 0.114,
       "grout-def-name": "standard grout",
       "name": "borehole type 1",
@@ -56,38 +56,6 @@
               },
               "borehole-def-name": "borehole type 1",
               "name": "BH 1"
-            },
-            {
-              "location": {
-                "x": 1,
-                "y": 0,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 2"
-            }
-          ]
-        },
-        {
-          "path-name": "path 2",
-          "boreholes": [
-            {
-              "location": {
-                "x": 0,
-                "y": 1,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 3"
-            },
-            {
-              "location": {
-                "x": 1,
-                "y": 1,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 4"
             }
           ]
         }
@@ -113,7 +81,7 @@
     "name": "Basic GLHE",
     "initial-temperature": 16.1,
     "time-steps-per-hour": 60,
-    "runtime": 86400
+    "runtime": 14400
   },
   "topology": {
     "demand-side": [

@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 from os.path import join, normpath
 
@@ -33,4 +34,12 @@ class OutputProcessor(object):
         if os.path.exists(self.write_path):
             os.remove(self.write_path)
 
+        self.convert_time_to_timestamp()
         self.df.to_csv(self.write_path)
+
+    def convert_time_to_timestamp(self):
+        dts = [dt.timedelta(seconds=x) for x in self.df['Elapsed Time [s]'].values.tolist()]
+        start_time = dt.datetime(year=dt.datetime.now().year, month=1, day=1, hour=0, minute=0)
+        time_stamps = [start_time + x for x in dts]
+        self.df['Date/Time'] = time_stamps
+        self.df.set_index('Date/Time', inplace=True)
