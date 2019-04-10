@@ -6,7 +6,6 @@ from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_load import ConstantLoad
-from glhe.profiles.external_load import ExternalLoad
 from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.pulse_load import PulseLoad
 from glhe.profiles.sinusoid_load import SinusoidLoad

@@ -26,3 +26,5 @@ class NoAgg(BaseAgg):
         # update time
         self.prev_update_time = time
 
+    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
+        pass

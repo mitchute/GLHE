@@ -39,5 +39,5 @@ class BaseAgg(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def calc_superposition_coeffs(self, time: int, time_step: int) -> float:
+    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
         pass  # pragma: no cover
