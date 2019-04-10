@@ -20,8 +20,9 @@ class NoAgg(BaseAgg):
             return
 
         # log the values
-        self.loads = np.append(self.loads, energy)
+        self.energy = np.append(self.energy, energy)
         self.dts = np.append(self.dts, time - self.prev_update_time)
 
         # update time
         self.prev_update_time = time
+

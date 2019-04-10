@@ -1,3 +1,5 @@
+import os
+import tempfile
 import unittest
 
 from glhe.aggregation.sub_hourly import SubHour
@@ -5,8 +7,25 @@ from glhe.aggregation.sub_hourly import SubHour
 
 class TestSubHourMethod(unittest.TestCase):
 
+    @staticmethod
+    def add_instance():
+        temp_dir = tempfile.mkdtemp()
+        temp_csv = os.path.join(temp_dir, 'temp.csv')
+
+        with open(temp_csv, 'w') as f:
+            f.write('-14, 0\n-13, 1\n-12, 2\n')
+
+        d = {'method': 'dynamic',
+             'expansion-rate': 2,
+             'number-bins-per-level': 2,
+             'runtime': 36000,
+             'time-scale': 5e9,
+             'g-function-path': temp_csv}
+
+        return SubHour(d)
+
     def test_aggregate(self):
-        tst = SubHour()
+        tst = self.add_instance()
 
         # assuming t = 0 has already happened
         dt_huge = 3600

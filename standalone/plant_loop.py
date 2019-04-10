@@ -58,7 +58,7 @@ class PlantLoop(object):
         for comp in self.ip.input_dict['topology']['demand-side']:
             self.demand_comps.append(make_component(comp, self.ip, self.op))
 
-    def simulate(self) -> None:
+    def simulate(self) -> bool:
         """
         Do the entire time stepping simulation of the plant loop
         """
@@ -74,6 +74,8 @@ class PlantLoop(object):
                 break
 
         self.op.write_to_file()
+
+        return True
 
     def do_one_time_step(self, sim_time: Union[int, float], time_step: Union[int, float]):
         """

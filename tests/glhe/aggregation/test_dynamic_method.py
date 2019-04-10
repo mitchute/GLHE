@@ -1,3 +1,5 @@
+import os
+import tempfile
 import unittest
 
 import numpy as np
@@ -9,7 +11,19 @@ class TestDynamic(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        d = {'method': 'dynamic', 'expansion-rate': 2, 'number-bins-per-level': 2, 'runtime': 36000}
+        temp_dir = tempfile.mkdtemp()
+        temp_csv = os.path.join(temp_dir, 'temp.csv')
+
+        with open(temp_csv, 'w') as f:
+            f.write('-14, 0\n-13, 1\n-12, 2\n')
+
+        d = {'method': 'dynamic',
+             'expansion-rate': 2,
+             'number-bins-per-level': 2,
+             'runtime': 36000,
+             'time-scale': 5e9,
+             'g-function-path': temp_csv}
+
         return Dynamic(d)
 
     def test_aggregate(self):
