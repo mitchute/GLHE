@@ -37,9 +37,15 @@ class OutputProcessor(object):
         self.convert_time_to_timestamp()
         self.df.to_csv(self.write_path)
 
-    def convert_time_to_timestamp(self):
-        dts = [dt.timedelta(seconds=x) for x in self.df['Elapsed Time [s]'].values.tolist()]
-        start_time = dt.datetime(year=dt.datetime.now().year, month=1, day=1, hour=0, minute=0)
-        time_stamps = [start_time + x for x in dts]
-        self.df['Date/Time'] = time_stamps
-        self.df.set_index('Date/Time', inplace=True)
+    def convert_time_to_timestamp(self) -> None:
+        """"
+        Convert the 'Elapsed Time' column to a standardized date/time format.
+        """
+        try:
+            dts = [dt.timedelta(seconds=x) for x in self.df['Elapsed Time [s]'].values.tolist()]
+            start_time = dt.datetime(year=dt.datetime.now().year, month=1, day=1, hour=0, minute=0)
+            time_stamps = [start_time + x for x in dts]
+            self.df['Date/Time'] = time_stamps
+            self.df.set_index('Date/Time', inplace=True)
+        except KeyError:
+            pass
