@@ -44,8 +44,11 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         k_s = self.soil.conductivity
         self.c_0 = 1 / (2 * pi * k_s)
 
-        # heat rate per meter
+        # heat rate (W/m)
         self.q = 0
+
+        # energy (J/m)
+        self.energy = 0
 
         # report variables
         self.heat_rate = 0
@@ -64,7 +67,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # aggregate load from previous time
         # load aggregation method takes care of what happens during iterations
-        self.load_agg.aggregate(time, self.q)
+        self.load_agg.aggregate(time, self.energy)
 
         # solve for outlet temperature
         g_c, hist = self.load_agg.calc_superposition_coeffs(time, dt)
@@ -78,13 +81,18 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         c_4 = c_3 * temp_in
 
         temp_out = (c_2 + c_1 * c_4) / (1 + c_1 * c_3)
-        q_tot = m_dot * cp * (self.inlet_temperature - self.outlet_temperature)
 
-        # TODO: double check this
+        # total heat transfer rate (W)
+        q_tot = m_dot * cp * (temp_in - temp_out)
+
+        # normalized heat transfer rate (W/m)
         self.q = q_tot / (self.h * self.num_bh)
 
+        # energy (J/m)
+        self.energy = self.q * dt
+
         # set report variables
-        self.inlet_temperature = inputs.temperature
+        self.inlet_temperature = temp_in
         self.outlet_temperature = temp_out
         self.heat_rate = q_tot
 

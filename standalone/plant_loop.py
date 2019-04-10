@@ -26,11 +26,12 @@ class PlantLoop(object):
         # process inputs
         self.ip = InputProcessor(json_file_path)
 
-        # setup output processor
         try:
+            # setup output processor
             self.op = OutputProcessor(self.ip.input_dict['simulation']['output-path'],
                                       self.ip.input_dict['simulation']['output-csv-name'])
         except KeyError:
+            # paths were not provided. apply default paths.
             self.op = OutputProcessor(os.getcwd(), 'out.csv')
 
         # init plant-level variables
@@ -74,14 +75,14 @@ class PlantLoop(object):
 
         self.op.write_to_file()
 
-    def do_one_time_step(self, current_sim_time: Union[int, float], time_step: Union[int, float]):
+    def do_one_time_step(self, sim_time: Union[int, float], time_step: Union[int, float]):
         """
         Simulate one time step of the entire plant loop
         """
 
         # update demand inlet node and initial conditions
         self.demand_inlet_temp = self.supply_outlet_temp
-        response = SimulationResponse(current_sim_time, time_step, 0, self.demand_inlet_temp)
+        response = SimulationResponse(sim_time, time_step, 0, self.demand_inlet_temp)
 
         # simulate demand components flow-wise
         for comp in self.demand_comps:
@@ -123,7 +124,7 @@ class PlantLoop(object):
         for comp in self.supply_comps:
             d = merge_dicts(d, comp.report_outputs())
 
-        # finalize collection by by the OutputProcessor
+        # finalize collection by the OutputProcessor
         self.op.collect_output(d)
 
 

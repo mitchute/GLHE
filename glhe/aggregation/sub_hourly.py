@@ -25,8 +25,8 @@ class SubHour(BaseAgg):
         """
 
         # check for iteration.
-        # if time is the same, we're iterating, so do nothing.
-        # else, aggregate the load
+        # if time is the same as previous, we're iterating. so do nothing.
+        # else, aggregate the energy
         if time == self.prev_update_time:
             return 0
 
@@ -72,12 +72,5 @@ class SubHour(BaseAgg):
 
         return load_to_shift
 
-    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
-
-        if time == 0:
-            return self.interp_g(np.log(time_step / self.ts)), 0
-
-        times = np.flipud(np.cumsum(np.flipud(self.dts))) + time_step
-        lntts = np.log(times / self.ts)
-        self.g_vals = self.interp_g(lntts)
-        return self.g_vals[-1], self.energy[-1] / self.dts[-1]
+    def calc_superposition_coeffs(self, time: int, time_step: int):
+        pass

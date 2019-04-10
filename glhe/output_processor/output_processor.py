@@ -33,6 +33,4 @@ class OutputProcessor(object):
         if os.path.exists(self.write_path):
             os.remove(self.write_path)
 
-        with open(self.write_path, 'w') as f:  # pragma: no cover
-            self.df.to_csv(f)  # pragma: no cover
-            f.close()  # pragma: no cover
+        self.df.to_csv(self.write_path)

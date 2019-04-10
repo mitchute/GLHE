@@ -58,6 +58,7 @@ class Dynamic(BaseAgg):
 
                 if t >= run_time:
                     initialized = True
+                    break
 
             dt *= self.exp_rate
 
@@ -78,7 +79,9 @@ class Dynamic(BaseAgg):
         :param energy: energy to be logged, in Joules
         """
 
-        # check for iteration
+        # check for iteration.
+        # if time is the same as previous, we're iterating. so do nothing.
+        # else, aggregate the energy
         if self.prev_update_time == time:
             return
 
@@ -103,25 +106,22 @@ class Dynamic(BaseAgg):
 
     def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
 
-        # compute the current g-function value for g(t_n - t_n-1)
-        # this is computed in the sub-hourly method
-        g_c, q_prev = self.sub_hr.calc_superposition_coeffs(time, time_step)
-
-        if time == 0:
-            return float(g_c), float(q_prev)
-
         # compute temporal superposition
         # this includes all thermal history before the present time
         lts_q = self.energy / self.dts
         sts_q = self.sub_hr.energy / self.sub_hr.dts
-        lts_agg_dq = np.diff(lts_q, prepend=0, append=self.sub_hr.energy[0])
-        sts_agg_dq = np.diff(sts_q, prepend=self.energy[-1])
-        dq = np.concatenate((lts_agg_dq, sts_agg_dq))
+        q = np.concatenate((lts_q, sts_q))
+        dq = np.diff(q, prepend=0)
 
         # g-function values
-        lts_g = self.g_vals
-        sts_g = self.sub_hr.g_vals
-        g = np.concatenate(lts_g, sts_g)
+        # TODO: update these so we don't have to re-evaluate the g-values each time
+        dts = np.concatenate((self.dts, self.sub_hr.dts))
+        times = np.flipud(np.cumsum(np.flipud(dts))) + time_step
+        lntts = np.log(times / self.ts)
+        g = self.interp_g(lntts)
+
+        g_c = self.interp_g(np.log(time_step / self.ts))
+        q_prev = q[-1]
 
         # convolution of delta_q and the g-function values
         return float(g_c), float(np.dot(dq, g) - q_prev * g_c)

@@ -20,6 +20,10 @@ class GroundHeatExchanger(SimulationEntryPoint):
 
     def simulate_time_step(self, inputs: SimulationResponse):
         response = self.lts_ghe.simulate_time_step(inputs)
+
+        # update report variables
+        self.inlet_temperature = inputs.temperature
+        self.outlet_temperature = response.temperature
         return response
 
     def report_outputs(self):
