@@ -61,7 +61,7 @@
         }
       ],
       "load-aggregation": {
-        "method": "dynamic",
+        "method": "none",
         "expansion-rate": 1.5,
         "number-bins-per-level": 9
       }
@@ -80,7 +80,7 @@
   "simulation": {
     "name": "Basic GLHE",
     "initial-temperature": 16.1,
-    "time-steps-per-hour": 60,
+    "time-steps-per-hour": 6,
     "runtime": 14400
   },
   "topology": {

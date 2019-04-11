@@ -88,17 +88,16 @@ class Dynamic(BaseAgg):
         # run through sub-hourly method to track the first hour
         e_1 = self.sub_hr.aggregate(time, energy)
 
-        # only update the long time step aggregation method once per simulation hour
-        if int(time / SEC_IN_HOUR) == self.prev_update_time_hr:
-            # store whatever rolls off of the sub-hourly method
-            self.energy[-1] += e_1
-            return
-        else:
-            # aggregate
-            delta = self.energy * self.f
-            self.energy = self.energy - delta
-            self.energy = self.energy + np.roll(delta, -1)
-            self.energy[-1] += e_1
+        # # only update the long time step aggregation method once per simulation hour
+        # if int(time / SEC_IN_HOUR) == self.prev_update_time_hr:
+        #     # store whatever rolls off of the sub-hourly method
+        #     self.energy[-1] += e_1
+        # else:
+        # aggregate
+        delta = self.energy * self.f
+        self.energy = self.energy - delta
+        self.energy = self.energy + np.roll(delta, -1)
+        self.energy[-1] += e_1
 
         # update time
         self.prev_update_time = time
@@ -116,7 +115,7 @@ class Dynamic(BaseAgg):
         # g-function values
         # TODO: update these so we don't have to re-evaluate the g-values each time
         dts = np.concatenate((self.dts, self.sub_hr.dts))
-        times = np.flipud(np.cumsum(np.flipud(dts))) + time_step
+        times = np.flipud(np.cumsum(np.flipud(dts)))
         lntts = np.log(times / self.ts)
         g = self.interp_g(lntts)
 
@@ -124,4 +123,5 @@ class Dynamic(BaseAgg):
         q_prev = q[-1]
 
         # convolution of delta_q and the g-function values
-        return float(g_c), float(np.dot(dq, g) - q_prev * g_c)
+        hist = float(np.dot(dq, g) - q_prev * g_c)
+        return float(g_c), hist

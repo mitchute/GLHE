@@ -21,6 +21,6 @@ def make_agg_method(inputs: dict, ip: InputProcessor):
         inputs = merge_dicts(inputs, {'runtime': ip.input_dict['simulation']['runtime']})
         return Dynamic(inputs)
     elif method == 'none':
-        return NoAgg()
+        return NoAgg(inputs)
     else:
-        raise ValueError("Load aggregation method '{}' not found.".format(method))
+        raise ValueError("Load aggregation method '{}' is not valid.".format(method))
