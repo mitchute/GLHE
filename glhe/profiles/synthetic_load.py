@@ -87,7 +87,9 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
         self.load = 0
         self.outlet_temp = 0
 
-        if inputs['synthetic-method'] == 'asymmetric':
+        method = inputs['synthetic-method']
+
+        if method == 'asymmetric':
             params = {'a': inputs['amplitude'],
                       'b': 1000,
                       'c': 80,
@@ -96,7 +98,7 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
                       'f': 4 / 3,
                       'g': 2190}
             SyntheticBase.__init__(self, params)
-        elif inputs['synthetic-method'] == 'symmetric':
+        elif method == 'symmetric':
             params = {'a': inputs['amplitude'],
                       'b': 2190,
                       'c': 80,
@@ -106,7 +108,7 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
                       'g': 0}
             SyntheticBase.__init__(self, params)
         else:
-            raise ValueError("Synthetic method '{}' is not valid.".format(type))
+            raise ValueError("Synthetic method '{}' is not valid.".format(method))
 
     def simulate_time_step(self, inputs: SimulationResponse):
         flow_rate = inputs.flow_rate

@@ -55,3 +55,14 @@ class TestSynthetic(unittest.TestCase):
         self.assertEqual(res.time_step, 60)
         self.assertEqual(res.flow_rate, 0.2)
         self.assertAlmostEqual(res.temperature, 20, delta=tol)
+
+    def test_report_outputs(self):
+        tst = self.add_instance('symmetric')
+        d = tst.report_outputs()
+        self.assertTrue('SinusoidLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('SinusoidLoad:MY NAME:Heat Rate [W]' in d.keys())
+
+    def test_fail(self):
+        with self.assertRaises(ValueError) as context:
+            self.add_instance('not-a-method')
+            self.assertTrue("Synthetic method 'not-a-method' is not valid." in context.exception)

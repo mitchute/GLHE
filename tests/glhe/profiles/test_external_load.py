@@ -87,11 +87,18 @@ class TestExternalLoad(unittest.TestCase):
                     '2018-01-01 03:00:00, 4, 4\n')
 
         tst = self.add_instance(temp_data)
+
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0, 10))
+        self.assertEqual(res.time, 0)
+        self.assertEqual(res.time_step, 10)
+        self.assertEqual(res.flow_rate, 0)
+        self.assertAlmostEqual(res.temperature, 10, delta=0.1)
+
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0.00001, 10))
         self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.00001)
-        self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)
+        self.assertAlmostEqual(res.temperature, 33.9, delta=0.1)
 
     def test_report_outputs(self):
         temp_dir = tempfile.mkdtemp()

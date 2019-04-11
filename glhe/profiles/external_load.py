@@ -21,15 +21,19 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
         self.outlet_temp = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        self.load = self.get_value(inputs.time)
-        inlet_temp = inputs.temperature
         flow_rate = inputs.flow_rate
-        specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
-        try:
-            self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
-            return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
-        except ZeroDivisionError:
+
+        if flow_rate == 0:
             return inputs
+
+        t = inputs.time
+        dt = inputs.time_step
+        inlet_temp = inputs.temperature
+
+        self.load = self.get_value(t + dt)
+        specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
+        self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
+        return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),

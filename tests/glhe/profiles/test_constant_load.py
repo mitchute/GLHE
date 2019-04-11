@@ -28,8 +28,14 @@ class TestConstantLoad(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        res = tst.simulate_time_step(SimulationResponse(0, 10, 0.1, 10))
 
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0, 10))
+        self.assertEqual(res.time, 0)
+        self.assertEqual(res.time_step, 10)
+        self.assertEqual(res.flow_rate, 0)
+        self.assertAlmostEqual(res.temperature, 10, delta=0.1)
+
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0.1, 10))
         self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.1)
