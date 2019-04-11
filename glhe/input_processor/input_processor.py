@@ -54,9 +54,9 @@ class InputProcessor(object):
             try:
                 validate(lower_obj(value), lower_obj(schema))
             except ValidationError:
-                raise ValidationError("Input object '{}' is invalid.".format(key))
+                raise ValidationError("Input object '{}' is not valid.".format(key))
             except SchemaError:
-                raise SchemaError("Schema for object '{}' is invalid.".format(key))
+                raise SchemaError("Schema for object '{}' is not valid.".format(key))
 
     def get_definition_object(self, obj_type_to_find: str, obj_name: str) -> dict:
         """

@@ -39,6 +39,12 @@ class TestImpulseLoad(unittest.TestCase):
         self.assertEqual(res.flow_rate, 0)
         self.assertAlmostEqual(res.temperature, 10, delta=0.1)
 
+        res = tst.simulate_time_step(SimulationResponse(0, 10, 0.01, 10))
+        self.assertEqual(res.time, 0)
+        self.assertEqual(res.time_step, 10)
+        self.assertEqual(res.flow_rate, 0.01)
+        self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)
+
         res = tst.simulate_time_step(SimulationResponse(300, 10, 0.01, 10))
         self.assertEqual(res.time, 300)
         self.assertEqual(res.time_step, 10)

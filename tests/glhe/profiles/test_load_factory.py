@@ -2,10 +2,13 @@ import os
 import tempfile
 import unittest
 
+from jsonschema import ValidationError
+
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_load import ConstantLoad
+from glhe.profiles.external_load import ExternalLoad
 from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.pulse_load import PulseLoad
 from glhe.profiles.sinusoid_load import SinusoidLoad
@@ -16,8 +19,9 @@ class TestLoadFactory(unittest.TestCase):
 
     @staticmethod
     def add_instance(method):
+        fpath = os.path.dirname(os.path.abspath(__file__))
         data_str = '../../../glhe/profiles/external_data/GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
-        data_path = os.path.normpath(os.path.join(os.getcwd(), data_str))
+        data_path = os.path.normpath(os.path.join(fpath, data_str))
         d = {'fluid': {'fluid-type': 'water'},
              'load-profile': [{'load-profile-type': method,
                                'value': 10,
@@ -48,9 +52,9 @@ class TestLoadFactory(unittest.TestCase):
         tst = self.add_instance('single-impulse')
         self.assertIsInstance(tst, PulseLoad)
 
-    # def test_factory_external(self):
-    #     tst = self.add_instance('external')
-    #     self.assertIsInstance(tst, ExternalLoad)
+    def test_factory_external(self):
+        tst = self.add_instance('external')
+        self.assertIsInstance(tst, ExternalLoad)
 
     def test_factory_sinusoid(self):
         tst = self.add_instance('sinusoid')
@@ -59,3 +63,8 @@ class TestLoadFactory(unittest.TestCase):
     def test_factory_synthetic(self):
         tst = self.add_instance('synthetic')
         self.assertIsInstance(tst, SyntheticLoad)
+
+    def test_fail(self):
+        with self.assertRaises(ValidationError) as context:
+            self.add_instance('not-a-method')
+            self.assertTrue("Load profile 'not-a-method' is not valid." in context.exception)
