@@ -2,8 +2,6 @@ import os
 import tempfile
 import unittest
 
-from jsonschema import ValidationError
-
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
@@ -65,6 +63,21 @@ class TestLoadFactory(unittest.TestCase):
         self.assertIsInstance(tst, SyntheticLoad)
 
     def test_fail(self):
-        with self.assertRaises(ValidationError) as context:
-            self.add_instance('not-a-method')
+        d = {'fluid': {'fluid-type': 'water'},
+             'load-profile': [{'load-profile-type': 'constant',
+                               'value': 10,
+                               'name': 'my name'}]}
+
+        temp_dir = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_dir, 'temp.json')
+
+        write_json(temp_file, d)
+
+        ip = InputProcessor(temp_file)
+        op = OutputProcessor(temp_dir, 'out.csv')
+
+        make_load_profile(d['load-profile'][0], ip, op)
+
+        with self.assertRaises(ValueError) as context:
+            make_load_profile({'load-profile-type': 'not-a-method'}, ip, op)
             self.assertTrue("Load profile 'not-a-method' is not valid." in context.exception)
