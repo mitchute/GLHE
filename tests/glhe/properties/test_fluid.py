@@ -35,6 +35,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-2
 
         tst = Fluid({'fluid-type': 'water'})
@@ -53,6 +54,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 4.0
 
         tst = Fluid({'fluid-type': 'water'})
@@ -71,6 +73,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1.0
 
         tst = Fluid({'fluid-type': 'water'})
@@ -89,6 +92,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-1
 
         tst = Fluid({'fluid-type': 'water'})
@@ -107,6 +111,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-4
 
         tst = Fluid({'fluid-type': 'water'})
@@ -125,6 +130,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-2
 
         tst = Fluid({'fluid-type': 'water'})
@@ -143,6 +149,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 4.0
 
         tst = Fluid({'fluid-type': 'water'})
@@ -161,6 +168,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1.0
 
         tst = Fluid({'fluid-type': 'water'})
@@ -168,6 +176,40 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_rho(40), 992.1, delta=tolerance)
         self.assertAlmostEqual(tst.get_rho(60), 983.3, delta=tolerance)
         self.assertAlmostEqual(tst.get_rho(80), 971.8, delta=tolerance)
+
+    def test_get_rho_cp(self):
+        """
+        Tests fluid density and specific heat calculation routines
+
+        Reference values come from Cengel & Ghajar 2015
+
+        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
+        McGraw-Hill. New York, New York.
+        """
+
+        tolerance = 0.01
+
+        tst = Fluid({'fluid-type': 'water'})
+
+        tst_val = tst.get_rho_cp(20)
+        ref_val = 998.0 * 4182
+        err_frac = (tst_val - ref_val) / ref_val
+        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
+
+        tst_val = tst.get_rho_cp(40)
+        ref_val = 992.1 * 4179
+        err_frac = (tst_val - ref_val) / ref_val
+        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
+
+        tst_val = tst.get_rho_cp(60)
+        ref_val = 983.3 * 4185
+        err_frac = (tst_val - ref_val) / ref_val
+        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
+
+        tst_val = tst.get_rho_cp(80)
+        ref_val = 971.8 * 4197
+        err_frac = (tst_val - ref_val) / ref_val
+        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
 
     def test_get_pr(self):
         """
@@ -179,6 +221,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-1
 
         tst = Fluid({'fluid-type': 'water'})
@@ -197,6 +240,7 @@ class TestFluid(unittest.TestCase):
         McGraw-Hill. New York, New York.
         """
 
+        # TODO: convert to fractional error
         tolerance = 1E-4
 
         tst = Fluid({'fluid-type': 'water'})
@@ -204,3 +248,11 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_mu(40), 0.653E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(60), 0.467E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(80), 0.355E-3, delta=tolerance)
+
+    def test_get_fluid_str(self):
+        """
+        Tests whether the fluid string is correct
+        """
+
+        self.assertEqual(Fluid.get_fluid_str(FluidType.ETHYL_ALCOHOL, -0.1), 'INCOMP::MEA[0.0000]')
+        self.assertEqual(Fluid.get_fluid_str(FluidType.ETHYL_ALCOHOL, 0.8), 'INCOMP::MEA[0.6000]')
