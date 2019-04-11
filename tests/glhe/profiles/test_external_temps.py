@@ -58,7 +58,12 @@ class TestExternalTemps(unittest.TestCase):
     def test_simulate_time_step(self):
         tst = self.add_instance()
         res = tst.simulate_time_step(SimulationResponse(0, 10, 1, 10))
-        self.assertEqual(res.sim_time, 0)
+        self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 1)
         self.assertEqual(res.temperature, 1)
+
+    def test_report_outputs(self):
+        tst = self.add_instance()
+        d = tst.report_outputs()
+        self.assertTrue('ExternalTemps:MY NAME:Outlet Temp [C]' in d.keys())

@@ -29,7 +29,12 @@ class TestConstantFlow(unittest.TestCase):
         tst = self.add_instance()
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0, 10))
 
-        self.assertEqual(res.sim_time, 0)
+        self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.1)
         self.assertEqual(res.temperature, 10)
+
+    def test_report_outputs(self):
+        tst = self.add_instance()
+        d = tst.report_outputs()
+        self.assertTrue('ConstantFlow:MY NAME:Flow Rate [kg/s]' in d.keys())

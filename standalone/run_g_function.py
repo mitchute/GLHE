@@ -63,7 +63,7 @@
 #         self.fluid = Fluid(d['fluid'])
 #
 #         # other inits
-#         self.sim_time = 0
+#         self.time = 0
 #         self.current_load = 0
 #         self.mass_flow_rate = 0
 #         self.fluid_cap = 0
@@ -71,7 +71,7 @@
 #         self.init_output_vars = True
 #
 #     def report_output(self):
-#         ret_vals = {"Simulation Time": self.sim_time,
+#         ret_vals = {"Simulation Time": self.time,
 #                     "Plant Load [W]": self.current_load,
 #                     "Plant Mass Flow Rate [kg/s]": self.mass_flow_rate,
 #                     "Plant Outlet Temperature [C]": self.temp_outlet_from_plant,
@@ -86,21 +86,21 @@
 #             if self.init_output_vars:
 #                 self.init_output_vars = False
 #
-#             while self.sim_time < self.run_time:
+#             while self.time < self.run_time:
 #
 #                 if self.print_idx == 50:
-#                     print("Sim Time: {}".format(self.sim_time + gv.time_step))
+#                     print("Sim Time: {}".format(self.time + gv.time_step))
 #                     self.print_idx = 0
 #                 else:
 #                     self.print_idx += 1
 #
 #                 mean_temp = (self.temp_outlet_from_plant + self.temp_inlet_to_plant) / 2
-#                 self.mass_flow_rate = self.flow_profile.get_value(self.sim_time)
+#                 self.mass_flow_rate = self.flow_profile.get_value(self.time)
 #                 self.fluid_cap = self.mass_flow_rate * self.fluid.calc_specific_heat(mean_temp)
 #
 #                 if self.drive_sim_with_inlet_temps:
 #
-#                     self.temp_outlet_from_plant = self.inlet_temp_profile.get_value(self.sim_time)
+#                     self.temp_outlet_from_plant = self.inlet_temp_profile.get_value(self.time)
 #                     new_plant_inlet_temp = self.g.simulate_time_step(self.temp_outlet_from_plant,
 #                                                                      self.mass_flow_rate,
 #                                                                      gv.time_step,
@@ -109,7 +109,7 @@
 #
 #                 else:
 #
-#                     self.current_load = self.load_profile.get_value(self.sim_time)
+#                     self.current_load = self.load_profile.get_value(self.time)
 #                     self.temp_outlet_from_plant = self.temp_inlet_to_plant + self.current_load / self.fluid_cap
 #
 #                     # run manually to init the methods
@@ -138,7 +138,7 @@
 #                 self.temp_inlet_to_plant = new_plant_inlet_temp
 #                 self.op.collect_output([self.report_output(), self.g.report_output()])
 #
-#                 self.sim_time += gv.time_step
+#                 self.time += gv.time_step
 #
 #             # dump the results to a file
 #             self.op.write_to_file(self.output_file_path)

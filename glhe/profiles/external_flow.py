@@ -20,8 +20,8 @@ class ExternalFlow(ExternalBase, SimulationEntryPoint):
         self.flow_rate = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        self.flow_rate = self.get_value(inputs.sim_time)
-        return SimulationResponse(inputs.sim_time, inputs.time_step, self.flow_rate, inputs.temperature)
+        self.flow_rate = self.get_value(inputs.time)
+        return SimulationResponse(inputs.time, inputs.time_step, self.flow_rate, inputs.temperature)
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): float(self.flow_rate)}

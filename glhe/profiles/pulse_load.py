@@ -20,12 +20,17 @@ class PulseLoad(SimulationEntryPoint):
         self.outlet_temp = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        if self.start_time <= inputs.sim_time < self.end_time:
-            inlet_temp = inputs.temperature
+        if self.start_time <= inputs.time < self.end_time:
             flow_rate = inputs.flow_rate
+
+            if flow_rate == 0:
+                return inputs
+
+            inlet_temp = inputs.temperature
+
             specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
             self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
-            return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
+            return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
         else:
             self.load = 0
             return inputs

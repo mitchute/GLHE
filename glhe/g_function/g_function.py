@@ -29,7 +29,7 @@
 #         self.soil = PropertiesBase(inputs=inputs['soil'])
 #
 #         # initialize time here
-#         self.sim_time = 0
+#         self.time = 0
 #
 #         # init load aggregation method
 #         self.load_aggregation = make_aggregation(inputs['load-aggregation'])
@@ -54,7 +54,7 @@
 #         self.c_0 = 2 * pi * self.soil.conductivity
 #
 #         # initial temperature
-#         init_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.length)
+#         init_temp = self.get_ground_temp(time=self.time, depth=self.my_bh.length)
 #
 #         # other inits
 #         self.fluid_cap = 0
@@ -122,10 +122,10 @@
 #         else:
 #             return g
 #
-#     def simulate_time_step(self, sim_time, time_step, mass_flow_rate, inlet_temp):
+#     def simulate_time_step(self, time, time_step, mass_flow_rate, inlet_temp):
 #
 #         if mass_flow_rate == 0:
-#             return sim_time, time_step, mass_flow_rate, inlet_temp
+#             return time, time_step, mass_flow_rate, inlet_temp
 #
 #         mass_flow_change_fraction = abs(mass_flow_rate - self.prev_mass_flow_rate) / self.prev_mass_flow_rate
 #
@@ -136,8 +136,8 @@
 #         self.time_step = time_step
 #         self.inlet_temp = inlet_temp
 #
-#         if sim_time != self.sim_time:
-#             self.sim_time = sim_time
+#         if time != self.time:
+#             self.time = time
 #
 #             self.load_aggregation.get_new_current_load_bin(width=time_step)
 #             self.load_aggregation.current_load.g = self.get_g_func(time_step)
@@ -146,12 +146,12 @@
 #
 #             if flow_change_frac > self.flow_change_fraction_limit:
 #                 self.time_of_prev_flow = self.time_of_curr_flow
-#                 self.time_of_curr_flow = self.sim_time
+#                 self.time_of_curr_flow = self.time
 #                 self.prev_mass_flow_rate = mass_flow_rate
 #
 #             self.flow_fraction = self.calc_flow_fraction()
 #             # self.flow_fraction = 0.5
-#             self.ground_temp = self.get_ground_temp(time=self.sim_time, depth=self.my_bh.length)
+#             self.ground_temp = self.get_ground_temp(time=self.time, depth=self.my_bh.length)
 #             self.fluid_cap = mass_flow_rate * self.fluid.specific_heat
 #
 #         temp_rise_prev_bin, q_prev_bin, g_func_prev_bin = self.calc_prev_bin_temp_rise()
@@ -179,7 +179,7 @@
 #             self.load_aggregation.aggregate()
 #             self.load_aggregation.update_time()
 #             self.update_g_values()
-#             self.prev_sim_time = self.sim_time
+#             self.prev_sim_time = self.time
 #             self.fluid.update_properties(self.ave_fluid_temp)
 #
 #         return self.outlet_temp

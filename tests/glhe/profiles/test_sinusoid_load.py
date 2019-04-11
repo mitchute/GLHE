@@ -1,10 +1,12 @@
 import os
 import tempfile
 import unittest
+
 from math import pi
 
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.sinusoid_load import SinusoidLoad
 
@@ -31,11 +33,24 @@ class TestSinusoidLoad(unittest.TestCase):
         return SinusoidLoad(d['load-profile'][0], ip, op)
 
     def test_simulate_time_step(self):
-        tol = 1e-10
+        tol = 0.01
 
         tst = self.add_instance()
-        self.assertAlmostEqual(tst.get_value(0), 0, delta=tol)
-        self.assertAlmostEqual(tst.get_value(pi / 2), 1, delta=tol)
-        self.assertAlmostEqual(tst.get_value(pi), 0, delta=tol)
-        self.assertAlmostEqual(tst.get_value(pi * 3 / 2), -1, delta=tol)
-        self.assertAlmostEqual(tst.get_value(2 * pi), 0, delta=tol)
+
+        res = tst.simulate_time_step(SimulationResponse(0, 60, 0, 20))
+        self.assertEqual(res.time, 0)
+        self.assertEqual(res.time_step, 60)
+        self.assertEqual(res.flow_rate, 0)
+        self.assertEqual(res.temperature, 20)
+
+        res = tst.simulate_time_step(SimulationResponse(0, 60, 0.2, 20))
+        self.assertEqual(res.time, 0)
+        self.assertEqual(res.time_step, 60)
+        self.assertEqual(res.flow_rate, 0.2)
+        self.assertAlmostEqual(res.temperature, 20, delta=tol)
+
+    def test_report_output(self):
+        tst = self.add_instance()
+        d = tst.report_outputs()
+        self.assertTrue('SinusoidLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('SinusoidLoad:MY NAME:Heat Rate [W]' in d.keys())

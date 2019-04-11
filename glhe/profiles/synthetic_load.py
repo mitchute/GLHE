@@ -8,10 +8,9 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
-from glhe.profiles.base_load import BaseLoad
 
 
-class SyntheticBase(BaseLoad):
+class SyntheticBase(object):
     """
     Pinel, P. 2003. 'Amelioration, Validation et Implantation _d'un Algorithme
     de Calcul pour Evaluer le Transfert Thermique Dans les Puits Verticaux de
@@ -28,14 +27,13 @@ class SyntheticBase(BaseLoad):
     __metaclass__ = ABCMeta
 
     def __init__(self, inputs):
-        BaseLoad.__init__(self)
-        self._a = inputs["a"]
-        self._b = inputs["b"]
-        self._c = inputs["c"]
-        self._d = inputs["d"]
-        self._e = inputs["e"]
-        self._f = inputs["f"]
-        self._g = inputs["g"]
+        self._a = inputs['a']
+        self._b = inputs['b']
+        self._c = inputs['c']
+        self._d = inputs['d']
+        self._e = inputs['e']
+        self._f = inputs['f']
+        self._g = inputs['g']
 
     def q_1(self, t):
         term_1 = self._a * np.sin(np.pi * (t - self._b) / 12)
@@ -111,12 +109,19 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
             raise ValueError("Synthetic method '{}' is not valid.".format(type))
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        self.load = self.get_value(inputs.sim_time)
-        inlet_temp = inputs.temperature
         flow_rate = inputs.flow_rate
+
+        if flow_rate == 0:
+            return inputs
+
+        t = inputs.time
+        dt = inputs.time_step
+        inlet_temp = inputs.temperature
+
+        self.load = self.get_value(t + dt)
         specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
         self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
+        return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),

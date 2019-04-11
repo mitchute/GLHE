@@ -59,7 +59,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         # inputs from upstream component
         temp_in = inputs.temperature
         m_dot = inputs.flow_rate
-        time = inputs.sim_time
+        time = inputs.time
         dt = inputs.time_step
 
         # per bh variables
@@ -96,7 +96,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.outlet_temperature = temp_out
         self.heat_rate = q_tot
 
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
+        return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,

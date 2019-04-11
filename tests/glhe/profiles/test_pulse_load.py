@@ -30,16 +30,22 @@ class TestImpulseLoad(unittest.TestCase):
 
         return PulseLoad(d['load-profile'][0], ip, op)
 
-    def test_get_value(self):
+    def test_simulate_time_step(self):
         tst = self.add_instance()
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0.01, 10))
-        self.assertEqual(res.sim_time, 0)
+        self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.01)
         self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)
 
         res = tst.simulate_time_step(SimulationResponse(300, 10, 0.01, 10))
-        self.assertEqual(res.sim_time, 300)
+        self.assertEqual(res.time, 300)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.01)
         self.assertEqual(res.temperature, 10)
+
+    def test_report_outputs(self):
+        tst = self.add_instance()
+        d = tst.report_outputs()
+        self.assertTrue('PulseLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('PulseLoad:MY NAME:Heat Rate [W]' in d.keys())

@@ -12,6 +12,6 @@ class ComponentTypes(object):
     GroundHeatExchangerSTS = 'GroundHeatExchangerSTS'
     Pipe = 'Pipe'
     PlantLoop = 'PlantLoop'
-    PulseLoad = 'ImpulseLoad'
+    PulseLoad = 'PulseLoad'
     SinusoidLoad = 'SinusoidLoad'
     SyntheticLoad = 'SyntheticLoad'

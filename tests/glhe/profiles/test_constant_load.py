@@ -30,7 +30,13 @@ class TestConstantLoad(unittest.TestCase):
         tst = self.add_instance()
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0.1, 10))
 
-        self.assertEqual(res.sim_time, 0)
+        self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.1)
         self.assertAlmostEqual(res.temperature, 19.5, delta=0.1)
+
+    def test_report_outputs(self):
+        tst = self.add_instance()
+        d = tst.report_outputs()
+        self.assertTrue('ConstantLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('ConstantLoad:MY NAME:Heat Rate [W]' in d.keys())

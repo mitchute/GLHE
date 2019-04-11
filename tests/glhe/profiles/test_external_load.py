@@ -88,7 +88,22 @@ class TestExternalLoad(unittest.TestCase):
 
         tst = self.add_instance(temp_data)
         res = tst.simulate_time_step(SimulationResponse(0, 10, 0.00001, 10))
-        self.assertEqual(res.sim_time, 0)
+        self.assertEqual(res.time, 0)
         self.assertEqual(res.time_step, 10)
         self.assertEqual(res.flow_rate, 0.00001)
         self.assertAlmostEqual(res.temperature, 33.8, delta=0.1)
+
+    def test_report_outputs(self):
+        temp_dir = tempfile.mkdtemp()
+        temp_data = os.path.join(temp_dir, 'temp_data.csv')
+        with open(temp_data, 'w') as f:
+            f.write('Date/Time, Meas. Total Power [W], mdot [kg/s]\n'
+                    '2018-01-01 00:00:00, 1, 1\n'
+                    '2018-01-01 01:00:00, 2, 2\n'
+                    '2018-01-01 02:00:00, 3, 3\n'
+                    '2018-01-01 03:00:00, 4, 4\n')
+
+        tst = self.add_instance(temp_data)
+        d = tst.report_outputs()
+        self.assertTrue('ExternalLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('ExternalLoad:MY NAME:Heat Rate [W]' in d.keys())

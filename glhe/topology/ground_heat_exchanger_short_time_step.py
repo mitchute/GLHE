@@ -44,7 +44,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
     #         path_mass_flow.append(sqrt(delta_p / path.flow_resistance))
     #     return abs(plant_mass_flow_rate - sum(path_mass_flow))
 
-    # def simulate_time_step(self, sim_time, time_step, ):
+    # def simulate_time_step(self, time, time_step, ):
     #     import random
     #     return 18 + float(random.randint(1, 100)) / 50
     # self.inlet_temp = plant_inlet_temperature

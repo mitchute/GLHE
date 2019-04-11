@@ -99,7 +99,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         num_cells = self.num_pipe_cells
         m_dot = inputs.flow_rate
         inlet_temp = inputs.temperature
-        t = inputs.sim_time
+        t = inputs.time
         dt = inputs.time_step
 
         re = self.m_dot_to_re(m_dot, inlet_temp)
@@ -145,7 +145,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # save outlet temp
         self.outlet_temperature = self.cell_temps[-1]
 
-        return SimulationResponse(inputs.sim_time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
+        return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
     def plug_flow_outlet_temp(self, time):
         """
