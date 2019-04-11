@@ -59,8 +59,8 @@ class TestSynthetic(unittest.TestCase):
     def test_report_outputs(self):
         tst = self.add_instance('symmetric')
         d = tst.report_outputs()
-        self.assertTrue('SinusoidLoad:MY NAME:Outlet Temp [C]' in d.keys())
-        self.assertTrue('SinusoidLoad:MY NAME:Heat Rate [W]' in d.keys())
+        self.assertTrue('SyntheticLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('SyntheticLoad:MY NAME:Heat Rate [W]' in d.keys())
 
     def test_fail(self):
         with self.assertRaises(ValueError) as context:
