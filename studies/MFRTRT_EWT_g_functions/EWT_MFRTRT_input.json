@@ -13,9 +13,9 @@
   ],
   "flow-profile": [
     {
-      "name": "constant 0.2",
+      "name": "constant 0.3",
       "flow-profile-type": "constant",
-      "value": 0.2
+      "value": 0.3
     }
   ],
   "fluid": {
@@ -87,7 +87,7 @@
     "demand-side": [
       {
         "comp-type": "flow-profile",
-        "name": "constant 0.2"
+        "name": "constant 0.3"
       },
       {
         "comp-type": "load-profile",

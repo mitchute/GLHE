@@ -32,7 +32,7 @@ class BaseAgg(ABC):
         self.g_vals = np.empty((0,), dtype=float)
 
         # previous time the aggregation method was updated
-        self.prev_update_time = 0
+        self.prev_update_time = None
 
     @abstractmethod
     def aggregate(self, time: int, energy: float):

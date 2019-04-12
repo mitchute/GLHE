@@ -15,6 +15,7 @@ class GroundHeatExchanger(SimulationEntryPoint):
         self.op = op
         self.lts_ghe = GroundHeatExchangerLTS(inputs, ip, op)
         self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+        self.heat_rate = 0
         self.inlet_temperature = self.ip.init_temp()
         self.outlet_temperature = self.ip.init_temp()
 
@@ -24,8 +25,12 @@ class GroundHeatExchanger(SimulationEntryPoint):
         # update report variables
         self.inlet_temperature = inputs.temperature
         self.outlet_temperature = response.temperature
+        m_dot = inputs.flow_rate
+        cp = self.ip.props_mgr.fluid.get_cp(inputs.temperature)
+        self.heat_rate = m_dot * cp * (self.inlet_temperature - self.outlet_temperature)
         return response
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate}
