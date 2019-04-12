@@ -248,5 +248,5 @@ class TestInputProcessor(unittest.TestCase):
         ip = InputProcessor(f_path)
         with self.assertRaises(KeyError) as context:
             ip.get_definition_object('pipe-definitions', 'not-implemented')
-            self.assertTrue(
-                    "Object type: '{pipe-definitions}', Name: '{not-implemented}' not found." in context.exception)
+            expect_str = "Object type: '{pipe-definitions}', Name: '{not-implemented}' not found."
+            self.assertTrue(expect_str in context.exception)
