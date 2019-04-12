@@ -63,5 +63,5 @@ class TestSynthetic(unittest.TestCase):
         self.assertTrue('SyntheticLoad:MY NAME:Heat Rate [W]' in d.keys())
 
     def test_fail(self):
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(ValueError) as _:
             self.add_instance('not-a-method')
