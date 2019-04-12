@@ -35,9 +35,22 @@ class TestOutputProcessor(unittest.TestCase):
         tst.collect_output(d)
         tst.write_to_file()
 
+        # check that the file was written
         self.assertTrue(os.path.exists(tst.write_path))
 
+        # make sure the data comes out right
         df = pd.read_csv(tst.write_path)
-
         self.assertEqual(df['foo'].iloc[0], 1)
         self.assertEqual(df['bar'].iloc[0], 2)
+
+        # write to an existing file which has to be deleted first
+        tst.write_to_file()
+        df = pd.read_csv(tst.write_path)
+        self.assertEqual(df['foo'].iloc[0], 1)
+        self.assertEqual(df['bar'].iloc[0], 2)
+
+    def test_convert_time_to_timestamp(self):
+        tst = self.add_instance()
+        tst.df = pd.DataFrame({'Elapsed Time [s]': [0, 60, 120], 'Variable': [1, 2, 3]})
+        tst.convert_time_to_timestamp()
+        self.assertTrue(tst.df.index.name == 'Date/Time')

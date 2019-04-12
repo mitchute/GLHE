@@ -55,8 +55,8 @@ class InputProcessor(object):
                 validate(lower_obj(value), lower_obj(schema))
             except ValidationError:
                 raise ValidationError("Input object '{}' is not valid.".format(key))
-            except SchemaError:
-                raise SchemaError("Schema for object '{}' is not valid.".format(key))
+            except SchemaError:  # pragma: no cover
+                raise SchemaError("Schema for object '{}' is not valid.".format(key))  # pragma: no cover
 
     def get_definition_object(self, obj_type_to_find: str, obj_name: str) -> dict:
         """
@@ -72,7 +72,7 @@ class InputProcessor(object):
                     if obj['name'] == obj_name:
                         return obj
 
-        raise NotImplementedError("Object type: '{}', Name: '{}' not found.".format(obj_type_to_find, obj_name))
+        raise KeyError("Object type: '{}', Name: '{}' not found.".format(obj_type_to_find, obj_name))
 
     def init_temp(self):
         """

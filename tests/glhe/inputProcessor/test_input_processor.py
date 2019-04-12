@@ -225,3 +225,28 @@ class TestInputProcessor(unittest.TestCase):
 
     def test_file_not_found(self):
         self.assertRaises(FileNotFoundError, lambda: InputProcessor('some path'))
+
+    def test_validate_validation_error(self):
+        d = {'soil': {'name': 'Some Rock',
+                      'not-a-field': 2.4234,
+                      'density': 1500,
+                      'specific-heat': 1466}}
+
+        with self.assertRaises(ValidationError) as context:
+            InputProcessor.validate_inputs(d)
+            self.assertTrue("Input object 'soil' is not valid." in context.exception)
+
+    def test_get_definition_object_fail(self):
+        d = {'pipe': [
+            {'pipe-def-name': '32 mm SDR-11 HDPE',
+             'name': 'my name',
+             'length': 100}]}
+
+        temp_dir = tempfile.mkdtemp()
+        f_path = os.path.join(temp_dir, 'temp.json')
+        write_json(f_path, d)
+        ip = InputProcessor(f_path)
+        with self.assertRaises(KeyError) as context:
+            ip.get_definition_object('pipe-definitions', 'not-implemented')
+            self.assertTrue(
+                    "Object type: '{pipe-definitions}', Name: '{not-implemented}' not found." in context.exception)

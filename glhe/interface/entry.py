@@ -8,8 +8,8 @@ class SimulationEntryPoint(ABC):
     def __init__(self, name):
         try:
             self.name = name.upper()
-        except KeyError:
-            pass
+        except KeyError:  # pragma: no cover
+            pass  # pragma: no cover
 
     @abstractmethod
     def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
