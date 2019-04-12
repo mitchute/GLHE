@@ -1,8 +1,8 @@
 import os
 import tempfile
 import unittest
-
 from math import cos, sin
+
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
@@ -10,8 +10,10 @@ from glhe.globals.functions import c_to_k
 from glhe.globals.functions import hanby
 from glhe.globals.functions import load_json
 from glhe.globals.functions import lower_obj
+from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import runge_kutta_fourth_x
+from glhe.globals.functions import runge_kutta_fourth_xy
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
 from glhe.globals.functions import tdma_2
@@ -70,7 +72,7 @@ class TestFunctions(unittest.TestCase):
         self.assertAlmostEqual(hanby(1.0, 1, 1), 0.5196, delta=tolerance)
         self.assertAlmostEqual(hanby(1.5, 1, 1), 0.99863, delta=tolerance)
 
-    def test_runge_kutta_fourth(self):
+    def test_runge_kutta_fourth_x(self):
         tol = 1E-4
         omega = 4
 
@@ -92,6 +94,22 @@ class TestFunctions(unittest.TestCase):
             y_act = f(x + step)
 
             self.assertAlmostEqual(y_act, y, delta=tol)
+
+    def test_runge_kutta_fourth_xy(self):
+
+        # Derivative
+        # dy/dx = x ** 2 / (1 - y **2)
+
+        # General solution
+        # (-x ** 3 / 3) + y (y ** 3 / 3) = C
+
+        def f_prime(x, y):
+            return x ** 2 / (1 - y ** 2)
+
+        y = runge_kutta_fourth_xy(f_prime, 0, x=2, y=2)
+        y_act = 2
+
+        self.assertAlmostEqual(y_act, y, delta=0.001)
 
     def test_tdma_1(self):
 
@@ -128,6 +146,14 @@ class TestFunctions(unittest.TestCase):
 
         for idx, _ in enumerate(tst):
             self.assertAlmostEqual(tst[idx], soln[idx], delta=tol)
+
+    def test_merge_dict(self):
+        d_merged = merge_dicts({'key 1': 1}, {'key 2': 2})
+        self.assertTrue('key 1' in d_merged.keys())
+        self.assertTrue('key 2' in d_merged.keys())
+
+        self.assertEqual(d_merged['key 1'], 1)
+        self.assertEqual(d_merged['key 2'], 2)
 
     def test_lower_obj(self):
 

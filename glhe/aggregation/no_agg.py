@@ -43,4 +43,3 @@ class NoAgg(BaseAgg):
         # convolution of delta_q and the g-function values
         hist = float(np.dot(dq, g) - q_prev * g_c)
         return float(g_c), hist
-
