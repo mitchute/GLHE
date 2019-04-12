@@ -8,12 +8,14 @@ from numpy.linalg import solve as lin_alg_solve
 
 from glhe.globals.functions import c_to_k
 from glhe.globals.functions import hanby
+from glhe.globals.functions import hr_to_sec
 from glhe.globals.functions import load_json
 from glhe.globals.functions import lower_obj
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import runge_kutta_fourth_xy
+from glhe.globals.functions import sec_to_hr
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
 from glhe.globals.functions import tdma_2
@@ -172,3 +174,9 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(d['Nested Obj']['Inner Key 3'][0].lower(), ret['nested obj']['inner key 3'][0])
         self.assertEqual(d['Nested Obj']['Inner Key 3'][1].lower(), ret['nested obj']['inner key 3'][1])
         self.assertEqual(d['Nested Obj']['Inner Key 3'][2], ret['nested obj']['inner key 3'][2])
+
+    def test_hr_to_sec(self):
+        self.assertEqual(hr_to_sec(1), 3600)
+
+    def test_sec_to_hr(self):
+        self.assertEqual(sec_to_hr(3600), 1)
