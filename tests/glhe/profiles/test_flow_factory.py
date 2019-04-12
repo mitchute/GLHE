@@ -58,6 +58,5 @@ class TestFlowFactory(unittest.TestCase):
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
 
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(ValueError) as _:
             make_flow_profile({'flow-profile-type': 'not-a-type'}, ip, op)
-            self.assertTrue("Flow profile 'not-a-type' is not valid." in context.exception)

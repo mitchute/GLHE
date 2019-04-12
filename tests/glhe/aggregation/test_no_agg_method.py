@@ -50,6 +50,7 @@ class TestNoAgg(unittest.TestCase):
         t = 0
 
         tst.aggregate(t, 0)
+        tst.aggregate(t, 0)
         g, hist = tst.calc_superposition_coeffs(t, dt)
         self.assertAlmostEqual(g, 0.2348, delta=tol)
         self.assertAlmostEqual(hist, 0, delta=tol)

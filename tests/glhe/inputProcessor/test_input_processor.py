@@ -232,9 +232,8 @@ class TestInputProcessor(unittest.TestCase):
                       'density': 1500,
                       'specific-heat': 1466}}
 
-        with self.assertRaises(ValidationError) as context:
+        with self.assertRaises(ValidationError) as _:
             InputProcessor.validate_inputs(d)
-            self.assertTrue("Input object 'soil' is not valid." in context.exception)
 
     def test_get_definition_object_fail(self):
         d = {'pipe': [
@@ -246,7 +245,5 @@ class TestInputProcessor(unittest.TestCase):
         f_path = os.path.join(temp_dir, 'temp.json')
         write_json(f_path, d)
         ip = InputProcessor(f_path)
-        with self.assertRaises(KeyError) as context:
+        with self.assertRaises(KeyError) as _:
             ip.get_definition_object('pipe-definitions', 'not-implemented')
-            expect_str = "Object type: '{pipe-definitions}', Name: '{not-implemented}' not found."
-            self.assertTrue(expect_str in context.exception)

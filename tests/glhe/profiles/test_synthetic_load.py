@@ -65,4 +65,3 @@ class TestSynthetic(unittest.TestCase):
     def test_fail(self):
         with self.assertRaises(ValueError) as context:
             self.add_instance('not-a-method')
-            self.assertTrue("Synthetic method 'not-a-method' is not valid." in context.exception)

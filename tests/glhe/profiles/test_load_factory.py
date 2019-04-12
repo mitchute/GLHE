@@ -78,6 +78,5 @@ class TestLoadFactory(unittest.TestCase):
 
         make_load_profile(d['load-profile'][0], ip, op)
 
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(ValueError) as _:
             make_load_profile({'load-profile-type': 'not-a-method'}, ip, op)
-            self.assertTrue("Load profile 'not-a-method' is not valid." in context.exception)
