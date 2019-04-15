@@ -26,14 +26,14 @@ class Dynamic(BaseAgg):
         # set expansion rate. apply default if needed.
         try:
             self.exp_rate = inputs['expansion-rate']
-        except KeyError:
-            self.exp_rate = 1.5
+        except KeyError:  # pragma: no cover
+            self.exp_rate = 1.5  # pragma: no cover
 
         # set the number of bins per level. apply default if needed.
         try:
             self.bins_per_level = inputs['number-bins-per-level']
-        except KeyError:
-            self.bins_per_level = 9
+        except KeyError:  # pragma: no cover
+            self.bins_per_level = 9  # pragma: no cover
 
         # total simulation runtime to make available for method
         run_time = inputs['runtime']
