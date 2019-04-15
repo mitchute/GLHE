@@ -28,27 +28,19 @@
             "path-name": {
               "type": "string"
             },
-            "boreholes": {
+            "components": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "borehole-def-name": {
+                  "def-name": {
                     "type": "string"
                   },
-                  "location": {
-                    "type": "object",
-                    "properties": {
-                      "x": {
-                        "type": "number"
-                      },
-                      "y": {
-                        "type": "number"
-                      },
-                      "z": {
-                        "type": "number"
-                      }
-                    }
+                  "comp-type": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
                   }
                 }
               }

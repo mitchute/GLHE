@@ -3,6 +3,7 @@ from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.external_temps import ExternalTemps
 from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.load_factory import make_load_profile
+from glhe.topology.borehole_factory import make_borehole
 from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
 from glhe.topology.pipe import Pipe
 
@@ -23,3 +24,7 @@ def make_component(comp: dict, ip: InputProcessor, op: OutputProcessor) -> objec
         return Pipe(inputs, ip, op)
     elif comp_type == 'temperature-profile':
         return ExternalTemps(inputs, ip, op)
+    elif comp_type == 'borehole':
+        return make_borehole(inputs, ip, op)
+    else:
+        raise KeyError("Component: '{}', Name: '{}' is not valid.".format(comp_type, comp_name))

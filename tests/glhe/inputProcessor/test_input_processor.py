@@ -150,22 +150,9 @@ class TestInputProcessor(unittest.TestCase):
             "g-function-path": "../glhe/examples/single_g_functions.csv",
             "flow-paths": [
                 {"path-name": "path 1",
-                 "boreholes": [
-                     {"location": {"x": 0, "y": 0, "z": 1},
-                      "borehole-def-name": "borehole type 1",
-                      "name": "BH 1"},
-                     {"location": {
-                         "x": 1, "y": 0, "z": 1},
-                         "borehole-def-name": "borehole type 1",
-                         "name": "BH 2"}]},
+                 "components": [{"comp-type": "borehole", "def-name": "borehole type 1", "name": "BH 1"}]},
                 {"path-name": "path 2",
-                 "boreholes": [{
-                     "location": {"x": 0, "y": 1, "z": 1},
-                     "borehole-def-name": "borehole type 1",
-                     "name": "BH 3"},
-                     {"location": {
-                         "x": 1, "y": 1, "z": 1}, "borehole-def-name": "borehole type 1",
-                         "name": "BH 4"}]}],
+                 "components": [{"comp-type": "borehole", "def-name": "borehole type 1", "name": "BH 3"}]}],
             "load-aggregation": {
                 "method": "dynamic",
                 "expansion-rate": 1.5,

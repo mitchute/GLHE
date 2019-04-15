@@ -2,6 +2,7 @@ class ComponentTypes(object):
     """
     All simulatable component types, alphabetically
     """
+    BoreholeSingleUTube = 'SingleUTubeBH'
     ConstantFlow = 'ConstantFlow'
     ConstantLoad = 'ConstantLoad'
     ExternalFlow = 'ExternalFlow'
@@ -10,6 +11,7 @@ class ComponentTypes(object):
     GroundHeatExchanger = 'GroundHeatExchanger'
     GroundHeatExchangerLTS = 'GroundHeatExchangerLTS'
     GroundHeatExchangerSTS = 'GroundHeatExchangerSTS'
+    Path = 'Path'
     Pipe = 'Pipe'
     PlantLoop = 'PlantLoop'
     PulseLoad = 'PulseLoad'

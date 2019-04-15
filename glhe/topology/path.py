@@ -1,40 +1,39 @@
-from glhe.globals.functions import merge_dicts
-from glhe.topology.borehole_factory import make_borehole
+from glhe.input_processor.component_factory import make_component
+from glhe.input_processor.component_types import ComponentTypes
+from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import SimulationResponse
+from glhe.output_processor.report_types import ReportTypes
 
 
-class Path(object):
+class Path(SimulationEntryPoint):
+    Type = ComponentTypes.Path
 
     def __init__(self, inputs, ip, op):
-
-        # input processor
+        SimulationEntryPoint.__init__(self, inputs['path-name'])
         self.ip = ip
-
-        # output processor
         self.op = op
 
-        self.name = inputs["path-name"]
+        # valid components which can exist on the path
+        valid_comp_types = ['borehole', 'pipe']
 
-        # Initialize boreholes
-        self.boreholes = []
-        for borehole in inputs["boreholes"]:
-            self.boreholes.append(make_borehole(merge_dicts(borehole,
-                                                            {'initial temp': inputs['initial temp']}),
-                                                self.ip,
-                                                self.op))
+        # init all components on the path
+        self.components = []
+        for comp in inputs['components']:
+            comp_type = comp['comp-type']
+            if comp_type not in valid_comp_types:
+                self.components.append(make_component(comp, ip, op))
+            else:
+                raise KeyError(
+                        "Component type: '{}' is not supported by the {} object.".format(comp_type, self.Type))
 
-        # Initialize other parameters
-        self.mass_flow_rate = 0
-        self.flow_resistance = 0
+        self.inlet_temperature = ip.init_temp()
+        self.outlet_temperature = ip.init_temp()
+        self.flow_rate = 0
 
-    def set_flow_resistance(self):
-        self.flow_resistance = 0
-        for borehole in self.boreholes:
-            self.flow_resistance += borehole.get_flow_resistance()
-
-    def set_mass_flow_rate(self, mass_flow_rate):
-        self.mass_flow_rate = mass_flow_rate
-        for bh in self.boreholes:
-            bh.set_flow_rate(mass_flow_rate)
-
-    def simulate(self, inlet_temperature):
+    def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
         pass
+
+    def report_outputs(self) -> dict:
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}

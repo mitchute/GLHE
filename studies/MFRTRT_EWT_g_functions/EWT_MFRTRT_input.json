@@ -46,14 +46,15 @@
       "g-function-path": "../studies/MFRTRT_EWT_g_functions/EWT_experimental_g_functions.csv",
       "flow-paths": [
         {
-          "path-name": "path 1",
-          "boreholes": [
+          "name": "path 1",
+          "components": [
             {
               "location": {
                 "x": 0,
                 "y": 0,
                 "z": 1
               },
+              "comp-type": "borehole",
               "borehole-def-name": "borehole type 1",
               "name": "BH 1"
             }

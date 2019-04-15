@@ -1,9 +1,12 @@
 from abc import abstractmethod
 
+from glhe.interface.entry import SimulationEntryPoint
 
-class BoreholeBase(object):
+
+class BoreholeBase(SimulationEntryPoint):
 
     def __init__(self, inputs):
+        SimulationEntryPoint.__init__(self, inputs['name'])
         self.length = inputs['depth']
         self.diameter = inputs['diameter']
         self.radius = self.diameter / 2
