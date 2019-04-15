@@ -61,7 +61,7 @@
         }
       ],
       "load-aggregation": {
-        "method": "none",
+        "method": "dynamic",
         "expansion-rate": 1.5,
         "number-bins-per-level": 9
       }
@@ -103,7 +103,7 @@
   },
   "soil": {
     "name": "dirt",
-    "conductivity": 2.6,
+    "conductivity": 2.7,
     "density": 2500,
     "specific-heat": 880
   }

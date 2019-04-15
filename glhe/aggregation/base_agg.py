@@ -21,7 +21,6 @@ class BaseAgg(ABC):
         # energy values to be tracked
         self.energy = np.empty((0,), dtype=float)
 
-        # time referenced from current simulation time
         # most recent values appended to array
         self.times = np.empty((0,), dtype=int)
 

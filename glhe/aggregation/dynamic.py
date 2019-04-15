@@ -18,6 +18,7 @@ class Dynamic(BaseAgg):
 
     def __init__(self, inputs: dict):
         BaseAgg.__init__(self, inputs)
+        self.prev_update_time = 0
 
         # sub-hourly tracker for the first hour
         self.sub_hr = SubHour(inputs)
@@ -62,15 +63,6 @@ class Dynamic(BaseAgg):
 
             dt *= self.exp_rate
 
-        # fractions of each bin to be shifted each hour
-        self.f = SEC_IN_HOUR / self.dts
-
-        # final bin doesn't shift out any energy, so it's fraction should be 0
-        self.f[0] = 0
-
-        # previous update hour
-        self.prev_update_time_hr = 0
-
     def aggregate(self, time: int, energy: float):
         """
         Aggregate energy. Check for a new time step and aggregate.
@@ -88,22 +80,23 @@ class Dynamic(BaseAgg):
         # run through sub-hourly method to track the first hour
         e_1 = self.sub_hr.aggregate(time, energy)
 
-        # # only update the long time step aggregation method once per simulation hour
-        # if int(time / SEC_IN_HOUR) == self.prev_update_time_hr:
-        #     # store whatever rolls off of the sub-hourly method
-        #     self.energy[-1] += e_1
-        # else:
-        # aggregate
-        delta = self.energy * self.f
+        # fraction of each bin's energy to shift for this time step
+        # nothing is shifted out of final bin
+        frac_shift = (time - self.prev_update_time) / self.dts
+        frac_shift[0] = 0
+
+        delta = self.energy * frac_shift
         self.energy = self.energy - delta
         self.energy = self.energy + np.roll(delta, -1)
         self.energy[-1] += e_1
 
         # update time
         self.prev_update_time = time
-        self.prev_update_time_hr = int(time / SEC_IN_HOUR)
 
     def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
+
+        if time == 0:
+            return float(self.interp_g(np.log(time_step / self.ts))), 0
 
         # compute temporal superposition
         # this includes all thermal history before the present time
@@ -113,15 +106,14 @@ class Dynamic(BaseAgg):
         dq = np.diff(q, prepend=0)
 
         # g-function values
-        # TODO: update these so we don't have to re-evaluate the g-values each time
-        dts = np.concatenate((self.dts, self.sub_hr.dts))
+        dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
         times = np.flipud(np.cumsum(np.flipud(dts)))
         lntts = np.log(times / self.ts)
         g = self.interp_g(lntts)
 
-        g_c = self.interp_g(np.log(time_step / self.ts))
+        g_c = g[-1]
         q_prev = q[-1]
 
         # convolution of delta_q and the g-function values
-        hist = float(np.dot(dq, g) - q_prev * g_c)
+        hist = float(np.dot(dq, g[:-1]) - q_prev * g_c)
         return float(g_c), hist

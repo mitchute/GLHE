@@ -14,6 +14,8 @@ class SubHour(BaseAgg):
 
     def __init__(self, inputs):
         BaseAgg.__init__(self, inputs)
+        self.energy = np.append(self.energy, 0)
+        self.dts = np.append(self.dts, SEC_IN_HOUR)
         self.prev_update_time = 0
 
     def aggregate(self, time: int, energy: float):
@@ -27,7 +29,7 @@ class SubHour(BaseAgg):
         # check for iteration.
         # if time is the same as previous, we're iterating. so do nothing.
         # else, aggregate the energy
-        if time == self.prev_update_time:
+        if self.prev_update_time == time:
             return 0
 
         # append current values
