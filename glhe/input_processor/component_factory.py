@@ -1,14 +1,27 @@
+from typing import Union
+
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
+from glhe.profiles.constant_flow import ConstantFlow
+from glhe.profiles.constant_load import ConstantLoad
+from glhe.profiles.external_flow import ExternalFlow
+from glhe.profiles.external_load import ExternalLoad
 from glhe.profiles.external_temps import ExternalTemps
 from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.load_factory import make_load_profile
+from glhe.profiles.pulse_load import PulseLoad
+from glhe.profiles.sinusoid_load import SinusoidLoad
+from glhe.profiles.synthetic_load import SyntheticLoad
 from glhe.topology.borehole_factory import make_borehole
 from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
 from glhe.topology.pipe import Pipe
 
 
-def make_component(comp: dict, ip: InputProcessor, op: OutputProcessor) -> object:
+def make_component(comp: dict, ip: InputProcessor, op: OutputProcessor) -> Union[ConstantFlow, ExternalFlow,
+                                                                                 ConstantLoad, PulseLoad,
+                                                                                 ExternalLoad, SinusoidLoad,
+                                                                                 SyntheticLoad, GroundHeatExchanger,
+                                                                                 Pipe, ExternalTemps]:
     comp_type = comp['comp-type']
     comp_name = comp['name']
 

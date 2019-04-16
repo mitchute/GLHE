@@ -20,6 +20,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         for path in inputs['flow-paths']:
             self.paths.append(Path(path, ip, op))
 
+        # report variables
         self.heat_rate = 0
         self.flow_rate = 0
         self.inlet_temperature = ip.init_temp()

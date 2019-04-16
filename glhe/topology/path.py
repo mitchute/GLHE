@@ -23,15 +23,22 @@ class Path(SimulationEntryPoint):
             if comp_type not in valid_comp_types:
                 self.components.append(make_component(comp, ip, op))
             else:
-                raise KeyError(
-                        "Component type: '{}' is not supported by the {} object.".format(comp_type, self.Type))
+                raise KeyError("Component type: '{}' is not supported by the {} object.".format(comp_type, self.Type))
 
+        # report variables
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
         self.flow_rate = 0
 
-    def simulate_time_step(self, response: SimulationResponse) -> SimulationResponse:
-        pass
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
+
+        self.inlet_temperature = inputs.temperature
+        response = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature)
+
+        for comp in self.components:
+            response = comp.simulate_time_step(response)
+
+        return response
 
     def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
