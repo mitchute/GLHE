@@ -6,7 +6,7 @@ from typing import Union
 
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
-from glhe.input_processor.component_factory import make_component
+from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
@@ -53,10 +53,10 @@ class PlantLoop(object):
     def initialize_plant_loop_topology(self) -> None:
 
         for comp in self.ip.input_dict['topology']['supply-side']:
-            self.supply_comps.append(make_component(comp, self.ip, self.op))
+            self.supply_comps.append(make_plant_loop_component(comp, self.ip, self.op))
 
         for comp in self.ip.input_dict['topology']['demand-side']:
-            self.demand_comps.append(make_component(comp, self.ip, self.op))
+            self.demand_comps.append(make_plant_loop_component(comp, self.ip, self.op))
 
     def simulate(self) -> bool:
         """

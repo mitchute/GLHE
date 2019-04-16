@@ -1,13 +1,15 @@
 from typing import Union
 
-from glhe.globals.functions import merge_dicts
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
 def make_borehole(inputs, ip, op) -> Union[SingleUTubeGroutedBorehole]:
-    bh_def = ip.definition_mgr.get_definition('borehole', inputs['borehole-def-name'])
+    bh_name = inputs['name']
+    comp_inputs = ip.get_definition_object('borehole', bh_name)
+    def_inputs = ip.get_definition_object('borehole-definitions', comp_inputs['borehole-def-name'])
+    bh_type = def_inputs['borehole-type']
 
-    if bh_def['borehole-type'] == 'single-grouted':
-        return SingleUTubeGroutedBorehole(merge_dicts(bh_def, {'initial temp': inputs['initial temp']}), ip, op)
+    if bh_type == 'single-grouted':
+        return SingleUTubeGroutedBorehole(inputs, ip, op)
     else:
-        raise NotImplementedError("Borehole type '{}' is not valid.".format(bh_def['bh-type']))
+        raise KeyError("Borehole: '{}', Name: '{}' is not valid.".format(bh_type, bh_name))

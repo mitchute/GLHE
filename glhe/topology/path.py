@@ -1,5 +1,5 @@
-from glhe.input_processor.component_factory import make_component
 from glhe.input_processor.component_types import ComponentTypes
+from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
@@ -9,7 +9,7 @@ class Path(SimulationEntryPoint):
     Type = ComponentTypes.Path
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['path-name'])
+        SimulationEntryPoint.__init__(self, inputs['name'])
         self.ip = ip
         self.op = op
 
@@ -20,8 +20,8 @@ class Path(SimulationEntryPoint):
         self.components = []
         for comp in inputs['components']:
             comp_type = comp['comp-type']
-            if comp_type not in valid_comp_types:
-                self.components.append(make_component(comp, ip, op))
+            if comp_type in valid_comp_types:
+                self.components.append(make_ghe_component(comp, ip, op))
             else:
                 raise KeyError("Component type: '{}' is not supported by the {} object.".format(comp_type, self.Type))
 

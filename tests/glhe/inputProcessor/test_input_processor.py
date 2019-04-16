@@ -150,9 +150,9 @@ class TestInputProcessor(unittest.TestCase):
             "g-function-path": "../glhe/examples/single_g_functions.csv",
             "flow-paths": [
                 {"path-name": "path 1",
-                 "components": [{"comp-type": "borehole", "def-name": "borehole type 1", "name": "BH 1"}]},
+                 "components": [{"comp-type": "borehole", "name": "BH 1"}]},
                 {"path-name": "path 2",
-                 "components": [{"comp-type": "borehole", "def-name": "borehole type 1", "name": "BH 3"}]}],
+                 "components": [{"comp-type": "borehole", "name": "BH 2"}]}],
             "load-aggregation": {
                 "method": "dynamic",
                 "expansion-rate": 1.5,
@@ -199,11 +199,19 @@ class TestInputProcessor(unittest.TestCase):
 
         self.run_validate(d)
 
+    def test_validate_borehole(self):
+        d = {'borehole': [
+            {'borehole-def-name': 'single-grouted',
+             'name': 'my name',
+             'location': {'x': 0, 'y': 0, 'z': 0}}]}
+
+        self.run_validate(d)
+
     def test_all_schema_tests_implemented(self):
         # this count should match the number of schema validations implemented here
         # it will match against the count of all schema files in 'glhe/input_processor/schema'
         # not great, but OK for now
-        test_count = 14
+        test_count = 15
 
         fpath = os.path.dirname(os.path.abspath(__file__))
         schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'input_processor', 'schema'))

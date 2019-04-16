@@ -33,9 +33,6 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "def-name": {
-                    "type": "string"
-                  },
                   "comp-type": {
                     "type": "string"
                   },

@@ -1,0 +1,34 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "borehole-def-name": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "location": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "borehole-def-name",
+    "name",
+    "location"
+  ],
+  "additionalProperties": false
+}

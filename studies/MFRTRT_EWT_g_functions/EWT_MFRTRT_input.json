@@ -11,6 +11,17 @@
       "shank-spacing": 0.0469
     }
   ],
+  "borehole": [
+    {
+      "name": "bh 1",
+      "borehole-def-name": "borehole type 1",
+      "location": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
   "flow-profile": [
     {
       "name": "constant 0.3",
@@ -49,14 +60,8 @@
           "name": "path 1",
           "components": [
             {
-              "location": {
-                "x": 0,
-                "y": 0,
-                "z": 1
-              },
               "comp-type": "borehole",
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 1"
+              "name": "bh 1"
             }
           ]
         }
