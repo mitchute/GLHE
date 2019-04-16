@@ -1,3 +1,4 @@
+from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -13,8 +14,17 @@ class GroundHeatExchanger(SimulationEntryPoint):
         SimulationEntryPoint.__init__(self, inputs['name'])
         self.ip = ip
         self.op = op
-        self.lts_ghe = GroundHeatExchangerLTS(inputs, ip, op)
+
+        # init TRCM model
         self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+        ave_depth = self.sts_ghe.calc_ave_depth()
+        num_bh = self.sts_ghe.count_bhs()
+        lts_inputs = merge_dicts(inputs, {'depth': ave_depth, 'number-boreholes': num_bh})
+
+        # init g-function model
+        self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
+
+        # report variables
         self.heat_rate = 0
         self.inlet_temperature = self.ip.init_temp()
         self.outlet_temperature = self.ip.init_temp()

@@ -6,7 +6,7 @@ from glhe.properties.base_properties import PropertiesBase
 
 
 class SingleUTubeGroutedBorehole(SimulationEntryPoint):
-    Type = ComponentTypes.BoreholeSingleUTube
+    Type = ComponentTypes.BoreholeSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
         SimulationEntryPoint.__init__(self, inputs['name'])

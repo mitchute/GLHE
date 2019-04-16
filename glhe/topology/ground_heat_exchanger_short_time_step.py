@@ -26,6 +26,28 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
 
+    def calc_ave_depth(self):
+        valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
+        ave_depth = 0
+        count = 0
+        for path in self.paths:
+            for comp in path.components:
+                if comp.Type in valid_bh_types:
+                    ave_depth += comp.depth
+                    count += 1
+
+        return ave_depth / count
+
+    def count_bhs(self):
+        valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
+        count = 0
+        for path in self.paths:
+            for comp in path.components:
+                if comp.Type in valid_bh_types:
+                    count += 1
+
+        return count
+
     def simulate_time_step(self, inputs: SimulationResponse):
         return inputs
 

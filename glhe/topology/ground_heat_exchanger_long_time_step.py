@@ -26,9 +26,8 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.soil = ip.props_mgr.soil
 
         # geometry and other configs
-        # TODO: generalize this
-        self.h = 76.2
-        self.num_bh = 1
+        self.h = inputs['depth']
+        self.num_bh = inputs['number-boreholes']
 
         # load aggregation method
         ts = self.h ** 2 / (9 * self.soil.diffusivity)

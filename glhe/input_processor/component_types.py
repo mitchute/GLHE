@@ -2,7 +2,7 @@ class ComponentTypes(object):
     """
     All simulatable component types, alphabetically
     """
-    BoreholeSingleUTube = 'SingleUTubeBH'
+    BoreholeSingleUTubeGrouted = 'SingleUTubeBHGrouted'
     ConstantFlow = 'ConstantFlow'
     ConstantLoad = 'ConstantLoad'
     ExternalFlow = 'ExternalFlow'
