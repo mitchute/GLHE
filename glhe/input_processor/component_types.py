@@ -1,6 +1,6 @@
 class ComponentTypes(object):
     """
-    All simulatable component types, alphabetically
+    All simulatable component types
     """
     BoreholeSingleUTubeGrouted = 'SingleUTubeBHGrouted'
     ConstantFlow = 'ConstantFlow'
@@ -15,5 +15,6 @@ class ComponentTypes(object):
     Pipe = 'Pipe'
     PlantLoop = 'PlantLoop'
     PulseLoad = 'PulseLoad'
+    SegmentSingleUTubeGrouted = 'SegmentUTubeBHGrouted'
     SinusoidLoad = 'SinusoidLoad'
     SyntheticLoad = 'SyntheticLoad'

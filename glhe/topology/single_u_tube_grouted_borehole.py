@@ -27,7 +27,19 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         self.fluid = ip.props_mgr.fluid
         self.soil = ip.props_mgr.soil
-        self.grout = PropertiesBase(inputs=ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
+        self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
+
+        # Initialize segments
+        self.segments = []
+        num_segments = 10  # hard coded for now
+        seg_length = self.depth / num_segments
+        seg_inputs = merge_dicts(inputs, {'length': seg_length})
+        for _ in range(self.num_segments):
+            self.segments.append(make_segment(inputs=seg_inputs,
+                                              fluid_inst=fluid_inst,
+                                              grout_inst=self.grout,
+                                              soil_inst=soil_inst))
+
 
         # report variables
         self.heat_rate = 0
@@ -44,26 +56,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
 
-    def calc_fluid_volume(self):
-        pass
-
-    def calc_grout_volume(self):
-        pass
-
-    def calc_pipe_volume(self):
-        pass
-
-    #     # Initialize segments
-    #     self.segments = []
-    #     self.num_segments = inputs['segments']
-    #     seg_length = inputs['depth'] / inputs['segments']
-    #     seg_inputs = merge_dicts(inputs, {'length': seg_length})
-    #     for _ in range(self.num_segments):
-    #         self.segments.append(make_segment(inputs=seg_inputs,
-    #                                           fluid_inst=fluid_inst,
-    #                                           grout_inst=self.grout,
-    #                                           soil_inst=soil_inst))
-    #
     #     # final segment that ties the two legs of the u-tube together.
     #     # segment has no thickness
     #     self.segments.append(make_segment(inputs=seg_inputs,

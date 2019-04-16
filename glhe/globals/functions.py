@@ -1,8 +1,8 @@
 import json
-from math import exp, factorial
 from typing import Union
 
 import numpy as np
+from math import exp, factorial
 
 from glhe.globals.constants import SEC_IN_HOUR
 
@@ -187,6 +187,25 @@ def runge_kutta_fourth_x(rhs, h, x, y):
     k_2 = rhs(x + h / 2.0)
     k_3 = rhs(x + h / 2.0)
     k_4 = rhs(x + h)
+
+    return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
+
+
+def runge_kutta_fourth_y(rhs, h, y):
+    """
+    Solves one step using a fourth-order Runge-Kutta method. RHS expects only the y variable.
+    Moin, P. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
+    Cambridge University Press. New York, New York.
+    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(y))
+    :param h: step size
+    :param y: output dimension
+    :return:
+    """
+
+    k_1 = rhs(y)
+    k_2 = rhs(y + k_1 / 2.0)
+    k_3 = rhs(y + k_2 / 2.0)
+    k_4 = rhs(y + k_3)
 
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
