@@ -3,7 +3,8 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
-
+from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
+from glhe.topology.single_u_tube_pass_through_segment import   SingleUTubePassThroughSegment
 
 class SingleUTubeGroutedBorehole(SimulationEntryPoint):
     Type = ComponentTypes.BoreholeSingleUTubeGrouted
@@ -29,17 +30,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.soil = ip.props_mgr.soil
         self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
 
-        # Initialize segments
+        # init segments
         self.segments = []
-        num_segments = 10  # hard coded for now
-        seg_length = self.depth / num_segments
+        self.num_segments = 10  # hard coded for now
+        seg_length = self.depth / self.num_segments
         seg_inputs = merge_dicts(inputs, {'length': seg_length})
         for _ in range(self.num_segments):
-            self.segments.append(make_segment(inputs=seg_inputs,
-                                              fluid_inst=fluid_inst,
-                                              grout_inst=self.grout,
-                                              soil_inst=soil_inst))
+            self.segments.append(SingleUTubeGroutedSegment())
 
+        # final segment is a pass-through segment that connects the U-tube nodes
+        self.segments.append(SingleUTubePassThroughSegment())
 
         # report variables
         self.heat_rate = 0

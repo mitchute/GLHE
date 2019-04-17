@@ -34,8 +34,8 @@
 #         tst = self.add_instance()
 #         tol = 0.0001
 #
-#         self.assertAlmostEqual(tst.DIAMETER, inputs['diameter'], delta=tol)
-#         self.assertAlmostEqual(tst.LENGTH, inputs['length'], delta=tol)
+#         self.assertAlmostEqual(tst.diameter, inputs['diameter'], delta=tol)
+#         self.assertAlmostEqual(tst.length, inputs['length'], delta=tol)
 #
 #         self.assertAlmostEqual(tst.TOTAL_VOL, 9.4860E-2, delta=tol)
 #         self.assertAlmostEqual(tst.PIPE_VOL, 6.1567E-3, delta=tol)

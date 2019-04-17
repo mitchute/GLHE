@@ -1,10 +1,10 @@
-from math import pi
-from numpy import ones, zeros
+import numpy as np
 
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
+from glhe.interface.response import SimulationResponse
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 
@@ -21,52 +21,34 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         self.soil = ip.props_mgr.soil
         self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
 
-        self.NUM_PIPES = 2
-        self.INIT_TEMP = inputs['initial temp']
-        self.LENGTH = inputs['length']
-        self.DIAMETER = inputs['diameter']
+        self.num_pipes = 2
+        self.length = inputs['length']
+        self.diameter = inputs['diameter']
 
-        self.pipe_1 = Pipe(merge_dicts(inputs['pipe-data'], {'length': self.LENGTH,
+        self.pipe_1 = Pipe(merge_dicts(inputs['pipe-data'], {'length': self.length,
                                                              'initial temp': inputs['initial temp']}),
                            fluid_inst=fluid_inst)
 
-        self.pipe_2 = Pipe(merge_dicts(inputs['pipe-data'], {'length': self.LENGTH,
+        self.pipe_2 = Pipe(merge_dicts(inputs['pipe-data'], {'length': self.length,
                                                              'initial temp': inputs['initial temp']}),
                            fluid_inst=fluid_inst)
 
-        self.TOTAL_VOL = self.calc_total_volume()
-        self.FLUID_VOL = self.calc_fluid_volume()
-        self.GROUT_VOL = self.calc_grout_volume()
-        self.PIPE_VOL = self.calc_pipe_volume()
+        self.num_equations = 4
+        self.y = np.full((self.num_equations,), ip.init_temp())
 
-        self.NUM_EQUATIONS = 4
-        self.y = ones(self.NUM_EQUATIONS) * self.INIT_TEMP
-
-        self.borehole_wall_temp = self.INIT_TEMP
-        self.inlet_temp_1 = self.INIT_TEMP
-        self.inlet_temp_2 = self.INIT_TEMP
+        self.borehole_wall_temp = ip.init_temp()
+        self.inlet_temp_1 = ip.init_temp()
+        self.inlet_temp_2 = ip.init_temp()
 
         self.mass_flow_rate = 0
         self.bh_resist = 0
         self.direct_coupling_resist = 0
 
-    def calc_total_volume(self):
-        return pi / 4 * self.DIAMETER ** 2 * self.LENGTH
-
-    def calc_fluid_volume(self):
-        return self.pipe_1.fluid_vol + self.pipe_2.fluid_vol
-
-    def calc_grout_volume(self):
-        return self.calc_total_volume() - self.pipe_1.total_vol - self.pipe_2.total_vol
-
-    def calc_pipe_volume(self):
-        return self.pipe_1.pipe_wall_vol + self.pipe_2.pipe_wall_vol
-
     def right_hand_side(self, y):
         num_equations = 4
-        r = zeros(num_equations)
+        r = np.zeros(num_equations)
 
-        dz = self.LENGTH
+        dz = self.length
         t_b = self.borehole_wall_temp
         t_i_1 = self.inlet_temp_1
         t_i_2 = self.inlet_temp_2
@@ -110,3 +92,9 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
 
     def get_outlet_2_temp(self):
         return self.y[1]
+
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
+        pass
+
+    def report_outputs(self) -> dict:
+        pass

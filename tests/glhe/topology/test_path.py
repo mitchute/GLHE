@@ -59,7 +59,7 @@
 #         tst_bh = tst.boreholes[0]
 #
 #         self.assertEqual(tst_bh.DEPTH, 100)
-#         self.assertEqual(tst_bh.DIAMETER, 0.1099)
+#         self.assertEqual(tst_bh.diameter, 0.1099)
 #         self.assertEqual(tst_bh.grout.conductivity, 0.744)
 #         self.assertEqual(tst_bh.grout.density, 1500)
 #         self.assertEqual(tst_bh.grout.specific_heat, 800)
