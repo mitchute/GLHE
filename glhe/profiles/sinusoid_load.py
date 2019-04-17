@@ -12,7 +12,7 @@ class SinusoidLoad(SimulationEntryPoint):
     Type = ComponentTypes.SinusoidLoad
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.amplitude = inputs['amplitude']
         self.offset = inputs['offset']
         self.period = inputs['period']

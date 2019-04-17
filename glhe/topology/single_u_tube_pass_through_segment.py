@@ -5,7 +5,7 @@ from glhe.interface.response import SimulationResponse
 class SingleUTubePassThroughSegment(SimulationEntryPoint):
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['segment-number'])
+        SimulationEntryPoint.__init__(self, {'name': 'Seg No. {}'.format(inputs['segment-number'])})
         self.ip = ip
         self.op = op
 

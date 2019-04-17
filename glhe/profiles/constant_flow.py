@@ -11,7 +11,7 @@ class ConstantFlow(SimulationEntryPoint):
     Type = ComponentTypes.ConstantFlow
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.flow_rate = inputs['value']
         self.ip = ip
         self.op = op

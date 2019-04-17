@@ -10,7 +10,7 @@ class ConstantLoad(SimulationEntryPoint):
     Type = ComponentTypes.ConstantLoad
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.load = inputs['value']
         self.ip = ip
         self.op = op

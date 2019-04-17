@@ -9,7 +9,7 @@ class Path(SimulationEntryPoint):
     Type = ComponentTypes.Path
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
 

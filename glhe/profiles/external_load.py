@@ -12,7 +12,7 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         ExternalBase.__init__(self, inputs['path'], col_num=0)
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
 

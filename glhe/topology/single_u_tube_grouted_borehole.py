@@ -1,9 +1,9 @@
-from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
+from glhe.topology.pipe import Pipe
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
 
@@ -12,36 +12,48 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
     Type = ComponentTypes.BoreholeSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
+
+        self.fluid = ip.props_mgr.fluid
+        self.soil = ip.props_mgr.soil
 
         # get borehole definition data
         bh_inputs = ip.get_definition_object('borehole', inputs['name'])
         bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
 
+        # init geometry
         self.depth = bh_def_inputs['depth']
         self.diameter = bh_def_inputs['diameter']
         self.radius = self.diameter / 2
-
-        # set up base class
         self.shank_space = bh_def_inputs['shank-spacing']
-        self.num_pipes = 2
 
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        # init grout
         self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
+
+        # init pipes
+        self.num_pipes = 2
+        pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.depth}
+        self.pipe = Pipe(pipe_inputs, ip, op)
 
         # init segments
         self.segments = []
         self.num_segments = 10  # hard coded for now
         seg_length = self.depth / self.num_segments
-        seg_inputs = merge_dicts(inputs, {'length': seg_length})
-        for _ in range(self.num_segments):
-            self.segments.append(SingleUTubeGroutedSegment())
+        seg_inputs = {'length': seg_length,
+                      'diameter': self.diameter,
+                      'segment-number': 0,
+                      'grout-def-name': bh_def_inputs['grout-def-name'],
+                      'pipe-def-name': bh_def_inputs['pipe-def-name']}
+
+        for idx in range(self.num_segments):
+            seg_inputs['segment-number'] = idx + 1
+            self.segments.append(SingleUTubeGroutedSegment(seg_inputs, ip, op))
 
         # final segment is a pass-through segment that connects the U-tube nodes
-        self.segments.append(SingleUTubePassThroughSegment())
+        seg_inputs['segment-number'] = self.num_segments + 1
+        self.segments.append(SingleUTubePassThroughSegment(seg_inputs, ip, op))
 
         # report variables
         self.heat_rate = 0
@@ -88,29 +100,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
     #     sigma_den = self.grout.conductivity + self.soil.conductivity
     #     self.sigma = sigma_num / sigma_den
     #     self.beta = None
-    #
-    #     # Init volumes
-    #     self.FLUID_VOL = self.calc_fluid_volume()
-    #     self.GROUT_VOL = self.calc_grout_volume()
-    #     self.PIPE_VOL = self.calc_pipe_volume()
-    #
-    # def calc_fluid_volume(self):
-    #     vol = 0
-    #     for seg in self.segments:
-    #         vol += seg.calc_fluid_volume()
-    #     return vol
-    #
-    # def calc_grout_volume(self):
-    #     vol = 0
-    #     for seg in self.segments:
-    #         vol += seg.calc_grout_volume()
-    #     return vol
-    #
-    # def calc_pipe_volume(self):
-    #     vol = 0
-    #     for seg in self.segments:
-    #         vol += seg.calc_pipe_volume()
-    #     return vol
     #
     # def get_flow_resistance(self):
     #     numerator = 8.0 * self.pipe.friction_factor * (2 * self.length)

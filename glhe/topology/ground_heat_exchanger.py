@@ -11,7 +11,7 @@ class GroundHeatExchanger(SimulationEntryPoint):
     Type = ComponentTypes.GroundHeatExchanger
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
 

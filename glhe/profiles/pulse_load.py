@@ -9,7 +9,7 @@ class PulseLoad(SimulationEntryPoint):
     Type = ComponentTypes.PulseLoad
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
         self.load = inputs['value']
         self.start_time = inputs['start-time']
         self.end_time = inputs['end-time']

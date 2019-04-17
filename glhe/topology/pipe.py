@@ -18,7 +18,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
     Type = ComponentTypes.Pipe
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs['name'])
+        SimulationEntryPoint.__init__(self, inputs)
 
         # input/output processor
         self.ip = ip
