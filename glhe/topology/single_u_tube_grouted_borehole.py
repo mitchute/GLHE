@@ -1,10 +1,12 @@
+from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
-from glhe.topology.single_u_tube_pass_through_segment import   SingleUTubePassThroughSegment
+from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
+
 
 class SingleUTubeGroutedBorehole(SimulationEntryPoint):
     Type = ComponentTypes.BoreholeSingleUTubeGrouted
