@@ -254,9 +254,9 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         dc_resist = dc_resist_num / dc_resist_den
 
         seg_inputs = {'wall-temperature': self.wall_temperature,
-                      'r_': r_b,
+                      'rb': r_b,
                       'flow-rate': flow_rate,
-                      'dc_resist': dc_resist}
+                      'dc-resist': dc_resist}
 
         # integration time step
         integ_ts = 10  # seconds

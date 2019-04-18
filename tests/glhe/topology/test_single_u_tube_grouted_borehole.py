@@ -5,6 +5,7 @@ import unittest
 
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
@@ -4569,3 +4570,8 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         tolerance = 0.00001
         tst = self.add_instance()
         self.assertAlmostEqual(tst.calc_bh_effective_resistance_uhf(20, flow_rate=0.5), 0.21629, delta=tolerance)
+
+    def test_simulate_time_step(self):
+        tst = self.add_instance()
+        ret = tst.simulate_time_step(SimulationResponse(0, 0, 0.2, 30))
+        self.assertAlmostEqual(ret.temperature, 20)
