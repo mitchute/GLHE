@@ -258,10 +258,6 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             nu = self.turbulent_nusselt(re, temp)
         return 1 / (nu * pi * self.fluid.get_k(temp))
 
-    def set_resist(self, pipe_resist: float):
-        self.resist_pipe = pipe_resist
-        return self.resist_pipe
-
     def calc_resist(self, mass_flow_rate: float, temp: float):
         """
         Calculates the combined conduction and convection pipe resistance

@@ -201,7 +201,7 @@ class TestInputProcessor(unittest.TestCase):
 
     def test_validate_borehole(self):
         d = {'borehole': [
-            {'borehole-def-name': 'single-grouted',
+            {'borehole-def-name': 'borehole type 1',
              'name': 'my name',
              'location': {'x': 0, 'y': 0, 'z': 0}}]}
 

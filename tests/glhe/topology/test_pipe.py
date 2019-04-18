@@ -92,11 +92,6 @@ class TestPipe(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11500, delta=tolerance)
         self.assertAlmostEqual(tst.calc_resist(2, temp), 0.08948, delta=tolerance)
 
-    def test_set_resistance(self):
-        tst = self.add_instance()
-        tst.set_resist(1)
-        self.assertEqual(tst.resist_pipe, 1)
-
     def test_calc_transit_time(self):
         tst = self.add_instance()
         tol = 0.1
