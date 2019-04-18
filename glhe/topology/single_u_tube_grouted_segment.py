@@ -1,5 +1,6 @@
-import numpy as np
 from math import pi
+
+import numpy as np
 
 from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.input_processor.component_types import ComponentTypes
@@ -39,6 +40,8 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         self.mass_flow_rate = 0
         self.bh_resist = 0
         self.direct_coupling_resist = 0
+        self.fluid_cp = 0
+        self.fluid_heat_capacity = 0
 
     def calc_grout_volume(self):
         return self.calc_seg_volume() - self.calc_tot_pipe_volume()
@@ -58,11 +61,11 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         t_i_1 = self.inlet_temp_1
         t_i_2 = self.inlet_temp_2
 
-        r_f = 1 / (self.mass_flow_rate * self.fluid.specific_heat)
+        r_f = 1 / (self.mass_flow_rate * self.fluid_cp)
         r_b = self.bh_resist
         r_12 = self.direct_coupling_resist
 
-        c_f_1 = self.fluid.heat_capacity * self.pipe.fluid_vol
+        c_f_1 = self.fluid_heat_capacity * self.pipe.fluid_vol
         c_f_2 = c_f_1
 
         # spilt between inner and outer grout layer
@@ -88,6 +91,8 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         self.mass_flow_rate = kwargs['mass-flow-rate']
         self.bh_resist = kwargs['borehole-resistance']
         self.direct_coupling_resist = kwargs['direct-coupling-resistance']
+        self.fluid_cp = self.fluid.get_cp(kwargs['inlet-1-temp'])
+        self.fluid_heat_capacity = self.fluid.get_rho(kwargs['inlet-1-temp']) * self.fluid_cp
 
         self.y = runge_kutta_fourth_y(self.right_hand_side, time_step, y=self.y)
         return self.y

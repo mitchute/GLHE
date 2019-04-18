@@ -1,60 +1,71 @@
-# import unittest
-#
-# from glhe.properties.base_properties import PropertiesBase
-# from glhe.properties.fluid_properties import Fluid
-# from glhe.topology.segment_factory import make_segment
-#
-# inputs = {'depth': 100,
-#           'diameter': 0.1099,
-#           'grout-data': {'conductivity': 0.744, 'density': 1500, 'name': 'standard grout',
-#                          'specific heat': 800},
-#           'model': 'single',
-#           'name': 'borehole type 1',
-#           'pipe-data': {'conductivity': 0.389, 'density': 950, 'inner diameter': 0.0269,
-#                         'name': '32 mm SDR-11 HDPE', 'outer diameter': 0.0334, 'specific heat': 1900},
-#           'segments': 10,
-#           'shank-spacing': 0.0521,
-#           'initial temp': 20,
-#           'length': 10.0}
-#
-#
-# class TestSingleUTubeGroutedSegment(unittest.TestCase):
-#
-#     @staticmethod
-#     def add_instance():
-#         fluid = Fluid(inputs={'type': 'Water'})
-#         grout = PropertiesBase(inputs=inputs['grout-data'])
-#         soil = PropertiesBase(inputs={'conductivity': 2.0,
-#                                       'density': 1000,
-#                                       'specific heat': 1000})
-#
-#         return make_segment(inputs=inputs, fluid_inst=fluid, grout_inst=grout, soil_inst=soil)
-#
-#     def test_init(self):
-#         tst = self.add_instance()
-#         tol = 0.0001
-#
-#         self.assertAlmostEqual(tst.diameter, inputs['diameter'], delta=tol)
-#         self.assertAlmostEqual(tst.length, inputs['length'], delta=tol)
-#
-#         self.assertAlmostEqual(tst.TOTAL_VOL, 9.4860E-2, delta=tol)
-#         self.assertAlmostEqual(tst.PIPE_VOL, 6.1567E-3, delta=tol)
-#         self.assertAlmostEqual(tst.FLUID_VOL, 1.1366E-2, delta=tol)
-#         self.assertAlmostEqual(tst.GROUT_VOL, 9.4860E-2 - 1.1366E-2 - 6.1567E-3, delta=tol)
-#
-#     def test_simulate(self):
-#         tst = self.add_instance()
-#         kwargs = {'borehole wall temp': 20,
-#                   'inlet 1 temp': 30,
-#                   'inlet 2 temp': 25,
-#                   'mass flow rate': 0.2,
-#                   'borehole resistance': 0.16,
-#                   'direct coupling resistance': 2.28}
-#
-#         ret_temps = tst.simulate(1, **kwargs)
-#
-#         tol = 0.0001
-#         self.assertAlmostEqual(ret_temps[0], 20.3458, delta=tol)
-#         self.assertAlmostEqual(ret_temps[1], 20.1729, delta=tol)
-#         self.assertAlmostEqual(ret_temps[2], 20.0001, delta=tol)
-#         self.assertAlmostEqual(ret_temps[3], 20.0001, delta=tol)
+import os
+import tempfile
+import unittest
+
+from glhe.globals.functions import write_json
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
+from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
+
+
+class TestSingleUTubeGroutedSegment(unittest.TestCase):
+
+    @staticmethod
+    def add_instance():
+        d = {
+            'fluid': {'fluid-type': 'water'},
+
+            'grout-definitions': [{
+                'name': 'standard grout',
+                'conductivity': 0.744,
+                'density': 1500,
+                'specific-heat': 800}],
+
+            'pipe-definitions': [{
+                'name': '32 mm SDR-11 HDPE',
+                'outer-diameter': 0.0334,
+                'inner-diameter': 0.0269,
+                'conductivity': 0.389,
+                'density': 950,
+                'specific-heat': 1900}]
+        }
+
+        temp_dir = tempfile.mkdtemp()
+        temp_file = os.path.join(temp_dir, 'temp.json')
+        write_json(temp_file, d)
+
+        ip = InputProcessor(temp_file)
+        op = OutputProcessor(temp_dir, 'out.csv')
+
+        d_seg = {'length': 7.62,
+                 'diameter': 0.114,
+                 'segment-number': 0,
+                 'grout-def-name': 'standard grout',
+                 'pipe-def-name': '32 mm sdr-11 hdpe'}
+
+        return SingleUTubeGroutedSegment(d_seg, ip, op)
+
+    def test_volume(self):
+        tst = self.add_instance()
+        tol = 0.0001
+
+        self.assertAlmostEqual(tst.calc_grout_volume(), 0.064424943, delta=tol)
+        self.assertAlmostEqual(tst.calc_seg_volume(), 0.077777603, delta=tol)
+        self.assertAlmostEqual(tst.calc_tot_pipe_volume(), 0.01335266, delta=tol)
+
+    def test_simulate(self):
+        tst = self.add_instance()
+        kwargs = {'borehole-wall-temp': 20,
+                  'inlet-1-temp': 30,
+                  'inlet-2-temp': 25,
+                  'mass-flow-rate': 0.2,
+                  'borehole-resistance': 0.16,
+                  'direct-coupling-resistance': 2.28}
+
+        ret_temps = tst.simulate(1, **kwargs)
+
+        tol = 0.0001
+        self.assertAlmostEqual(ret_temps[0], 20.4525, delta=tol)
+        self.assertAlmostEqual(ret_temps[1], 20.2262, delta=tol)
+        self.assertAlmostEqual(ret_temps[2], 20.0002, delta=tol)
+        self.assertAlmostEqual(ret_temps[3], 20.0002, delta=tol)
