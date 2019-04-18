@@ -53,16 +53,16 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
         self.assertAlmostEqual(tst.calc_seg_volume(), 0.077777603, delta=tol)
         self.assertAlmostEqual(tst.calc_tot_pipe_volume(), 0.01335266, delta=tol)
 
-    def test_simulate(self):
+    def test_simulate_time_step(self):
         tst = self.add_instance()
-        kwargs = {'borehole-wall-temp': 20,
+        inputs = {'wall-temp': 20,
                   'inlet-1-temp': 30,
                   'inlet-2-temp': 25,
-                  'mass-flow-rate': 0.2,
-                  'borehole-resistance': 0.16,
-                  'direct-coupling-resistance': 2.28}
+                  'flow-rate': 0.2,
+                  'rb': 0.16,
+                  'dc-resist': 2.28}
 
-        ret_temps = tst.simulate(1, **kwargs)
+        ret_temps = tst.simulate_time_step(1, inputs)
 
         tol = 0.0001
         self.assertAlmostEqual(ret_temps[0], 20.4525, delta=tol)

@@ -1,3 +1,4 @@
+import numpy as np
 from math import log, pi
 
 from glhe.input_processor.component_types import ComponentTypes
@@ -76,21 +77,13 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.vol_flow_rate = 0
         self.friction_factor = 0.02
         self.update_beta_temp_prev = 0
+        self.wall_temperature = ip.init_temp()
 
         # report variables
         self.heat_rate = 0
         self.flow_rate = 0
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
-
-    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
-        pass
-
-    def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
 
     def calc_bh_average_resistance(self, temperature: float,
                                    flow_rate: float = None,
@@ -246,59 +239,54 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         else:
             raise ValueError('Must pass flow rate or a pipe resistance.')
 
-    # def simulate_trcm(self, timestep, temp, flow, inputs):
-    #
-    #     self.set_flow_rate(flow)
-    #
-    #     fname = 'segment_temps.csv'
-    #     if os.path.exists(fname):
-    #         os.remove(fname)
-    #         f = open(fname, 'w+')
-    #         f.close()
-    #
-    #     resist_dc_num = 2 * self.resist_bh_total_internal * 2 * self.resist_bh_ave
-    #     resist_dc_den = 4 * self.resist_bh_ave - self.resist_bh_total_internal
-    #     resist_dc = resist_dc_num / resist_dc_den
-    #
-    #     kwargs = {'borehole wall temp': inputs['borehole wall temp'],
-    #               'borehole resistance': self.resist_bh_ave,
-    #               'mass flow rate': flow,
-    #               'direct coupling resistance': resist_dc}
-    #
-    #     elapsed_time = 0
-    #     self.write_temps(elapsed_time)
-    #
-    #     while True:
-    #
-    #         for idx, seg in enumerate(self.segments):
-    #
-    #             if idx == 0:
-    #                 kwargs['inlet 1 temp'] = temp
-    #                 kwargs['inlet 2 temp'] = self.segments[idx + 1].get_outlet_2_temp()
-    #             elif idx == self.num_segments:
-    #                 kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()
-    #             else:
-    #                 kwargs['inlet 1 temp'] = self.segments[idx - 1].get_outlet_1_temp()
-    #                 kwargs['inlet 2 temp'] = self.segments[idx + 1].get_outlet_2_temp()
-    #
-    #             seg.simulate(1, **kwargs)
-    #
-    #         elapsed_time += 1
-    #         self.write_temps(elapsed_time)
-    #
-    #         if elapsed_time >= timestep:
-    #             break
-    #
-    # def write_temps(self, time):
-    #     with open('segment_temps.csv', 'a') as f:
-    #         s_1 = '{}'.format(time)
-    #         s_2 = '{}'.format(time)
-    #         for seg in self.segments:
-    #             s_1 += ',{:0.2f}'.format(seg.get_outlet_1_temp())
-    #             s_2 += ',{:0.2f}'.format(seg.get_outlet_2_temp())
-    #
-    #         s_1 += '\n'
-    #         s_2 += '\n'
-    #
-    #         f.write(s_1)
-    #         f.write(s_2)
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
+
+        time = inputs.time
+        time_step = inputs.time_step
+        flow_rate = inputs.flow_rate
+        temperature = inputs.temperature
+
+        r_12 = self.calc_bh_total_internal_resistance(temperature, flow_rate=flow_rate)
+        r_b = self.calc_bh_average_resistance(temperature, flow_rate=flow_rate)
+
+        dc_resist_num = 2 * r_12 * 2 * r_b
+        dc_resist_den = 4 * r_b - r_12
+        dc_resist = dc_resist_num / dc_resist_den
+
+        seg_inputs = {'wall-temperature': self.wall_temperature,
+                      'r_': r_b,
+                      'flow-rate': flow_rate,
+                      'dc_resist': dc_resist}
+
+        # integration time step
+        integ_ts = 10  # seconds
+
+        # generate list of time steps with integ_ts as the max value
+        # remainder is the final time step
+        t_steps = np.full(np.floor_divide(time_step, integ_ts), integ_ts)
+        remainder = np.remainder(time_step, integ_ts)
+        if remainder > 0:
+            t_steps = np.append(t_steps, remainder)
+
+        for ts in t_steps:
+
+            for idx, seg in enumerate(self.segments):
+
+                if idx == 0:
+                    seg_inputs['inlet-1-temp'] = temperature
+                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+                elif idx == self.num_segments:
+                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                else:
+                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+
+                seg.simulate_time_step(ts, seg_inputs)
+
+        return SimulationResponse(time, time_step, flow_rate, self.segments[0].get_outlet_2_temp())
+
+    def report_outputs(self) -> dict:
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}

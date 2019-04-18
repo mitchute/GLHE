@@ -1,20 +1,18 @@
-from math import pi
-
 import numpy as np
+from math import pi
 
 from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.input_processor.component_types import ComponentTypes
-from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import SimulationResponse
+from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 
 
-class SingleUTubeGroutedSegment(SimulationEntryPoint):
+class SingleUTubeGroutedSegment(object):
     Type = ComponentTypes.SegmentSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, {'name': 'Seg No. {}'.format(inputs['segment-number'])})
+        self.name = 'Seg No. {}'.format(inputs['segment-number'])
         self.ip = ip
         self.op = op
 
@@ -30,18 +28,27 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', inputs['grout-def-name']))
         self.grout_vol = self.calc_grout_volume()
 
+        # computed node temperatures
         self.num_equations = 4
         self.y = np.full((self.num_equations,), ip.init_temp())
+        self.y_prev = np.full((self.num_equations,), ip.init_temp())
 
-        self.borehole_wall_temp = ip.init_temp()
-        self.inlet_temp_1 = ip.init_temp()
-        self.inlet_temp_2 = ip.init_temp()
-
-        self.mass_flow_rate = 0
+        # time variables
+        self.time = 0
+        self.time_prev = 0
+        self.flow_rate = 0
         self.bh_resist = 0
-        self.direct_coupling_resist = 0
+        self.dc_resist = 0
         self.fluid_cp = 0
         self.fluid_heat_capacity = 0
+        self.borehole_wall_temp = ip.init_temp()
+
+        # report variables
+        self.inlet_temp_1 = ip.init_temp()
+        self.inlet_temp_2 = ip.init_temp()
+        self.outlet_temp_1 = ip.init_temp()
+        self.outlet_temp_2 = ip.init_temp()
+        self.heat_rate = 0
 
     def calc_grout_volume(self):
         return self.calc_seg_volume() - self.calc_tot_pipe_volume()
@@ -61,9 +68,9 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
         t_i_1 = self.inlet_temp_1
         t_i_2 = self.inlet_temp_2
 
-        r_f = 1 / (self.mass_flow_rate * self.fluid_cp)
+        r_f = 1 / (self.flow_rate * self.fluid_cp)
         r_b = self.bh_resist
-        r_12 = self.direct_coupling_resist
+        r_12 = self.dc_resist
 
         c_f_1 = self.fluid_heat_capacity * self.pipe.fluid_vol
         c_f_2 = c_f_1
@@ -83,28 +90,28 @@ class SingleUTubeGroutedSegment(SimulationEntryPoint):
 
         return r
 
-    def simulate(self, time_step, **kwargs):
-        self.borehole_wall_temp = kwargs['borehole-wall-temp']
-        self.inlet_temp_1 = kwargs['inlet-1-temp']
-        self.inlet_temp_2 = kwargs['inlet-2-temp']
-
-        self.mass_flow_rate = kwargs['mass-flow-rate']
-        self.bh_resist = kwargs['borehole-resistance']
-        self.direct_coupling_resist = kwargs['direct-coupling-resistance']
-        self.fluid_cp = self.fluid.get_cp(kwargs['inlet-1-temp'])
-        self.fluid_heat_capacity = self.fluid.get_rho(kwargs['inlet-1-temp']) * self.fluid_cp
-
-        self.y = runge_kutta_fourth_y(self.right_hand_side, time_step, y=self.y)
-        return self.y
-
     def get_outlet_1_temp(self):
         return self.y[0]
 
     def get_outlet_2_temp(self):
         return self.y[1]
 
-    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
-        pass
+    def simulate_time_step(self, time_step: int, inputs: dict) -> np.ndarray:
+        self.borehole_wall_temp = inputs['wall-temp']
+        self.inlet_temp_1 = inputs['inlet-1-temp']
+        self.inlet_temp_2 = inputs['inlet-2-temp']
+        self.flow_rate = inputs['flow-rate']
+        self.bh_resist = inputs['rb']
+        self.dc_resist = inputs['dc-resist']
+        self.fluid_cp = self.fluid.get_cp(inputs['inlet-1-temp'])
+        self.fluid_heat_capacity = self.fluid.get_rho(inputs['inlet-1-temp']) * self.fluid_cp
+        self.y = runge_kutta_fourth_y(self.right_hand_side, time_step, y=self.y)
+        return self.y
 
     def report_outputs(self) -> dict:
-        pass
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg1): self.inlet_temp_1,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg1): self.outlet_temp_1,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg2): self.inlet_temp_2,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg2): self.outlet_temp_2}

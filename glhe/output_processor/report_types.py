@@ -13,3 +13,7 @@ class ReportTypes(object):
     # temperatures
     InletTemp = 'Inlet Temp. [C]'
     OutletTemp = 'Outlet Temp [C]'
+    InletTemp_Leg1 = 'Inlet Temp Leg 1 [C]'
+    InletTemp_Leg2 = 'Inlet Temp Leg 2 [C]'
+    OutletTemp_Leg1 = 'Outlet Temp Leg 1 [C]'
+    OutletTemp_Leg2 = 'Outlet Temp Leg 2 [C]'
