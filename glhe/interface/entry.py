@@ -7,7 +7,7 @@ class SimulationEntryPoint(ABC):
 
     def __init__(self, inputs: dict):
         try:
-            self.name = inputs['name']
+            self.name = inputs['name'].upper()
         except KeyError:
             pass
 
