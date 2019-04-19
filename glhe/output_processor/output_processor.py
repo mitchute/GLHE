@@ -7,12 +7,14 @@ import pandas as pd
 
 class OutputProcessor(object):
 
-    def __init__(self, output_path: str, output_name: str) -> None:
+    def __init__(self, output_dir: str, output_name: str) -> None:
         """
         Output processor manages output data
         """
 
-        self.write_path = normpath(join(output_path, output_name))
+        self.output_dir = output_dir
+        self.output_file = output_name
+        self.write_path = normpath(join(output_dir, output_name))
         self.df = pd.DataFrame()
         self.idx_count = 0
 

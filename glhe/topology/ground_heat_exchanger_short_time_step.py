@@ -15,6 +15,9 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
+        # fluid instance
+        self.fluid = ip.props_mgr.fluid
+
         # init paths
         self.paths = []
         for path in inputs['flow-paths']:
@@ -48,8 +51,31 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         return count
 
-    def simulate_time_step(self, inputs: SimulationResponse):
-        return inputs
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
+        # TODO: need to distribute flow properly
+        self.inlet_temperature = inputs.temperature
+        path_inlet_conditions = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature)
+        path_responses = []
+        for path in self.paths:
+            path_responses.append(path.simulate_time_step(path_inlet_conditions))
+
+        return_temp, return_flow = self.mix_paths(path_responses)
+        return SimulationResponse(inputs.time, inputs.time_step, return_flow, return_temp)
+
+    def mix_paths(self, responses: list) -> tuple:
+        sum_mdot_cp_temp = 0
+        sum_mdot = 0
+        sum_cp = 0
+        for r in responses:
+            temp = r.temperature
+            m_dot = r.flow_rate
+            cp = self.fluid.get_cp(temp)
+            sum_mdot_cp_temp += m_dot * cp * temp
+            sum_mdot += m_dot
+            sum_cp += cp
+
+        ave_cp = sum_cp / len(responses)
+        return sum_mdot_cp_temp / (sum_mdot * ave_cp), sum_mdot
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
