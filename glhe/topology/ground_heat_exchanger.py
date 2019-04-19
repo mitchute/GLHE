@@ -5,6 +5,7 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
+from glhe.profiles.constant_load import ConstantLoad
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
 
@@ -22,6 +23,8 @@ class GroundHeatExchanger(SimulationEntryPoint):
 
         # init TRCM model
         self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+        lp_inputs = {'name': 'load-4000', 'load-profile-type': 'constant', 'value': 4000}
+        self.sts_load = ConstantLoad(lp_inputs, ip, op)
 
         # init g-function model
         ave_depth = self.sts_ghe.calc_ave_depth()
@@ -37,13 +40,22 @@ class GroundHeatExchanger(SimulationEntryPoint):
     def generate_trcm_response(self):
         current_sim_time = 0
         time_step = 10
-        end_sim_time = SEC_IN_DAY
-
+        end_sim_time = 580
+        d_out = {'Elapsed Time [s]': current_sim_time}
+        d_out = merge_dicts(d_out, self.sts_ghe.report_outputs())
+        d_out = merge_dicts(d_out, self.sts_load.report_outputs())
+        self.sts_op.collect_output(d_out)
+        # TODO: figure out how to set flow rate(s)
+        # TODO: dido, but for the load
         response = SimulationResponse(current_sim_time, time_step, 0.3, self.ip.init_temp())
         while True:
+            response = self.sts_load.simulate_time_step(response)
             response = self.sts_ghe.simulate_time_step(response)
             current_sim_time += time_step
-            self.sts_op.collect_output(self.sts_ghe.report_outputs())
+            d_out = {'Elapsed Time [s]': current_sim_time}
+            d_out = merge_dicts(d_out, self.sts_ghe.report_outputs())
+            d_out = merge_dicts(d_out, self.sts_load.report_outputs())
+            self.sts_op.collect_output(d_out)
 
             if current_sim_time >= end_sim_time:
                 break

@@ -60,6 +60,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
             path_responses.append(path.simulate_time_step(path_inlet_conditions))
 
         return_temp, return_flow = self.mix_paths(path_responses)
+        self.outlet_temperature = return_temp
+        self.flow_rate = return_flow
         return SimulationResponse(inputs.time, inputs.time_step, return_flow, return_temp)
 
     def mix_paths(self, responses: list) -> tuple:

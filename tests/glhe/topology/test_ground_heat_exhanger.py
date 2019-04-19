@@ -135,9 +135,15 @@ class TestGroundHeatExchanger(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
+        # op = OutputProcessor(temp_dir, 'out.csv')
+        op = OutputProcessor(fpath, 'out.csv')
         return GroundHeatExchanger(d['ground-heat-exchanger'][0], ip, op)
 
     def test_init(self):
         tst = self.add_instance()
         self.assertIsInstance(tst, GroundHeatExchanger)
+
+    def test_trcm(self):
+        tst = self.add_instance()
+        tst.generate_trcm_response()
+        pass
