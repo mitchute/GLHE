@@ -12,7 +12,7 @@ class TestGroundHeatExchanger(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        cwd = os.getcwd()
+        fpath = os.path.dirname(os.path.abspath(__file__))
         d = {
             "borehole-definitions": [
                 {
@@ -69,7 +69,7 @@ class TestGroundHeatExchanger(unittest.TestCase):
             "ground-heat-exchanger": [
                 {
                     "name": "GHE 1",
-                    "g-function-path": os.path.join(cwd, '..', '..', '..', 'studies', 'MFRTRT_EWT_g_functions',
+                    "g-function-path": os.path.join(fpath, '..', '..', '..', 'studies', 'MFRTRT_EWT_g_functions',
                                                     'EWT_experimental_g_functions.csv'),
                     "flow-paths": [
                         {
