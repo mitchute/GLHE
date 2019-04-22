@@ -6,7 +6,7 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-
+from scipy.integrate import solve_ivp
 
 class SingleUTubeGroutedSegment(object):
     Type = ComponentTypes.SegmentSingleUTubeGrouted
@@ -59,7 +59,7 @@ class SingleUTubeGroutedSegment(object):
     def calc_seg_volume(self):
         return pi / 4 * self.diameter ** 2 * self.length
 
-    def right_hand_side(self, y):
+    def right_hand_side(self, _, y):
         num_equations = 4
         r = np.zeros(num_equations)
 
@@ -105,7 +105,12 @@ class SingleUTubeGroutedSegment(object):
         self.dc_resist = inputs['dc-resist']
         self.fluid_cp = self.fluid.get_cp(inputs['inlet-1-temp'])
         self.fluid_heat_capacity = self.fluid.get_rho(inputs['inlet-1-temp']) * self.fluid_cp
-        self.y = runge_kutta_fourth_y(self.right_hand_side, time_step, y=self.y)
+        # self.y = runge_kutta_fourth_y(self.right_hand_side, time_step, y=self.y)
+
+        ret = solve_ivp(self.right_hand_side, [0, time_step], self.y)
+        self.y = ret.y[:, -1]
+        self.outlet_temp_1 = self.get_outlet_1_temp()
+        self.outlet_temp_2 = self.get_outlet_2_temp()
         return self.y
 
     def report_outputs(self) -> dict:

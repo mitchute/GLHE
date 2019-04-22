@@ -1,8 +1,9 @@
+from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
-from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
+from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
 
 
 class Path(SimulationEntryPoint):
@@ -41,6 +42,12 @@ class Path(SimulationEntryPoint):
         return response
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+        d = {}
+        for comp in self.components:
+            d = merge_dicts(d, comp.report_outputs())
+
+        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+
+        return merge_dicts(d, d_self)

@@ -1,6 +1,8 @@
-import numpy as np
 from math import log, pi
 
+import numpy as np
+
+from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -258,35 +260,30 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
                       'flow-rate': flow_rate,
                       'dc-resist': dc_resist}
 
-        # integration time step
-        integ_ts = 10  # seconds
+        for idx, seg in enumerate(self.segments):
 
-        # generate list of time steps with integ_ts as the max value
-        # remainder is the final time step
-        t_steps = np.full(np.floor_divide(time_step, integ_ts), integ_ts)
-        remainder = np.remainder(time_step, integ_ts)
-        if remainder > 0:
-            t_steps = np.append(t_steps, remainder)
+            if idx == 0:
+                seg_inputs['inlet-1-temp'] = temperature
+                seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+            elif idx == self.num_segments:
+                seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+            else:
+                seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
 
-        for ts in t_steps:
-
-            for idx, seg in enumerate(self.segments):
-
-                if idx == 0:
-                    seg_inputs['inlet-1-temp'] = temperature
-                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
-                elif idx == self.num_segments:
-                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-                else:
-                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
-
-                seg.simulate_time_step(ts, seg_inputs)
+            seg.simulate_time_step(time_step, seg_inputs)
 
         return SimulationResponse(time, time_step, flow_rate, self.segments[0].get_outlet_2_temp())
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+        d = {}
+
+        for seg in self.segments:
+            d = merge_dicts(d, seg.report_outputs())
+
+        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+
+        return merge_dicts(d, d_self)

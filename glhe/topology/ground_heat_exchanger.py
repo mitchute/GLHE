@@ -39,8 +39,8 @@ class GroundHeatExchanger(SimulationEntryPoint):
 
     def generate_trcm_response(self):
         current_sim_time = 0
-        time_step = 10
-        end_sim_time = 580
+        time_step = 30
+        end_sim_time = 14400
         d_out = {'Elapsed Time [s]': current_sim_time}
         d_out = merge_dicts(d_out, self.sts_ghe.report_outputs())
         d_out = merge_dicts(d_out, self.sts_load.report_outputs())
