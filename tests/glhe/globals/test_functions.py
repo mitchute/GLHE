@@ -1,8 +1,8 @@
 import os
 import tempfile
 import unittest
-from math import cos, sin
 
+from math import cos, sin, exp
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
@@ -15,6 +15,7 @@ from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.globals.functions import runge_kutta_fourth_x
 from glhe.globals.functions import runge_kutta_fourth_xy
+from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.globals.functions import sec_to_hr
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
@@ -110,6 +111,22 @@ class TestFunctions(unittest.TestCase):
 
         y = runge_kutta_fourth_xy(f_prime, 0, x=2, y=2)
         y_act = 2
+
+        self.assertAlmostEqual(y_act, y, delta=0.001)
+
+    def test_runge_kutta_fourth_y(self):
+
+        # Derivative
+        # dy/dt = y * (1 - y)
+
+        # Solution
+        # y(t) = 1 / (1 + exp(-t))
+
+        def f_prime(x):
+            return x * (1 - x)
+
+        y = runge_kutta_fourth_y(f_prime, 0, y=0.5)
+        y_act = 0.5
 
         self.assertAlmostEqual(y_act, y, delta=0.001)
 
