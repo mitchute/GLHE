@@ -147,6 +147,7 @@ class TestInputProcessor(unittest.TestCase):
     def test_validate_ground_heat_exchanger(self):
         d = {"ground-heat-exchanger": [{
             "name": "GHE 1",
+            "simulation-mode": "direct",
             "g-function-path": "../glhe/examples/single_g_functions.csv",
             "flow-paths": [
                 {"path-name": "path 1",

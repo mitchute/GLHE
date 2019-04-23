@@ -5,10 +5,10 @@ import unittest
 from glhe.globals.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
-from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
+from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
 
 
-class TestGroundHeatExchanger(unittest.TestCase):
+class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):
 
     @staticmethod
     def add_instance():
@@ -69,7 +69,7 @@ class TestGroundHeatExchanger(unittest.TestCase):
             "ground-heat-exchanger": [
                 {
                     "name": "GHE 1",
-                    "simulation-mode": "enhanced",
+                    "simulation-mode": "direct",
                     "g-function-path": os.path.join(f_path, '..', '..', '..', 'studies', 'MFRTRT_EWT_g_functions',
                                                     'EWT_experimental_g_functions.csv'),
                     "flow-paths": [
@@ -136,9 +136,14 @@ class TestGroundHeatExchanger(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
-        return GroundHeatExchanger(d['ground-heat-exchanger'][0], ip, op)
+        # op = OutputProcessor(temp_dir, 'out.csv')
+        op = OutputProcessor(f_path, 'out.csv')
+        return GroundHeatExchangerSTS(d['ground-heat-exchanger'][0], ip, op)
 
     def test_init(self):
         tst = self.add_instance()
-        self.assertIsInstance(tst, GroundHeatExchanger)
+        self.assertIsInstance(tst, GroundHeatExchangerSTS)
+
+    def test_trcm(self):
+        tst = self.add_instance()
+        tst.generate_sts_response()
