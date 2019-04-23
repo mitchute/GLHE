@@ -70,7 +70,7 @@ class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "direct",
-                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'studies', 'MFRTRT_EWT_g_functions',
+                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
                                                     'EWT_experimental_g_functions.csv'),
                     "flow-paths": [
                         {
