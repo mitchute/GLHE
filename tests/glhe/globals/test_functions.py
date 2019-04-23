@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from math import cos, sin, exp
+from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
