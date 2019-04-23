@@ -5,9 +5,10 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
-from glhe.topology.path import Path
-from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.constant_flow import ConstantFlow
+from glhe.profiles.constant_load import ConstantLoad
+from glhe.topology.path import Path
+
 
 class GroundHeatExchangerSTS(SimulationEntryPoint):
     Type = ComponentTypes.GroundHeatExchangerSTS

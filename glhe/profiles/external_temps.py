@@ -17,10 +17,10 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         self.op = op
 
         # report variables
-        self.outlet_temp = 0
+        self.outlet_temp = self.get_value(0)
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        self.outlet_temp = self.get_value(inputs.time)
+        self.outlet_temp = self.get_value(inputs.time + inputs.time_step)
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self):

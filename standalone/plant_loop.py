@@ -40,7 +40,17 @@ class PlantLoop(object):
         self.supply_inlet_temp = self.ip.input_dict['simulation']['initial-temperature']
         self.supply_outlet_temp = self.ip.input_dict['simulation']['initial-temperature']
         self.end_sim_time = self.ip.input_dict['simulation']['runtime']
-        self.time_step = num_ts_per_hour_to_sec_per_ts(self.ip.input_dict['simulation']['time-steps-per-hour'])
+
+        # set the time step
+        # can only set the time steps per hour or the time step
+        try:
+            self.time_step = num_ts_per_hour_to_sec_per_ts(self.ip.input_dict['simulation']['time-steps-per-hour'])
+        except KeyError:
+            try:
+                self.time_step = self.ip.input_dict['simulation']['time-step']
+            except KeyError:
+                raise KeyError("'simulation' object must contain either 'time-steps-per-hour' or 'time-step' field.")
+
         self.demand_comps = []
         self.supply_comps = []
 

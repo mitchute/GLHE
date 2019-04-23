@@ -20,7 +20,8 @@ class PulseLoad(SimulationEntryPoint):
         self.outlet_temp = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):
-        if self.start_time <= inputs.time < self.end_time:
+
+        if self.start_time <= inputs.time + inputs.time_step < self.end_time:
             flow_rate = inputs.flow_rate
 
             if flow_rate == 0:

@@ -17,7 +17,7 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
         self.op = op
 
         # report variables
-        self.load = 0
+        self.load = self.get_value(0)
         self.outlet_temp = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):

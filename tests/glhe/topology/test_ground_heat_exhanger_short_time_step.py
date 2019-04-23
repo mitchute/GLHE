@@ -136,7 +136,6 @@ class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        # op = OutputProcessor(temp_dir, 'out.csv')
         op = OutputProcessor(f_path, 'out.csv')
         return GroundHeatExchangerSTS(d['ground-heat-exchanger'][0], ip, op)
 
@@ -144,6 +143,6 @@ class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):
         tst = self.add_instance()
         self.assertIsInstance(tst, GroundHeatExchangerSTS)
 
-    def test_trcm(self):
-        tst = self.add_instance()
-        tst.generate_sts_response()
+    # def test_trcm(self):
+    #     tst = self.add_instance()
+    #     tst.generate_sts_response()

@@ -24,9 +24,16 @@
   ],
   "flow-profile": [
     {
-      "name": "constant 0.3",
-      "flow-profile-type": "constant",
-      "value": 0.3
+      "name": "external flow",
+      "flow-profile-type": "external",
+      "path": ""
+    }
+  ],
+  "temperature-profile": [
+    {
+      "name": "external temperature",
+      "temperature-profile-type": "external",
+      "path": ""
     }
   ],
   "fluid": {
@@ -42,13 +49,6 @@
       "conductivity": 0.85,
       "density": 2500,
       "specific-heat": 1560
-    }
-  ],
-  "load-profile": [
-    {
-      "name": "constant 4000",
-      "load-profile-type": "constant",
-      "value": 4000
     }
   ],
   "ground-heat-exchanger": [
@@ -87,18 +87,18 @@
   "simulation": {
     "name": "Basic GLHE",
     "initial-temperature": 16.1,
-    "time-steps-per-hour": 6,
+    "time-step": 10,
     "runtime": 14400
   },
   "topology": {
     "demand-side": [
       {
         "comp-type": "flow-profile",
-        "name": "constant 0.3"
+        "name": "external flow"
       },
       {
-        "comp-type": "load-profile",
-        "name": "constant 4000"
+        "comp-type": "temperature-profile",
+        "name": "external temperature"
       }
     ],
     "supply-side": [
