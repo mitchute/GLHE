@@ -1,7 +1,5 @@
 from math import log, pi
 
-import numpy as np
-
 from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint

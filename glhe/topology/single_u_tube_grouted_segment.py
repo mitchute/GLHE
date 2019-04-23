@@ -1,12 +1,12 @@
 import numpy as np
 from math import pi
+from scipy.integrate import solve_ivp
 
-from glhe.globals.functions import runge_kutta_fourth_y
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-from scipy.integrate import solve_ivp
+
 
 class SingleUTubeGroutedSegment(object):
     Type = ComponentTypes.SegmentSingleUTubeGrouted
