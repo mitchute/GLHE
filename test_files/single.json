@@ -2,7 +2,7 @@
   "borehole-definitions": [
     {
       "borehole-type": "single-grouted",
-      "depth": 100,
+      "depth": 76.2,
       "diameter": 0.114,
       "grout-def-name": "standard grout",
       "name": "borehole type 1",
@@ -11,11 +11,29 @@
       "shank-spacing": 0.0469
     }
   ],
+  "borehole": [
+    {
+      "name": "bh 1",
+      "borehole-def-name": "borehole type 1",
+      "location": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
   "flow-profile": [
     {
-      "name": "constant 0.2",
+      "name": "constant-flow",
       "flow-profile-type": "constant",
       "value": 0.2
+    }
+  ],
+    "load-profile": [
+    {
+      "name": "constant-load",
+      "load-profile-type": "constant",
+      "value": 3000
     }
   ],
   "fluid": {
@@ -33,61 +51,18 @@
       "specific-heat": 1560
     }
   ],
-  "load-profile": [
-    {
-      "name": "constant 4000",
-      "load-profile-type": "constant",
-      "value": 4000
-    }
-  ],
   "ground-heat-exchanger": [
     {
       "name": "GHE 1",
-      "g-function-path": "../glhe/examples/single_g_functions.csv",
+      "simulation-mode": "direct",
+      "g-function-path": "validation/MFRTRT_EWT_g_functions/EWT_experimental_g_functions.csv",
       "flow-paths": [
         {
-          "path-name": "path 1",
-          "boreholes": [
+          "name": "path 1",
+          "components": [
             {
-              "location": {
-                "x": 0,
-                "y": 0,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 1"
-            },
-            {
-              "location": {
-                "x": 1,
-                "y": 0,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 2"
-            }
-          ]
-        },
-        {
-          "path-name": "path 2",
-          "boreholes": [
-            {
-              "location": {
-                "x": 0,
-                "y": 1,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 3"
-            },
-            {
-              "location": {
-                "x": 1,
-                "y": 1,
-                "z": 1
-              },
-              "borehole-def-name": "borehole type 1",
-              "name": "BH 4"
+              "comp-type": "borehole",
+              "name": "bh 1"
             }
           ]
         }
@@ -112,18 +87,20 @@
   "simulation": {
     "name": "Basic GLHE",
     "initial-temperature": 16.1,
-    "time-steps-per-hour": 60,
-    "runtime": 36000
+    "time-step": 10,
+    "runtime": 14400,
+    "output-path": "",
+    "output-csv-name": "out.csv"
   },
   "topology": {
     "demand-side": [
       {
         "comp-type": "flow-profile",
-        "name": "constant 0.2"
+        "name": "constant-flow"
       },
       {
         "comp-type": "load-profile",
-        "name": "constant 4000"
+        "name": "constant-load"
       }
     ],
     "supply-side": [
@@ -135,7 +112,7 @@
   },
   "soil": {
     "name": "dirt",
-    "conductivity": 2.6,
+    "conductivity": 2.7,
     "density": 2500,
     "specific-heat": 880
   }
