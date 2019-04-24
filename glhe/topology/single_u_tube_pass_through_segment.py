@@ -6,7 +6,7 @@ class SingleUTubePassThroughSegment(object):
     Type = ComponentTypes.SegmentSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
-        self.name = 'Seg No. {}'.format(inputs['segment-number'])
+        self.name = inputs['segment-name']
         self.ip = ip
         self.op = op
 

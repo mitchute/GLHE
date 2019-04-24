@@ -39,7 +39,7 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
 
         d_seg = {'length': 7.62,
                  'diameter': 0.114,
-                 'segment-number': 0,
+                 'segment-name': 0,
                  'grout-def-name': 'standard grout',
                  'pipe-def-name': '32 mm sdr-11 hdpe'}
 

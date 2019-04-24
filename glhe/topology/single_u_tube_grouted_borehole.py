@@ -46,16 +46,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         seg_length = self.depth / self.num_segments
         seg_inputs = {'length': seg_length,
                       'diameter': self.diameter,
-                      'segment-number': 0,
+                      'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
                       'grout-def-name': bh_def_inputs['grout-def-name'],
                       'pipe-def-name': bh_def_inputs['pipe-def-name']}
 
         for idx in range(self.num_segments):
-            seg_inputs['segment-number'] = idx + 1
+            seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], idx + 1)
             self.segments.append(SingleUTubeGroutedSegment(seg_inputs, ip, op))
 
         # final segment is a pass-through segment that connects the U-tube nodes
-        seg_inputs['segment-number'] = self.num_segments + 1
+        seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], self.num_segments + 1)
         self.segments.append(SingleUTubePassThroughSegment(seg_inputs, ip, op))
 
         # multipole method parameters
@@ -72,7 +72,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.beta = None
 
         # Initialize other parameters
-        self.flow_rate = 0
         self.flow_rate_prev = 0
         self.vol_flow_rate = 0
         self.friction_factor = 0.02
@@ -81,7 +80,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         # report variables
         self.heat_rate = 0
-        self.flow_rate = 0
+        self.heat_rate_bh = 0
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
 
@@ -194,7 +193,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.depth / (self.fluid.get_cp(temperature) * self.flow_rate)) ** 2
+        pt_2 = (self.depth / (self.fluid.get_cp(temperature) * flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -225,8 +224,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         elif flow_rate:
             # check for same conditions as previous call
             if (flow_rate != self.flow_rate_prev) and (temperature != self.update_beta_temp_prev):
-                self.flow_rate_prev = self.flow_rate
-                self.flow_rate = flow_rate
+                self.flow_rate_prev = flow_rate
                 self.update_beta_temp_prev = temperature
                 self.beta = 2 * pi * self.grout.conductivity * self.pipe.calc_resist(flow_rate, temperature)
             return self.beta
@@ -244,10 +242,10 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         time = inputs.time
         time_step = inputs.time_step
         flow_rate = inputs.flow_rate
-        temperature = inputs.temperature
+        inlet_temp = inputs.temperature
 
-        r_12 = self.calc_bh_total_internal_resistance(temperature, flow_rate=flow_rate)
-        r_b = self.calc_bh_average_resistance(temperature, flow_rate=flow_rate)
+        r_12 = self.calc_bh_total_internal_resistance(inlet_temp, flow_rate=flow_rate)
+        r_b = self.calc_bh_average_resistance(inlet_temp, flow_rate=flow_rate)
 
         dc_resist_num = 2 * r_12 * 2 * r_b
         dc_resist_den = 4 * r_b - r_12
@@ -261,7 +259,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         for idx, seg in enumerate(self.segments):
 
             if idx == 0:
-                seg_inputs['inlet-1-temp'] = temperature
+                seg_inputs['inlet-1-temp'] = inlet_temp
                 seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
             elif idx == self.num_segments:
                 seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
@@ -271,7 +269,27 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
             seg.simulate_time_step(time_step, seg_inputs)
 
-        return SimulationResponse(time, time_step, flow_rate, self.segments[0].get_outlet_2_temp())
+        # update report variables
+        self.inlet_temperature = inlet_temp
+        self.outlet_temperature = self.get_outlet_temp()
+        cp = self.fluid.get_cp(inlet_temp)
+        self.heat_rate = flow_rate * cp * (inlet_temp - self.outlet_temperature)
+        self.heat_rate_bh = self.get_heat_rate_bh()
+
+        return SimulationResponse(time, time_step, flow_rate, self.get_outlet_temp())
+
+    def get_outlet_temp(self):
+        return self.segments[0].get_outlet_2_temp()
+
+    def get_heat_rate_bh(self):
+        bh_ht_rate = 0
+        for seg in self.segments:
+            try:
+                bh_ht_rate += seg.heat_rate_bh
+            except AttributeError:
+                # pass-through segment doesn't have this attribute
+                pass
+        return bh_ht_rate
 
     def report_outputs(self) -> dict:
         d = {}
@@ -280,7 +298,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             d = merge_dicts(d, seg.report_outputs())
 
         d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
 

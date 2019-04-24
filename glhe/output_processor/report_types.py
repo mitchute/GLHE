@@ -5,6 +5,7 @@ class ReportTypes(object):
 
     # heat transfer
     HeatRate = 'Heat Rate [W]'
+    HeatRateBH = 'BH Heat Rate [W]'
 
     # flow
     FlowRate = 'Flow Rate [kg/s]'

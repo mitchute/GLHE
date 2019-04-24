@@ -12,7 +12,7 @@ class SingleUTubeGroutedSegment(object):
     Type = ComponentTypes.SegmentSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
-        self.name = 'Seg No. {}'.format(inputs['segment-number'])
+        self.name = inputs['segment-name']
         self.ip = ip
         self.op = op
 
@@ -48,7 +48,7 @@ class SingleUTubeGroutedSegment(object):
         self.inlet_temp_2 = ip.init_temp()
         self.outlet_temp_1 = ip.init_temp()
         self.outlet_temp_2 = ip.init_temp()
-        self.heat_rate = 0
+        self.heat_rate_bh = 0
 
     def calc_grout_volume(self):
         return self.calc_seg_volume() - self.calc_tot_pipe_volume()
@@ -83,12 +83,16 @@ class SingleUTubeGroutedSegment(object):
         c_g_2 = (1 - f) * self.grout.specific_heat * self.grout.density * self.grout_vol
         c_g_2 += self.pipe.specific_heat * self.pipe.density * self.pipe.pipe_wall_vol
 
+        # four-node model
         r[0] = ((t_i_1 - y[0]) / r_f + (y[2] - y[0]) * dz / (r_12 / 2.0) + (y[3] - y[0]) * dz / r_b) / c_f_1
         r[1] = ((t_i_2 - y[1]) / r_f + (y[2] - y[1]) * dz / (r_12 / 2.0) + (y[3] - y[1]) * dz / r_b) / c_f_2
         r[2] = ((y[0] - y[2]) * dz / (r_12 / 2.0) + (y[1] - y[2]) * dz / (r_12 / 2.0)) / c_g_1
         r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (t_b - y[3]) * dz / (r_b / 2.0)) / c_g_2
 
         return r
+
+    def get_heat_rate_bh(self):
+        return (self.y[3] - self.borehole_wall_temp) / (self.bh_resist / 2) * self.length
 
     def get_outlet_1_temp(self):
         return self.y[0]
@@ -109,14 +113,16 @@ class SingleUTubeGroutedSegment(object):
 
         ret = solve_ivp(self.right_hand_side, [0, time_step], self.y)
         self.y = ret.y[:, -1]
+
+        # update report vars
+        self.heat_rate_bh = self.get_heat_rate_bh()
         self.outlet_temp_1 = self.get_outlet_1_temp()
         self.outlet_temp_2 = self.get_outlet_2_temp()
         return self.y
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg1): self.inlet_temp_1,
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg1): self.inlet_temp_1,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg1): self.outlet_temp_1,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg2): self.inlet_temp_2,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg2): self.outlet_temp_2}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg2): self.outlet_temp_2,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh}

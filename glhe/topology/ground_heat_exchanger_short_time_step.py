@@ -28,6 +28,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         # report variables
         self.heat_rate = 0
+        self.heat_rate_bh = 0
         self.flow_rate = 0
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
@@ -112,13 +113,19 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         outlet_temp = self.mix_paths(path_responses)
 
         # update report variables
-        cp = self.fluid.get_cp(inlet_temp)
-
         # TODO: generalize first-law computations everywhere
+        cp = self.fluid.get_cp(inlet_temp)
         self.heat_rate = flow * cp * (inlet_temp - outlet_temp)
+        self.heat_rate_bh = self.get_heat_rate_bh()
         self.inlet_temperature = inputs.temperature
         self.outlet_temperature = outlet_temp
         return SimulationResponse(inputs.time, inputs.time_step, flow, outlet_temp)
+
+    def get_heat_rate_bh(self):
+        bh_ht_rate = 0
+        for path in self.paths:
+            bh_ht_rate += path.get_heat_rate_bh()
+        return bh_ht_rate
 
     def mix_paths(self, responses: list) -> float:
         sum_mdot_cp_temp = 0
@@ -142,6 +149,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
             d = merge_dicts(d, path.report_outputs())
 
         d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
 

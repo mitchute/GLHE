@@ -31,14 +31,26 @@ class Path(SimulationEntryPoint):
         self.outlet_temperature = ip.init_temp()
         self.flow_rate = 0
 
+    def get_heat_rate_bh(self):
+        bh_ht_rate = 0
+        for comp in self.components:
+            try:
+                bh_ht_rate += comp.get_heat_rate_bh()
+            except AttributeError:
+                pass
+        return bh_ht_rate
+
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
 
-        self.inlet_temperature = inputs.temperature
         response = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature)
 
         for comp in self.components:
             response = comp.simulate_time_step(response)
 
+        # update report variables
+        self.flow_rate = inputs.flow_rate
+        self.inlet_temperature = inputs.temperature
+        self.outlet_temperature = response.temperature
         return response
 
     def report_outputs(self) -> dict:
