@@ -92,7 +92,7 @@ class SingleUTubeGroutedSegment(object):
         c_f_2 = c_f_1
 
         # spilt between inner and outer grout layer
-        f = 0.5
+        f = 0.1
         c_g_1 = f * self.grout.specific_heat * self.grout.density * self.grout_vol
         c_g_1 += self.pipe.specific_heat * self.pipe.density * self.pipe.pipe_wall_vol
 

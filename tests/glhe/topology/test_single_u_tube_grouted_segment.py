@@ -15,6 +15,13 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
         d = {
             'fluid': {'fluid-type': 'water'},
 
+            'soil': {
+                "name": "dirt",
+                "conductivity": 2.7,
+                "density": 2500,
+                "specific-heat": 880
+            },
+
             'grout-definitions': [{
                 'name': 'standard grout',
                 'conductivity': 0.744,
