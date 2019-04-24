@@ -3,6 +3,7 @@
 import os
 import sys
 from typing import Union
+import datetime as dt
 
 from glhe.globals.functions import merge_dicts
 from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
@@ -22,6 +23,8 @@ class PlantLoop(object):
 
         :param json_file_path: Path to the JSON input file
         """
+
+        self.start_time = dt.datetime.now()
 
         # process inputs
         self.ip = InputProcessor(json_file_path)
@@ -84,6 +87,8 @@ class PlantLoop(object):
                 break
 
         self.op.write_to_file()
+
+        print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
 
         return True
 
