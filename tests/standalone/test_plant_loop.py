@@ -20,10 +20,7 @@ class TestPlantLoop(unittest.TestCase):
         temp_file = join(temp_dir, 'in.json')
         input_path = norm(join(self.this_file_directory, '..', '..', 'test_files', 'single.json'))
         d = load_json(input_path)
-
-        g_path = norm(join(self.this_file_directory, '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                           'EWT_experimental_g_functions.csv'))
-
+        g_path = norm(join(self.this_file_directory, '..', '..', 'test_files', 'single_g_functions.csv'))
         d['ground-heat-exchanger'][0]['g-function-path'] = g_path
         d['simulation']['output-path'] = temp_dir
         write_json(temp_file, d)
