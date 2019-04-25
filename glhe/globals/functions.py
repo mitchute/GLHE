@@ -1,8 +1,8 @@
 import json
+from math import exp, factorial
 from typing import Union
 
 import numpy as np
-from math import exp, factorial
 
 from glhe.globals.constants import SEC_IN_HOUR
 
@@ -298,7 +298,13 @@ def lower_obj(x):
     if isinstance(x, list):
         return [lower_obj(v) for v in x]
     elif isinstance(x, dict):
-        return dict((k.lower(), lower_obj(v)) for k, v in x.items())
+        d = {}
+        for k, v in x.items():
+            if k.lower() == 'path':
+                d[k.lower()] = v
+            else:
+                d[k.lower()] = lower_obj(v)
+        return d
     elif isinstance(x, str):
         return x.lower()
     else:

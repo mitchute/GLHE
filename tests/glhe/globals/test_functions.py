@@ -1,8 +1,8 @@
 import os
 import tempfile
 import unittest
-
 from math import cos, sin
+
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
@@ -180,7 +180,9 @@ class TestFunctions(unittest.TestCase):
              'Outer Key 2': 2,
              'Nested Obj': {'Inner Key 1': [1, 2.3, 5],
                             'Inner Key 2': 2.635,
-                            'Inner Key 3': ['Red', 'tEd', 2.3]}}
+                            'Inner Key 3': ['Red', 'tEd', 2.3]},
+             'Path': '/this/is/SOME/Path',
+             'NAME': 'My Name'}
 
         ret = lower_obj(d)
 
@@ -191,6 +193,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(d['Nested Obj']['Inner Key 3'][0].lower(), ret['nested obj']['inner key 3'][0])
         self.assertEqual(d['Nested Obj']['Inner Key 3'][1].lower(), ret['nested obj']['inner key 3'][1])
         self.assertEqual(d['Nested Obj']['Inner Key 3'][2], ret['nested obj']['inner key 3'][2])
+        self.assertEqual(d['Path'], ret['path'])
 
     def test_hr_to_sec(self):
         self.assertEqual(hr_to_sec(1), 3600)
