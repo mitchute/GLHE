@@ -19,10 +19,10 @@ cwd = os.getcwd()
 
 class TestPLCompFactory(unittest.TestCase):
 
-    @staticmethod
-    def add_instance():
-        f_path = os.path.dirname(os.path.abspath(__file__))
+    def setUp(self):
+        self.this_file_directory = os.path.dirname(os.path.realpath(__file__))
 
+    def add_instance(self):
         d = {
             "borehole-definitions": [
                 {
@@ -80,8 +80,8 @@ class TestPLCompFactory(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "enhanced",
-                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                                                    'EWT_experimental_g_functions.csv'),
+                    "g-function-path": norm(join(self.this_file_directory, '..', '..', '..', 'validation',
+                                                 'MFRTRT_EWT_g_functions', 'EWT_experimental_g_functions.csv')),
                     "flow-paths": [
                         {
                             "name": "path 1",
@@ -152,14 +152,10 @@ class TestPLCompFactory(unittest.TestCase):
 
         temp_dir = tempfile.mkdtemp()
         temp_file = join(temp_dir, 'in.json')
-        g_path = norm(join(cwd, '..', '..', '..', 'test_files', 'single_g_functions.csv'))
-        d['ground-heat-exchanger'][0]['g-function-path'] = g_path
         d['simulation']['output-path'] = temp_dir
         write_json(temp_file, d)
-
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
-
         return ip, op
 
     def test_add_flow_profile(self):
