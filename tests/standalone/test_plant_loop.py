@@ -16,8 +16,6 @@ class TestPlantLoop(unittest.TestCase):
         self.this_file_directory = os.path.dirname(os.path.realpath(__file__))
 
     def test_simulate(self):
-        print("TEST FILE DIR: {}".format(self.this_file_directory))
-
         temp_dir = tempfile.mkdtemp()
         temp_file = join(temp_dir, 'in.json')
         input_path = norm(join(self.this_file_directory, '..', '..', 'test_files', 'single.json'))
