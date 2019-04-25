@@ -295,12 +295,14 @@ def lower_obj(x):
     :return: output object lower-cased
     """
 
+    ignored_fields = ['path', 'g-function-path']
+
     if isinstance(x, list):
         return [lower_obj(v) for v in x]
     elif isinstance(x, dict):
         d = {}
         for k, v in x.items():
-            if k.lower() == 'path':
+            if k.lower() in ignored_fields:
                 d[k.lower()] = v
             else:
                 d[k.lower()] = lower_obj(v)
