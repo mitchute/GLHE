@@ -54,5 +54,5 @@ class TestImpulseLoad(unittest.TestCase):
     def test_report_outputs(self):
         tst = self.add_instance()
         d = tst.report_outputs()
-        self.assertTrue('PulseLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('PulseLoad:MY NAME:Outlet Temp. [C]' in d.keys())
         self.assertTrue('PulseLoad:MY NAME:Heat Rate [W]' in d.keys())

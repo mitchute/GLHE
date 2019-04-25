@@ -220,7 +220,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         if flow_rate and pipe_resist:
             # can't set both flow rate and pipe resistance simultaneously
-            raise ValueError("'flow_rate' and 'pipe_resist' cannot both be passed.")
+            raise ValueError("'flow_rate' and 'pipe_resist' cannot both be passed.")  # pragma: no cover
         elif flow_rate:
             # check for same conditions as previous call
             if (flow_rate != self.flow_rate_prev) and (temperature != self.update_beta_temp_prev):
@@ -235,7 +235,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             self.beta = 2 * pi * self.grout.conductivity * pipe_resist
             return self.beta
         else:
-            raise ValueError('Must pass flow rate or a pipe resistance.')
+            raise ValueError('Must pass flow rate or a pipe resistance.')  # pragma: no cover
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
 

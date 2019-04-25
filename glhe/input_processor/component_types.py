@@ -5,6 +5,7 @@ class ComponentTypes(object):
     BoreholeSingleUTubeGrouted = 'SingleUTubeBHGrouted'
     ConstantFlow = 'ConstantFlow'
     ConstantLoad = 'ConstantLoad'
+    ConstantTemp = 'ConstantTemp'
     ExternalFlow = 'ExternalFlow'
     ExternalLoad = 'ExternalLoad'
     ExternalTemps = 'ExternalTemps'

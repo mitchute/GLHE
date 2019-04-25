@@ -12,4 +12,4 @@ def make_borehole(inputs, ip, op) -> Union[SingleUTubeGroutedBorehole]:
     if bh_type == 'single-grouted':
         return SingleUTubeGroutedBorehole(inputs, ip, op)
     else:
-        raise KeyError("Borehole: '{}', Name: '{}' is not valid.".format(bh_type, bh_name))
+        raise KeyError("Borehole: '{}', Name: '{}' is not valid.".format(bh_type, bh_name))  # pragma: no cover

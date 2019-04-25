@@ -112,5 +112,5 @@ class TestExternalLoad(unittest.TestCase):
 
         tst = self.add_instance(temp_data)
         d = tst.report_outputs()
-        self.assertTrue('ExternalLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('ExternalLoad:MY NAME:Outlet Temp. [C]' in d.keys())
         self.assertTrue('ExternalLoad:MY NAME:Heat Rate [W]' in d.keys())

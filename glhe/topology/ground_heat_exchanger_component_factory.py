@@ -15,4 +15,4 @@ def make_ghe_component(comp: dict, ip: InputProcessor, op: OutputProcessor) -> S
     elif comp_type == 'borehole':
         return make_borehole(comp, ip, op)
     else:
-        raise KeyError("Component: '{}', Name: '{}' is not valid.".format(comp_type, comp_name))
+        raise KeyError("Component: '{}', Name: '{}' is not valid.".format(comp_type, comp_name))  # pragma: no cover

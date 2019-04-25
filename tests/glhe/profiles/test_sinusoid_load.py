@@ -52,5 +52,5 @@ class TestSinusoidLoad(unittest.TestCase):
     def test_report_output(self):
         tst = self.add_instance()
         d = tst.report_outputs()
-        self.assertTrue('SinusoidLoad:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('SinusoidLoad:MY NAME:Outlet Temp. [C]' in d.keys())
         self.assertTrue('SinusoidLoad:MY NAME:Heat Rate [W]' in d.keys())

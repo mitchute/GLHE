@@ -8,7 +8,7 @@ from glhe.output_processor.report_types import ReportTypes
 
 
 class ConstantTemp(SimulationEntryPoint):
-    Type = ComponentTypes.ConstantFlow
+    Type = ComponentTypes.ConstantTemp
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         SimulationEntryPoint.__init__(self, inputs)

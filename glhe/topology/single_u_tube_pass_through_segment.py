@@ -13,9 +13,6 @@ class SingleUTubePassThroughSegment(object):
         # report variables
         self.temperature = ip.init_temp()
 
-    def get_outlet_1_temp(self):
-        return self.temperature
-
     def get_outlet_2_temp(self):
         return self.temperature
 

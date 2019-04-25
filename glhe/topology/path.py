@@ -24,7 +24,8 @@ class Path(SimulationEntryPoint):
             if comp_type in valid_comp_types:
                 self.components.append(make_ghe_component(comp, ip, op))
             else:
-                raise KeyError("Component type: '{}' is not supported by the {} object.".format(comp_type, self.Type))
+                raise KeyError("Component type: '{}' is not "
+                               "supported by the {} object.".format(comp_type, self.Type))  # pragma: no cover
 
         # report variables
         self.inlet_temperature = ip.init_temp()
@@ -36,8 +37,8 @@ class Path(SimulationEntryPoint):
         for comp in self.components:
             try:
                 bh_ht_rate += comp.get_heat_rate_bh()
-            except AttributeError:
-                pass
+            except AttributeError:  # pragma: no cover
+                pass  # pragma: no cover
         return bh_ht_rate
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:

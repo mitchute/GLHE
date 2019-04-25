@@ -66,4 +66,4 @@ class TestExternalTemps(unittest.TestCase):
     def test_report_outputs(self):
         tst = self.add_instance()
         d = tst.report_outputs()
-        self.assertTrue('ExternalTemps:MY NAME:Outlet Temp [C]' in d.keys())
+        self.assertTrue('ExternalTemps:MY NAME:Outlet Temp. [C]' in d.keys())
