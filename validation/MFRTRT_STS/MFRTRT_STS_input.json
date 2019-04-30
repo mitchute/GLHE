@@ -110,7 +110,7 @@
   },
   "soil": {
     "name": "dirt",
-    "conductivity": 2.7,
+    "conductivity": 2.6,
     "density": 2500,
     "specific-heat": 880
   }

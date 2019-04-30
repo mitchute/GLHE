@@ -18,3 +18,7 @@ class ReportTypes(object):
     InletTemp_Leg2 = 'Inlet Temp. Leg 2 [C]'
     OutletTemp_Leg1 = 'Outlet Temp. Leg 1 [C]'
     OutletTemp_Leg2 = 'Outlet Temp. Leg 2 [C]'
+
+    # resistances
+    BHResist = 'BH Resist. [m-K/W]'
+    BHEffResist = 'BH Eff. Resist. [m-K/W]'

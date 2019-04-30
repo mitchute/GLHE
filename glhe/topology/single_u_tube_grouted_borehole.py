@@ -246,6 +246,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         r_12 = self.calc_bh_total_internal_resistance(inlet_temp, flow_rate=flow_rate)
         r_b = self.calc_bh_average_resistance(inlet_temp, flow_rate=flow_rate)
+        self.calc_bh_effective_resistance_uhf(inlet_temp, flow_rate=flow_rate)
 
         dc_resist_num = 2 * r_12 * 2 * r_b
         dc_resist_den = 4 * r_b - r_12
@@ -300,6 +301,8 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_bh_ave,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHEffResist): self.resist_bh_effective}
 
         return merge_dicts(d, d_self)
