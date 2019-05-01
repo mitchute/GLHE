@@ -1,11 +1,12 @@
 import numpy as np
-from math import log, pi
+from math import pi
 from scipy.integrate import solve_ivp
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
+from glhe.topology.radial_numerical_borehole import RadialNumericalBH
 
 
 class SingleUTubeGroutedSegment(object):
@@ -27,24 +28,26 @@ class SingleUTubeGroutedSegment(object):
         self.diameter = inputs['diameter']
         self.grout_vol = self.calc_grout_volume()
 
+        self.radial_model = RadialNumericalBH()
+
         # six-node model parameters
-        diameter_soil_1 = self.diameter + 0.2
-        diameter_soil_2 = diameter_soil_1 + 0.2
-        k_s = ip.props_mgr.soil.conductivity
-        cp_s = ip.props_mgr.soil.specific_heat
-        rho_s = ip.props_mgr.soil.density
-        vol_s_1 = pi / 4 * (diameter_soil_1 ** 2 - self.diameter ** 2) * self.length
-        vol_s_2 = pi / 4 * (diameter_soil_2 ** 2 - diameter_soil_1 ** 2) * self.length
-        self.resist_s_1 = log(diameter_soil_1 / self.diameter) / (2 * pi * k_s)
-        self.resist_s_2 = log(diameter_soil_2 / diameter_soil_1) / (2 * pi * k_s)
-        self.c_s_1 = rho_s * cp_s * vol_s_1
-        self.c_s_2 = rho_s * cp_s * vol_s_2
+        # diameter_soil_1 = self.diameter + 0.2
+        # diameter_soil_2 = diameter_soil_1 + 0.2
+        # k_s = ip.props_mgr.soil.conductivity
+        # cp_s = ip.props_mgr.soil.specific_heat
+        # rho_s = ip.props_mgr.soil.density
+        # vol_s_1 = pi / 4 * (diameter_soil_1 ** 2 - self.diameter ** 2) * self.length
+        # vol_s_2 = pi / 4 * (diameter_soil_2 ** 2 - diameter_soil_1 ** 2) * self.length
+        # self.resist_s_1 = log(diameter_soil_1 / self.diameter) / (2 * pi * k_s)
+        # self.resist_s_2 = log(diameter_soil_2 / diameter_soil_1) / (2 * pi * k_s)
+        # self.c_s_1 = rho_s * cp_s * vol_s_1
+        # self.c_s_2 = rho_s * cp_s * vol_s_2
 
         # four-node model
-        # self.num_equations = 4
+        self.num_equations = 4
 
         # six-node model
-        self.num_equations = 6
+        # self.num_equations = 6
 
         # computed node temperatures
         self.y = np.full((self.num_equations,), ip.init_temp())
@@ -110,30 +113,30 @@ class SingleUTubeGroutedSegment(object):
 
         # four-node model
         # outer grout node
-        # r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (t_b - y[3]) * dz / (r_b / 2.0)) / c_g_2
+        r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (t_b - y[3]) * dz / (r_b / 2.0)) / c_g_2
 
         # six-node model
         # outer grout node
-        r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (y[4] - y[3]) * dz / (r_b / 2.0)) / c_g_2
+        # r[3] = ((y[0] - y[3]) * dz / r_b + (y[1] - y[3]) * dz / r_b + (y[4] - y[3]) * dz / (r_b / 2.0)) / c_g_2
 
         # borehole wall node
-        r_s_1 = self.resist_s_1
-        c_s_1 = self.c_s_1
-        r[4] = ((y[3] - y[4]) * dz / (r_b / 2.0) + (y[5] - y[4]) * dz / r_s_1) / c_s_1
+        # r_s_1 = self.resist_s_1
+        # c_s_1 = self.c_s_1
+        # r[4] = ((y[3] - y[4]) * dz / (r_b / 2.0) + (y[5] - y[4]) * dz / r_s_1) / c_s_1
 
         # soil node
-        r_s_2 = self.resist_s_2
-        c_s_2 = self.c_s_2
-        r[5] = ((y[4] - y[5]) * dz / r_s_1 + (t_b - y[5]) * dz / r_s_2) / c_s_2
+        # r_s_2 = self.resist_s_2
+        # c_s_2 = self.c_s_2
+        # r[5] = ((y[4] - y[5]) * dz / r_s_1 + (t_b - y[5]) * dz / r_s_2) / c_s_2
 
         return r
 
     def get_heat_rate_bh(self):
         # four-node model
-        # return (self.y[3] - self.boundary_temp) / (self.bh_resist / 2) * self.length
+        return (self.y[3] - self.boundary_temp) / (self.bh_resist / 2) * self.length
 
         # six-node model
-        return (self.y[3] - self.y[4]) / (self.bh_resist / 2) * self.length
+        # return (self.y[3] - self.y[4]) / (self.bh_resist / 2) * self.length
 
     def get_outlet_1_temp(self):
         return self.y[0]
