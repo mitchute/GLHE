@@ -5,6 +5,7 @@ from glhe.profiles.flow_factory import make_flow_profile
 from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.temps_factory import make_temp_profile
 from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
+from glhe.topology.swedish_heat_pump import SwedishHP
 from glhe.topology.pipe import Pipe
 
 
@@ -24,5 +25,7 @@ def make_plant_loop_component(comp: dict, ip: InputProcessor, op: OutputProcesso
         return Pipe(inputs, ip, op)
     elif comp_type == 'temperature-profile':
         return make_temp_profile(inputs, ip, op)
+    elif comp_type == 'swedish-heat-pump':
+        return SwedishHP(inputs, ip, op)
     else:
         raise KeyError("Component: '{}', Name: '{}' is not valid.".format(comp_type, comp_name))

@@ -19,3 +19,4 @@ class ComponentTypes(object):
     SegmentSingleUTubeGrouted = 'SegmentUTubeBHGrouted'
     SinusoidLoad = 'SinusoidLoad'
     SyntheticLoad = 'SyntheticLoad'
+    SwedishHP = 'SwedishHP'
