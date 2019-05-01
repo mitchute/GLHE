@@ -6,7 +6,6 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-from glhe.topology.radial_numerical_borehole import RadialNumericalBH
 
 
 class SingleUTubeGroutedSegment(object):
@@ -27,8 +26,6 @@ class SingleUTubeGroutedSegment(object):
         self.length = inputs['length']
         self.diameter = inputs['diameter']
         self.grout_vol = self.calc_grout_volume()
-
-        self.radial_model = RadialNumericalBH()
 
         # six-node model parameters
         # diameter_soil_1 = self.diameter + 0.2

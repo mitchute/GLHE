@@ -47,7 +47,7 @@ class TestRadialNumericalBH(unittest.TestCase):
         tol = 0.00001
         for idx, cell in enumerate(tst.cells):
             vol = pi * (cell.outer_radius ** 2 - cell.inner_radius ** 2)
-            self.assertAlmostEquals(cell.volume, vol, delta=tol)
+            self.assertAlmostEqual(cell.volume, vol, delta=tol)
 
     def test_calc_sts_g_functions(self):
 

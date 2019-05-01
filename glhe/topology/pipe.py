@@ -61,6 +61,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
+        self.conv_resist = 0
         self.num_pipe_cells = 16  # recommendation by Skoglund
         self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
         self.inlet_temps = deque([ip.init_temp()])
@@ -256,7 +257,8 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re, temp)
-        return 1 / (nu * pi * self.fluid.get_k(temp))
+        self.conv_resist = 1 / (nu * pi * self.fluid.get_k(temp))
+        return self.conv_resist
 
     def calc_resist(self, mass_flow_rate: float, temp: float):
         """
