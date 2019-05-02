@@ -24,7 +24,7 @@ class TestRadialNumericalBH(unittest.TestCase):
              'soil-conductivity': 2.432,
              'soil-specific-heat': 1562,
              'soil-density': 1500,
-             'borehole-depth': 100}
+             'borehole-length': 100}
 
         return RadialNumericalBH(d)
 

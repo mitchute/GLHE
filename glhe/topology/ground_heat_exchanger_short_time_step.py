@@ -1,3 +1,8 @@
+# import numpy as np
+# import pygfunction as gt
+# from math import log
+
+# from glhe.globals.constants import SEC_IN_HOUR
 from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
@@ -5,9 +10,10 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
-from glhe.profiles.constant_flow import ConstantFlow
-from glhe.profiles.constant_load import ConstantLoad
 from glhe.topology.path import Path
+
+
+# from glhe.topology.radial_numerical_borehole import RadialNumericalBH
 
 
 class GroundHeatExchangerSTS(SimulationEntryPoint):
@@ -18,13 +24,27 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
-        # fluid instance
+        # props instances
         self.fluid = ip.props_mgr.fluid
+        self.soil = ip.props_mgr.soil
 
         # init paths
         self.paths = []
         for path in inputs['flow-paths']:
             self.paths.append(Path(path, ip, op))
+
+        # some stats about the bh field
+        self.h = self.calc_bh_ave_length()
+        self.num_bh = self.count_bhs()
+
+        # generate the g-function data
+        # self.generate_g_functions()
+
+        # load aggregation method
+        # ts = self.h ** 2 / (9 * self.soil.diffusivity)
+        # la_inputs = merge_dicts(inputs['load-aggregation'], {'g-function-path': inputs['g-function-path'],
+        #                                                      'time-scale': ts})
+        # self.load_agg = make_agg_method(la_inputs, ip)
 
         # report variables
         self.heat_rate = 0
@@ -33,17 +53,88 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
 
-    def calc_ave_depth(self):
+    # def generate_g_functions(self):
+    #     # local variables for later use
+    #     ave_pipe_outer_dia = 0
+    #     ave_pipe_inner_dia = 0
+    #     ave_bh_dia = 0
+    #     ave_bh_resist = 0
+    #     ave_pipe_conv_resist = 0
+    #     ave_pipe_cp = 0
+    #     ave_pipe_rho = 0
+    #     ave_grout_cp = 0
+    #     ave_grout_rho = 0
+    #     ave_h = 0
+    #
+    #     # generate long time-step g-functions
+    #     # these are Eskilson-type g-functions for computing the bh wall temperature rise
+    #     boreholes = []
+    #     for idx_path, path in enumerate(self.paths):
+    #         for idx_comp, comp in enumerate(path.components):
+    #             if comp.Type == ComponentTypes.BoreholeSingleUTubeGrouted:
+    #                 # build out borehole field
+    #                 h = comp.h
+    #                 d = comp.location.z
+    #                 r_b = comp.diameter / 2
+    #                 x = comp.location.x
+    #                 y = comp.location.y
+    #                 boreholes.append(gt.boreholes.Borehole(h, d, r_b, x, y))
+    #
+    #                 # log average stats
+    #                 temperature = 20
+    #                 flow_rate = 0.2
+    #                 ave_pipe_outer_dia += comp.pipe.outer_diameter
+    #                 ave_pipe_inner_dia += comp.pipe.inner_diameter
+    #                 ave_bh_dia += comp.diameter
+    #                 ave_bh_resist += comp.calc_bh_average_resistance(temperature=temperature, flow_rate=flow_rate)
+    #                 ave_pipe_conv_resist += comp.pipe.calc_conv_resist(flow_rate=flow_rate, temperature=temperature)
+    #                 ave_pipe_cp += comp.pipe.specific_heat
+    #                 ave_pipe_rho += comp.pipe.density
+    #                 ave_grout_cp += comp.grout.specific_heat
+    #                 ave_grout_rho += comp.grout.density
+    #                 ave_h += comp.h
+    #
+    #     # generate lts g-functions using pygfunction
+    #     start_time = SEC_IN_HOUR
+    #     end_time = self.ip.input_dict['simulation']['runtime']
+    #     ts = self.h ** 2 / (9 * self.soil.diffusivity)
+    #     lntts_s = log(start_time / ts)
+    #     lntts_e = log(end_time / ts)
+    #     lntts_lts = np.linspace(lntts_s, lntts_e, num=30)
+    #     times = np.exp(lntts_lts) * ts
+    #     g_lts = gt.gfunction.uniform_temperature(boreholes, times, self.soil.diffusivity)
+    #
+    #     # generate sts g-functions
+    #     d_sts = {'pipe-outer-diameter': ave_pipe_outer_dia,
+    #              'pipe-inner-diameter': ave_pipe_inner_dia,
+    #              'borehole-diameter': ave_bh_dia,
+    #              'borehole-resistance': ave_bh_resist,
+    #              'convection-resistance': ave_pipe_conv_resist,
+    #              'fluid-specific-heat': self.fluid.get_cp(20),
+    #              'fluid-density': self.fluid.get_rho(20),
+    #              'pipe-specific-heat': ave_pipe_cp,
+    #              'pipe-density': ave_pipe_rho,
+    #              'grout-specific-heat': ave_grout_cp,
+    #              'grout-density': ave_grout_rho,
+    #              'soil-conductivity': self.soil.conductivity,
+    #              'soil-specific-heat': self.soil.specific_heat,
+    #              'soil-density': self.soil.density,
+    #              'borehole-length': ave_h}
+    #
+    #     rn_model = RadialNumericalBH(d_sts)
+    #     lntts_sts, g_sts = rn_model.calc_sts_g_functions(calculate_at_bh_wall=True)
+
+    def calc_bh_ave_length(self):
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
-        ave_depth = 0
+        ave_length = 0
         count = 0
         for path in self.paths:
             for comp in path.components:
                 if comp.Type in valid_bh_types:
-                    ave_depth += comp.depth
+                    ave_length += comp.h
                     count += 1
 
-        return ave_depth / count
+        return ave_length / count
 
     def count_bhs(self):
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
@@ -54,50 +145,6 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
                     count += 1
 
         return count
-
-    def generate_sts_response(self):
-
-        # output processor for the STS g-functions
-        sts_op = OutputProcessor(self.op.output_dir, 'out_sts.csv')
-
-        # TODO: figure out how to set flow rate(s)
-        # TODO: dido, but for the load
-
-        # load object
-        lp_inputs = {'name': 'load-4000', 'load-profile-type': 'constant', 'value': 4000}
-        sts_load = ConstantLoad(lp_inputs, self.ip, sts_op)
-
-        # flow object
-        lf_inputs = {'name': 'flow-0.3', 'flow-profile-type': 'constant', 'value': 0.3}
-        sts_flow = ConstantFlow(lf_inputs, self.ip, sts_op)
-
-        # TODO: how to set these for arbitrary GHE
-        # sim time parameters
-        current_sim_time = 0
-        time_step = 5
-        end_sim_time = 14400
-
-        # log initial state
-        d_out = {'Elapsed Time [s]': current_sim_time}
-        d_out = merge_dicts(d_out, self.report_outputs())
-        d_out = merge_dicts(d_out, sts_load.report_outputs())
-        sts_op.collect_output(d_out)
-
-        response = SimulationResponse(current_sim_time, time_step, 0, self.ip.init_temp())
-        while True:
-            response = sts_load.simulate_time_step(response)
-            response = sts_flow.simulate_time_step(response)
-            response = self.simulate_time_step(response)
-            current_sim_time += time_step
-            d_out = {'Elapsed Time [s]': current_sim_time}
-            d_out = merge_dicts(d_out, self.report_outputs())
-            d_out = merge_dicts(d_out, sts_load.report_outputs())
-            sts_op.collect_output(d_out)
-
-            if current_sim_time >= end_sim_time:
-                break
-
-        sts_op.write_to_file()
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         inlet_temp = inputs.temperature
@@ -143,7 +190,6 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         return sum_mdot_cp_temp / (sum_mdot * ave_cp)
 
     def report_outputs(self) -> dict:
-
         d = {}
         for path in self.paths:
             d = merge_dicts(d, path.report_outputs())

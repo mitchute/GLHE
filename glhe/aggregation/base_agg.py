@@ -11,10 +11,15 @@ cwd = os.getcwd()
 
 class BaseAgg(ABC):
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: dict):
         # g-function values
-        path = norm(join(cwd, inputs['g-function-path']))
-        data = np.genfromtxt(path, delimiter=',')
+        if 'g-function-path' in inputs:
+            path = norm(join(cwd, inputs['g-function-path']))
+            data = np.genfromtxt(path, delimiter=',')
+        elif 'lntts' in inputs:
+            data = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
+        else:
+            raise KeyError('g-function data not found.')
         self.interp_g = interp1d(data[:, 0], data[:, 1], fill_value='extrapolate')
         self.ts = inputs['time-scale']
 

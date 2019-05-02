@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
       "borehole-type": {"type": "string"},
-      "depth": {"type": "number"},
+      "length": {"type": "number"},
       "diameter": {"type": "number"},
       "grout-def-name": {"type": "string"},
       "name": {"type": "string"},
@@ -12,7 +12,7 @@
       "segments": {"type": "number"},
       "shank-spacing": {"type": "number"}
     },
-    "required" : ["borehole-type", "depth", "diameter", "grout-def-name",
+    "required" : ["borehole-type", "length", "diameter", "grout-def-name",
                   "name", "pipe-def-name", "segments", "shank-spacing"],
     "additionalProperties" : false
   }

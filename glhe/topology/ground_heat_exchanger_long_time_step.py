@@ -19,14 +19,12 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
-        # fluid instance
+        # props instances
         self.fluid = ip.props_mgr.fluid
-
-        # soil instance
         self.soil = ip.props_mgr.soil
 
-        # geometry and other configs
-        self.h = inputs['depth']
+        # geometry and other config parameters needed externally
+        self.h = inputs['length']
         self.num_bh = inputs['number-boreholes']
 
         # load aggregation method
@@ -53,6 +51,51 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.heat_rate = 0
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
+
+    # TODO: this will have to exercise the STS model to generate the EWT g-functions
+    # def generate_sts_response(self):
+    #
+    #     # output processor for the STS g-functions
+    #     sts_op = OutputProcessor(self.op.output_dir, 'out_sts.csv')
+    #
+    #     # TODO: figure out how to set flow rate(s)
+    #     # TODO: dido, but for the load
+    #
+    #     # load object
+    #     lp_inputs = {'name': 'load-4000', 'load-profile-type': 'constant', 'value': 4000}
+    #     sts_load = ConstantLoad(lp_inputs, self.ip, sts_op)
+    #
+    #     # flow object
+    #     lf_inputs = {'name': 'flow-0.3', 'flow-profile-type': 'constant', 'value': 0.3}
+    #     sts_flow = ConstantFlow(lf_inputs, self.ip, sts_op)
+    #
+    #     # TODO: how to set these for arbitrary GHE
+    #     # sim time parameters
+    #     current_sim_time = 0
+    #     time_step = 5
+    #     end_sim_time = 14400
+    #
+    #     # log initial state
+    #     d_out = {'Elapsed Time [s]': current_sim_time}
+    #     d_out = merge_dicts(d_out, self.report_outputs())
+    #     d_out = merge_dicts(d_out, sts_load.report_outputs())
+    #     sts_op.collect_output(d_out)
+    #
+    #     response = SimulationResponse(current_sim_time, time_step, 0, self.ip.init_temp())
+    #     while True:
+    #         response = sts_load.simulate_time_step(response)
+    #         response = sts_flow.simulate_time_step(response)
+    #         response = self.simulate_time_step(response)
+    #         current_sim_time += time_step
+    #         d_out = {'Elapsed Time [s]': current_sim_time}
+    #         d_out = merge_dicts(d_out, self.report_outputs())
+    #         d_out = merge_dicts(d_out, sts_load.report_outputs())
+    #         sts_op.collect_output(d_out)
+    #
+    #         if current_sim_time >= end_sim_time:
+    #             break
+    #
+    #     sts_op.write_to_file()
 
     def simulate_time_step(self, inputs: SimulationResponse):
         # inputs from upstream component

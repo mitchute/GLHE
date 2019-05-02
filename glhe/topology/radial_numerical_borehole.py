@@ -197,9 +197,9 @@ class RadialNumericalBH(object):
         self.bh_resist = inputs['borehole-resistance']
         self.c_0 = 2 * pi * inputs['soil-conductivity']
         soil_diffusivity = inputs['soil-conductivity'] / (inputs['soil-density'] * inputs['soil-specific-heat'])
-        self.t_s = inputs['borehole-depth'] ** 2 / (9 * soil_diffusivity)
+        self.t_s = inputs['borehole-length'] ** 2 / (9 * soil_diffusivity)
 
-    def calc_sts_g_functions(self, calculate_at_bh_wall=False):
+    def calc_sts_g_functions(self, final_time=SEC_IN_DAY, calculate_at_bh_wall=False) -> tuple:
 
         g = []
         lntts = []
@@ -214,7 +214,7 @@ class RadialNumericalBH(object):
 
         time = 0
         time_step = 120
-        final_time = SEC_IN_DAY
+        final_time = final_time
         num_cells = len(self.cells)
 
         while True:

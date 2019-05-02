@@ -41,7 +41,7 @@ class TestInputProcessor(unittest.TestCase):
         d = {'borehole-definitions': [{
             'borehole-type': 'single-grouted',
             'name': 'borehole type 1',
-            'depth': 100,
+            'length': 100,
             'diameter': 0.1099,
             'grout-def-name': 'standard grout',
             'pipe-def-name': '32 mm SDR-11 HDPE',

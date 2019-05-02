@@ -62,7 +62,7 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        inputs = {'wall-temperature': 20,
+        inputs = {'boundary-temperature': 20,
                   'inlet-1-temp': 30,
                   'inlet-2-temp': 25,
                   'flow-rate': 0.2,

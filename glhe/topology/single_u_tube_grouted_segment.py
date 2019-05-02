@@ -142,7 +142,7 @@ class SingleUTubeGroutedSegment(object):
         return self.y[1]
 
     def simulate_time_step(self, time_step: int, inputs: dict) -> np.ndarray:
-        self.boundary_temp = inputs['wall-temperature']
+        self.boundary_temp = inputs['boundary-temperature']
         self.inlet_temp_1 = inputs['inlet-1-temp']
         self.inlet_temp_2 = inputs['inlet-2-temp']
         self.flow_rate = inputs['flow-rate']

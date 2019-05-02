@@ -18,9 +18,9 @@ class GroundHeatExchanger(SimulationEntryPoint):
         self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
 
         # init g-function model
-        ave_depth = self.sts_ghe.calc_ave_depth()
-        num_bh = self.sts_ghe.count_bhs()
-        lts_inputs = merge_dicts(inputs, {'depth': ave_depth, 'number-boreholes': num_bh})
+        self.sts_ghe.h = self.sts_ghe.calc_bh_ave_length()
+        self.sts_ghe.num_bh = self.sts_ghe.count_bhs()
+        lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh})
         self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
 
         # report variables

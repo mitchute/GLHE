@@ -36,7 +36,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             'borehole-definitions': [{
                 'borehole-type': 'single-grouted',
                 'name': 'borehole type 1',
-                'depth': 76.2,
+                'length': 76.2,
                 'diameter': inputs['radius'] * 2,
                 'grout-def-name': 'standard grout',
                 'pipe-def-name': '32 mm SDR-11 HDPE',
@@ -69,7 +69,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
 
     def test_init(self):
         tst = self.add_instance()
-        self.assertEqual(tst.depth, 76.2)
+        self.assertEqual(tst.h, 76.2)
         self.assertEqual(tst.diameter, 0.096)
         self.assertEqual(tst.grout.conductivity, 0.6)
         self.assertEqual(tst.grout.density, 1000)

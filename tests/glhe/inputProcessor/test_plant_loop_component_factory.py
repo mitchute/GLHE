@@ -27,7 +27,7 @@ class TestPLCompFactory(unittest.TestCase):
             "borehole-definitions": [
                 {
                     "borehole-type": "single-grouted",
-                    "depth": 76.2,
+                    "length": 76.2,
                     "diameter": 0.114,
                     "grout-def-name": "standard grout",
                     "name": "borehole type 1",

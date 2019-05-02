@@ -7,9 +7,15 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-from glhe.topology.radial_numerical_borehole import RadialNumericalBH
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
+
+
+class Location(object):
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
 
 
 class SingleUTubeGroutedBorehole(SimulationEntryPoint):
@@ -28,23 +34,26 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
 
         # init geometry
-        self.depth = bh_def_inputs['depth']
+        self.h = bh_def_inputs['length']
         self.diameter = bh_def_inputs['diameter']
         self.radius = self.diameter / 2
         self.shank_space = bh_def_inputs['shank-spacing']
+
+        # bh location
+        self.location = Location(bh_inputs['location']['x'], bh_inputs['location']['y'], bh_inputs['location']['z'])
 
         # init grout
         self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
 
         # init pipes
         self.num_pipes = 2
-        pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.depth}
+        pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.h}
         self.pipe = Pipe(pipe_inputs, ip, op)
 
         # init segments
         self.segments = []
         self.num_segments = bh_def_inputs['segments']
-        seg_length = self.depth / self.num_segments
+        seg_length = self.h / self.num_segments
         seg_inputs = {'length': seg_length,
                       'diameter': self.diameter,
                       'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
@@ -77,11 +86,10 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.vol_flow_rate = 0
         self.friction_factor = 0.02
         self.update_beta_temp_prev = 0
-        self.wall_temperature = ip.init_temp()
 
         # radial-numerical model
-        self.rn_model = None
         self.rn_model_ready = False
+        self.la_method = None
 
         # report variables
         self.heat_rate = 0
@@ -198,7 +206,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.depth / (self.fluid.get_cp(temperature) * flow_rate)) ** 2
+        pt_2 = (self.h / (self.fluid.get_cp(temperature) * flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -242,25 +250,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         else:
             raise ValueError('Must pass flow rate or a pipe resistance.')  # pragma: no cover
 
-    def init_rn_model(self):
-        d = {'pipe-outer-diameter': self.pipe.outer_diameter,
-             'pipe-inner-diameter': self.pipe.inner_diameter,
-             'borehole-diameter': self.diameter,
-             'borehole-resistance': self.resist_bh_ave,
-             'convection-resistance': self.pipe.conv_resist,
-             'fluid-specific-heat': self.fluid.get_cp(20),
-             'fluid-density': self.fluid.get_rho(20),
-             'pipe-specific-heat': self.pipe.specific_heat,
-             'pipe-density': self.pipe.specific_heat,
-             'grout-specific-heat': self.grout.specific_heat,
-             'grout-density': self.grout.density,
-             'soil-conductivity': self.soil.conductivity,
-             'soil-specific-heat': self.soil.specific_heat,
-             'soil-density': self.soil.density,
-             'borehole-depth': self.depth}
-
-        return RadialNumericalBH(d)
-
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
 
         time = inputs.time
@@ -271,15 +260,12 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         r_12 = self.calc_bh_total_internal_resistance(inlet_temp, flow_rate=flow_rate)
         r_b = self.calc_bh_average_resistance(inlet_temp, flow_rate=flow_rate)
 
-        if not self.rn_model_ready:
-            self.rn_model = self.init_rn_model()
-            self.rn_model_ready = True
-
         dc_resist_num = 2 * r_12 * 2 * r_b
         dc_resist_den = 4 * r_b - r_12
         dc_resist = dc_resist_num / dc_resist_den
 
-        seg_inputs = {'wall-temperature': self.wall_temperature,
+        # TODO: don't forget to update boundary temp
+        seg_inputs = {'boundary-temperature': 20,
                       'rb': r_b,
                       'flow-rate': flow_rate,
                       'dc-resist': dc_resist}

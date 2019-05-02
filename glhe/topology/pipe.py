@@ -231,7 +231,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
         return log(self.outer_diameter / self.inner_diameter) / (2 * pi * self.conductivity)
 
-    def calc_conv_resist(self, flow_rate: float, temp: float):
+    def calc_conv_resist(self, flow_rate: float, temperature: float):
         """
         Calculates the convection resistance using Gnielinski and Petukov, in [k/(W/m)]
 
@@ -239,28 +239,28 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         International Chemical Engineering 16(1976), pp. 359-368.
 
         :param flow_rate: mass flow rate, kg/s
-        :param temp: temperature, C
+        :param temperature: temperature, C
         :return convection resistance, K/(W/m)
         """
 
         low_reynolds = 2000
         high_reynolds = 4000
 
-        re = self.m_dot_to_re(flow_rate, temp)
+        re = self.m_dot_to_re(flow_rate, temperature)
 
         if re < low_reynolds:
             nu = self.laminar_nusselt()
         elif low_reynolds <= re < high_reynolds:
             nu_low = self.laminar_nusselt()
-            nu_high = self.turbulent_nusselt(re, temp)
+            nu_high = self.turbulent_nusselt(re, temperature)
             sigma = smoothing_function(re, a=3000, b=150)
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
-            nu = self.turbulent_nusselt(re, temp)
-        self.conv_resist = 1 / (nu * pi * self.fluid.get_k(temp))
+            nu = self.turbulent_nusselt(re, temperature)
+        self.conv_resist = 1 / (nu * pi * self.fluid.get_k(temperature))
         return self.conv_resist
 
-    def calc_resist(self, mass_flow_rate: float, temp: float):
+    def calc_resist(self, flow_rate: float, temperature: float):
         """
         Calculates the combined conduction and convection pipe resistance
 
@@ -270,7 +270,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         Equation 3
         """
 
-        self.resist_pipe = self.calc_conv_resist(mass_flow_rate, temp) + self.calc_cond_resist()
+        self.resist_pipe = self.calc_conv_resist(flow_rate, temperature) + self.calc_cond_resist()
         return self.resist_pipe
 
     @staticmethod
@@ -283,7 +283,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
         return 4.01
 
-    def turbulent_nusselt(self, re: float, temp: float):
+    def turbulent_nusselt(self, re: float, temperature: float):
         """
         Turbulent Nusselt number for smooth pipes
 
@@ -291,12 +291,12 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         International Chemical Engineering 16(1976), pp. 359-368.
 
         :param re: Reynolds number
-        :param temp: Temperature, C
+        :param temperature: Temperature, C
         :return: Nusselt number
         """
 
         f = self.calc_friction_factor(re)
-        pr = self.fluid.get_pr(temp)
+        pr = self.fluid.get_pr(temperature)
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
     @staticmethod
