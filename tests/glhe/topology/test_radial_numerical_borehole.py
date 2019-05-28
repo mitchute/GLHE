@@ -41,7 +41,7 @@ class TestRadialNumericalBH(unittest.TestCase):
 
         # temp check
         for idx, cell in enumerate(tst.cells):
-            self.assertEqual(cell.temperature, 20)
+            self.assertEqual(cell.get_temp, 20)
 
         # volume check
         tol = 0.00001

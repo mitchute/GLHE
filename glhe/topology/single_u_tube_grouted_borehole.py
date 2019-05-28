@@ -256,6 +256,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         time_step = inputs.time_step
         flow_rate = inputs.flow_rate
         inlet_temp = inputs.temperature
+        bh_wall_temp = inputs.bh_wall_temp
 
         r_12 = self.calc_bh_total_internal_resistance(inlet_temp, flow_rate=flow_rate)
         r_b = self.calc_bh_average_resistance(inlet_temp, flow_rate=flow_rate)
@@ -264,8 +265,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         dc_resist_den = 4 * r_b - r_12
         dc_resist = dc_resist_num / dc_resist_den
 
-        # TODO: don't forget to update boundary temp
-        seg_inputs = {'boundary-temperature': 20,
+        seg_inputs = {'boundary-temperature': bh_wall_temp,
                       'rb': r_b,
                       'flow-rate': flow_rate,
                       'dc-resist': dc_resist}

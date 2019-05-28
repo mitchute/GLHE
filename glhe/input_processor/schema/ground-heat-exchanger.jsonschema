@@ -9,9 +9,6 @@
       "simulation-mode": {
         "type": "string"
       },
-      "g-function-path": {
-        "type": "string"
-      },
       "load-aggregation": {
         "type": "object",
         "properties": {

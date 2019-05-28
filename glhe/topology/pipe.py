@@ -146,7 +146,17 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # save outlet temp
         self.outlet_temperature = self.cell_temps[-1]
 
-        return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
+        if inputs.bh_wall_temp:
+            return SimulationResponse(inputs.time,
+                                      inputs.time_step,
+                                      inputs.flow_rate,
+                                      self.outlet_temperature,
+                                      inputs.bh_wall_temp)
+        else:
+            return SimulationResponse(inputs.time,
+                                      inputs.time_step,
+                                      inputs.flow_rate,
+                                      self.outlet_temperature)
 
     def plug_flow_outlet_temp(self, time):
         """

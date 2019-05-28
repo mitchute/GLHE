@@ -55,7 +55,6 @@
     {
       "name": "GHE 1",
       "simulation-mode": "direct",
-      "g-function-path": "../studies/MFRTRT_EWT_g_functions/EWT_experimental_g_functions.csv",
       "flow-paths": [
         {
           "name": "path 1",
@@ -69,7 +68,7 @@
       ],
       "load-aggregation": {
         "method": "dynamic",
-        "expansion-rate": 1.5,
+        "expansion-rate": 1.62,
         "number-bins-per-level": 9
       }
     }
@@ -88,7 +87,7 @@
     "name": "Basic GLHE",
     "initial-temperature": 16.1,
     "time-step": 10,
-    "runtime": 14400
+    "runtime": 7200
   },
   "topology": {
     "demand-side": [

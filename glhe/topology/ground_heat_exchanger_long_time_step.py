@@ -29,7 +29,8 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # load aggregation method
         ts = self.h ** 2 / (9 * self.soil.diffusivity)
-        la_inputs = merge_dicts(inputs['load-aggregation'], {'g-function-path': inputs['g-function-path'],
+        la_inputs = merge_dicts(inputs['load-aggregation'], {'lntts': inputs['lntts'],
+                                                             'g-values': inputs['g-values'],
                                                              'time-scale': ts})
         self.load_agg = make_agg_method(la_inputs, ip)
 

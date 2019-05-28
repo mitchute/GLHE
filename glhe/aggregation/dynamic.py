@@ -27,7 +27,7 @@ class Dynamic(BaseAgg):
         try:
             self.exp_rate = inputs['expansion-rate']
         except KeyError:  # pragma: no cover
-            self.exp_rate = 1.5  # pragma: no cover
+            self.exp_rate = 1.62  # pragma: no cover
 
         # set the number of bins per level. apply default if needed.
         try:
@@ -117,3 +117,25 @@ class Dynamic(BaseAgg):
         # convolution of delta_q and the g-function values
         hist = float(np.dot(dq, g[:-1]) - q_prev * g_c)
         return float(g_c), hist
+
+    def temperature_rise(self, time: int, time_step: int):
+
+        if time == 0:
+            return 0
+
+        # compute temporal superposition
+        # this includes all thermal history before the present time
+        lts_q = self.energy / self.dts
+        sts_q = self.sub_hr.energy / self.sub_hr.dts
+        q = np.concatenate((lts_q, sts_q))
+        dq = np.diff(q, prepend=0)
+
+        # g-function values
+        dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
+        times = np.flipud(np.cumsum(np.flipud(dts)))
+        lntts = np.log(times / self.ts)
+        g = self.interp_g(lntts)
+
+        # convolution of delta_q and the g-function values
+        return float(np.dot(dq, g[:-1]))
+

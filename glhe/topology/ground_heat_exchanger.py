@@ -20,7 +20,8 @@ class GroundHeatExchanger(SimulationEntryPoint):
         # init g-function model
         self.sts_ghe.h = self.sts_ghe.calc_bh_ave_length()
         self.sts_ghe.num_bh = self.sts_ghe.count_bhs()
-        lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh})
+        lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,
+                                          'lntts': self.sts_ghe.lntts, 'g-values': self.sts_ghe.g})
         self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
 
         # report variables
@@ -35,7 +36,6 @@ class GroundHeatExchanger(SimulationEntryPoint):
             self.simulate_time_step = self.lts_ghe.simulate_time_step
             self.report_outputs = self.lts_ghe.report_outputs
         elif self.sim_mode == 'direct':
-            # TODO: need to update boundary temperature
             self.simulate_time_step = self.sts_ghe.simulate_time_step
             self.report_outputs = self.sts_ghe.report_outputs
         else:

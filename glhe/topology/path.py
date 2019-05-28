@@ -43,7 +43,11 @@ class Path(SimulationEntryPoint):
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
 
-        response = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature)
+        if inputs.bh_wall_temp:
+            response = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature,
+                                          inputs.bh_wall_temp)
+        else:
+            response = SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, inputs.temperature)
 
         for comp in self.components:
             response = comp.simulate_time_step(response)
