@@ -1,0 +1,116 @@
+{
+  "borehole-definitions": [
+    {
+      "borehole-type": "single-grouted",
+      "length": 76.2,
+      "diameter": 0.114,
+      "grout-def-name": "standard grout",
+      "name": "borehole type 1",
+      "pipe-def-name": "26 mm SDR-11 HDPE",
+      "segments": 10,
+      "shank-spacing": 0.0469
+    }
+  ],
+  "borehole": [
+    {
+      "name": "bh 1",
+      "borehole-def-name": "borehole type 1",
+      "location": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
+  "flow-profile": [
+    {
+      "name": "external flow",
+      "flow-profile-type": "external",
+      "path": ""
+    }
+  ],
+  "temperature-profile": [
+    {
+      "name": "external temperature",
+      "temperature-profile-type": "external",
+      "path": ""
+    }
+  ],
+  "fluid": {
+    "fluid-type": "water"
+  },
+  "ground-temperature-model": {
+    "ground-temperature-model-type": "constant",
+    "temperature": 16.1
+  },
+  "grout-definitions": [
+    {
+      "name": "standard grout",
+      "conductivity": 0.85,
+      "density": 2500,
+      "specific-heat": 1560
+    }
+  ],
+  "ground-heat-exchanger": [
+    {
+      "name": "GHE 1",
+      "simulation-mode": "direct",
+      "flow-paths": [
+        {
+          "name": "path 1",
+          "components": [
+            {
+              "comp-type": "borehole",
+              "name": "bh 1"
+            }
+          ]
+        }
+      ],
+      "load-aggregation": {
+        "method": "dynamic",
+        "expansion-rate": 1.62,
+        "number-bins-per-level": 9
+      }
+    }
+  ],
+  "pipe-definitions": [
+    {
+      "name": "26 mm SDR-11 HDPE",
+      "outer-diameter": 0.0267,
+      "inner-diameter": 0.0218,
+      "conductivity": 0.39,
+      "density": 950,
+      "specific-heat": 1900
+    }
+  ],
+  "simulation": {
+    "name": "Basic GLHE",
+    "initial-temperature": 16.1,
+    "time-step": 10,
+    "runtime": 7200
+  },
+  "topology": {
+    "demand-side": [
+      {
+        "comp-type": "flow-profile",
+        "name": "external flow"
+      },
+      {
+        "comp-type": "temperature-profile",
+        "name": "external temperature"
+      }
+    ],
+    "supply-side": [
+      {
+        "comp-type": "ground-heat-exchanger",
+        "name": "GHE 1"
+      }
+    ]
+  },
+  "soil": {
+    "name": "dirt",
+    "conductivity": 2.6,
+    "density": 2500,
+    "specific-heat": 880
+  }
+}

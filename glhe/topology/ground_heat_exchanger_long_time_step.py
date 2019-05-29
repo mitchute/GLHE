@@ -34,10 +34,6 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
                                                              'time-scale': ts})
         self.load_agg = make_agg_method(la_inputs, ip)
 
-        # ground temperature model
-        self.gtm = make_ground_temp_model(ip.input_dict['ground-temperature-model'])
-        self.temp_g = self.gtm.get_temp()
-
         # method constant
         k_s = self.soil.conductivity
         self.c_0 = 1 / (2 * pi * k_s)
@@ -53,60 +49,14 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
 
-    # TODO: this will have to exercise the STS model to generate the EWT g-functions
-    # def generate_sts_response(self):
-    #
-    #     # output processor for the STS g-functions
-    #     sts_op = OutputProcessor(self.op.output_dir, 'out_sts.csv')
-    #
-    #     # TODO: figure out how to set flow rate(s)
-    #     # TODO: dido, but for the load
-    #
-    #     # load object
-    #     lp_inputs = {'name': 'load-4000', 'load-profile-type': 'constant', 'value': 4000}
-    #     sts_load = ConstantLoad(lp_inputs, self.ip, sts_op)
-    #
-    #     # flow object
-    #     lf_inputs = {'name': 'flow-0.3', 'flow-profile-type': 'constant', 'value': 0.3}
-    #     sts_flow = ConstantFlow(lf_inputs, self.ip, sts_op)
-    #
-    #     # TODO: how to set these for arbitrary GHE
-    #     # sim time parameters
-    #     current_sim_time = 0
-    #     time_step = 5
-    #     end_sim_time = 14400
-    #
-    #     # log initial state
-    #     d_out = {'Elapsed Time [s]': current_sim_time}
-    #     d_out = merge_dicts(d_out, self.report_outputs())
-    #     d_out = merge_dicts(d_out, sts_load.report_outputs())
-    #     sts_op.collect_output(d_out)
-    #
-    #     response = SimulationResponse(current_sim_time, time_step, 0, self.ip.init_temp())
-    #     while True:
-    #         response = sts_load.simulate_time_step(response)
-    #         response = sts_flow.simulate_time_step(response)
-    #         response = self.simulate_time_step(response)
-    #         current_sim_time += time_step
-    #         d_out = {'Elapsed Time [s]': current_sim_time}
-    #         d_out = merge_dicts(d_out, self.report_outputs())
-    #         d_out = merge_dicts(d_out, sts_load.report_outputs())
-    #         sts_op.collect_output(d_out)
-    #
-    #         if current_sim_time >= end_sim_time:
-    #             break
-    #
-    #     sts_op.write_to_file()
-
     def simulate_time_step(self, inputs: SimulationResponse):
-        # inputs from upstream component
-        temp_in = inputs.temperature
-        m_dot = inputs.flow_rate
         time = inputs.time
         dt = inputs.time_step
+        flow_rate = inputs.flow_rate
+        inlet_temp = inputs.temperature
 
         # per bh variables
-        m_dot_bh = m_dot / self.num_bh
+        m_dot_bh = flow_rate / self.num_bh
 
         # aggregate load from previous time
         # load aggregation method takes care of what happens during iterations
@@ -115,18 +65,18 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         # solve for outlet temperature
         g_c, hist = self.load_agg.calc_superposition_coeffs(time, dt)
         c_1 = self.c_0 * g_c
-        c_2 = self.temp_g + self.c_0 * hist
+        c_2 = self.soil.get_temp(time, self.h) + self.c_0 * hist
 
-        cp = self.fluid.get_cp(temp_in)
+        cp = self.fluid.get_cp(inlet_temp)
         m_dot_bh_cp = m_dot_bh * cp
 
         c_3 = m_dot_bh_cp / self.h
-        c_4 = c_3 * temp_in
+        c_4 = c_3 * inlet_temp
 
         temp_out = (c_2 + c_1 * c_4) / (1 + c_1 * c_3)
 
         # total heat transfer rate (W)
-        q_tot = m_dot * cp * (temp_in - temp_out)
+        q_tot = flow_rate * cp * (inlet_temp - temp_out)
 
         # normalized heat transfer rate (W/m)
         self.q = q_tot / (self.h * self.num_bh)
@@ -135,7 +85,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.energy = self.q * dt
 
         # set report variables
-        self.inlet_temperature = temp_in
+        self.inlet_temperature = inlet_temp
         self.outlet_temperature = temp_out
         self.heat_rate = q_tot
 

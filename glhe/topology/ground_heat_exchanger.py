@@ -14,32 +14,36 @@ class GroundHeatExchanger(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
-        # init TRCM model
-        self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+        try:
+            self.sim_mode = inputs['simulation-mode']
 
-        # init g-function model
-        self.sts_ghe.h = self.sts_ghe.calc_bh_ave_length()
-        self.sts_ghe.num_bh = self.sts_ghe.count_bhs()
-        lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,
-                                          'lntts': self.sts_ghe.lntts, 'g-values': self.sts_ghe.g})
-        self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
+            if self.sim_mode == 'enhanced':
+                # init TRCM model
+                self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+                self.sts_ghe.generate_g_b()
 
-        # report variables
-        self.heat_rate = 0
-        self.inlet_temperature = self.ip.init_temp()
-        self.outlet_temperature = self.ip.init_temp()
+                # init enhanced model
+                lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,
+                                                  'lntts': self.sts_ghe.lntts, 'g-values': self.sts_ghe.g,
+                                                  'lntts_b': self.sts_ghe.lntts_b, 'g_b-values': self.sts_ghe.g_b})
 
-        self.sim_mode = inputs['simulation-mode']
+                self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
 
-        # alias functions based on sim mode
-        if self.sim_mode == 'enhanced':
-            self.simulate_time_step = self.lts_ghe.simulate_time_step
-            self.report_outputs = self.lts_ghe.report_outputs
-        elif self.sim_mode == 'direct':
-            self.simulate_time_step = self.sts_ghe.simulate_time_step
-            self.report_outputs = self.sts_ghe.report_outputs
-        else:
-            raise KeyError("Simulation mode '{]' is not valid".format(self.sim_mode))  # pragma: no cover
+                # alias functions based on sim mode
+                self.simulate_time_step = self.lts_ghe.simulate_time_step
+                self.report_outputs = self.lts_ghe.report_outputs
+
+            elif self.sim_mode == 'direct':
+                # init TRCM model only
+                self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
+
+                # alias functions based on sim mode
+                self.simulate_time_step = self.sts_ghe.simulate_time_step
+                self.report_outputs = self.sts_ghe.report_outputs
+            else:
+                raise ValueError("Simulation mode '{]' is not valid".format(self.sim_mode))  # pragma: no cover
+        except KeyError:
+            raise KeyError("'simulation-mode' key not found")  # pragma: no cover
 
     def simulate_time_step(self, inputs: SimulationResponse):
         pass  # pragma: no cover
