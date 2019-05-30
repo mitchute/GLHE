@@ -14,13 +14,23 @@ class BaseAgg(ABC):
     def __init__(self, inputs: dict):
         # g-function values
         if 'g-function-path' in inputs:
-            path = norm(join(cwd, inputs['g-function-path']))
-            data = np.genfromtxt(path, delimiter=',')
-        elif 'lntts' in inputs:
-            data = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
+            path_g = norm(join(cwd, inputs['g-function-path']))
+            data_g = np.genfromtxt(path_g, delimiter=',')
+        elif 'lntts' and 'g-values' in inputs:
+            data_g = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
         else:
             raise KeyError('g-function data not found.')
-        self.interp_g = interp1d(data[:, 0], data[:, 1], fill_value='extrapolate')
+        self.interp_g = interp1d(data_g[:, 0], data_g[:, 1], fill_value='extrapolate')
+
+        # g_b-function values
+        if 'g_b-function-path' in inputs:
+            path_g_b = norm(join(cwd, inputs['g_b-function-path']))
+            data_g_b = np.genfromtxt(path_g_b, delimiter=',')
+            self.interp_g_b = interp1d(data_g_b[:, 0], data_g_b[:, 1], fill_value='extrapolate')
+        elif 'lntts_b' and 'g_b-values' in inputs:
+            data_g_b = np.transpose(np.array([inputs['lntts_b'], inputs['g_b-values']]))
+            self.interp_g_b = interp1d(data_g_b[:, 0], data_g_b[:, 1], fill_value='extrapolate')
+
         self.ts = inputs['time-scale']
 
         # energy values to be tracked

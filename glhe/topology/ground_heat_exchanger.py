@@ -1,3 +1,5 @@
+import numpy as np
+
 from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
@@ -20,7 +22,13 @@ class GroundHeatExchanger(SimulationEntryPoint):
             if self.sim_mode == 'enhanced':
                 # init TRCM model
                 self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
-                self.sts_ghe.generate_g_b()
+
+                if 'g_b-function-path' in inputs:
+                    data_g_b = np.genfromtxt(inputs['g-function-path'], delimiter=',')
+                    self.sts_ghe.lntts_b = data_g_b[:, 0]
+                    self.sts_ghe.g_b = data_g_b[:, 1]
+                else:
+                    self.sts_ghe.generate_g_b()
 
                 # init enhanced model
                 lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,

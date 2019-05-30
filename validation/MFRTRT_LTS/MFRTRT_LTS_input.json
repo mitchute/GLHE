@@ -54,7 +54,7 @@
   "ground-heat-exchanger": [
     {
       "name": "GHE 1",
-      "simulation-mode": "direct",
+      "simulation-mode": "enhanced",
       "flow-paths": [
         {
           "name": "path 1",

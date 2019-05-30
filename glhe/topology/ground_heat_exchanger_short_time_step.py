@@ -43,17 +43,19 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.g = None
         self.lntts_b = None
         self.g_b = None
-        self.generate_g_functions()
+
+        if 'g-function-path' in inputs:
+            data_g = np.genfromtxt(inputs['g-function-path'], delimiter=',')
+            self.lntts = data_g[:, 0]
+            self.g = data_g[:, 1]
+        else:
+            self.generate_g()
 
         # load aggregation method
         la_inputs = merge_dicts(inputs['load-aggregation'], {'lntts': self.lntts,
                                                              'g-values': self.g,
                                                              'time-scale': self.ts})
         self.load_agg = make_agg_method(la_inputs, ip)
-
-        # method constant
-        k_s = self.soil.conductivity
-        self.c_0 = 1 / (2 * pi * k_s)
 
         # other
         self.energy = 0
@@ -66,7 +68,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.outlet_temperature = ip.init_temp()
         self.bh_wall_temperature = ip.init_temp()
 
-    def generate_g_functions(self):
+    def generate_g(self):
         # local variables for later use
         ave_pipe_outer_dia = 0
         ave_pipe_inner_dia = 0
@@ -132,9 +134,9 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         if lntts_end > lntts_start:
             lntts_lts = np.arange(lntts_start, lntts_end, step=0.1)
             times = np.exp(lntts_lts) * self.ts
-            g_lts = gt.gfunction.uniform_heat_extraction(boreholes, times, self.soil.diffusivity)
+            g_lts = gt.gfunction.uniform_temperature(boreholes, times, self.soil.diffusivity)
 
-        # generate sts g-functions using radial numerical model
+        # generate sts g-functions using radial-numerical model
         d_sts = {'pipe-outer-diameter': ave_pipe_outer_dia,
                  'pipe-inner-diameter': ave_pipe_inner_dia,
                  'borehole-diameter': ave_bh_dia,
@@ -205,8 +207,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
             lntts_b.append(log((t + dt) / self.ts))
             g_b.append((t_out - t_bh) / (q * ave_grout_resist))
 
-
         # TODO: check that this isn't causing errors
+        # TODO: may need to add some smoothing here
         end_time = self.ip.input_dict['simulation']['runtime']
         if end_time > SEC_IN_DAY:
             lntts_b.append(log(end_time/self.ts))
