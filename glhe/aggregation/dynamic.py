@@ -92,10 +92,7 @@ class Dynamic(BaseAgg):
         # update time
         self.prev_update_time = time
 
-    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
-
-        if time == 0:
-            return float(self.interp_g(np.log(time_step / self.ts))), 0
+    def calc_temporal_superposition(self, time_step: int) -> float:
 
         # compute temporal superposition
         # this includes all thermal history before the present time
@@ -106,40 +103,16 @@ class Dynamic(BaseAgg):
 
         # g-function values
         dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
-        times = np.flipud(np.cumsum(np.flipud(dts)))
+        times = np.flipud(np.cumsum(np.flipud(dts)))[:-1]
         lntts = np.log(times / self.ts)
         g = self.interp_g(lntts)
 
-        g_c = g[-1]
-        q_prev = q[-1]
-
         # convolution of delta_q and the g-function values
-        hist = float(np.dot(dq, g[:-1]) - q_prev * g_c)
-        return float(g_c), hist
-
-    def temperature_rise(self, time: int, time_step: int):
-
-        if time == 0:
-            return 0
-
-        # compute temporal superposition
-        # this includes all thermal history before the present time
-        lts_q = self.energy / self.dts
-        sts_q = self.sub_hr.energy / self.sub_hr.dts
-        q = np.concatenate((lts_q, sts_q))
-        dq = np.diff(q, prepend=0)
-
-        # g-function values
-        dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
-        times = np.flipud(np.cumsum(np.flipud(dts)))
-        lntts = np.log(times / self.ts)
-
         if self.interp_g_b:
-            g = self.interp_g(lntts)
+            # convolution for "g" and "g_b" g-functions
             g_b = self.interp_g_b(lntts)
-            return float(np.dot(dq, np.sum(g[:-1], g_b[:-1])))
+            return float(np.dot(dq, np.add(g, g_b)))
         else:
-            # convolution of delta_q and the g-function values
-            g = self.interp_g(lntts)
-            return float(np.dot(dq, g[:-1]))
+            # convolution for "g" g-functions only
+            return float(np.dot(dq, g))
 

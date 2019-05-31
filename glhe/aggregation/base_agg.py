@@ -51,5 +51,5 @@ class BaseAgg(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def calc_superposition_coeffs(self, time: int, time_step: int) -> tuple:
+    def calc_temporal_superposition(self, time_step: int) -> float:
         pass  # pragma: no cover

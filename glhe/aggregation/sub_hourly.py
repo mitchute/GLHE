@@ -74,5 +74,5 @@ class SubHour(BaseAgg):
 
         return load_to_shift
 
-    def calc_superposition_coeffs(self, time: int, time_step: int):
+    def calc_temporal_superposition(self, time_step: int) -> float:
         pass
