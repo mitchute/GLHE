@@ -26,6 +26,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         # geometry and other config parameters needed externally
         self.h = inputs['length']
         self.num_bh = inputs['number-boreholes']
+        self.num_paths = len(inputs['flow-paths'])
 
         # load aggregation method
         ts = self.h ** 2 / (9 * self.soil.diffusivity)
@@ -38,7 +39,10 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # method constant
         k_s = self.soil.conductivity
-        self.c_0 = 1 / (2 * pi * k_s)
+        self.resist_s = 1 / (2 * pi * k_s)
+        self.resist_b = inputs['borehole-resistance']
+        self.resist_p = inputs['pipe-resistance']
+        self.resist_g = self.resist_b - self.resist_p
 
         # heat rate (W/m)
         self.q = 0
@@ -58,7 +62,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         inlet_temp = inputs.temperature
 
         # per bh variables
-        m_dot_bh = flow_rate / self.num_bh
+        m_dot = flow_rate / self.num_paths
 
         # aggregate load from previous time
         # load aggregation method takes care of what happens during iterations
@@ -70,7 +74,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         c_2 = self.soil.get_temp(time, self.h) + self.c_0 * hist
 
         cp = self.fluid.get_cp(inlet_temp)
-        m_dot_bh_cp = m_dot_bh * cp
+        m_dot_bh_cp = m_dot * cp
 
         c_3 = m_dot_bh_cp / self.h
         c_4 = c_3 * inlet_temp

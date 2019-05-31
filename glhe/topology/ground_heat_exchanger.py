@@ -31,9 +31,12 @@ class GroundHeatExchanger(SimulationEntryPoint):
                     self.sts_ghe.generate_g_b()
 
                 # init enhanced model
+                d_bh_ave = self.sts_ghe.average_bh()
                 lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,
                                                   'lntts': self.sts_ghe.lntts, 'g-values': self.sts_ghe.g,
-                                                  'lntts_b': self.sts_ghe.lntts_b, 'g_b-values': self.sts_ghe.g_b})
+                                                  'lntts_b': self.sts_ghe.lntts_b, 'g_b-values': self.sts_ghe.g_b,
+                                                  'borehole-resistance': d_bh_ave['borehole-resistance'],
+                                                  'pipe-resistance': d_bh_ave['pipe-resistance']})
 
                 self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
 
