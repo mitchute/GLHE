@@ -55,7 +55,6 @@ class Dynamic(BaseAgg):
                 self.energy = np.insert(self.energy, 0, 0)
                 self.dts = np.insert(self.dts, 0, dt)
                 self.times = np.insert(self.times, 0, t)
-                self.g_vals = np.insert(self.g_vals, 0, 0)
 
                 if t >= run_time:
                     initialized = True
@@ -134,8 +133,13 @@ class Dynamic(BaseAgg):
         dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
         times = np.flipud(np.cumsum(np.flipud(dts)))
         lntts = np.log(times / self.ts)
-        g = self.interp_g(lntts)
 
-        # convolution of delta_q and the g-function values
-        return float(np.dot(dq, g[:-1]))
+        if self.interp_g_b:
+            g = self.interp_g(lntts)
+            g_b = self.interp_g_b(lntts)
+            return float(np.dot(dq, np.sum(g[:-1], g_b[:-1])))
+        else:
+            # convolution of delta_q and the g-function values
+            g = self.interp_g(lntts)
+            return float(np.dot(dq, g[:-1]))
 

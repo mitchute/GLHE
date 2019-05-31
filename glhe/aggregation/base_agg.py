@@ -23,6 +23,7 @@ class BaseAgg(ABC):
         self.interp_g = interp1d(data_g[:, 0], data_g[:, 1], fill_value='extrapolate')
 
         # g_b-function values
+        self.interp_g_b = None
         if 'g_b-function-path' in inputs:
             path_g_b = norm(join(cwd, inputs['g_b-function-path']))
             data_g_b = np.genfromtxt(path_g_b, delimiter=',')
@@ -41,9 +42,6 @@ class BaseAgg(ABC):
 
         # time step of each respective bin
         self.dts = np.empty((0,), dtype=int)
-
-        # g-function values for each respective bin
-        self.g_vals = np.empty((0,), dtype=float)
 
         # previous time the aggregation method was updated
         self.prev_update_time = None
