@@ -2,7 +2,6 @@ from math import pi
 
 from glhe.aggregation.agg_factory import make_agg_method
 from glhe.globals.functions import merge_dicts
-from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
