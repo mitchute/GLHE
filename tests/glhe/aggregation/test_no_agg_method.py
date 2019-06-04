@@ -41,7 +41,7 @@ class TestNoAgg(unittest.TestCase):
         tst.aggregate(t, 1)
         self.assertEqual(np.sum(tst.energy), 2)
 
-    def test_calc_superposition_coeffs(self):
+    def test_calc_temporal_superposition(self):
         tol = 0.001
 
         tst = self.add_instance()
@@ -51,12 +51,10 @@ class TestNoAgg(unittest.TestCase):
 
         tst.aggregate(t, 0)
         tst.aggregate(t, 0)
-        g, hist = tst.calc_superposition_coeffs(t, dt)
-        self.assertAlmostEqual(g, 0.2348, delta=tol)
+        hist = tst.calc_temporal_superposition(dt)
         self.assertAlmostEqual(hist, 0, delta=tol)
 
         t += dt
         tst.aggregate(t, 30000)
-        g, hist = tst.calc_superposition_coeffs(t, dt)
-        self.assertAlmostEqual(g, 0.2348, delta=tol)
-        self.assertAlmostEqual(hist, 11.5524, delta=tol)
+        hist = tst.calc_temporal_superposition(dt)
+        self.assertAlmostEqual(hist, 19.3806, delta=tol)

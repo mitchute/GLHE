@@ -1,8 +1,8 @@
 import os
 import tempfile
 import unittest
-from math import cos, sin
 
+from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
@@ -20,6 +20,7 @@ from glhe.globals.functions import sec_to_hr
 from glhe.globals.functions import smoothing_function
 from glhe.globals.functions import tdma_1
 from glhe.globals.functions import tdma_2
+from glhe.globals.functions import write_arrays_to_csv
 from glhe.globals.functions import write_json
 
 
@@ -200,3 +201,29 @@ class TestFunctions(unittest.TestCase):
 
     def test_sec_to_hr(self):
         self.assertEqual(sec_to_hr(3600), 1)
+
+    def test_write_arrays_to_csv(self):
+        temp_dir = tempfile.mkdtemp()
+        file_name = 'out.csv'
+        path = os.path.join(temp_dir, file_name)
+        a_1 = [1, 2, 3]
+        a_2 = [4, 5, 6]
+        write_arrays_to_csv(path, [a_1, a_2])
+
+        with open(path, 'r') as f:
+            for idx, line in enumerate(f):
+                tokens = line.split(',')
+                self.assertEqual(float(tokens[0]), a_1[idx])
+                self.assertEqual(float(tokens[1]), a_2[idx])
+
+        a_1 = array([1, 2, 3])
+        a_2 = array([4, 5, 6])
+        a_3 = array([a_1, a_2])
+
+        write_arrays_to_csv(path, a_3)
+
+        with open(path, 'r') as f:
+            for idx, line in enumerate(f):
+                tokens = line.split(',')
+                self.assertEqual(float(tokens[0]), a_1[idx])
+                self.assertEqual(float(tokens[1]), a_2[idx])

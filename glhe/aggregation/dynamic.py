@@ -18,7 +18,6 @@ class Dynamic(BaseAgg):
 
     def __init__(self, inputs: dict):
         BaseAgg.__init__(self, inputs)
-        self.prev_update_time = 0
 
         # sub-hourly tracker for the first hour
         self.sub_hr = SubHour(inputs)
@@ -54,7 +53,6 @@ class Dynamic(BaseAgg):
                 t += dt
                 self.energy = np.insert(self.energy, 0, 0)
                 self.dts = np.insert(self.dts, 0, dt)
-                self.times = np.insert(self.times, 0, t)
 
                 if t >= run_time:
                     initialized = True
@@ -116,3 +114,13 @@ class Dynamic(BaseAgg):
             # convolution for "g" g-functions only
             return float(np.dot(dq, g))
 
+    def get_g_value(self, time_step: int) -> float:
+        lntts = np.log(time_step / self.ts)
+        return float(self.interp_g(lntts))
+
+    def get_g_b_value(self, time_step: int) -> float:
+        lntts = np.log(time_step / self.ts)
+        return float(self.interp_g_b(lntts))
+
+    def get_q_prev(self) -> float:
+        return float(self.sub_hr.energy[-1] / self.sub_hr.dts[-1])

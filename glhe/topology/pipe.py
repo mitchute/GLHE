@@ -146,7 +146,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # save outlet temp
         self.outlet_temperature = self.cell_temps[-1]
 
-        if inputs.bh_wall_temp:
+        if hasattr(inputs, 'bh_wall_temp'):
             return SimulationResponse(inputs.time,
                                       inputs.time_step,
                                       inputs.flow_rate,

@@ -1,8 +1,9 @@
 import json
-from math import exp, factorial
 from typing import Union
 
 import numpy as np
+import pandas as pd
+from math import exp, factorial
 
 from glhe.globals.constants import SEC_IN_HOUR
 
@@ -338,3 +339,15 @@ def un_reverse_idx(length: int, reversed_idx: int) -> int:
     """
 
     return length - 1 - reversed_idx
+
+
+def write_arrays_to_csv(path: str, arrays: Union[list, np.ndarray]) -> None:
+    _arrays = None
+    if isinstance(arrays, list):
+        _arrays = np.array(arrays)
+    else:
+        _arrays = arrays
+
+    df = pd.DataFrame.from_records(_arrays)
+    df = df.T
+    df.to_csv(path, header=False, index=False)

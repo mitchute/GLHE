@@ -214,7 +214,6 @@ class RadialNumericalBH(object):
 
         time = 0
         time_step = 120
-        final_time = final_time
         num_cells = len(self.cells)
 
         while True:
@@ -303,7 +302,7 @@ class RadialNumericalBH(object):
 
             lntts.append(log(time / self.t_s))
 
-            if time > final_time:
+            if time >= final_time - time_step:
                 self.g = np.insert(self.g, 0, g, axis=0)
                 self.lntts = np.insert(self.lntts, 0, lntts, axis=0)
                 break

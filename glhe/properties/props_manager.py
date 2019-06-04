@@ -24,11 +24,11 @@ class PropsMGR(object):
                 self._add_fluid_props_inst(inputs[key])
             elif key == 'soil':
                 self._add_soil_props_inst(inputs[key])
-
-        # tack ground temp model onto the soil class
-        for key in inputs:
-            if key == 'ground-temperature-model':
-                self._add_ground_temperature_model(inputs[key])
+                # tack ground temp model onto the soil class
+                try:
+                    self._add_ground_temperature_model(inputs['ground-temperature-model'])
+                except KeyError:
+                    pass
 
     def _add_fluid_props_inst(self, inputs: dict) -> None:
         """

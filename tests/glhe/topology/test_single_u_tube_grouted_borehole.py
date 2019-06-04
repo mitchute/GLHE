@@ -4573,5 +4573,5 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        ret = tst.simulate_time_step(SimulationResponse(0, 0, 0.2, 30))
+        ret = tst.simulate_time_step(SimulationResponse(0, 0, 0.2, 30, 20))
         self.assertAlmostEqual(ret.temperature, 20)

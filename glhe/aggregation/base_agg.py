@@ -37,14 +37,11 @@ class BaseAgg(ABC):
         # energy values to be tracked
         self.energy = np.empty((0,), dtype=float)
 
-        # most recent values appended to array
-        self.times = np.empty((0,), dtype=int)
-
         # time step of each respective bin
         self.dts = np.empty((0,), dtype=int)
 
         # previous time the aggregation method was updated
-        self.prev_update_time = None
+        self.prev_update_time = 0
 
     @abstractmethod
     def aggregate(self, time: int, energy: float):
@@ -52,4 +49,14 @@ class BaseAgg(ABC):
 
     @abstractmethod
     def calc_temporal_superposition(self, time_step: int) -> float:
+        pass  # pragma: no cover
+
+    @abstractmethod
+    def get_g_value(self, time_step: int) -> float:
+        pass  # pragma: no cover
+
+    def get_g_b_value(self, time_step: int) -> float:
+        pass  # pragma: no cover
+
+    def get_q_prev(self) -> float:
         pass  # pragma: no cover

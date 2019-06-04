@@ -41,8 +41,12 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         k_s = self.soil.conductivity
         self.resist_s = 1 / (2 * pi * k_s)
         self.resist_b = inputs['borehole-resistance']
-        self.resist_p = inputs['pipe-resistance']
-        self.resist_g = self.resist_b - self.resist_p
+        # self.resist_p = inputs['pipe-resistance']
+        # self.resist_g = self.resist_b - self.resist_p
+
+        self.c_1 = 0
+        self.c_2 = 0
+        self.c_3 = 0
 
         # heat rate (W/m)
         self.q = 0
@@ -69,20 +73,24 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.load_agg.aggregate(time, self.energy)
 
         # solve for outlet temperature
-        g_c, hist = self.load_agg.calc_superposition_coeffs(time, dt)
-        c_1 = self.c_0 * g_c
-        c_2 = self.soil.get_temp(time, self.h) + self.c_0 * hist
+        g = self.load_agg.get_g_value(dt)
+        g_b = self.load_agg.get_g_b_value(dt)
+        # c_1 = self.resist_s * g + self.resist_g * g_b + self.resist_p
+        c_1 = self.resist_s * g + self.resist_b * g_b
+
+        hist = self.load_agg.calc_temporal_superposition(dt)
+        q_prev = self.load_agg.get_q_prev()
+        # c_2 = (self.resist_s + self.resist_g) * hist - c_1 * q_prev
+        c_2 = (self.resist_s + self.resist_b) * hist - c_1 * q_prev
 
         cp = self.fluid.get_cp(inlet_temp)
-        m_dot_bh_cp = m_dot * cp
+        c_3 = (m_dot * cp) / self.h
 
-        c_3 = m_dot_bh_cp / self.h
-        c_4 = c_3 * inlet_temp
-
-        temp_out = (c_2 + c_1 * c_4) / (1 + c_1 * c_3)
+        soil_temp = self.soil.get_temp(time, self.h)
+        outlet_temp = (soil_temp + c_1 * c_3 * inlet_temp + c_2) / (1 + c_1 * c_3)
 
         # total heat transfer rate (W)
-        q_tot = flow_rate * cp * (inlet_temp - temp_out)
+        q_tot = flow_rate * cp * (inlet_temp - outlet_temp)
 
         # normalized heat transfer rate (W/m)
         self.q = q_tot / (self.h * self.num_bh)
@@ -92,12 +100,19 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # set report variables
         self.inlet_temperature = inlet_temp
-        self.outlet_temperature = temp_out
+        self.outlet_temperature = outlet_temp
         self.heat_rate = q_tot
+
+        self.c_1 = c_1
+        self.c_2 = c_2
+        self.c_3 = c_3
 
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
     def report_outputs(self):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C1'): self.c_1,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C2'): self.c_2,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C3'): self.c_3}
