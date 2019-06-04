@@ -67,6 +67,28 @@ def hr_to_sec(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]
     return x * SEC_IN_HOUR
 
 
+def kw_to_w(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+    """
+    Converts kW to W
+
+    :param x: input in kW
+    :return: output in W
+    """
+
+    return x * 1000
+
+
+def w_to_kw(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+    """
+    Converts W to kW
+
+    :param x: input in W
+    :return: output in kW
+    """
+
+    return x / 1000
+
+
 def num_ts_per_hour_to_sec_per_ts(time_step_per_hour: int) -> int:
     """
     Converts the input time-steps per hour to the nearest possible time-step in seconds.
@@ -326,7 +348,7 @@ def lin_interp(x: float, x_l: float, x_h: float, y_l: float, y_h: float) -> floa
     :return: interpolated value
     """
 
-    return y_l + x * (y_h - y_l) / (x_h - x_l)
+    return (x - x_l) / (x_h - x_l) * (y_h - y_l) + y_l
 
 
 def un_reverse_idx(length: int, reversed_idx: int) -> int:

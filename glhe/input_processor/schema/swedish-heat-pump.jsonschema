@@ -1,0 +1,41 @@
+{
+  "type": "array",
+  "items": {
+    "properties": {
+      "max-heating-set-point ": {
+        "type": "number"
+      },
+      "min-heating-set-point ": {
+        "type": "number"
+      },
+      "water-heating-set-point ": {
+        "type": "number"
+      },
+      "outdoor-air-temperature-at-max-heating-set-point": {
+        "type": "number"
+      },
+      "outdoor-air-temperature-at-min-heating-set-point": {
+        "type": "number"
+      },
+      "immersion-heater-capacity": {
+        "type": "number"
+      },
+      "load-data-path": {
+        "type": "string"
+      },
+      "capacity-coefficients": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "coefficient-of-performance-coefficients": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

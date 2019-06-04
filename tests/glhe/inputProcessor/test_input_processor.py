@@ -208,6 +208,21 @@ class TestInputProcessor(unittest.TestCase):
 
         self.run_validate(d)
 
+    def test_validated_swedish_heat_pump(self):
+        d = {'swedish-heat-pump': [{'name': 'svenska varmmepumpe',
+                                    'max-heating-set-point': 55,
+                                    'min-heating-set-point': 30,
+                                    'water-heating-set-point': 60,
+                                    'max-heating-set-point-outdoor-air-temperature': -10,
+                                    'min-heating-set-point-outdoor-air-temperature': 20,
+                                    'immersion-heater-capacity': 7000,
+                                    'load-data-path': 'some/path',
+                                    'capacity-coefficients': [1, 2, 3],
+                                    'coefficient-of-performance-coefficients': [4, 5, 6],
+                                    }]}
+
+        self.run_validate(d)
+
     def test_all_schema_tests_implemented(self):
         # this count should match the number of schema validations implemented here
         # it will match against the count of all schema files in 'glhe/input_processor/schema'

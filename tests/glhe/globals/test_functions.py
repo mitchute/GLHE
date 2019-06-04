@@ -9,6 +9,8 @@ from numpy.linalg import solve as lin_alg_solve
 from glhe.globals.functions import c_to_k
 from glhe.globals.functions import hanby
 from glhe.globals.functions import hr_to_sec
+from glhe.globals.functions import kw_to_w
+from glhe.globals.functions import lin_interp
 from glhe.globals.functions import load_json
 from glhe.globals.functions import lower_obj
 from glhe.globals.functions import merge_dicts
@@ -33,6 +35,9 @@ class TestFunctions(unittest.TestCase):
 
     def test_temp_in_kelvin(self):
         self.assertEqual(c_to_k(30), 303.15)
+
+    def test_kw_to_w(self):
+        self.assertEqual(kw_to_w(1), 1000)
 
     def test_set_time_step(self):
         self.assertRaises(ZeroDivisionError, lambda: num_ts_per_hour_to_sec_per_ts(0))
@@ -201,6 +206,11 @@ class TestFunctions(unittest.TestCase):
 
     def test_sec_to_hr(self):
         self.assertEqual(sec_to_hr(3600), 1)
+
+    def test_lin_interp(self):
+        self.assertEqual(lin_interp(0, 0, 2, 0, 2), 0)
+        self.assertEqual(lin_interp(1, 0, 2, 0, 2), 1)
+        self.assertEqual(lin_interp(2, 0, 2, 0, 2), 2)
 
     def test_write_arrays_to_csv(self):
         temp_dir = tempfile.mkdtemp()
