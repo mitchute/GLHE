@@ -32,4 +32,3 @@ class ReportTypes(object):
     WtrHtgElect = 'Electrical Usage for Water Heating [W]'
     HtgImmElect = 'Electrical Usage for Immersion Heater for Heating [W]'
     WtrHtgImmElect = 'Electrical Usage for Immersion Heater fow Water Heating [W]'
-
