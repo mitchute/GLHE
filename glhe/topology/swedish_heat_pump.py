@@ -1,7 +1,7 @@
 import numpy as np
 
+from glhe.globals.functions import kw_to_w
 from glhe.globals.functions import lin_interp
-from glhe.globals.functions import sec_to_hr
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -50,19 +50,22 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.outlet_temperature = None
 
         # water heating report variables
-        self.wtr_htg_elec = None  # electricity consumption of heat pump for water heating (kWh)
-        self.wtr_htg_rtf = None  # run time fraction of heat pump (-)
-        self.wtr_htg_imm_elec = None  # electricity consumption of immersion heater for water heating (kWh)
-        self.wtr_htg_unmet = None  # unmet water heating load (kWh)
+        self.wtr_htg_elec = None  # electricity consumption of heat pump for water heating (W)
+        self.wtr_htg_rtf = None  # run time fraction of heat pump for water heating (-)
+        self.wtr_htg_imm_elec = None  # electricity consumption of immersion heater for water heating (W)
+        self.wtr_htg_unmet = None  # unmet water heating load (W)
+        self.wtr_htg_heat_extraction = None  # heat extraction for water heating (W)
 
         # heating report variables
-        self.htg_elec = None  # electricity consumption of heat pump for space heating (kWh)
-        self.htg_rtf = None  # run time fraction of heat pump (-)
-        self.htg_imm_elec = None  # electricity consumption of immersion heater for space heating (kWh)
-        self.htg_unmet = None  # unmet water heating load (kWh)
+        self.htg_elec = None  # electricity consumption of heat pump for space heating (W)
+        self.htg_rtf = None  # run time fraction of heat pump for space heating (-)
+        self.htg_imm_elec = None  # electricity consumption of immersion heater for space heating (W)
+        self.htg_unmet = None  # unmet water heating load (W)
+        self.htg_heat_extraction = None  # heat extraction for space heating (W)
 
         # other
-        self.heat_extraction = None  # heat extracted from borehole (kWh)
+        self.hp_rtf = None  # total heat pump runtime fraction
+        self.heat_extraction = None  # total heat extracted from borehole (W)
 
     def x7_cop(self, src_side_eft, load_side_exft):
         """
@@ -140,23 +143,23 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
 
         # Limit minimum src_side_eft used in correlation to -10
         _src_side_eft = max(src_side_eft, -10)
-        return c_1 + c_2 * load_side_exft + c_3 * load_side_exft ** 2 + c_4 * _src_side_eft
+        return kw_to_w(c_1 + c_2 * load_side_exft + c_3 * load_side_exft ** 2 + c_4 * _src_side_eft)
 
-    def calc_wtr_htg(self, time, dt, src_side_eft):
-        capacity = self.x7_capacity(src_side_eft, self.wtr_htg_set_point) * sec_to_hr(dt)
-        imm_htr_capacity = self.imm_htr_capacity
+    def calc_wtr_htg(self, time, src_side_eft):
+        capacity = self.x7_capacity(src_side_eft, self.wtr_htg_set_point)
+        imm_capacity = self.imm_htr_capacity
         cop = self.x7_cop(src_side_eft, self.wtr_htg_set_point)
         load = self.wtr_htg_loads.get_value(time)
 
-        imm_elec = 0  # electricity consumption of immersion heater (kW)
-        unmet = 0  # unmet load
+        imm_elec = 0  # electricity consumption of immersion heater (W)
+        unmet = 0  # unmet load (W)
 
         if capacity >= load:
             # water heating load can be met with heat pump
             elec = load / cop
             rtf = load / capacity
             heat_extraction = load - elec
-        elif (capacity + imm_htr_capacity) >= load:
+        elif (capacity + imm_capacity) >= load:
             # water heating load can be met with heat pump and water heater
             rtf = 1
             elec = capacity / cop
@@ -166,15 +169,15 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
             # water heating load cannot be met
             rtf = 1
             elec = capacity / cop
-            imm_elec = imm_htr_capacity
+            imm_elec = imm_capacity
             heat_extraction = capacity - elec
-            unmet = load - capacity - imm_htr_capacity
+            unmet = load - capacity - imm_capacity
 
         self.wtr_htg_elec = elec
         self.wtr_htg_rtf = rtf
         self.wtr_htg_imm_elec = imm_elec
         self.wtr_htg_unmet = unmet
-        self.heat_extraction = heat_extraction
+        self.wtr_htg_heat_extraction = heat_extraction
 
     def set_htg_exft(self, time):
         # outdoor air temperature
@@ -196,33 +199,33 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
                                   self.min_htg_set_point)
         return htg_exft
 
-    def calc_htg(self, time, dt, src_side_eft):
+    def calc_htg(self, time, src_side_eft):
 
         htg_exft = self.set_htg_exft(time)
 
         available_rtf = 1 - self.wtr_htg_rtf
-        capacity = (self.x7_capacity(src_side_eft, self.wtr_htg_set_point) * sec_to_hr(dt)) * available_rtf
+        capacity = (self.x7_capacity(src_side_eft, self.wtr_htg_set_point)) * available_rtf
         imm_htr_capacity = self.imm_htr_capacity - self.wtr_htg_imm_elec
         cop = self.x7_cop(src_side_eft, htg_exft)
         load = self.htg_loads.get_value(time)
 
-        imm_elec = 0  # electricity consumption of immersion heater (kW)
-        unmet = 0  # unmet load
+        imm_elec = 0  # electricity consumption of immersion heater (W)
+        unmet = 0  # unmet load (W)
 
         if capacity >= load:
-            # water heating load can be met with heat pump
+            # heating load can be met with heat pump
             elec = load / cop
             rtf = load / capacity * available_rtf
             heat_extraction = load - elec
         elif (capacity + imm_htr_capacity) >= load:
-            # water heating load can be met with heat pump and water heater
-            rtf = 1
+            # heating load can be met with heat pump and water heater
+            rtf = available_rtf
             elec = capacity / cop
             imm_elec = load - capacity * available_rtf
             heat_extraction = capacity - elec
         else:
-            # water heating load cannot be met
-            rtf = 1
+            # heating load cannot be met
+            rtf = available_rtf
             elec = capacity / cop
             imm_elec = imm_htr_capacity
             heat_extraction = capacity - elec
@@ -232,21 +235,43 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.htg_rtf = rtf
         self.htg_imm_elec = imm_elec
         self.htg_unmet = unmet
-        self.heat_extraction += heat_extraction
+        self.htg_heat_extraction = heat_extraction
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         time = inputs.time
         dt = inputs.time_step
+        flow_rate = inputs.flow_rate
         inlet_temp = inputs.temperature
 
         # model prioritizes water heating above space heating
         # so these must be done in order
-        self.calc_wtr_htg(time, dt, inlet_temp)
-        self.calc_htg(time, dt, inlet_temp)
+        self.calc_wtr_htg(time, inlet_temp)
+        self.calc_htg(time, inlet_temp)
 
-        return inputs
+        # collect totals
+        self.hp_rtf = self.wtr_htg_rtf + self.htg_rtf
+        self.heat_extraction = self.wtr_htg_heat_extraction + self.htg_heat_extraction
+
+        cp = self.fluid.get_cp(inlet_temp)
+        outlet_temp = inlet_temp - self.heat_extraction / (flow_rate * cp)
+        response = SimulationResponse(time, dt, flow_rate, outlet_temp)
+
+        # update report variables
+        self.flow_rate = flow_rate
+        self.inlet_temperature = inlet_temp
+        self.outlet_temperature = outlet_temp
+
+        return response
 
     def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_extraction,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.RTF): self.hp_rtf,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgRTF): self.htg_rtf,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgRTF): self.wtr_htg_rtf,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgElect): self.htg_elec,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgElect): self.wtr_htg_elec,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgImmElect): self.htg_imm_elec,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgImmElect): self.wtr_htg_imm_elec}

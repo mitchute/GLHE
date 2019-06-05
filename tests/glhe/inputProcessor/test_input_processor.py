@@ -227,7 +227,7 @@ class TestInputProcessor(unittest.TestCase):
         # this count should match the number of schema validations implemented here
         # it will match against the count of all schema files in 'glhe/input_processor/schema'
         # not great, but OK for now
-        test_count = 15
+        test_count = 16
 
         fpath = os.path.dirname(os.path.abspath(__file__))
         schema_dir = os.path.normpath(os.path.join(fpath, '..', '..', '..', 'glhe', 'input_processor', 'schema'))

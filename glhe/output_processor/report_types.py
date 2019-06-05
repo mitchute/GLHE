@@ -23,3 +23,13 @@ class ReportTypes(object):
     # resistances
     BHResist = 'BH Resist. [m-K/W]'
     BHEffResist = 'BH Eff. Resist. [m-K/W]'
+
+    # heat pump
+    RTF = 'Runtime Fraction [-]'
+    HtgRTF = 'Runtime Fraction for Heating [-]'
+    WtrHtgRTF = 'Runtime Fraction for Water Heating [-]'
+    HtgElect = 'Electrical Usage for Heating [W]'
+    WtrHtgElect = 'Electrical Usage for Water Heating [W]'
+    HtgImmElect = 'Electrical Usage for Immersion Heater for Heating [W]'
+    WtrHtgImmElect = 'Electrical Usage for Immersion Heater fow Water Heating [W]'
+
