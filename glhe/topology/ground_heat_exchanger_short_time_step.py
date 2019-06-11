@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import pygfunction as gt
-from math import log
+from math import log, pi
 
 from glhe.aggregation.agg_factory import make_agg_method
 from glhe.globals.constants import SEC_IN_DAY
@@ -64,6 +64,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         # other
         self.energy = 0
+        self.c_0 = 1 / (2 * pi * self.soil.conductivity)
 
         # report variables
         self.heat_rate = 0
@@ -260,7 +261,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
     def calc_bh_wall_temp_rise(self, time: int, time_step: int) -> float:
         self.load_agg.aggregate(time, self.energy)
-        return self.load_agg.temperature_rise(time, time_step)
+        hist = self.load_agg.calc_temporal_superposition(time_step)
+        return hist * self.c_0
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         time = inputs.time
@@ -269,8 +271,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         inlet_temp = inputs.temperature
 
         # TODO: update bh wall temp
-        self.bh_wall_temperature = self.soil.get_temp(time, self.h)
-        # self.bh_wall_temperature = self.soil.get_temp(time, self.h) + self.calc_bh_wall_temp_rise(time, time_step)
+        # self.bh_wall_temperature = self.soil.get_temp(time, self.h)
+        self.bh_wall_temperature = self.soil.get_temp(time, self.h) + self.calc_bh_wall_temp_rise(time, time_step)
 
         # TODO: distribute flow properly
 
