@@ -126,9 +126,9 @@ def load_json(input_path: str) -> dict:
     return json.loads(json_blob)
 
 
-def write_json(write_path: str, input_dict: dict) -> None:
+def write_json(write_path: str, input_dict: dict, indent: int = 2) -> None:
     with open(write_path, 'w') as f:
-        f.write(json.dumps(input_dict, sort_keys=True, indent=2, separators=(',', ': ')))
+        f.write(json.dumps(input_dict, sort_keys=True, indent=indent, separators=(',', ': ')))
 
 
 def hanby(time: float, vol_flow_rate: float, volume: float) -> float:
