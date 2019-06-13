@@ -10,10 +10,9 @@
       "name": {"type": "string"},
       "pipe-def-name": {"type": "string"},
       "segments": {"type": "number"},
-      "shank-spacing": {"type": "number"}
+      "shank-spacing": {"type": "number"},
+      "resistance": {"type": "number"}
     },
-    "required" : ["borehole-type", "length", "diameter", "grout-def-name",
-                  "name", "pipe-def-name", "segments", "shank-spacing"],
     "additionalProperties" : false
   }
 }

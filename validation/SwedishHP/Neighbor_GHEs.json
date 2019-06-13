@@ -1,0 +1,87 @@
+{
+  "flow-profile": [
+    {
+      "name": "external flow",
+      "flow-profile-type": "external",
+      "path": "",
+      "column": 3
+    }
+  ],
+  "fluid": {
+    "fluid-type": "EA",
+    "concentration": 20
+  },
+  "ground-temperature-model": {
+    "ground-temperature-model-type": "constant",
+    "temperature": 8
+  },
+  "swedish-heat-pump": [
+    {
+      "name": "svenska varmmepumpe",
+      "max-heating-set-point": 55,
+      "min-heating-set-point": 30,
+      "water-heating-set-point": 60,
+      "outdoor-air-temperature-at-max-heating-set-point": -10,
+      "outdoor-air-temperature-at-min-heating-set-point": 20,
+      "immersion-heater-capacity": 7000,
+      "load-data-path": "",
+      "capacity-coefficients": [
+        8.536666667,
+        -0.007266667,
+        -0.00084,
+        0.263666667
+      ],
+      "coefficient-of-performance-coefficients": [
+        7.641839817,
+        -0.075098454,
+        -0.000208441,
+        0.109423218
+      ]
+    }
+  ],
+  "ground-heat-exchanger": [
+    {
+      "name": "GHE 1",
+      "simulation-mode": "simple",
+      "resistance": 0.07,
+      "number-boreholes": 1,
+      "diameter": 0.1,
+      "average-length": 150,
+      "load-aggregation": {
+        "method": "dynamic",
+        "expansion-rate": 1.62,
+        "number-bins-per-level": 9
+      }
+    }
+  ],
+  "simulation": {
+    "name": "Basic GLHE",
+    "time-step": 3600,
+    "runtime": 10800,
+    "initial-temperature": 8
+  },
+  "topology": {
+    "demand-side": [
+      {
+        "comp-type": "flow-profile",
+        "name": "external flow"
+      },
+      {
+        "comp-type": "swedish-heat-pump",
+        "name": "svenska varmmepumpe"
+      }
+    ],
+    "supply-side": [
+      {
+        "comp-type": "ground-heat-exchanger",
+        "name": "GHE 1"
+      }
+    ]
+  },
+  "soil": {
+    "name": "dirt",
+    "conductivity": 2.5,
+    "density": 2500,
+    "specific-heat": 1000
+  }
+}

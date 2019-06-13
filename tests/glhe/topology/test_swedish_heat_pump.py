@@ -17,7 +17,7 @@ class TestSwedishHP(unittest.TestCase):
         temp_dir = tempfile.mkdtemp()
 
         with open(os.path.join(temp_dir, 'temp.csv'), 'w') as f:
-            f.write('Date/Time,Heating Loads (kWh),Water Heating Loads (kWh),Outdoor Air Temperature (C)\n')
+            f.write('Date/Time,Heating Loads (W),Water Heating Loads (W),Outdoor Air Temperature (C)\n')
             f.write('1/1/2019 0:00,751.231087,0,4\n')
             f.write('1/1/2019 1:00,609.682528,60.515364,5.3\n')
             f.write('1/1/2019 2:00,728.634445,41.330207,6.2\n')

@@ -50,6 +50,8 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.outlet_temperature = None
 
         # water heating report variables
+        self.wtr_htg = None  # water heating load met by heat pump (W)
+        self.wtr_htg_load = None  # water heating load (W)
         self.wtr_htg_elec = None  # electricity consumption of heat pump for water heating (W)
         self.wtr_htg_rtf = None  # run time fraction of heat pump for water heating (-)
         self.wtr_htg_imm_elec = None  # electricity consumption of immersion heater for water heating (W)
@@ -57,6 +59,8 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.wtr_htg_heat_extraction = None  # heat extraction for water heating (W)
 
         # heating report variables
+        self.htg = None  # heating load met by heat pump (W)
+        self.htg_load = None  # heating load (W)
         self.htg_elec = None  # electricity consumption of heat pump for space heating (W)
         self.htg_rtf = None  # run time fraction of heat pump for space heating (-)
         self.htg_imm_elec = None  # electricity consumption of immersion heater for space heating (W)
@@ -64,7 +68,9 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.htg_heat_extraction = None  # heat extraction for space heating (W)
 
         # other
-        self.hp_rtf = None  # total heat pump runtime fraction
+        self.htg_tot = None  # total heating load met by heat pump (W)
+        self.imm_elec_tot = None  # total heating met by immersion heater (W)
+        self.hp_rtf = None  # total heat pump runtime fraction (-)
         self.heat_extraction = None  # total heat extracted from borehole (W)
 
     def x7_cop(self, src_side_eft, load_side_exft):
@@ -156,23 +162,28 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
 
         if capacity >= load:
             # water heating load can be met with heat pump
+            htg = load
             elec = load / cop
             rtf = load / capacity
             heat_extraction = load - elec
         elif (capacity + imm_capacity) >= load:
             # water heating load can be met with heat pump and water heater
             rtf = 1
+            htg = capacity
             elec = capacity / cop
             imm_elec = load - capacity
             heat_extraction = capacity - elec
         else:
             # water heating load cannot be met
             rtf = 1
+            htg = capacity
             elec = capacity / cop
             imm_elec = imm_capacity
             heat_extraction = capacity - elec
             unmet = load - capacity - imm_capacity
 
+        self.wtr_htg = htg
+        self.wtr_htg_load = load
         self.wtr_htg_elec = elec
         self.wtr_htg_rtf = rtf
         self.wtr_htg_imm_elec = imm_elec
@@ -214,23 +225,28 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
 
         if capacity >= load:
             # heating load can be met with heat pump
+            htg = load
             elec = load / cop
             rtf = load / capacity * available_rtf
             heat_extraction = load - elec
         elif (capacity + imm_htr_capacity) >= load:
             # heating load can be met with heat pump and water heater
             rtf = available_rtf
+            htg = capacity
             elec = capacity / cop
             imm_elec = load - capacity * available_rtf
             heat_extraction = capacity - elec
         else:
             # heating load cannot be met
             rtf = available_rtf
+            htg = capacity
             elec = capacity / cop
             imm_elec = imm_htr_capacity
             heat_extraction = capacity - elec
             unmet = load - capacity - imm_htr_capacity
 
+        self.htg = htg
+        self.htg_load = load
         self.htg_elec = elec
         self.htg_rtf = rtf
         self.htg_imm_elec = imm_elec
@@ -250,13 +266,15 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
 
         # collect totals
         self.hp_rtf = self.wtr_htg_rtf + self.htg_rtf
-        self.heat_extraction = self.wtr_htg_heat_extraction + self.htg_heat_extraction
+        self.heat_extraction = -self.wtr_htg_heat_extraction - self.htg_heat_extraction
 
         cp = self.fluid.get_cp(inlet_temp)
-        outlet_temp = inlet_temp - self.heat_extraction / (flow_rate * cp)
-        response = SimulationResponse(time, dt, flow_rate, outlet_temp)
+        outlet_temp = inlet_temp + self.heat_extraction / (flow_rate * cp)
+        response = SimulationResponse(time, dt, flow_rate, outlet_temp, hp_src_heat_rate=self.heat_extraction)
 
         # update report variables
+        self.htg_tot = self.htg + self.wtr_htg
+        self.imm_elec_tot = self.htg_imm_elec + self.wtr_htg_imm_elec
         self.flow_rate = flow_rate
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = outlet_temp
@@ -267,7 +285,11 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_extraction,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateSrc): self.heat_extraction,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateLoad): self.htg_tot,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ImmElect): self.imm_elec_tot,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgLoad): self.htg_load,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgLoad): self.wtr_htg_load,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.RTF): self.hp_rtf,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgRTF): self.htg_rtf,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgRTF): self.wtr_htg_rtf,

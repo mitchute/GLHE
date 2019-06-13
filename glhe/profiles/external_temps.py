@@ -11,7 +11,13 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
     Type = ComponentTypes.ExternalTemps
 
     def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        ExternalBase.__init__(self, inputs['path'], col_num=2)
+
+        if 'column' in inputs:
+            col_num = inputs['column']
+        else:
+            col_num = 2
+
+        ExternalBase.__init__(self, inputs['path'], col_num=col_num)
         SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op

@@ -65,11 +65,11 @@ class PlantLoop(object):
 
     def initialize_plant_loop_topology(self) -> None:
 
-        for comp in self.ip.input_dict['topology']['supply-side']:
-            self.supply_comps.append(make_plant_loop_component(comp, self.ip, self.op))
-
         for comp in self.ip.input_dict['topology']['demand-side']:
             self.demand_comps.append(make_plant_loop_component(comp, self.ip, self.op))
+
+        for comp in self.ip.input_dict['topology']['supply-side']:
+            self.supply_comps.append(make_plant_loop_component(comp, self.ip, self.op))
 
     def simulate(self) -> bool:
         """

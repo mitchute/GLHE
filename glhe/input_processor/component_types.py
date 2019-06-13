@@ -12,6 +12,7 @@ class ComponentTypes(object):
     GroundHeatExchanger = 'GroundHeatExchanger'
     GroundHeatExchangerLTS = 'GroundHeatExchangerLTS'
     GroundHeatExchangerSTS = 'GroundHeatExchangerSTS'
+    GroundHeatExchangerSimple = 'GroundHeatExchangerSimple'
     Path = 'Path'
     Pipe = 'Pipe'
     PlantLoop = 'PlantLoop'
