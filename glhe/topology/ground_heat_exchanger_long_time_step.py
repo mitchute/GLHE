@@ -38,7 +38,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # method constant
         k_s = self.soil.conductivity
-        self.resist_s = 1 / (2 * pi * k_s)
+        self.c_0 = 1 / (2 * pi * k_s)
         self.resist_b = inputs['borehole-resistance']
         # self.resist_p = inputs['pipe-resistance']
         # self.resist_g = self.resist_b - self.resist_p
@@ -74,19 +74,19 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         # solve for outlet temperature
         g = self.load_agg.get_g_value(dt)
         g_b = self.load_agg.get_g_b_value(dt)
-        # c_1 = self.resist_s * g + self.resist_g * g_b + self.resist_p
-        c_1 = self.resist_s * g + self.resist_b * g_b
 
-        hist = self.load_agg.calc_temporal_superposition(dt)
-        q_prev = self.load_agg.get_q_prev()
-        # c_2 = (self.resist_s + self.resist_g) * hist - c_1 * q_prev
-        c_2 = (self.resist_s + self.resist_b) * hist - c_1 * q_prev
+        hist_g, hist_g_b = self.load_agg.calc_temporal_superposition(dt)
+        c_1 = self.c_0 * hist_g + self.resist_b * hist_g_b
+
+        c_2 = (self.c_0 * g + self.resist_b * g_b)
 
         cp = self.fluid.get_cp(inlet_temp)
         c_3 = (m_dot * cp) / self.h
 
+        q_prev = self.load_agg.get_q_prev()
+
         soil_temp = self.soil.get_temp(time, self.h)
-        outlet_temp = (soil_temp + c_1 * c_3 * inlet_temp + c_2) / (1 + c_1 * c_3)
+        outlet_temp = (soil_temp + c_2 * c_3 * inlet_temp - c_2 * q_prev + c_1) / (1 + c_2 * c_3)
 
         # total heat transfer rate (W)
         q_tot = flow_rate * cp * (inlet_temp - outlet_temp)
