@@ -125,10 +125,12 @@ class TestDynamic(unittest.TestCase):
 
         tst.aggregate(t, 0)
         tst.aggregate(t, 0)
-        hist = tst.calc_temporal_superposition(dt)
-        self.assertAlmostEqual(hist, 0, delta=tol)
+        hist_g, hist_gb = tst.calc_temporal_superposition(dt)
+        self.assertAlmostEqual(hist_g, 0, delta=tol)
+        self.assertAlmostEqual(hist_gb, 0, delta=tol)
 
         t += dt
         tst.aggregate(t, 30000)
-        hist = tst.calc_temporal_superposition(dt)
-        self.assertAlmostEqual(hist, 38.7612, delta=tol)
+        hist_g, hist_gb = tst.calc_temporal_superposition(dt)
+        self.assertAlmostEqual(hist_g, 19.3806, delta=tol)
+        self.assertAlmostEqual(hist_gb, 19.3806, delta=tol)
