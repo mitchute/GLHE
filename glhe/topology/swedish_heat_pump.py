@@ -1,13 +1,13 @@
 import numpy as np
 
-from glhe.globals.functions import kw_to_w
-from glhe.globals.functions import lin_interp
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.profiles.external_base import ExternalBase
 from glhe.properties.base_properties import PropertiesBase
+from glhe.utilities.functions import kw_to_w
+from glhe.utilities.functions import lin_interp
 
 
 class SwedishHP(PropertiesBase, SimulationEntryPoint):

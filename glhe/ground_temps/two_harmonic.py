@@ -1,7 +1,7 @@
 from math import cos, exp, pi, sqrt
 
-from glhe.globals.constants import DAYS_IN_YEAR, SEC_IN_DAY
 from glhe.ground_temps.base import BaseGroundTemp
+from glhe.utilities.constants import DAYS_IN_YEAR, SEC_IN_DAY
 
 
 class TwoHarmonic(BaseGroundTemp):

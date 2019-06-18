@@ -7,11 +7,11 @@ import pandas as pd
 
 sys.path.insert(0, os.path.abspath('../../..'))
 
-from glhe.globals.constants import SEC_IN_HOUR  # noqa
-from glhe.globals.constants import SEC_IN_MIN  # noqa
-from glhe.globals.constants import SEC_IN_DAY  # noqa
-from glhe.globals.functions import load_json  # noqa
-from glhe.globals.constants import SEC_IN_YEAR  # noqa
+from glhe.utilities.constants import SEC_IN_HOUR  # noqa
+from glhe.utilities.constants import SEC_IN_MIN  # noqa
+from glhe.utilities.constants import SEC_IN_DAY  # noqa
+from glhe.utilities.functions import load_json  # noqa
+from glhe.utilities.constants import SEC_IN_YEAR  # noqa
 
 # shortcuts
 cwd = os.getcwd()

@@ -1,12 +1,12 @@
 import numpy as np
 
-from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
 from glhe.topology.ground_heat_exchanger_simple import GroundHeatExchangerSimple
+from glhe.utilities.functions import merge_dicts
 
 
 class GroundHeatExchanger(SimulationEntryPoint):

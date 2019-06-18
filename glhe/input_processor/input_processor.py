@@ -2,8 +2,8 @@ import os
 
 from jsonschema import SchemaError, ValidationError, validate
 
-from glhe.globals.functions import load_json, lower_obj
 from glhe.properties.props_manager import PropsMGR
+from glhe.utilities.functions import load_json, lower_obj
 
 
 class InputProcessor(object):

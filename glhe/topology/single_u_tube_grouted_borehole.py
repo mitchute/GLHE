@@ -1,6 +1,5 @@
 from math import log, pi
 
-from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -9,6 +8,7 @@ from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
+from glhe.utilities.functions import merge_dicts
 
 
 class Location(object):

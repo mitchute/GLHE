@@ -1,8 +1,8 @@
 from glhe.aggregation.dynamic import Dynamic
 from glhe.aggregation.no_agg import NoAgg
 from glhe.aggregation.static import Static
-from glhe.globals.functions import merge_dicts
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.utilities.functions import merge_dicts
 
 
 def make_agg_method(inputs: dict, ip: InputProcessor):

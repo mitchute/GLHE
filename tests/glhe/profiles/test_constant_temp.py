@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from glhe.globals.functions import write_json
+from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor

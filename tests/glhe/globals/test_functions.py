@@ -6,24 +6,24 @@ from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
-from glhe.globals.functions import c_to_k
-from glhe.globals.functions import hanby
-from glhe.globals.functions import hr_to_sec
-from glhe.globals.functions import kw_to_w
-from glhe.globals.functions import lin_interp
-from glhe.globals.functions import load_json
-from glhe.globals.functions import lower_obj
-from glhe.globals.functions import merge_dicts
-from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
-from glhe.globals.functions import runge_kutta_fourth_x
-from glhe.globals.functions import runge_kutta_fourth_xy
-from glhe.globals.functions import runge_kutta_fourth_y
-from glhe.globals.functions import sec_to_hr
-from glhe.globals.functions import smoothing_function
-from glhe.globals.functions import tdma_1
-from glhe.globals.functions import tdma_2
-from glhe.globals.functions import write_arrays_to_csv
-from glhe.globals.functions import write_json
+from glhe.utilities.functions import c_to_k
+from glhe.utilities.functions import hanby
+from glhe.utilities.functions import hr_to_sec
+from glhe.utilities.functions import kw_to_w
+from glhe.utilities.functions import lin_interp
+from glhe.utilities.functions import load_json
+from glhe.utilities.functions import lower_obj
+from glhe.utilities.functions import merge_dicts
+from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.utilities.functions import runge_kutta_fourth_x
+from glhe.utilities.functions import runge_kutta_fourth_xy
+from glhe.utilities.functions import runge_kutta_fourth_y
+from glhe.utilities.functions import sec_to_hr
+from glhe.utilities.functions import smoothing_function
+from glhe.utilities.functions import tdma_1
+from glhe.utilities.functions import tdma_2
+from glhe.utilities.functions import write_arrays_to_csv
+from glhe.utilities.functions import write_json
 
 
 class TestFunctions(unittest.TestCase):

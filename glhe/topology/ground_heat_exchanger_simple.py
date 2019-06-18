@@ -2,7 +2,6 @@ import numpy as np
 from math import pi
 
 from glhe.aggregation.agg_factory import make_agg_method
-from glhe.globals.functions import merge_dicts
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
@@ -10,6 +9,7 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.profiles.external_base import ExternalBase
+from glhe.utilities.functions import merge_dicts
 
 
 class GroundHeatExchangerSimple(SimulationEntryPoint):

@@ -1,6 +1,6 @@
 from math import exp, log, pi, sin, sqrt
 
-from glhe.globals.constants import gamma_const
+from glhe.utilities.constants import gamma_const
 
 
 class FlowFraction(object):

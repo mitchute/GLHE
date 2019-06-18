@@ -5,7 +5,7 @@ import numpy as np
 from glhe.aggregation.agg_types import AggregationTypes
 from glhe.aggregation.base_agg import BaseAgg
 from glhe.aggregation.sub_hourly import SubHour
-from glhe.globals.constants import SEC_IN_HOUR
+from glhe.utilities.constants import SEC_IN_HOUR
 
 
 class Dynamic(BaseAgg):

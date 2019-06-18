@@ -2,8 +2,8 @@ import os
 import tempfile
 import unittest
 
-from glhe.globals.functions import load_json
-from glhe.globals.functions import write_json
+from glhe.utilities.functions import load_json
+from glhe.utilities.functions import write_json
 from standalone.plant_loop import PlantLoop
 
 norm = os.path.normpath

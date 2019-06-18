@@ -5,9 +5,6 @@ import pygfunction as gt
 from math import log, pi
 
 from glhe.aggregation.agg_factory import make_agg_method
-from glhe.globals.constants import SEC_IN_DAY
-from glhe.globals.functions import merge_dicts
-from glhe.globals.functions import write_arrays_to_csv
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
@@ -16,6 +13,9 @@ from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.path import Path
 from glhe.topology.radial_numerical_borehole import RadialNumericalBH
+from glhe.utilities.constants import SEC_IN_DAY
+from glhe.utilities.functions import merge_dicts
+from glhe.utilities.functions import write_arrays_to_csv
 
 cwd = os.getcwd()
 
@@ -189,21 +189,24 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
     def generate_g_b(self):
 
         q = 40  # W/m
-        flow_rate = 0.3  # kg/s
+        flow_rate = 0.5  # kg/s
         temperature = self.ip.init_temp()  # C
 
         # resistance values
         ave_bh_resist = 0
+        # ave_grout_resist = 0
         # ave_pipe_resist = 0
 
         for idx_path, path in enumerate(self.paths):
             for idx_comp, comp in enumerate(path.components):
                 if comp.Type == ComponentTypes.BoreholeSingleUTubeGrouted:
                     ave_bh_resist += comp.calc_bh_average_resistance(temperature=temperature, flow_rate=flow_rate)
+                    # ave_grout_resist += comp.calc_bh_grout_resistance(temperature=temperature, flow_rate=flow_rate)
                     # ave_pipe_resist += comp.pipe.calc_resist(temperature=temperature, flow_rate=flow_rate)
 
         ave_bh_resist /= self.num_bh
         # ave_pipe_resist /= self.num_bh
+        # ave_grout_resist /= self.num_bh
         # ave_grout_resist = ave_bh_resist - ave_pipe_resist
 
         dt = 30
@@ -225,10 +228,28 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
             # g_b.append((t_out - t_bh) / (q * ave_grout_resist))
             g_b.append((t_out - t_bh) / (q * ave_bh_resist))
 
-        # TODO: check that this isn't causing errors
-        # TODO: may need to add some smoothing here
+        # check for convergence
+        err = (g_b[-1] - g_b[-2]) / (lntts_b[-1] - lntts_b[-2])
+
+        t = times[-1]
         end_time = self.ip.input_dict['simulation']['runtime']
-        if end_time > SEC_IN_DAY:
+        while err > 0.02:
+            t += dt
+            cp = self.fluid.get_cp(temperature)
+            temperature = temperature + q_tot / (flow_rate * cp)
+            response = SimulationResponse(t, dt, flow_rate, temperature)
+            temperature = self.simulate_time_step(response).temperature
+            t_out = self.outlet_temperature
+            t_bh = self.bh_wall_temperature
+            lntts_b.append(log((t + dt) / self.ts))
+            # g_b.append((t_out - t_bh) / (q * ave_grout_resist))
+            g_b.append((t_out - t_bh) / (q * ave_bh_resist))
+            err = (g_b[-1] - g_b[-2]) / (lntts_b[-1] - lntts_b[-2])
+            if t > end_time:
+                break
+
+        # add point at end time
+        if end_time > t:
             lntts_b.append(log(end_time / self.ts))
             g_b.append(g_b[-1])
 

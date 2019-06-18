@@ -1,7 +1,7 @@
 from math import cos, exp, pi, sqrt
 
-from glhe.globals.constants import SEC_IN_YEAR
 from glhe.ground_temps.base import BaseGroundTemp
+from glhe.utilities.constants import SEC_IN_YEAR
 
 
 class SingleHarmonic(BaseGroundTemp):

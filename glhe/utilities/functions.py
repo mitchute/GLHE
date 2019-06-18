@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from math import exp, factorial
 
-from glhe.globals.constants import SEC_IN_HOUR
+from glhe.utilities.constants import SEC_IN_HOUR
 
 
 def smoothing_function(x: float, a: float, b: float) -> float:

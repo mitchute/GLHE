@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../../..'))
 
-from glhe.globals.constants import SEC_IN_YEAR  # noqa
+from glhe.utilities.constants import SEC_IN_YEAR  # noqa
 from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 from studies.aggregation.static.setup_static_cases import write_static_json_input  # noqa
 

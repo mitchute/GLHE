@@ -3,8 +3,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../../..'))
 
-from glhe.globals.constants import SEC_IN_YEAR  # noqa
-from glhe.globals.functions import load_json, write_json  # noqa
+from glhe.utilities.constants import SEC_IN_YEAR  # noqa
+from glhe.utilities.functions import load_json, write_json  # noqa
 from studies.aggregation.scripts.write_pbs import write_pbs  # noqa
 
 run_times = [1 * SEC_IN_YEAR,

@@ -4,9 +4,9 @@ from CoolProp.CoolProp import PropsSI
 from numpy import arange
 from scipy.interpolate import interp1d
 
-from glhe.globals.functions import c_to_k, k_to_c
 from glhe.properties.fluid_property_types import FluidPropertyType
 from glhe.properties.fluid_types import FluidType
+from glhe.utilities.functions import c_to_k, k_to_c
 
 
 class Fluid(object):

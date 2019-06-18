@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 from jsonschema.exceptions import ValidationError
 
-from glhe.globals.functions import write_json
+from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 
 

@@ -5,8 +5,8 @@ import sys
 from typing import Union
 import datetime as dt
 
-from glhe.globals.functions import merge_dicts
-from glhe.globals.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.utilities.functions import merge_dicts
+from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
 from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor

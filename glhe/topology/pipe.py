@@ -3,15 +3,15 @@ from collections import deque
 import numpy as np
 from math import log, pi, sqrt
 
-from glhe.globals.functions import lin_interp
-from glhe.globals.functions import smoothing_function
-from glhe.globals.functions import tdma_1
-from glhe.globals.functions import un_reverse_idx
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
+from glhe.utilities.functions import lin_interp
+from glhe.utilities.functions import smoothing_function
+from glhe.utilities.functions import tdma_1
+from glhe.utilities.functions import un_reverse_idx
 
 
 class Pipe(PropertiesBase, SimulationEntryPoint):
