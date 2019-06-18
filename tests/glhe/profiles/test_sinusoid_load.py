@@ -4,11 +4,11 @@ import unittest
 
 from math import pi
 
-from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.sinusoid_load import SinusoidLoad
+from glhe.utilities.functions import write_json
 
 
 class TestSinusoidLoad(unittest.TestCase):

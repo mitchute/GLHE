@@ -2,10 +2,10 @@ import os
 import tempfile
 import unittest
 
-from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.path import Path
+from glhe.utilities.functions import write_json
 
 join = os.path.join
 norm = os.path.normpath

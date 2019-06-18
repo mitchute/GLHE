@@ -2,7 +2,6 @@ import os
 import tempfile
 import unittest
 
-from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.output_processor.output_processor import OutputProcessor
@@ -11,6 +10,7 @@ from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.constant_temp import ConstantTemp
 from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
 from glhe.topology.pipe import Pipe
+from glhe.utilities.functions import write_json
 
 join = os.path.join
 norm = os.path.normpath

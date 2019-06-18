@@ -2,12 +2,12 @@ import os
 import tempfile
 import unittest
 
-from glhe.utilities.functions import w_to_kw
-from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.swedish_heat_pump import SwedishHP
+from glhe.utilities.functions import w_to_kw
+from glhe.utilities.functions import write_json
 
 
 class TestSwedishHP(unittest.TestCase):

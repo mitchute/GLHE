@@ -2,12 +2,12 @@ import os
 import tempfile
 import unittest
 
-from glhe.utilities.functions import write_json
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_flow import ConstantFlow
 from glhe.profiles.external_flow import ExternalFlow
 from glhe.profiles.flow_factory import make_flow_profile
+from glhe.utilities.functions import write_json
 
 
 class TestFlowFactory(unittest.TestCase):
