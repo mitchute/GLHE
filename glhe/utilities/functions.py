@@ -4,6 +4,7 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from math import exp, factorial
+from scipy.interpolate.interpolate import interp1d
 from scipy.interpolate.interpolate import interp2d
 
 from glhe.utilities.constants import SEC_IN_HOUR
@@ -376,9 +377,26 @@ def write_arrays_to_csv(path: str, arrays: Union[list, np.ndarray]) -> None:
     df.to_csv(path, header=False, index=False)
 
 
+def load_interp1d(data_path: str):
+    """
+    Setup 1D interpolation
+
+    :param data_path: path to csv file with columnated data, e.g. 'x1,y1'
+    :return: initialized interp1d object
+    """
+
+    data = np.genfromtxt(data_path, delimiter=',')
+    _, num_col = data.shape
+
+    if num_col != 2:
+        raise ValueError("Number of columns in '{}' must be 2".format(data_path))
+
+    return interp1d(data[:, 0], data[:, 1], fill_value='extrapolate')
+
+
 def load_interp2d(xz_data_path: str, y: list):
     """
-    Intended to interpolate simple data with two independent variables
+    Setup 2D interpolation
 
     Example:
     x1, y1, z1, x2, y2, z2\n
@@ -396,12 +414,13 @@ def load_interp2d(xz_data_path: str, y: list):
 
     :param xz_data_path: path to csv file with columnated data, e.g. 'x1,z1,z2,...,zn'
     :param y: list of *constant* values for the second independent variable
+    :return initialized interp2d instance
     """
 
     data = np.genfromtxt(xz_data_path, delimiter=',')
-    _, nz = data.shape
+    _, num_col = data.shape
 
-    num_series = nz - 1
+    num_series = num_col - 1
 
     # check to make sure number of columns and length of 'y' match
     if num_series != len(y):

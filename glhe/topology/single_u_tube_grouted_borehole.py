@@ -30,8 +30,17 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.soil = ip.props_mgr.soil
 
         # get borehole definition data
-        bh_inputs = ip.get_definition_object('borehole', inputs['name'])
-        bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
+        if 'borehole-definition' in inputs:
+            defs = inputs['borehole-definition']
+            bh_inputs = {}
+            bh_inputs['location']['x'] = defs['location']['x']
+            bh_inputs['location']['y'] = defs['location']['y']
+            bh_inputs['location']['z'] = defs['location']['z']
+
+            bh_def_inputs = {}
+        else:
+            bh_inputs = ip.get_definition_object('borehole', inputs['name'])
+            bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
 
         # init geometry
         self.h = bh_def_inputs['length']

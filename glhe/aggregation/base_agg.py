@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 from scipy.interpolate import interp1d
 
+from glhe.utilities.functions import load_interp1d
+
 join = os.path.join
 norm = os.path.normpath
 cwd = os.getcwd()
@@ -15,12 +17,12 @@ class BaseAgg(ABC):
         # g-function values
         if 'g-function-path' in inputs:
             path_g = norm(join(cwd, inputs['g-function-path']))
-            data_g = np.genfromtxt(path_g, delimiter=',')
+            self.interp_g = load_interp1d(path_g)
         elif 'lntts' and 'g-values' in inputs:
             data_g = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
+            self.interp_g = interp1d(data_g[:, 0], data_g[:, 1], fill_value='extrapolate')
         else:
             raise KeyError('g-function data not found.')
-        self.interp_g = interp1d(data_g[:, 0], data_g[:, 1], fill_value='extrapolate')
 
         # g_b-function values
         self.interp_g_b = None
