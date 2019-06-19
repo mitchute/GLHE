@@ -12,7 +12,7 @@ class TestRadialNumericalBH(unittest.TestCase):
     def add_instance():
         d = {'pipe-outer-diameter': 0.02670,
              'pipe-inner-diameter': 0.02184,
-             'borehole-diameter': 0.109982,
+             'diameter': 0.109982,
              'borehole-resistance': 0.2122,
              'convection-resistance': 0.05,
              'fluid-specific-heat': 4180,
@@ -24,7 +24,7 @@ class TestRadialNumericalBH(unittest.TestCase):
              'soil-conductivity': 2.432,
              'soil-specific-heat': 1562,
              'soil-density': 1500,
-             'borehole-length': 100}
+             'length': 100}
 
         return RadialNumericalBH(d)
 
