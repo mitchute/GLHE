@@ -5,12 +5,14 @@ import unittest
 from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
+from scipy.interpolate.interpolate import interp2d
 
 from glhe.utilities.functions import c_to_k
 from glhe.utilities.functions import hanby
 from glhe.utilities.functions import hr_to_sec
 from glhe.utilities.functions import kw_to_w
 from glhe.utilities.functions import lin_interp
+from glhe.utilities.functions import load_interp2d
 from glhe.utilities.functions import load_json
 from glhe.utilities.functions import lower_obj
 from glhe.utilities.functions import merge_dicts
@@ -237,3 +239,35 @@ class TestFunctions(unittest.TestCase):
                 tokens = line.split(',')
                 self.assertEqual(float(tokens[0]), a_1[idx])
                 self.assertEqual(float(tokens[1]), a_2[idx])
+
+
+class TestInterp2D(unittest.TestCase):
+
+    @staticmethod
+    def add_instance():
+        temp_dir = tempfile.mkdtemp()
+        f_path = os.path.join(temp_dir, 'temp.csv')
+        with open(f_path, 'w') as f:
+            f.write('0,5,8\n')
+            f.write('1,6,9\n')
+            f.write('2,7,10\n')
+
+        return load_interp2d(f_path, [3, 4])
+
+    def test_init(self):
+        tst = self.add_instance()
+        self.assertTrue(isinstance(tst, interp2d))
+
+    def test_get_value(self):
+        tst = self.add_instance()
+
+        self.assertEqual(tst(0, 3), 5)
+        self.assertEqual(tst(1, 3), 6)
+        self.assertEqual(tst(2, 3), 7)
+
+        self.assertEqual(tst(0, 4), 8)
+        self.assertEqual(tst(1, 4), 9)
+        self.assertEqual(tst(2, 4), 10)
+
+        self.assertEqual(tst(0.5, 3.5), 7)
+        self.assertEqual(tst(1.5, 3.5), 8)
