@@ -30,14 +30,17 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.soil = ip.props_mgr.soil
 
         # get borehole definition data
-        if 'borehole-definition' in inputs:
-            defs = inputs['borehole-definition']
+        if 'average-borehole' in inputs:
             bh_inputs = {}
-            bh_inputs['location']['x'] = defs['location']['x']
-            bh_inputs['location']['y'] = defs['location']['y']
-            bh_inputs['location']['z'] = defs['location']['z']
+            bh_inputs['location'] = {}
+            bh_inputs['location']['x'] = 0
+            bh_inputs['location']['y'] = 0
+            bh_inputs['location']['z'] = 0
 
-            bh_def_inputs = {}
+            bh_def_inputs = {'length': inputs['average-borehole']['length']}
+            bh_def_inputs['diameter'] = inputs['average-borehole']['diameter']
+            bh_def_inputs['shank-spacing'] = inputs['average-borehole']['shank-spacing']
+            bh_def_inputs['segments'] = 10
         else:
             bh_inputs = ip.get_definition_object('borehole', inputs['name'])
             bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
@@ -52,22 +55,45 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.location = Location(bh_inputs['location']['x'], bh_inputs['location']['y'], bh_inputs['location']['z'])
 
         # init grout
-        self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name']))
+        if 'average-borehole' in inputs:
+            grout_inputs = {'conductivity': inputs['average-borehole']['grout-conductivity'],
+                            'density': inputs['average-borehole']['grout-density'],
+                            'specific-heat': inputs['average-borehole']['grout-specific-heat']}
+        else:
+            grout_inputs = ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name'])
+
+        self.grout = PropertiesBase(grout_inputs)
 
         # init pipes
         self.num_pipes = 2
-        pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.h}
+        if 'average-borehole' in inputs:
+            pipe_inputs = {'average-pipe': {'inner-diameter': inputs['average-borehole']['pipe-inner-diameter'],
+                                            'outer-diameter': inputs['average-borehole']['pipe-outer-diameter'],
+                                            'conductivity': inputs['average-borehole']['pipe-conductivity'],
+                                            'density': inputs['average-borehole']['pipe-density'],
+                                            'specific-heat': inputs['average-borehole']['pipe-specific-heat']},
+                           'length': inputs['average-borehole']['length']}
+        else:
+            pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.h}
+
         self.pipe = Pipe(pipe_inputs, ip, op)
 
         # init segments
         self.segments = []
         self.num_segments = bh_def_inputs['segments']
         seg_length = self.h / self.num_segments
-        seg_inputs = {'length': seg_length,
-                      'diameter': self.diameter,
-                      'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
-                      'grout-def-name': bh_def_inputs['grout-def-name'],
-                      'pipe-def-name': bh_def_inputs['pipe-def-name']}
+        if 'average-borehole' in inputs:
+            seg_inputs = {'length': seg_length,
+                          'diameter': self.diameter,
+                          'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
+                          'average-grout': grout_inputs,
+                          'average-pipe': pipe_inputs['average-pipe']}
+        else:
+            seg_inputs = {'length': seg_length,
+                          'diameter': self.diameter,
+                          'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
+                          'grout-def-name': bh_def_inputs['grout-def-name'],
+                          'pipe-def-name': bh_def_inputs['pipe-def-name']}
 
         for idx in range(self.num_segments):
             seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], idx + 1)
@@ -92,7 +118,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         # Initialize other parameters
         self.flow_rate_prev = 0
-        self.vol_flow_rate = 0
         self.friction_factor = 0.02
         self.update_beta_temp_prev = 0
 

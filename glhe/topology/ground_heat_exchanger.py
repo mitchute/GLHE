@@ -1,5 +1,3 @@
-import numpy as np
-
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
@@ -26,20 +24,14 @@ class GroundHeatExchanger(SimulationEntryPoint):
             # init TRCM model
             self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
 
-            if 'g_b-function-path' in inputs:
-                data_g_b = np.genfromtxt(inputs['g_b-function-path'], delimiter=',')
-                self.sts_ghe.lntts_b = data_g_b[:, 0]
-                self.sts_ghe.g_b = data_g_b[:, 1]
-            else:
+            if 'g_b-function-path' not in inputs:
                 self.sts_ghe.generate_g_b()
 
             # init enhanced model
             d_bh_ave = self.sts_ghe.average_bh()
-            lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h, 'number-boreholes': self.sts_ghe.num_bh,
-                                              'lntts': self.sts_ghe.lntts, 'g-values': self.sts_ghe.g,
-                                              'lntts_b': self.sts_ghe.lntts_b, 'g_b-values': self.sts_ghe.g_b,
-                                              'borehole-resistance': d_bh_ave['borehole-resistance'],
-                                              'pipe-resistance': d_bh_ave['pipe-resistance']})
+            lts_inputs = merge_dicts(inputs, {'length': self.sts_ghe.h,
+                                              'number-boreholes': self.sts_ghe.num_bh,
+                                              'average-borehole': d_bh_ave})
 
             self.lts_ghe = GroundHeatExchangerLTS(lts_inputs, ip, op)
 

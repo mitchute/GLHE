@@ -60,7 +60,7 @@ class RadialNumericalBH(object):
         fluid_radius = conv_radius - (num_fluid_cells - 0.5) * pcf_cell_thickness
 
         # setup grout layer geometry
-        grout_radius = inputs['borehole-diameter'] / 2.0
+        grout_radius = inputs['diameter'] / 2.0
         grout_cell_thickness = (grout_radius - pipe_outer_radius) / num_grout_cells
 
         # setup soil layer geometry
@@ -197,7 +197,7 @@ class RadialNumericalBH(object):
         self.bh_resist = inputs['borehole-resistance']
         self.c_0 = 2 * pi * inputs['soil-conductivity']
         soil_diffusivity = inputs['soil-conductivity'] / (inputs['soil-density'] * inputs['soil-specific-heat'])
-        self.t_s = inputs['borehole-length'] ** 2 / (9 * soil_diffusivity)
+        self.t_s = inputs['length'] ** 2 / (9 * soil_diffusivity)
 
     def calc_sts_g_functions(self, final_time=SEC_IN_DAY, calculate_at_bh_wall=False) -> tuple:
 

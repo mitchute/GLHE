@@ -5,6 +5,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 from glhe.utilities.functions import load_interp1d
+from glhe.utilities.functions import load_interp2d
 
 join = os.path.join
 norm = os.path.normpath
@@ -27,9 +28,10 @@ class BaseAgg(ABC):
         # g_b-function values
         self.interp_g_b = None
         if 'g_b-function-path' in inputs:
-            path_g_b = norm(join(cwd, inputs['g_b-function-path']))
-            data_g_b = np.genfromtxt(path_g_b, delimiter=',')
-            self.interp_g_b = interp1d(data_g_b[:, 0], data_g_b[:, 1], fill_value='extrapolate')
+            if 'g_b-flow-rates' in inputs:
+                self.interp_g_b = load_interp2d(inputs['g_b-function-path'], inputs['g_b-flow-rates'])
+            else:
+                self.interp_g_b = load_interp1d(inputs['g_b-function-path'])
         elif 'lntts_b' and 'g_b-values' in inputs:
             data_g_b = np.transpose(np.array([inputs['lntts_b'], inputs['g_b-values']]))
             self.interp_g_b = interp1d(data_g_b[:, 0], data_g_b[:, 1], fill_value='extrapolate')
@@ -50,14 +52,14 @@ class BaseAgg(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def calc_temporal_superposition(self, time_step: int) -> float:
+    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> float:
         pass  # pragma: no cover
 
     @abstractmethod
     def get_g_value(self, time_step: int) -> float:
         pass  # pragma: no cover
 
-    def get_g_b_value(self, time_step: int) -> float:
+    def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         pass  # pragma: no cover
 
     def get_q_prev(self) -> float:

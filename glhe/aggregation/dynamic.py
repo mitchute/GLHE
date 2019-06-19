@@ -92,7 +92,7 @@ class Dynamic(BaseAgg):
         # update time
         self.prev_update_time = time
 
-    def calc_temporal_superposition(self, time_step: int) -> Union[float, tuple]:
+    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> Union[float, tuple]:
 
         # compute temporal superposition
         # this includes all thermal history before the present time
@@ -110,7 +110,10 @@ class Dynamic(BaseAgg):
         # convolution of delta_q and the g-function values
         if self.interp_g_b:
             # convolution for "g" and "g_b" g-functions
-            g_b = self.interp_g_b(lntts)
+            if not flow_rate:
+                g_b = self.interp_g_b(lntts)
+            else:
+                g_b = np.flipud(self.interp_g_b(lntts, flow_rate))
             return float(np.dot(dq, g)), float(np.dot(dq, g_b))
         else:
             # convolution for "g" g-functions only
@@ -120,9 +123,12 @@ class Dynamic(BaseAgg):
         lntts = np.log(time_step / self.ts)
         return float(self.interp_g(lntts))
 
-    def get_g_b_value(self, time_step: int) -> float:
+    def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         lntts = np.log(time_step / self.ts)
-        return float(self.interp_g_b(lntts))
+        if not flow_rate:
+            return float(self.interp_g_b(lntts))
+        else:
+            return float(self.interp_g_b(lntts, flow_rate))
 
     def get_q_prev(self) -> float:
         return float(self.sub_hr.energy[-1] / self.sub_hr.dts[-1])

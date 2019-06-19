@@ -19,8 +19,21 @@ class SingleUTubeGroutedSegment(object):
         self.fluid = ip.props_mgr.fluid
         self.soil = ip.props_mgr.soil
 
-        self.pipe = Pipe({'pipe-def-name': inputs['pipe-def-name'], 'length': inputs['length']}, ip, op)
-        self.grout = PropertiesBase(ip.get_definition_object('grout-definitions', inputs['grout-def-name']))
+        if 'average-pipe' in inputs:
+            pipe_inputs = {}
+            pipe_inputs['average-pipe'] = inputs['average-pipe']
+            pipe_inputs['length'] = inputs['length']
+        else:
+            pipe_inputs = {'pipe-def-name': inputs['pipe-def-name'], 'length': inputs['length']}
+
+        self.pipe = Pipe(pipe_inputs, ip, op)
+
+        if 'average-grout' in inputs:
+            grout_inputs = inputs['average-grout']
+        else:
+            grout_inputs = ip.get_definition_object('grout-definitions', inputs['grout-def-name'])
+
+        self.grout = PropertiesBase(grout_inputs)
 
         self.num_pipes = 2
         self.length = inputs['length']

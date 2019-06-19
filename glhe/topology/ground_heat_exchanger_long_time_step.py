@@ -7,6 +7,7 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
+from glhe.topology.borehole_factory import make_borehole
 from glhe.utilities.functions import merge_dicts
 
 
@@ -29,20 +30,24 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # load aggregation method
         ts = self.h ** 2 / (9 * self.soil.diffusivity)
-        la_inputs = merge_dicts(inputs['load-aggregation'], {'lntts': inputs['lntts'],
-                                                             'g-values': inputs['g-values'],
-                                                             'lntts_b': inputs['lntts_b'],
-                                                             'g_b-values': inputs['g_b-values'],
+        la_inputs = merge_dicts(inputs['load-aggregation'], {'g-function-path': inputs['g-function-path'],
+                                                             'g_b-function-path': inputs['g_b-function-path'],
                                                              'time-scale': ts})
+
+        if 'g_b-flow-rates' in inputs:
+            la_inputs['g_b-flow-rates'] = inputs['g_b-flow-rates']
         self.load_agg = make_agg_method(la_inputs, ip)
 
-        # method constant
+        # average borehole
+        d_ave_bh = {}
+        d_ave_bh['average-borehole'] = inputs['average-borehole']
+        d_ave_bh['name'] = 'average-borehole'
+        d_ave_bh['borehole-type'] = 'single-grouted'
+        self.ave_bh = make_borehole(d_ave_bh, ip, op)
+
+        # method constants
         k_s = self.soil.conductivity
         self.c_0 = 1 / (2 * pi * k_s)
-        self.resist_b = inputs['borehole-resistance']
-        # self.resist_p = inputs['pipe-resistance']
-        # self.resist_g = self.resist_b - self.resist_p
-
         self.c_1 = 0
         self.c_2 = 0
         self.c_3 = 0
@@ -65,7 +70,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         inlet_temp = inputs.temperature
 
         # per bh variables
-        m_dot = flow_rate / self.num_paths
+        flow_rate_path = flow_rate / self.num_paths
 
         # aggregate load from previous time
         # load aggregation method takes care of what happens during iterations
@@ -73,15 +78,17 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # solve for outlet temperature
         g = self.load_agg.get_g_value(dt)
-        g_b = self.load_agg.get_g_b_value(dt)
+        g_b = self.load_agg.get_g_b_value(dt, flow_rate_path)
 
-        hist_g, hist_g_b = self.load_agg.calc_temporal_superposition(dt)
-        c_1 = self.c_0 * hist_g + self.resist_b * hist_g_b
+        resist_b = self.ave_bh.calc_bh_average_resistance(temperature=inlet_temp, flow_rate=flow_rate)
 
-        c_2 = (self.c_0 * g + self.resist_b * g_b)
+        hist_g, hist_g_b = self.load_agg.calc_temporal_superposition(dt, flow_rate_path)
+        c_1 = self.c_0 * hist_g + resist_b * hist_g_b
+
+        c_2 = (self.c_0 * g + resist_b * g_b)
 
         cp = self.fluid.get_cp(inlet_temp)
-        c_3 = (m_dot * cp) / self.h
+        c_3 = (flow_rate_path * cp) / self.h
 
         q_prev = self.load_agg.get_q_prev()
 

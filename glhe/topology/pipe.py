@@ -25,7 +25,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.op = op
 
         # load the properties from the definitions
-        pipe_props = ip.get_definition_object('pipe-definitions', inputs['pipe-def-name'])
+        if 'average-pipe' in inputs:
+            pipe_props = inputs['average-pipe']
+        else:
+            pipe_props = ip.get_definition_object('pipe-definitions', inputs['pipe-def-name'])
 
         # init the properties
         PropertiesBase.__init__(self, pipe_props)
