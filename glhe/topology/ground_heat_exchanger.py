@@ -25,7 +25,10 @@ class GroundHeatExchanger(SimulationEntryPoint):
             self.sts_ghe = GroundHeatExchangerSTS(inputs, ip, op)
 
             if 'g_b-function-path' not in inputs:
-                self.sts_ghe.generate_g_b()
+                if 'g_b-flow-rate' not in inputs:
+                    self.sts_ghe.generate_g_b()
+                else:
+                    self.sts_ghe.generate_g_b(inputs['g_b-flow-rate'])
 
             # init enhanced model
             d_bh_ave = self.sts_ghe.average_bh()

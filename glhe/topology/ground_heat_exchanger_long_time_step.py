@@ -48,9 +48,6 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         # method constants
         k_s = self.soil.conductivity
         self.c_0 = 1 / (2 * pi * k_s)
-        self.c_1 = 0
-        self.c_2 = 0
-        self.c_3 = 0
 
         # heat rate (W/m)
         self.q = 0
@@ -62,6 +59,9 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.heat_rate = 0
         self.inlet_temperature = ip.init_temp()
         self.outlet_temperature = ip.init_temp()
+        self.bh_wall_temperature = ip.init_temp()
+        self.resist_b = 0
+        self.resist_b_eff = 0
 
     def simulate_time_step(self, inputs: SimulationResponse):
         time = inputs.time
@@ -108,10 +108,9 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = outlet_temp
         self.heat_rate = q_tot
-
-        self.c_1 = c_1
-        self.c_2 = c_2
-        self.c_3 = c_3
+        self.resist_b = resist_b
+        self.bh_wall_temperature = soil_temp + self.c_0 * hist_g
+        self.resist_b_eff = self.ave_bh.calc_bh_effective_resistance_uhf(temperature=inlet_temp, flow_rate=flow_rate)
 
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
@@ -119,6 +118,6 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C1'): self.c_1,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C2'): self.c_2,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, 'C3'): self.c_3}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHWallTemp): self.bh_wall_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_b,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHEffResist): self.resist_b_eff}

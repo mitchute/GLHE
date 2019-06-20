@@ -46,7 +46,7 @@
   "grout-definitions": [
     {
       "name": "standard grout",
-      "conductivity": 0.85,
+      "conductivity": 1.2,
       "density": 2500,
       "specific-heat": 1560
     }

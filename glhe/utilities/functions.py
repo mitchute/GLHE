@@ -3,7 +3,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-from math import exp, factorial
+from math import ceil, exp, factorial, floor
 from scipy.interpolate.interpolate import interp1d
 from scipy.interpolate.interpolate import interp2d
 
@@ -432,3 +432,28 @@ def load_interp2d(xz_data_path: str, y: list):
         z.append(data[:, idx])
 
     return interp2d(x, y, z)
+
+
+def resample_g_functions(lntts, g, lntts_interval=0.1):
+    """
+    Resample g-function data at regular ln(t/ts) intervals
+
+    :param lntts: input ln(t/ts) data
+    :param g: corresponding g-function data
+    :param lntts_interval: resample interval
+    """
+
+    # make sure lntts and g have the same number of elements
+    if len(lntts) != len(g):
+        raise ValueError('Number of lntts and g elements is not consistent')
+
+    # min/max lntts values
+    min_lntts = lntts_interval * ceil(lntts[0] / lntts_interval)
+    max_lntts = lntts_interval * floor(lntts[-1] / lntts_interval)
+
+    new_lntts = np.arange(min_lntts, max_lntts + lntts_interval, lntts_interval)
+
+    f = interp1d(lntts, g)
+    new_g = f(new_lntts)
+
+    return new_lntts, new_g

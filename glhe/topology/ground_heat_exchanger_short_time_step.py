@@ -16,6 +16,7 @@ from glhe.topology.path import Path
 from glhe.topology.radial_numerical_borehole import RadialNumericalBH
 from glhe.utilities.constants import SEC_IN_DAY
 from glhe.utilities.functions import merge_dicts
+from glhe.utilities.functions import resample_g_functions
 from glhe.utilities.functions import write_arrays_to_csv
 
 cwd = os.getcwd()
@@ -199,10 +200,11 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.g = np.insert(self.g, 0, 0)
         write_arrays_to_csv(os.path.join(cwd, 'g.csv'), [self.lntts, self.g])
 
-    def generate_g_b(self):
+    def generate_g_b(self, flow_rate=0.5):
 
-        q = 40  # W/m
-        flow_rate_path = 0.5  # kg/s
+        q = 10  # W/m
+        flow_rate = flow_rate
+        flow_rate_path = flow_rate / self.num_paths  # kg/s
         temperature = self.ip.init_temp()  # C
 
         d_ave_bh = {'average-borehole': self.average_bh()}
@@ -212,7 +214,6 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         dt = 30
         times = range(0, SEC_IN_DAY + dt, dt)
-        flow_rate = flow_rate_path * self.num_paths  # kg/s
         q_tot = q * self.num_bh * self.h  # W
         r_b = ave_bh.calc_bh_average_resistance(temperature, flow_rate_path)
 
@@ -253,8 +254,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
             lntts_b.append(log(end_time / self.ts))
             g_b.append(g_b[-1])
 
-        self.lntts_b = lntts_b
-        self.g_b = g_b
+        self.lntts_b, self.g_b = resample_g_functions(lntts_b, g_b, lntts_interval=0.1)
 
         write_arrays_to_csv(os.path.join(cwd, 'g_b.csv'), [self.lntts_b, self.g_b])
 

@@ -33,7 +33,7 @@
     {
       "name": "constant load",
       "load-profile-type": "constant",
-      "value": 4000
+      "value": 1000
     }
   ],
   "fluid": {
@@ -46,7 +46,7 @@
   "grout-definitions": [
     {
       "name": "standard grout",
-      "conductivity": 0.85,
+      "conductivity": 1.2,
       "density": 2500,
       "specific-heat": 1560
     }
@@ -54,7 +54,7 @@
   "ground-heat-exchanger": [
     {
       "name": "GHE 1",
-      "simulation-mode": "enhanced",
+      "simulation-mode": "direct",
       "flow-paths": [
         {
           "name": "path 1",

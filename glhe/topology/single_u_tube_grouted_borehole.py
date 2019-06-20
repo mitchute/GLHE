@@ -116,15 +116,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.sigma = sigma_num / sigma_den
         self.beta = None
 
-        # Initialize other parameters
-        self.flow_rate_prev = 0
-        self.friction_factor = 0.02
-        self.update_beta_temp_prev = 0
-
-        # radial-numerical model
-        self.rn_model_ready = False
-        self.la_method = None
-
         # report variables
         self.heat_rate = 0
         self.heat_rate_bh = 0
@@ -269,11 +260,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             # can't set both flow rate and pipe resistance simultaneously
             raise ValueError("'flow_rate' and 'pipe_resist' cannot both be passed.")  # pragma: no cover
         elif flow_rate:
-            # check for same conditions as previous call
-            if (flow_rate != self.flow_rate_prev) and (temperature != self.update_beta_temp_prev):
-                self.flow_rate_prev = flow_rate
-                self.update_beta_temp_prev = temperature
-                self.beta = 2 * pi * self.grout.conductivity * self.pipe.calc_resist(flow_rate, temperature)
+            self.beta = 2 * pi * self.grout.conductivity * self.pipe.calc_resist(flow_rate, temperature)
             return self.beta
         elif pipe_resist:
             # setting pipe resistance directly

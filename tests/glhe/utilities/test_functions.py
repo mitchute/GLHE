@@ -19,6 +19,7 @@ from glhe.utilities.functions import load_json
 from glhe.utilities.functions import lower_obj
 from glhe.utilities.functions import merge_dicts
 from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.utilities.functions import resample_g_functions
 from glhe.utilities.functions import runge_kutta_fourth_x
 from glhe.utilities.functions import runge_kutta_fourth_xy
 from glhe.utilities.functions import runge_kutta_fourth_y
@@ -241,6 +242,18 @@ class TestFunctions(unittest.TestCase):
                 tokens = line.split(',')
                 self.assertEqual(float(tokens[0]), a_1[idx])
                 self.assertEqual(float(tokens[1]), a_2[idx])
+
+    def test_resample_g_functions(self):
+
+        lntts = [-16.5, -16.0, -15.5, -15.5, -15.0, -14.5, -14.0]
+        g = [0, 1, 2, 3, 4, 5, 6]
+
+        new_lntts, new_g = resample_g_functions(lntts, g, lntts_interval=0.25)
+
+        self.assertEqual(new_lntts[0], -16.50)
+        self.assertEqual(new_lntts[1], -16.25)
+        self.assertEqual(new_lntts[-2], -14.25)
+        self.assertEqual(new_lntts[-1], -14.00)
 
 
 class TestInterp1D(unittest.TestCase):
