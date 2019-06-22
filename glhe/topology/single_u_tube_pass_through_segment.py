@@ -16,7 +16,7 @@ class SingleUTubePassThroughSegment(object):
     def get_outlet_2_temp(self):
         return self.temperature
 
-    def simulate_time_step(self, _, inputs: dict):
+    def simulate_time_step(self, _, __, inputs: dict):
         self.temperature = inputs['inlet-1-temp']
 
     def report_outputs(self) -> dict:

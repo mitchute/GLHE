@@ -19,8 +19,6 @@ from glhe.utilities.functions import merge_dicts
 from glhe.utilities.functions import resample_g_functions
 from glhe.utilities.functions import write_arrays_to_csv
 
-cwd = os.getcwd()
-
 
 class GroundHeatExchangerSTS(SimulationEntryPoint):
     Type = ComponentTypes.GroundHeatExchangerSTS
@@ -187,8 +185,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         rn_model = RadialNumericalBH(d_sts)
         lntts_sts, g_sts = rn_model.calc_sts_g_functions(final_time=min_fls_time, calculate_at_bh_wall=True)
 
-        write_arrays_to_csv(os.path.join(cwd, 'sts.csv'), [lntts_sts, g_sts])
-        write_arrays_to_csv(os.path.join(cwd, 'lts.csv'), [lntts_lts, g_lts])
+        write_arrays_to_csv(os.path.join(self.op.output_dir, 'sts.csv'), [lntts_sts, g_sts])
+        write_arrays_to_csv(os.path.join(self.op.output_dir, 'lts.csv'), [lntts_lts, g_lts])
 
         # merge the lists together
         # TODO: check if smoothing is needed between the two different g-functions
@@ -198,7 +196,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         # insert a point at a very small time so the interpolation doesn't go off the rails
         self.lntts = np.insert(self.lntts, 0, log(30 / self.ts))
         self.g = np.insert(self.g, 0, 0)
-        write_arrays_to_csv(os.path.join(cwd, 'g.csv'), [self.lntts, self.g])
+        write_arrays_to_csv(os.path.join(self.op.output_dir, 'g.csv'), [self.lntts, self.g])
 
     def generate_g_b(self, flow_rate=0.5):
 
@@ -207,9 +205,9 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         flow_rate_path = flow_rate / self.num_paths  # kg/s
         temperature = self.ip.init_temp()  # C
 
-        d_ave_bh = {'average-borehole': self.average_bh()}
-        d_ave_bh['name'] = 'average-borehole'
-        d_ave_bh['borehole-type'] = 'single-grouted'
+        d_ave_bh = {'average-borehole': self.average_bh(),
+                    'name': 'average-borehole',
+                    'borehole-type': 'single-grouted'}
         ave_bh = make_borehole(d_ave_bh, self.ip, self.op)
 
         dt = 30
@@ -256,7 +254,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         self.lntts_b, self.g_b = resample_g_functions(lntts_b, g_b, lntts_interval=0.1)
 
-        write_arrays_to_csv(os.path.join(cwd, 'g_b.csv'), [self.lntts_b, self.g_b])
+        write_arrays_to_csv(os.path.join(self.op.output_dir, 'g_b.csv'), [self.lntts_b, self.g_b])
 
     def calc_bh_ave_length(self):
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]

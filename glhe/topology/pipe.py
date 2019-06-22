@@ -182,6 +182,12 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                 t_h = self.inlet_temps_times[idx_h]
                 temp_l = self.inlet_temps[idx_l]
                 temp_h = self.inlet_temps[idx_h]
+
+                # eliminate old history
+                for _ in range(idx_l):
+                    self.inlet_temps.popleft()
+                    self.inlet_temps_times.popleft()
+
                 return lin_interp(time, t_l, t_h, temp_l, temp_h)
 
     def inlet_temp_history(self, inlet_temp: float, time: float):
