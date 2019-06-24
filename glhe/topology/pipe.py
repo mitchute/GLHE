@@ -1,7 +1,7 @@
 from collections import deque
 
 import numpy as np
-from math import log, pi, sqrt
+from math import ceil, log, pi, sqrt
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
@@ -100,24 +100,23 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :return: outlet conditions
         """
 
+        # iteration constants
         num_cells = self.num_pipe_cells
         m_dot = inputs.flow_rate
         inlet_temp = inputs.temperature
-        t = inputs.time
-        dt = inputs.time_step
+        time = inputs.time
+        dt_tot = inputs.time_step
 
         re = self.m_dot_to_re(m_dot, inlet_temp)
         r_p = self.inner_radius
         l = self.length
 
-        self.inlet_temp_history(inlet_temp, t + dt)
+        # total transit time
+        tau = self.calc_transit_time(m_dot, inlet_temp)
 
         # Rees Eq. 18
         # Peclet number
         peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
-
-        # total transit time
-        tau = self.calc_transit_time(m_dot, inlet_temp)
 
         # Rees Eq. 17
         # transit time for ideal-mixed cells
@@ -135,16 +134,33 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # volume for ideal-mixed cells
         v_n = tau_n * v_dot
 
-        # setup tri-diagonal equations
-        a = np.full(num_cells - 1, -v_dot)
-        b = np.full(num_cells, v_n / dt + v_dot)
-        b[0] = 1
-        c = np.full(num_cells - 1, 0)
-        d = np.full(num_cells, v_n / dt) * self.cell_temps
-        d[0] = self.plug_flow_outlet_temp(t + dt - tau_0)
+        # check for sub-stepping
+        # limit maximum step to 10% of the transit time
+        if (dt_tot / tau) > 0.1:
+            num_sub_steps = ceil(dt_tot / tau)
+            dt = dt_tot / num_sub_steps
+        else:
+            num_sub_steps = 1
+            dt = dt_tot
 
-        # solve for cell temps
-        self.cell_temps = tdma_1(a, b, c, d)
+        steps = [dt] * num_sub_steps
+        t_sub = time
+        for _ in steps:
+            self.inlet_temp_history(inlet_temp, t_sub + dt)
+
+            # setup tri-diagonal equations
+            a = np.full(num_cells - 1, -v_dot)
+            b = np.full(num_cells, v_n / dt + v_dot)
+            b[0] = 1
+            c = np.full(num_cells - 1, 0)
+            d = np.full(num_cells, v_n / dt) * self.cell_temps
+            d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+
+            # solve for cell temps
+            self.cell_temps = tdma_1(a, b, c, d)
+
+            # update time
+            t_sub += dt
 
         # save outlet temp
         self.outlet_temperature = self.cell_temps[-1]

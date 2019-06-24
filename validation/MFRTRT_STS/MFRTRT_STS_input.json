@@ -7,7 +7,7 @@
       "grout-def-name": "standard grout",
       "name": "borehole type 1",
       "pipe-def-name": "26 mm SDR-11 HDPE",
-      "segments": 10,
+      "segments": 20,
       "shank-spacing": 0.0469
     }
   ],

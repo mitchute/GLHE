@@ -299,33 +299,6 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
             seg.simulate_time_step(time, time_step, seg_inputs)
 
-        # sub time steps
-
-        # t_tr = self.pipe.calc_transit_time(flow_rate, inlet_temp)
-        # t_tr_seg = t_tr / self.num_segments
-        #
-        # if time_step > t_tr_seg:
-        #     num_sub_steps = ceil(time_step / t_tr_seg)
-        #     time_step = time_step / num_sub_steps
-        # else:
-        #     num_sub_steps = 1
-        #
-        # steps = [time_step] * num_sub_steps
-        # for dt_sub in steps:
-        #     for idx, seg in enumerate(self.segments):
-        #
-        #         if idx == 0:
-        #             seg_inputs['inlet-1-temp'] = inlet_temp
-        #             seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
-        #         elif idx == self.num_segments:
-        #             seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-        #         else:
-        #             seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-        #             seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
-        #
-        #         seg.simulate_time_step(time, dt_sub, seg_inputs)
-        #     time += dt_sub
-
         # update report variables
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = self.get_outlet_temp()
