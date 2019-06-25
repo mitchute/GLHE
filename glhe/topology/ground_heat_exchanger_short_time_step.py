@@ -98,15 +98,15 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
                     # log average stats
                     temperature = 20
                     flow_rate = 0.2
-                    ave_pipe_outer_dia += comp.pipe.outer_diameter
-                    ave_pipe_inner_dia += comp.pipe.inner_diameter
+                    ave_pipe_outer_dia += comp.pipe_1.outer_diameter
+                    ave_pipe_inner_dia += comp.pipe_1.inner_diameter
                     ave_bh_dia += comp.diameter
                     ave_bh_resist += comp.calc_bh_average_resistance(temperature=temperature, flow_rate=flow_rate)
-                    ave_pipe_resist += comp.pipe.calc_resist(flow_rate=flow_rate, temperature=temperature)
-                    ave_pipe_conv_resist += comp.pipe.calc_conv_resist(flow_rate=flow_rate, temperature=temperature)
-                    ave_pipe_k += comp.pipe.conductivity
-                    ave_pipe_cp += comp.pipe.specific_heat
-                    ave_pipe_rho += comp.pipe.density
+                    ave_pipe_resist += comp.pipe_1.calc_resist(flow_rate=flow_rate, temperature=temperature)
+                    ave_pipe_conv_resist += comp.pipe_1.calc_conv_resist(flow_rate=flow_rate, temperature=temperature)
+                    ave_pipe_k += comp.pipe_1.conductivity
+                    ave_pipe_cp += comp.pipe_1.specific_heat
+                    ave_pipe_rho += comp.pipe_1.density
                     ave_grout_k += comp.grout.conductivity
                     ave_grout_cp += comp.grout.specific_heat
                     ave_grout_rho += comp.grout.density

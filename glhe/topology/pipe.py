@@ -11,7 +11,6 @@ from glhe.properties.base_properties import PropertiesBase
 from glhe.utilities.functions import lin_interp
 from glhe.utilities.functions import smoothing_function
 from glhe.utilities.functions import tdma_1
-from glhe.utilities.functions import un_reverse_idx
 
 
 class Pipe(PropertiesBase, SimulationEntryPoint):
@@ -65,7 +64,13 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.friction_factor = 0
         self.resist_pipe = 0
         self.conv_resist = 0
-        self.num_pipe_cells = 16  # recommendation by Skoglund
+
+        if 'number-cells' in inputs:
+            self.num_pipe_cells = inputs['number-cells']
+        else:
+            # recommendation by Skoglund
+            self.num_pipe_cells = 16
+
         self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
         self.inlet_temps = deque([ip.init_temp()])
         self.inlet_temps_times = deque([0.0])
@@ -107,63 +112,64 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         time = inputs.time
         dt_tot = inputs.time_step
 
-        re = self.m_dot_to_re(m_dot, inlet_temp)
-        r_p = self.inner_radius
-        l = self.length
+        if dt_tot > 0:
+            re = self.m_dot_to_re(m_dot, inlet_temp)
+            r_p = self.inner_radius
+            l = self.length
 
-        # total transit time
-        tau = self.calc_transit_time(m_dot, inlet_temp)
+            # total transit time
+            tau = self.calc_transit_time(m_dot, inlet_temp)
 
-        # Rees Eq. 18
-        # Peclet number
-        peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
+            # Rees Eq. 18
+            # Peclet number
+            peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
 
-        # Rees Eq. 17
-        # transit time for ideal-mixed cells
-        tau_n = tau * sqrt(2 / (num_cells * peclet))
+            # Rees Eq. 17
+            # transit time for ideal-mixed cells
+            tau_n = tau * sqrt(2 / (num_cells * peclet))
 
-        # transit time for plug-flow cell
-        tau_0 = tau - num_cells * tau_n
+            # transit time for plug-flow cell
+            tau_0 = tau - num_cells * tau_n
 
-        # volume flow rate
-        v_dot = m_dot / self.fluid.get_rho(inlet_temp)
+            # volume flow rate
+            v_dot = m_dot / self.fluid.get_rho(inlet_temp)
 
-        # volume for plug-flow cell
-        # v_0 = tau_0 * v_dot
+            # volume for plug-flow cell
+            # v_0 = tau_0 * v_dot
 
-        # volume for ideal-mixed cells
-        v_n = tau_n * v_dot
+            # volume for ideal-mixed cells
+            v_n = tau_n * v_dot
 
-        # check for sub-stepping
-        # limit maximum step to 10% of the transit time
-        if (dt_tot / tau) > 0.1:
-            num_sub_steps = ceil(dt_tot / tau)
-            dt = dt_tot / num_sub_steps
-        else:
-            num_sub_steps = 1
-            dt = dt_tot
+            # check for sub-stepping
+            # limit maximum step to 10% of the transit time
+            if (dt_tot / tau) > 0.10:
+                num_sub_steps = ceil(dt_tot / tau)
+                dt = dt_tot / num_sub_steps
+            else:
+                num_sub_steps = 1
+                dt = dt_tot
 
-        steps = [dt] * num_sub_steps
-        t_sub = time
-        for _ in steps:
-            self.inlet_temp_history(inlet_temp, t_sub + dt)
+            steps = [dt] * num_sub_steps
+            t_sub = time
+            for _ in steps:
+                self.inlet_temp_history(inlet_temp, t_sub + dt)
 
-            # setup tri-diagonal equations
-            a = np.full(num_cells - 1, -v_dot)
-            b = np.full(num_cells, v_n / dt + v_dot)
-            b[0] = 1
-            c = np.full(num_cells - 1, 0)
-            d = np.full(num_cells, v_n / dt) * self.cell_temps
-            d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+                # setup tri-diagonal equations
+                a = np.full(num_cells - 1, -v_dot)
+                b = np.full(num_cells, v_n / dt + v_dot)
+                b[0] = 1
+                c = np.full(num_cells - 1, 0)
+                d = np.full(num_cells, v_n / dt) * self.cell_temps
+                d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
 
-            # solve for cell temps
-            self.cell_temps = tdma_1(a, b, c, d)
+                # solve for cell temps
+                self.cell_temps = tdma_1(a, b, c, d)
 
-            # update time
-            t_sub += dt
+                # update time
+                t_sub += dt
 
-        # save outlet temp
-        self.outlet_temperature = self.cell_temps[-1]
+            # save outlet temp
+            self.outlet_temperature = self.cell_temps[-1]
 
         if hasattr(inputs, 'bh_wall_temp'):
             return SimulationResponse(inputs.time,
@@ -188,12 +194,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         if time < 0:
             return self.inlet_temps[0]
 
-        num_temps = len(self.inlet_temps)
-
-        for idx, t_l in enumerate(reversed(self.inlet_temps_times)):
-            if t_l < time:
-                idx_l = un_reverse_idx(num_temps, idx)
-                idx_h = idx_l + 1
+        for idx, t_l in enumerate(self.inlet_temps_times):
+            if t_l > time:
+                idx_h = idx
+                idx_l = idx_h - 1
                 t_l = self.inlet_temps_times[idx_l]
                 t_h = self.inlet_temps_times[idx_h]
                 temp_l = self.inlet_temps[idx_l]

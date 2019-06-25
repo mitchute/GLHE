@@ -71,7 +71,15 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         else:
             pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.h}
 
-        self.pipe = Pipe(pipe_inputs, ip, op)
+        pipe_inputs['length'] = pipe_inputs['length']
+
+        self.pipe_1 = Pipe(pipe_inputs, ip, op)
+        self.pipe_2 = Pipe(pipe_inputs, ip, op)
+
+        if 'number-iterations' in bh_def_inputs:
+            self.num_iterations = bh_def_inputs['number-iterations']
+        else:
+            self.num_iterations = 2
 
         # init segments
         self.segments = []
@@ -90,6 +98,11 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
                           'grout-def-name': bh_def_inputs['grout-def-name'],
                           'pipe-def-name': bh_def_inputs['pipe-def-name']}
 
+        if 'grout-fraction' in bh_def_inputs:
+            seg_inputs['grout-fraction'] = bh_def_inputs['grout-fraction']
+        else:
+            seg_inputs['grout-fraction'] = 0.5
+
         for idx in range(self.num_segments):
             seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], idx + 1)
             self.segments.append(SingleUTubeGroutedSegment(seg_inputs, ip, op))
@@ -104,7 +117,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.resist_bh_grout = None
         self.resist_bh_effective = None
         self.theta_1 = self.shank_space / (2 * self.radius)
-        self.theta_2 = self.radius / self.pipe.outer_radius
+        self.theta_2 = self.radius / self.pipe_1.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
         sigma_num = self.grout.conductivity - self.soil.conductivity
         sigma_den = self.grout.conductivity + self.soil.conductivity
@@ -201,7 +214,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.update_beta(temperature, flow_rate, pipe_resist)
 
         self.resist_bh_grout = self.calc_bh_average_resistance(temperature, flow_rate,
-                                                               pipe_resist) - self.pipe.resist_pipe / 2.0
+                                                               pipe_resist) - self.pipe_1.resist_pipe / 2.0
         return self.resist_bh_grout
 
     def calc_bh_effective_resistance_uhf(self, temperature: float,
@@ -255,12 +268,12 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             # can't set both flow rate and pipe resistance simultaneously
             raise ValueError("'flow_rate' and 'pipe_resist' cannot both be passed.")  # pragma: no cover
         elif flow_rate:
-            self.beta = 2 * pi * self.grout.conductivity * self.pipe.calc_resist(flow_rate, temperature)
+            self.beta = 2 * pi * self.grout.conductivity * self.pipe_1.calc_resist(flow_rate, temperature)
             return self.beta
         elif pipe_resist:
             # setting pipe resistance directly
             # used for validation
-            self.pipe.resist_pipe = pipe_resist
+            self.pipe_1.resist_pipe = pipe_resist
             self.beta = 2 * pi * self.grout.conductivity * pipe_resist
             return self.beta
         else:
@@ -286,22 +299,28 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
                       'flow-rate': flow_rate,
                       'dc-resist': dc_resist}
 
-        for idx, seg in enumerate(self.segments):
+        self.pipe_1.simulate_time_step(SimulationResponse(time, time_step, flow_rate, inlet_temp))
 
-            if idx == 0:
-                seg_inputs['inlet-1-temp'] = inlet_temp
-                seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
-            elif idx == self.num_segments:
-                seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-            else:
-                seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-                seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+        for _ in range(self.num_iterations):
 
-            seg.simulate_time_step(time, time_step, seg_inputs)
+            for idx, seg in enumerate(self.segments):
+
+                if idx == 0:
+                    seg_inputs['inlet-1-temp'] = self.pipe_1.outlet_temperature
+                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+                elif idx == self.num_segments:
+                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                else:
+                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+
+                seg.simulate_time_step(time_step, seg_inputs)
+
+        self.pipe_2.simulate_time_step(SimulationResponse(time, time_step, flow_rate, self.get_outlet_temp()))
 
         # update report variables
         self.inlet_temperature = inlet_temp
-        self.outlet_temperature = self.get_outlet_temp()
+        self.outlet_temperature = self.pipe_2.outlet_temperature
         cp = self.fluid.get_cp(inlet_temp)
         self.heat_rate = flow_rate * cp * (inlet_temp - self.outlet_temperature)
         self.heat_rate_bh = self.get_heat_rate_bh()

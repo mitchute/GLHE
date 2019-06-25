@@ -6,7 +6,6 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-from glhe.interface.response import SimulationResponse
 
 
 class SingleUTubeGroutedSegment(object):
@@ -27,8 +26,8 @@ class SingleUTubeGroutedSegment(object):
         else:
             pipe_inputs = {'pipe-def-name': inputs['pipe-def-name'], 'length': inputs['length']}
 
-        self.pipe_leg_1 = Pipe(pipe_inputs, ip, op)
-        self.pipe_leg_2 = Pipe(pipe_inputs, ip, op)
+        self.num_pipes = 2
+        self.pipe = Pipe(pipe_inputs, ip, op)
 
         if 'average-grout' in inputs:
             grout_inputs = inputs['average-grout']
@@ -36,6 +35,11 @@ class SingleUTubeGroutedSegment(object):
             grout_inputs = ip.get_definition_object('grout-definitions', inputs['grout-def-name'])
 
         self.grout = PropertiesBase(grout_inputs)
+
+        if 'grout-fraction' in inputs:
+            self.grout_frac = inputs['grout-fraction']
+        else:
+            self.grout_frac = 0.5
 
         self.length = inputs['length']
         self.diameter = inputs['diameter']
@@ -84,7 +88,7 @@ class SingleUTubeGroutedSegment(object):
         return self.calc_seg_volume() - self.calc_tot_pipe_volume()
 
     def calc_tot_pipe_volume(self):
-        return self.pipe_leg_1.total_vol + self.pipe_leg_1.total_vol
+        return self.pipe.total_vol * self.num_pipes
 
     def calc_seg_volume(self):
         return pi / 4 * self.diameter ** 2 * self.length
@@ -102,16 +106,16 @@ class SingleUTubeGroutedSegment(object):
         r_b = self.bh_resist
         r_12 = self.dc_resist
 
-        c_f_1 = self.fluid_heat_capacity * self.pipe_leg_1.fluid_vol
+        c_f_1 = self.fluid_heat_capacity * self.pipe.fluid_vol
         c_f_2 = c_f_1
 
         # spilt between inner and outer grout layer
-        f = 0.1
+        f = self.grout_frac
         c_g_1 = f * self.grout.specific_heat * self.grout.density * self.grout_vol
-        c_g_1 += self.pipe_leg_1.specific_heat * self.pipe_leg_1.density * self.pipe_leg_1.pipe_wall_vol
+        c_g_1 += self.pipe.specific_heat * self.pipe.density * self.pipe.pipe_wall_vol
 
         c_g_2 = (1 - f) * self.grout.specific_heat * self.grout.density * self.grout_vol
-        c_g_2 += self.pipe_leg_1.specific_heat * self.pipe_leg_1.density * self.pipe_leg_1.pipe_wall_vol
+        c_g_2 += self.pipe.specific_heat * self.pipe.density * self.pipe.pipe_wall_vol
 
         # fluid node leg 1
         r[0] = ((t_i_1 - y[0]) / r_f + (y[2] - y[0]) * dz / (r_12 / 2.0) + (y[3] - y[0]) * dz / r_b) / c_f_1
@@ -155,16 +159,10 @@ class SingleUTubeGroutedSegment(object):
     def get_outlet_2_temp(self):
         return self.y[1]
 
-    def simulate_time_step(self, time: int, time_step: int, inputs: dict) -> np.ndarray:
+    def simulate_time_step(self, time_step: int, inputs: dict) -> np.ndarray:
         self.flow_rate = inputs['flow-rate']
-        self.inlet_temp_1 = self.pipe_leg_1.simulate_time_step(SimulationResponse(time,
-                                                                                  time_step,
-                                                                                  inputs['flow-rate'],
-                                                                                  inputs['inlet-1-temp'])).temperature
-        self.inlet_temp_2 = self.pipe_leg_2.simulate_time_step(SimulationResponse(time,
-                                                                                  time_step,
-                                                                                  inputs['flow-rate'],
-                                                                                  inputs['inlet-2-temp'])).temperature
+        self.inlet_temp_1 = inputs['inlet-1-temp']
+        self.inlet_temp_2 = inputs['inlet-2-temp']
         self.boundary_temp = inputs['boundary-temperature']
         self.bh_resist = inputs['rb']
         self.dc_resist = inputs['dc-resist']

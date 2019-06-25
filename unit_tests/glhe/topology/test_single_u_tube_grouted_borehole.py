@@ -74,9 +74,9 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         self.assertEqual(tst.grout.conductivity, 0.6)
         self.assertEqual(tst.grout.density, 1000)
         self.assertEqual(tst.grout.specific_heat, 1000)
-        self.assertEqual(tst.pipe.specific_heat, 1000)
-        self.assertEqual(tst.pipe.density, 800)
-        self.assertEqual(tst.pipe.conductivity, 0.389)
+        self.assertEqual(tst.pipe_1.specific_heat, 1000)
+        self.assertEqual(tst.pipe_1.density, 800)
+        self.assertEqual(tst.pipe_1.conductivity, 0.389)
 
     def test_calc_bh_total_internal_resistance(self):
         tolerance = 0.00001
@@ -537,7 +537,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.22443,
@@ -548,7 +548,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20837,
@@ -559,7 +559,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44849,
@@ -570,7 +570,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33093,
@@ -581,7 +581,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.28097,
@@ -592,7 +592,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25194,
@@ -603,7 +603,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23252,
@@ -614,7 +614,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.21839,
@@ -625,7 +625,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.49081,
@@ -636,7 +636,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35908,
@@ -647,7 +647,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.30227,
@@ -658,7 +658,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.26911,
@@ -669,7 +669,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24689,
@@ -680,7 +680,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23075,
@@ -691,7 +691,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.56145,
@@ -702,7 +702,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.40275,
@@ -713,7 +713,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33381,
@@ -724,7 +724,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29370,
@@ -735,7 +735,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.26696,
@@ -746,7 +746,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24762,
@@ -757,7 +757,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.70364,
@@ -768,7 +768,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.47982,
@@ -779,7 +779,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.38537,
@@ -790,7 +790,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33186,
@@ -801,7 +801,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29691,
@@ -812,7 +812,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.27207,
@@ -823,7 +823,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35072,
@@ -834,7 +834,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24556,
@@ -845,7 +845,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20667,
@@ -856,7 +856,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18552,
@@ -867,7 +867,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17194,
@@ -878,7 +878,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16235,
@@ -889,7 +889,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35151,
@@ -900,7 +900,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24649,
@@ -911,7 +911,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20760,
@@ -922,7 +922,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18641,
@@ -933,7 +933,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17275,
@@ -944,7 +944,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16310,
@@ -955,7 +955,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35289,
@@ -966,7 +966,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24797,
@@ -977,7 +977,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20901,
@@ -988,7 +988,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18769,
@@ -999,7 +999,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17390,
@@ -1010,7 +1010,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16412,
@@ -1021,7 +1021,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35595,
@@ -1032,7 +1032,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25077,
@@ -1043,7 +1043,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.21141,
@@ -1054,7 +1054,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18971,
@@ -1065,7 +1065,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17561,
@@ -1076,7 +1076,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16558,
@@ -1087,7 +1087,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.79250,
@@ -1098,7 +1098,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46254,
@@ -1109,7 +1109,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35062,
@@ -1120,7 +1120,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29359,
@@ -1131,7 +1131,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25871,
@@ -1142,7 +1142,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23502,
@@ -1153,7 +1153,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.80334,
@@ -1164,7 +1164,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.47089,
@@ -1175,7 +1175,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35730,
@@ -1186,7 +1186,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29907,
@@ -1197,7 +1197,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.26330,
@@ -1208,7 +1208,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23893,
@@ -1219,7 +1219,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.82235,
@@ -1230,7 +1230,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.48435,
@@ -1241,7 +1241,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36744,
@@ -1252,7 +1252,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.30702,
@@ -1263,7 +1263,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.26973,
@@ -1274,7 +1274,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24425,
@@ -1285,7 +1285,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.86441,
@@ -1296,7 +1296,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.50970,
@@ -1307,7 +1307,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.38466,
@@ -1318,7 +1318,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31960,
@@ -1329,7 +1329,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.27937,
@@ -1340,7 +1340,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25189,
@@ -1351,7 +1351,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.61186,
@@ -1362,7 +1362,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46146,
@@ -1373,7 +1373,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39174,
@@ -1384,7 +1384,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34857,
@@ -1395,7 +1395,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31835,
@@ -1406,7 +1406,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29565,
@@ -1417,7 +1417,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.68753,
@@ -1428,7 +1428,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.51388,
@@ -1439,7 +1439,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.43140,
@@ -1450,7 +1450,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.38012,
@@ -1461,7 +1461,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34428,
@@ -1472,7 +1472,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31748,
@@ -1483,7 +1483,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.81754,
@@ -1494,7 +1494,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.59704,
@@ -1505,7 +1505,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.49099,
@@ -1516,7 +1516,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.42563,
@@ -1527,7 +1527,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.38053,
@@ -1538,7 +1538,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34722,
@@ -1549,7 +1549,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 1.09392,
@@ -1560,7 +1560,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.74945,
@@ -1571,7 +1571,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.59065,
@@ -1582,7 +1582,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.49705,
@@ -1593,7 +1593,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.43476,
@@ -1604,7 +1604,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39009,
@@ -1615,7 +1615,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35512,
@@ -1626,7 +1626,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24806,
@@ -1637,7 +1637,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20819,
@@ -1648,7 +1648,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18641,
@@ -1659,7 +1659,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17239,
@@ -1670,7 +1670,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16250,
@@ -1681,7 +1681,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35546,
@@ -1692,7 +1692,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24847,
@@ -1703,7 +1703,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20860,
@@ -1714,7 +1714,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18680,
@@ -1725,7 +1725,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17275,
@@ -1736,7 +1736,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16284,
@@ -1747,7 +1747,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35606,
@@ -1758,7 +1758,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24912,
@@ -1769,7 +1769,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20922,
@@ -1780,7 +1780,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18737,
@@ -1791,7 +1791,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17326,
@@ -1802,7 +1802,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16329,
@@ -1813,7 +1813,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35739,
@@ -1824,7 +1824,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25036,
@@ -1835,7 +1835,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.21029,
@@ -1846,7 +1846,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18827,
@@ -1857,7 +1857,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17402,
@@ -1868,7 +1868,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16394,
@@ -1879,7 +1879,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.99531,
@@ -1890,7 +1890,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.56245,
@@ -1901,7 +1901,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.41627,
@@ -1912,7 +1912,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34215,
@@ -1923,7 +1923,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29705,
@@ -1934,7 +1934,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.26657,
@@ -1945,7 +1945,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 1.00551,
@@ -1956,7 +1956,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.57026,
@@ -1967,7 +1967,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.42245,
@@ -1978,7 +1978,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34718,
@@ -1989,7 +1989,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.30122,
@@ -2000,7 +2000,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.27010,
@@ -2011,7 +2011,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 1.02350,
@@ -2022,7 +2022,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.58289,
@@ -2033,7 +2033,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.43187,
@@ -2044,7 +2044,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35448,
@@ -2055,7 +2055,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.30706,
@@ -2066,7 +2066,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.27488,
@@ -2077,7 +2077,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 1.06368,
@@ -2088,7 +2088,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.60688,
@@ -2099,7 +2099,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44794,
@@ -2110,7 +2110,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36606,
@@ -2121,7 +2121,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31582,
@@ -2132,7 +2132,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.28175,
@@ -2143,7 +2143,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.68527,
@@ -2154,7 +2154,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.52300,
@@ -2165,7 +2165,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44557,
@@ -2176,7 +2176,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39656,
@@ -2187,7 +2187,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36169,
@@ -2198,7 +2198,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33518,
@@ -2209,7 +2209,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.77817,
@@ -2220,7 +2220,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.58840,
@@ -2231,7 +2231,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.49530,
@@ -2242,7 +2242,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.43614,
@@ -2253,7 +2253,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39417,
@@ -2264,7 +2264,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36245,
@@ -2275,7 +2275,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.93884,
@@ -2286,7 +2286,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.69271,
@@ -2297,7 +2297,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.57029,
@@ -2308,7 +2308,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.49335,
@@ -2319,7 +2319,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.43958,
@@ -2330,7 +2330,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39955,
@@ -2341,7 +2341,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 1.28480,
@@ -2352,7 +2352,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.88570,
@@ -2363,7 +2363,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.69643,
@@ -2374,7 +2374,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.58336,
@@ -2385,7 +2385,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.50757,
@@ -2396,7 +2396,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.45299,
@@ -2410,7 +2410,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
                   'soil-conductivity': 4.0,
                   'grout-conductivity': 0.6}
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17701, delta=tolerance)
@@ -2420,7 +2420,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 4.0
         inputs['grout-conductivity'] = 1.2
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09211, delta=tolerance)
@@ -2430,7 +2430,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 4.0
         inputs['grout-conductivity'] = 1.8
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06329, delta=tolerance)
@@ -2440,7 +2440,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 4.0
         inputs['grout-conductivity'] = 2.4
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04861, delta=tolerance)
@@ -2450,7 +2450,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 4.0
         inputs['grout-conductivity'] = 3.0
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03965, delta=tolerance)
@@ -2460,7 +2460,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 4.0
         inputs['grout-conductivity'] = 3.6
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03358, delta=tolerance)
@@ -2470,7 +2470,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         inputs['soil-conductivity'] = 3.0
         inputs['grout-conductivity'] = 0.6
         tst = self.add_instance(inputs)
-        tst.pipe.resist_pipe = 0.05
+        tst.pipe_1.resist_pipe = 0.05
         self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17732, delta=tolerance)
@@ -2481,7 +2481,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09230, delta=tolerance)
@@ -2491,7 +2491,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06341, delta=tolerance)
@@ -2501,7 +2501,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04869, delta=tolerance)
@@ -2511,7 +2511,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03970, delta=tolerance)
@@ -2521,7 +2521,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03361, delta=tolerance)
@@ -2531,7 +2531,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17787, delta=tolerance)
@@ -2541,7 +2541,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09259, delta=tolerance)
@@ -2551,7 +2551,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06358, delta=tolerance)
@@ -2561,7 +2561,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04880, delta=tolerance)
@@ -2571,7 +2571,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03977, delta=tolerance)
@@ -2581,7 +2581,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03366, delta=tolerance)
@@ -2591,7 +2591,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17910, delta=tolerance)
@@ -2601,7 +2601,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09315, delta=tolerance)
@@ -2611,7 +2611,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06387, delta=tolerance)
@@ -2621,7 +2621,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04897, delta=tolerance)
@@ -2631,7 +2631,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03988, delta=tolerance)
@@ -2641,7 +2641,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03373, delta=tolerance)
@@ -2651,7 +2651,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14218, delta=tolerance)
@@ -2661,7 +2661,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07445, delta=tolerance)
@@ -2671,7 +2671,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05122, delta=tolerance)
@@ -2681,7 +2681,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03931, delta=tolerance)
@@ -2691,7 +2691,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03200, delta=tolerance)
@@ -2701,7 +2701,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02704, delta=tolerance)
@@ -2711,7 +2711,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14295, delta=tolerance)
@@ -2721,7 +2721,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07492, delta=tolerance)
@@ -2731,7 +2731,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05153, delta=tolerance)
@@ -2741,7 +2741,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03952, delta=tolerance)
@@ -2751,7 +2751,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03216, delta=tolerance)
@@ -2761,7 +2761,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02716, delta=tolerance)
@@ -2771,7 +2771,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14429, delta=tolerance)
@@ -2781,7 +2781,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07567, delta=tolerance)
@@ -2791,7 +2791,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05199, delta=tolerance)
@@ -2801,7 +2801,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03983, delta=tolerance)
@@ -2811,7 +2811,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03237, delta=tolerance)
@@ -2821,7 +2821,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02732, delta=tolerance)
@@ -2831,7 +2831,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14724, delta=tolerance)
@@ -2841,7 +2841,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07707, delta=tolerance)
@@ -2851,7 +2851,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05278, delta=tolerance)
@@ -2861,7 +2861,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04032, delta=tolerance)
@@ -2871,7 +2871,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03270, delta=tolerance)
@@ -2881,7 +2881,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02754, delta=tolerance)
@@ -2891,7 +2891,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06695, delta=tolerance)
@@ -2901,7 +2901,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04131, delta=tolerance)
@@ -2911,7 +2911,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03069, delta=tolerance)
@@ -2921,7 +2921,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02461, delta=tolerance)
@@ -2931,7 +2931,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02061, delta=tolerance)
@@ -2941,7 +2941,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.01776, delta=tolerance)
@@ -2951,7 +2951,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07090, delta=tolerance)
@@ -2961,7 +2961,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04361, delta=tolerance)
@@ -2971,7 +2971,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03222, delta=tolerance)
@@ -2981,7 +2981,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02572, delta=tolerance)
@@ -2991,7 +2991,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02146, delta=tolerance)
@@ -3001,7 +3001,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.01844, delta=tolerance)
@@ -3011,7 +3011,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07759, delta=tolerance)
@@ -3021,7 +3021,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04720, delta=tolerance)
@@ -3031,7 +3031,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03450, delta=tolerance)
@@ -3041,7 +3041,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02731, delta=tolerance)
@@ -3051,7 +3051,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02265, delta=tolerance)
@@ -3061,7 +3061,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.01936, delta=tolerance)
@@ -3071,7 +3071,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09138, delta=tolerance)
@@ -3081,7 +3081,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05361, delta=tolerance)
@@ -3091,7 +3091,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03825, delta=tolerance)
@@ -3101,7 +3101,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02979, delta=tolerance)
@@ -3111,7 +3111,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02442, delta=tolerance)
@@ -3121,7 +3121,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02069, delta=tolerance)
@@ -3131,7 +3131,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36382, delta=tolerance)
@@ -3141,7 +3141,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18488, delta=tolerance)
@@ -3151,7 +3151,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12489, delta=tolerance)
@@ -3161,7 +3161,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09471, delta=tolerance)
@@ -3171,7 +3171,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07647, delta=tolerance)
@@ -3181,7 +3181,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06424, delta=tolerance)
@@ -3191,7 +3191,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36384, delta=tolerance)
@@ -3201,7 +3201,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18489, delta=tolerance)
@@ -3211,7 +3211,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12490, delta=tolerance)
@@ -3221,7 +3221,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09471, delta=tolerance)
@@ -3231,7 +3231,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07647, delta=tolerance)
@@ -3241,7 +3241,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06424, delta=tolerance)
@@ -3251,7 +3251,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36387, delta=tolerance)
@@ -3261,7 +3261,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18491, delta=tolerance)
@@ -3271,7 +3271,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12491, delta=tolerance)
@@ -3281,7 +3281,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09472, delta=tolerance)
@@ -3291,7 +3291,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07648, delta=tolerance)
@@ -3301,7 +3301,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06424, delta=tolerance)
@@ -3311,7 +3311,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36394, delta=tolerance)
@@ -3321,7 +3321,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18494, delta=tolerance)
@@ -3331,7 +3331,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12493, delta=tolerance)
@@ -3341,7 +3341,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09473, delta=tolerance)
@@ -3351,7 +3351,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07649, delta=tolerance)
@@ -3361,7 +3361,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06424, delta=tolerance)
@@ -3371,7 +3371,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26405, delta=tolerance)
@@ -3381,7 +3381,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13316, delta=tolerance)
@@ -3391,7 +3391,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08934, delta=tolerance)
@@ -3401,7 +3401,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06733, delta=tolerance)
@@ -3411,7 +3411,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05407, delta=tolerance)
@@ -3421,7 +3421,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04520, delta=tolerance)
@@ -3431,7 +3431,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26434, delta=tolerance)
@@ -3441,7 +3441,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13336, delta=tolerance)
@@ -3451,7 +3451,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08948, delta=tolerance)
@@ -3461,7 +3461,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06744, delta=tolerance)
@@ -3471,7 +3471,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05416, delta=tolerance)
@@ -3481,7 +3481,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04527, delta=tolerance)
@@ -3491,7 +3491,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26484, delta=tolerance)
@@ -3501,7 +3501,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13369, delta=tolerance)
@@ -3511,7 +3511,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08971, delta=tolerance)
@@ -3521,7 +3521,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06760, delta=tolerance)
@@ -3531,7 +3531,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05428, delta=tolerance)
@@ -3541,7 +3541,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04537, delta=tolerance)
@@ -3551,7 +3551,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26597, delta=tolerance)
@@ -3561,7 +3561,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13430, delta=tolerance)
@@ -3571,7 +3571,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09009, delta=tolerance)
@@ -3581,7 +3581,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06786, delta=tolerance)
@@ -3591,7 +3591,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05447, delta=tolerance)
@@ -3601,7 +3601,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04551, delta=tolerance)
@@ -3611,7 +3611,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09055, delta=tolerance)
@@ -3621,7 +3621,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05854, delta=tolerance)
@@ -3631,7 +3631,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04486, delta=tolerance)
@@ -3641,7 +3641,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03684, delta=tolerance)
@@ -3651,7 +3651,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03146, delta=tolerance)
@@ -3661,7 +3661,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02757, delta=tolerance)
@@ -3671,7 +3671,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09914, delta=tolerance)
@@ -3681,7 +3681,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06410, delta=tolerance)
@@ -3691,7 +3691,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04889, delta=tolerance)
@@ -3701,7 +3701,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03995, delta=tolerance)
@@ -3711,7 +3711,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03397, delta=tolerance)
@@ -3721,7 +3721,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02964, delta=tolerance)
@@ -3731,7 +3731,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.11380, delta=tolerance)
@@ -3741,7 +3741,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07288, delta=tolerance)
@@ -3751,7 +3751,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05492, delta=tolerance)
@@ -3761,7 +3761,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04444, delta=tolerance)
@@ -3771,7 +3771,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03747, delta=tolerance)
@@ -3781,7 +3781,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03247, delta=tolerance)
@@ -3791,7 +3791,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14454, delta=tolerance)
@@ -3801,7 +3801,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08878, delta=tolerance)
@@ -3811,7 +3811,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06494, delta=tolerance)
@@ -3821,7 +3821,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05145, delta=tolerance)
@@ -3831,7 +3831,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04270, delta=tolerance)
@@ -3841,7 +3841,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03656, delta=tolerance)
@@ -3851,7 +3851,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47152, delta=tolerance)
@@ -3861,7 +3861,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23870, delta=tolerance)
@@ -3871,7 +3871,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16076, delta=tolerance)
@@ -3881,7 +3881,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
@@ -3891,7 +3891,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09798, delta=tolerance)
@@ -3901,7 +3901,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08216, delta=tolerance)
@@ -3911,7 +3911,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47153, delta=tolerance)
@@ -3921,7 +3921,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23870, delta=tolerance)
@@ -3931,7 +3931,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16076, delta=tolerance)
@@ -3941,7 +3941,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
@@ -3951,7 +3951,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09799, delta=tolerance)
@@ -3961,7 +3961,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08216, delta=tolerance)
@@ -3971,7 +3971,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47153, delta=tolerance)
@@ -3981,7 +3981,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23871, delta=tolerance)
@@ -3991,7 +3991,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16076, delta=tolerance)
@@ -4001,7 +4001,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
@@ -4011,7 +4011,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09799, delta=tolerance)
@@ -4021,7 +4021,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08216, delta=tolerance)
@@ -4031,7 +4031,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47155, delta=tolerance)
@@ -4041,7 +4041,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23871, delta=tolerance)
@@ -4051,7 +4051,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16077, delta=tolerance)
@@ -4061,7 +4061,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
@@ -4071,7 +4071,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09799, delta=tolerance)
@@ -4081,7 +4081,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08216, delta=tolerance)
@@ -4091,7 +4091,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32711, delta=tolerance)
@@ -4101,7 +4101,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16421, delta=tolerance)
@@ -4111,7 +4111,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10980, delta=tolerance)
@@ -4121,7 +4121,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08254, delta=tolerance)
@@ -4131,7 +4131,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06615, delta=tolerance)
@@ -4141,7 +4141,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05521, delta=tolerance)
@@ -4151,7 +4151,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32731, delta=tolerance)
@@ -4161,7 +4161,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16436, delta=tolerance)
@@ -4171,7 +4171,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10991, delta=tolerance)
@@ -4181,7 +4181,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08263, delta=tolerance)
@@ -4191,7 +4191,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06623, delta=tolerance)
@@ -4201,7 +4201,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05527, delta=tolerance)
@@ -4211,7 +4211,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32768, delta=tolerance)
@@ -4221,7 +4221,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16460, delta=tolerance)
@@ -4231,7 +4231,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.11009, delta=tolerance)
@@ -4241,7 +4241,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08276, delta=tolerance)
@@ -4251,7 +4251,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06633, delta=tolerance)
@@ -4261,7 +4261,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05535, delta=tolerance)
@@ -4271,7 +4271,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32850, delta=tolerance)
@@ -4281,7 +4281,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16507, delta=tolerance)
@@ -4291,7 +4291,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.11038, delta=tolerance)
@@ -4301,7 +4301,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08297, delta=tolerance)
@@ -4311,7 +4311,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06648, delta=tolerance)
@@ -4321,7 +4321,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05547, delta=tolerance)
@@ -4331,7 +4331,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10481, delta=tolerance)
@@ -4341,7 +4341,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06997, delta=tolerance)
@@ -4351,7 +4351,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05467, delta=tolerance)
@@ -4361,7 +4361,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04553, delta=tolerance)
@@ -4371,7 +4371,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03930, delta=tolerance)
@@ -4381,7 +4381,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 4.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03472, delta=tolerance)
@@ -4391,7 +4391,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.11665, delta=tolerance)
@@ -4401,7 +4401,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07790, delta=tolerance)
@@ -4411,7 +4411,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06054, delta=tolerance)
@@ -4421,7 +4421,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05011, delta=tolerance)
@@ -4431,7 +4431,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04302, delta=tolerance)
@@ -4441,7 +4441,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 3.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03782, delta=tolerance)
@@ -4451,7 +4451,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13696, delta=tolerance)
@@ -4461,7 +4461,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09047, delta=tolerance)
@@ -4471,7 +4471,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06934, delta=tolerance)
@@ -4481,7 +4481,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05672, delta=tolerance)
@@ -4491,7 +4491,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04821, delta=tolerance)
@@ -4501,7 +4501,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 2.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04204, delta=tolerance)
@@ -4511,7 +4511,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 0.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18002, delta=tolerance)
@@ -4521,7 +4521,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.2
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.11344, delta=tolerance)
@@ -4531,7 +4531,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 1.8
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08403, delta=tolerance)
@@ -4541,7 +4541,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 2.4
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06709, delta=tolerance)
@@ -4551,7 +4551,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.0
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05599, delta=tolerance)
@@ -4561,7 +4561,7 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             inputs['soil-conductivity'] = 1.0
             inputs['grout-conductivity'] = 3.6
             tst = self.add_instance(inputs)
-            tst.pipe.resist_pipe = 0.05
+            tst.pipe_1.resist_pipe = 0.05
             self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04812, delta=tolerance)
@@ -4573,5 +4573,5 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        ret = tst.simulate_time_step(SimulationResponse(0, 0, 0.2, 30, 20))
+        ret = tst.simulate_time_step(SimulationResponse(0, 10, 0.2, 30, 20))
         self.assertAlmostEqual(ret.temperature, 20)

@@ -74,5 +74,5 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
         tol = 0.0001
         self.assertAlmostEqual(ret_temps[0], 20.4525, delta=tol)
         self.assertAlmostEqual(ret_temps[1], 20.2262, delta=tol)
-        self.assertAlmostEqual(ret_temps[2], 20.0002, delta=tol)
-        self.assertAlmostEqual(ret_temps[3], 20.0002, delta=tol)
+        self.assertAlmostEqual(ret_temps[2], 20.0000, delta=tol)
+        self.assertAlmostEqual(ret_temps[3], 20.0003, delta=tol)
