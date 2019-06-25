@@ -79,10 +79,10 @@ class TestPLCompFactory(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "enhanced",
-                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                                                    'EWT_experimental_g_functions.csv'),
-                    "g_b-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                                                      'EWT_experimental_g_functions.csv'),
+                    "g-function-path": norm(join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
+                                                 'EWT_experimental_g_functions.csv')),
+                    "g_b-function-path": norm(join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
+                                                   'EWT_experimental_g_functions.csv')),
                     "flow-paths": [
                         {
                             "name": "path 1",
