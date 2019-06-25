@@ -19,10 +19,9 @@ cwd = os.getcwd()
 
 class TestPLCompFactory(unittest.TestCase):
 
-    def setUp(self):
-        self.this_file_directory = os.path.dirname(os.path.realpath(__file__))
-
-    def add_instance(self):
+    @staticmethod
+    def add_instance():
+        f_path = os.path.dirname(os.path.abspath(__file__))
         d = {
             "borehole-definitions": [
                 {
@@ -80,10 +79,10 @@ class TestPLCompFactory(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "enhanced",
-                    "g-function-path": norm(join(self.this_file_directory, '..',
-                                                 '..', '..', 'validation', 'MFRTRT_LTS', 'g.csv')),
-                    "g_b-function-path": norm(join(self.this_file_directory, '..',
-                                                   '..', '..', 'validation', 'MFRTRT_LTS', 'g_b.csv')),
+                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
+                                                    'EWT_experimental_g_functions.csv'),
+                    "g_b-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
+                                                      'EWT_experimental_g_functions.csv'),
                     "flow-paths": [
                         {
                             "name": "path 1",

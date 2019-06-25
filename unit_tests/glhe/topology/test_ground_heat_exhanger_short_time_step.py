@@ -103,8 +103,8 @@ class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):
             "simulation": {
                 "name": "Basic GLHE",
                 "initial-temperature": 16.1,
-                "time-steps-per-hour": 6,
-                "runtime": 14400
+                "time-step": 30,
+                "runtime": 3600
             },
             "topology": {
                 "demand-side": [
