@@ -35,10 +35,8 @@ class Path(SimulationEntryPoint):
     def get_heat_rate_bh(self):
         bh_ht_rate = 0
         for comp in self.components:
-            try:
+            if hasattr(comp, 'get_heat_rate_bh'):
                 bh_ht_rate += comp.get_heat_rate_bh()
-            except AttributeError:  # pragma: no cover
-                pass  # pragma: no cover
         return bh_ht_rate
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:

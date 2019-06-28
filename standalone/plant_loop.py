@@ -90,6 +90,9 @@ class PlantLoop(object):
 
         print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
 
+        with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
+            f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
+
         return True
 
     def do_one_time_step(self, sim_time: Union[int, float], time_step: Union[int, float]):

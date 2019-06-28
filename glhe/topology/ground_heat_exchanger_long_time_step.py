@@ -39,10 +39,9 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.load_agg = make_agg_method(la_inputs, ip)
 
         # average borehole
-        d_ave_bh = {}
-        d_ave_bh['average-borehole'] = inputs['average-borehole']
-        d_ave_bh['name'] = 'average-borehole'
-        d_ave_bh['borehole-type'] = 'single-grouted'
+        d_ave_bh = {'average-borehole': inputs['average-borehole'],
+                    'name': 'average-borehole',
+                    'borehole-type': 'single-grouted'}
         self.ave_bh = make_borehole(d_ave_bh, ip, op)
 
         # method constants

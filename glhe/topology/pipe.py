@@ -64,6 +64,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.friction_factor = 0
         self.resist_pipe = 0
         self.conv_resist = 0
+        self.re = 0
 
         if 'number-cells' in inputs:
             self.num_pipe_cells = inputs['number-cells']
@@ -222,7 +223,9 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.inlet_temps_times.append(time)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.PipeResist): self.resist_pipe,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ReynoldsNo): self.re}
 
     def m_dot_to_re(self, flow_rate, temp):
         """
@@ -232,7 +235,8 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :param temp: temperature, C
         :return: Reynolds number
         """
-        return 4 * flow_rate / (self.fluid.get_mu(temp) * pi * self.inner_diameter)
+        self.re = 4 * flow_rate / (self.fluid.get_mu(temp) * pi * self.inner_diameter)
+        return self.re
 
     def calc_friction_factor(self, re: float):
         """

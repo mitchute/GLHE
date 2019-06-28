@@ -1,10 +1,13 @@
 class PropertiesBase(object):
 
     def __init__(self, inputs):
-        try:
-            self.name = inputs['name']
-        except KeyError:
-            pass
+
+        if 'name' in inputs:
+            if hasattr(self, 'name'):
+                pass
+            else:
+                self.name = inputs['name']
+
         self.conductivity = inputs["conductivity"]
         self.density = inputs["density"]
         self.specific_heat = inputs["specific-heat"]

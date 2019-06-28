@@ -23,6 +23,7 @@ class ReportTypes(object):
     # resistances
     BHResist = 'BH Resist. [m-K/W]'
     BHEffResist = 'BH Eff. Resist. [m-K/W]'
+    PipeResist = 'Pipe Resist. [m-K/W]'
 
     # heat pump
     RTF = 'Runtime Fraction [-]'
@@ -38,3 +39,6 @@ class ReportTypes(object):
     ImmElect = 'Total Immersion Heater Usage for Heating and Water Heating [W]'
     HtgLoad = 'Heating Load [W]'
     WtrHtgLoad = 'Water Heating Load [W]'
+
+    # non-dimensional numbers
+    ReynoldsNo = 'Reynolds No [-]'

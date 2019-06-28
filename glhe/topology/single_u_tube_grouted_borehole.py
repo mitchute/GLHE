@@ -73,7 +73,9 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         pipe_inputs['length'] = pipe_inputs['length']
 
+        pipe_inputs['name'] = '{}: Pipe 1'.format(inputs['name'])
         self.pipe_1 = Pipe(pipe_inputs, ip, op)
+        pipe_inputs['name'] = '{}: Pipe 2'.format(inputs['name'])
         self.pipe_2 = Pipe(pipe_inputs, ip, op)
 
         if 'number-iterations' in bh_def_inputs:
@@ -333,18 +335,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
     def get_heat_rate_bh(self):
         bh_ht_rate = 0
         for seg in self.segments:
-            try:
+            if hasattr(seg, 'heat_rate_bh'):
                 bh_ht_rate += seg.heat_rate_bh
-            except AttributeError:
-                # pass-through segment doesn't have this attribute
-                pass
         return bh_ht_rate
 
     def report_outputs(self) -> dict:
         d = {}
-
         for seg in self.segments:
             d = merge_dicts(d, seg.report_outputs())
+
+        d = merge_dicts(d, self.pipe_1.report_outputs())
 
         d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
