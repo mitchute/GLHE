@@ -41,6 +41,9 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.length = inputs['length']
         self.init_temp = self.ip.init_temp()
 
+        # include transit delay effects
+        self.apply_transit_delay = True
+
         # compute radii and thickness
         self.wall_thickness = (self.outer_diameter - self.inner_diameter) / 2
         self.inner_radius = self.inner_diameter / 2
@@ -153,15 +156,17 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             steps = [dt] * num_sub_steps
             t_sub = time
             for _ in steps:
-                self.inlet_temp_history(inlet_temp, t_sub + dt)
-
                 # setup tri-diagonal equations
                 a = np.full(num_cells - 1, -v_dot)
                 b = np.full(num_cells, v_n / dt + v_dot)
                 b[0] = 1
                 c = np.full(num_cells - 1, 0)
                 d = np.full(num_cells, v_n / dt) * self.cell_temps
-                d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+                if self.apply_transit_delay:
+                    self.inlet_temp_history(inlet_temp, t_sub + dt)
+                    d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+                else:
+                    d[0] = inlet_temp
 
                 # solve for cell temps
                 self.cell_temps = tdma_1(a, b, c, d)
@@ -242,7 +247,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
         Calculates the friction factor in smooth tubes
 
-        Petukov, B.S. 1970. 'Heat transfer and friction in turbulent pipe flow with variable physical properties.'
+        Petukhov, B.S. 1970. 'Heat transfer and friction in turbulent pipe flow with variable physical properties.'
         In Advances in Heat Transfer, ed. T.F. Irvine and J.P. Hartnett, Vol. 6. New York Academic Press.
         """
 

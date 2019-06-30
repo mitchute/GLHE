@@ -77,6 +77,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.pipe_1 = Pipe(pipe_inputs, ip, op)
         pipe_inputs['name'] = '{}: Pipe 2'.format(inputs['name'])
         self.pipe_2 = Pipe(pipe_inputs, ip, op)
+        self.pipe_2.apply_transit_delay = False
 
         if 'number-iterations' in bh_def_inputs:
             self.num_iterations = bh_def_inputs['number-iterations']
