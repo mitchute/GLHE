@@ -1,30 +1,95 @@
 {
+  "borehole": [
+    {
+      "borehole-def-name": "water filled",
+      "location": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "name": "BH 1"
+    }
+  ],
+  "borehole-definitions": [
+    {
+      "borehole-type": "single-grouted",
+      "diameter": 0.1,
+      "grout-def-name": "water grout",
+      "length": 150,
+      "name": "water filled",
+      "pipe-def-name": "26 mm SDR-11 HDPE",
+      "shank-spacing": 0.04555
+    }
+  ],
   "flow-profile": [
     {
-      "name": "external flow",
-      "flow-profile-type": "external",
-      "path": "",
-      "column": 3
+      "flow-profile-type": "constant",
+      "name": "constant flow",
+      "value": 0.2
     }
   ],
   "fluid": {
-    "fluid-type": "EA",
-    "concentration": 20
+    "concentration": 20,
+    "fluid-type": "EA"
   },
+  "ground-heat-exchanger": [
+    {
+      "flow-paths": [
+        {
+          "components": [
+            {
+              "comp-type": "borehole",
+              "name": "BH 1"
+            }
+          ],
+          "name": "path 1"
+        }
+      ],
+      "load-aggregation": {
+        "expansion-rate": 1.62,
+        "method": "dynamic",
+        "number-bins-per-level": 9
+      },
+      "name": "Self-GHE",
+      "simulation-mode": "enhanced"
+    }
+  ],
   "ground-temperature-model": {
     "ground-temperature-model-type": "constant",
     "temperature": 8
   },
+  "grout-definitions": [
+    {
+      "conductivity": 6,
+      "density": 1000,
+      "name": "water grout",
+      "specific-heat": 4200
+    }
+  ],
+  "pipe-definitions": [
+    {
+      "conductivity": 0.39,
+      "density": 950,
+      "inner-diameter": 0.0218,
+      "name": "26 mm SDR-11 HDPE",
+      "outer-diameter": 0.0267,
+      "specific-heat": 1900
+    }
+  ],
+  "simulation": {
+    "initial-temperature": 8,
+    "name": "Basic GLHE",
+    "runtime": 10800,
+    "time-step": 3600
+  },
+  "soil": {
+    "conductivity": 2.5,
+    "density": 2500,
+    "name": "dirt",
+    "specific-heat": 1000
+  },
   "swedish-heat-pump": [
     {
-      "name": "svenska varmmepumpe",
-      "max-heating-set-point": 55,
-      "min-heating-set-point": 30,
-      "water-heating-set-point": 60,
-      "outdoor-air-temperature-at-max-heating-set-point": -10,
-      "outdoor-air-temperature-at-min-heating-set-point": 20,
-      "immersion-heater-capacity": 7000,
-      "load-data-path": "",
       "capacity-coefficients": [
         8.536666667,
         -0.007266667,
@@ -36,35 +101,22 @@
         -0.075098454,
         -0.000208441,
         0.109423218
-      ]
+      ],
+      "immersion-heater-capacity": 7000,
+      "load-data-path": "",
+      "max-heating-set-point": 55,
+      "min-heating-set-point": 30,
+      "name": "svenska varmmepumpe",
+      "outdoor-air-temperature-at-max-heating-set-point": -10,
+      "outdoor-air-temperature-at-min-heating-set-point": 20,
+      "water-heating-set-point": 60
     }
   ],
-  "ground-heat-exchanger": [
-    {
-      "name": "GHE 1",
-      "simulation-mode": "simple",
-      "resistance": 0.07,
-      "number-boreholes": 1,
-      "diameter": 0.1,
-      "average-length": 150,
-      "load-aggregation": {
-        "method": "dynamic",
-        "expansion-rate": 1.62,
-        "number-bins-per-level": 9
-      }
-    }
-  ],
-  "simulation": {
-    "name": "Basic GLHE",
-    "time-step": 3600,
-    "runtime": 10800,
-    "initial-temperature": 8
-  },
   "topology": {
     "demand-side": [
       {
         "comp-type": "flow-profile",
-        "name": "external flow"
+        "name": "constant flow"
       },
       {
         "comp-type": "swedish-heat-pump",
@@ -74,14 +126,8 @@
     "supply-side": [
       {
         "comp-type": "ground-heat-exchanger",
-        "name": "GHE 1"
+        "name": "Self-GHE"
       }
     ]
-  },
-  "soil": {
-    "name": "dirt",
-    "conductivity": 2.5,
-    "density": 2500,
-    "specific-heat": 1000
   }
 }

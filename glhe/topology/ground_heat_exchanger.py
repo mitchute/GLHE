@@ -3,7 +3,6 @@ from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
-from glhe.topology.ground_heat_exchanger_simple import GroundHeatExchangerSimple
 from glhe.utilities.functions import merge_dicts
 
 
@@ -49,14 +48,6 @@ class GroundHeatExchanger(SimulationEntryPoint):
             # alias functions based on sim mode
             self.simulate_time_step = self.sts_ghe.simulate_time_step
             self.report_outputs = self.sts_ghe.report_outputs
-
-        elif self.sim_mode == 'simple':
-            # init simple model
-            self.simple_ghe = GroundHeatExchangerSimple(inputs, ip, op)
-
-            # alias functions based on sim mode
-            self.simulate_time_step = self.simple_ghe.simulate_time_step
-            self.report_outputs = self.simple_ghe.report_outputs
 
         else:
             raise ValueError("Simulation mode '{]' is not valid".format(self.sim_mode))  # pragma: no cover

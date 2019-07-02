@@ -86,7 +86,11 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         # init segments
         self.segments = []
-        self.num_segments = bh_def_inputs['segments']
+
+        if 'segments' in bh_def_inputs:
+            self.num_segments = bh_def_inputs['segments']
+        else:
+            self.num_segments = 1
         seg_length = self.h / self.num_segments
         if 'average-borehole' in inputs:
             seg_inputs = {'length': seg_length,
