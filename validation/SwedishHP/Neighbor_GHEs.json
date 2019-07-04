@@ -5,7 +5,7 @@
       "location": {
         "x": 0,
         "y": 0,
-        "z": 0
+        "z": 5
       },
       "name": "BH 1"
     }
@@ -18,14 +18,14 @@
       "length": 150,
       "name": "water filled",
       "pipe-def-name": "26 mm SDR-11 HDPE",
-      "shank-spacing": 0.04555
+      "shank-spacing": 0.04222
     }
   ],
   "flow-profile": [
     {
       "flow-profile-type": "constant",
       "name": "constant flow",
-      "value": 0.2
+      "value": 0.4
     }
   ],
   "fluid": {
@@ -60,10 +60,10 @@
   },
   "grout-definitions": [
     {
-      "conductivity": 6,
-      "density": 1000,
+      "conductivity": 2.5,
+      "density": 2500,
       "name": "water grout",
-      "specific-heat": 4200
+      "specific-heat": 1560
     }
   ],
   "pipe-definitions": [
@@ -83,7 +83,7 @@
     "time-step": 3600
   },
   "soil": {
-    "conductivity": 2.5,
+    "conductivity": 4.5,
     "density": 2500,
     "name": "dirt",
     "specific-heat": 1000

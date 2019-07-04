@@ -8,6 +8,7 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.borehole_factory import make_borehole
+from glhe.topology.cross_ghe import CrossGHE
 from glhe.utilities.functions import merge_dicts
 
 
@@ -43,6 +44,24 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
                     'name': 'average-borehole',
                     'borehole-type': 'single-grouted'}
         self.ave_bh = make_borehole(d_ave_bh, ip, op)
+
+        self.cross_ghe_present = False
+        self.cross_ghe = []
+        if 'cross-loads' in inputs:
+            self.cross_ghe_present = True
+            for x_ghe in inputs['cross-loads']:
+                d_x = {'load-aggregation': merge_dicts(inputs['load-aggregation'],
+                                                       {'g-function-path': x_ghe['g-function-path'],
+                                                        'time-scale': ts}),
+                       'load-data-path': x_ghe['load-data-path'],
+                       'start-time': x_ghe['start-time'],
+                       'length': x_ghe['length']}
+                if 'number-of-instances' in x_ghe:
+                    num_duplicates = x_ghe['number-of-instances']
+                else:
+                    num_duplicates = 1
+                for idx in range(num_duplicates):
+                    self.cross_ghe.append(CrossGHE(d_x, ip, op))
 
         # method constants
         k_s = self.soil.conductivity
@@ -83,6 +102,11 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         hist_g, hist_g_b = self.load_agg.calc_temporal_superposition(dt, flow_rate_path)
         c_1 = self.c_0 * hist_g + resist_b * hist_g_b
+
+        if self.cross_ghe_present:
+            for x_ghx in self.cross_ghe:
+                x_ghx.simulate_time_step(dt, time)
+                c_1 += self.c_0 * x_ghx.load_agg.calc_temporal_superposition(dt)
 
         c_2 = (self.c_0 * g + resist_b * g_b)
 

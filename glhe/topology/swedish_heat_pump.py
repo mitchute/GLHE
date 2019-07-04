@@ -43,11 +43,13 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.htg_loads = ExternalBase(inputs['load-data-path'], 0)
         self.wtr_htg_loads = ExternalBase(inputs['load-data-path'], 1)
         self.oda_temps = ExternalBase(inputs['load-data-path'], 2)
+        self.odt = self.oda_temps.get_value(0)
 
         # report variables
         self.flow_rate = None
         self.inlet_temperature = None
         self.outlet_temperature = None
+        self.cop = 0
 
         # water heating report variables
         self.wtr_htg = None  # water heating load met by heat pump (W)
@@ -160,7 +162,13 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         imm_elec = 0  # electricity consumption of immersion heater (W)
         unmet = 0  # unmet load (W)
 
-        if capacity >= load:
+        if load == 0:
+            # no load
+            rtf = 0
+            htg = 0
+            elec = 0
+            heat_extraction = 0
+        elif capacity >= load:
             # water heating load can be met with heat pump
             htg = load
             elec = load / cop
@@ -218,12 +226,19 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         capacity = (self.x7_capacity(src_side_eft, self.wtr_htg_set_point)) * available_rtf
         imm_htr_capacity = self.imm_htr_capacity - self.wtr_htg_imm_elec
         cop = self.x7_cop(src_side_eft, htg_exft)
+        self.cop = cop
         load = self.htg_loads.get_value(time)
 
         imm_elec = 0  # electricity consumption of immersion heater (W)
         unmet = 0  # unmet load (W)
 
-        if capacity >= load:
+        if load == 0:
+            # no load
+            rtf = available_rtf
+            htg = 0
+            elec = 0
+            heat_extraction = 0
+        elif capacity >= load:
             # heating load can be met with heat pump
             htg = load
             elec = load / cop
@@ -278,6 +293,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.flow_rate = flow_rate
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = outlet_temp
+        self.odt = self.oda_temps.get_value(time)
 
         return response
 
@@ -296,4 +312,6 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgElect): self.htg_elec,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgElect): self.wtr_htg_elec,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgImmElect): self.htg_imm_elec,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgImmElect): self.wtr_htg_imm_elec}
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgImmElect): self.wtr_htg_imm_elec,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ODT): self.odt,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.COP): self.cop}

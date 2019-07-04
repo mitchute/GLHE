@@ -19,6 +19,7 @@ class ReportTypes(object):
     OutletTemp_Leg1 = 'Outlet Temp. Leg 1 [C]'
     OutletTemp_Leg2 = 'Outlet Temp. Leg 2 [C]'
     BHWallTemp = 'Borehole Wall Temp. [C]'
+    ODT = 'Outdoor Air Temp. [C]'
 
     # resistances
     BHResist = 'BH Resist. [m-K/W]'
@@ -39,6 +40,7 @@ class ReportTypes(object):
     ImmElect = 'Total Immersion Heater Usage for Heating and Water Heating [W]'
     HtgLoad = 'Heating Load [W]'
     WtrHtgLoad = 'Water Heating Load [W]'
+    COP = 'COP [-]'
 
     # non-dimensional numbers
     ReynoldsNo = 'Reynolds No [-]'
