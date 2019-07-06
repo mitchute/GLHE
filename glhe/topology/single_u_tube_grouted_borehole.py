@@ -123,6 +123,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
         self.resist_bh_effective = None
+        self.resist_bh_direct_coupling = None
         self.theta_1 = self.shank_space / (2 * self.radius)
         self.theta_2 = self.radius / self.pipe_1.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
@@ -252,6 +253,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
         return self.resist_bh_effective
 
+    def calc_direct_coupling_resistance(self, temperature: float,
+                                        flow_rate: float = None,
+                                        pipe_resist: float = None) -> float:
+
+        r_a = self.calc_bh_total_internal_resistance(temperature, flow_rate, pipe_resist)
+        r_b = self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
+
+        self.resist_bh_direct_coupling = (2 * r_a * 2 * r_b) / (4 * r_b - r_a)
+        return self.resist_bh_direct_coupling, r_b
+
     def update_beta(self, temperature: float, flow_rate: float = None, pipe_resist: float = None) -> float:
         """
         Updates Beta coefficient.
@@ -294,17 +305,12 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         inlet_temp = inputs.temperature
         bh_wall_temp = inputs.bh_wall_temp
 
-        r_12 = self.calc_bh_total_internal_resistance(inlet_temp, flow_rate=flow_rate)
-        r_b = self.calc_bh_average_resistance(inlet_temp, flow_rate=flow_rate)
-
-        dc_resist_num = 2 * r_12 * 2 * r_b
-        dc_resist_den = 4 * r_b - r_12
-        dc_resist = dc_resist_num / dc_resist_den
+        r_12, r_b = self.calc_direct_coupling_resistance(inlet_temp, flow_rate=flow_rate)
 
         seg_inputs = {'boundary-temperature': bh_wall_temp,
                       'rb': r_b,
                       'flow-rate': flow_rate,
-                      'dc-resist': dc_resist}
+                      'dc-resist': r_12}
 
         self.pipe_1.simulate_time_step(SimulationResponse(time, time_step, flow_rate, inlet_temp))
 
@@ -355,6 +361,8 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                   '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_bh_ave}
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_bh_ave,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHIntResist): self.resist_bh_total_internal,
+                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHDCResist): self.resist_bh_direct_coupling}
 
         return merge_dicts(d, d_self)

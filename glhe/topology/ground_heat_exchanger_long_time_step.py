@@ -103,10 +103,13 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         hist_g, hist_g_b = self.load_agg.calc_temporal_superposition(dt, flow_rate_path)
         c_1 = self.c_0 * hist_g + resist_b * hist_g_b
 
+        hist_x_ghe = 0
         if self.cross_ghe_present:
-            for x_ghx in self.cross_ghe:
-                x_ghx.simulate_time_step(dt, time)
-                c_1 += self.c_0 * x_ghx.load_agg.calc_temporal_superposition(dt)
+            for x_ghe in self.cross_ghe:
+                x_ghe.simulate_time_step(dt, time)
+                hist_x_ghe += x_ghe.load_agg.calc_temporal_superposition(dt)
+
+        c_1 += self.c_0 * hist_x_ghe
 
         c_2 = (self.c_0 * g + resist_b * g_b)
 
@@ -132,7 +135,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.outlet_temperature = outlet_temp
         self.heat_rate = q_tot
         self.resist_b = resist_b
-        self.bh_wall_temperature = soil_temp + self.c_0 * hist_g
+        self.bh_wall_temperature = soil_temp + self.c_0 * (hist_g + hist_x_ghe)
         self.resist_b_eff = self.ave_bh.calc_bh_effective_resistance_uhf(temperature=inlet_temp, flow_rate=flow_rate)
 
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)

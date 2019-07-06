@@ -24,6 +24,8 @@ class ReportTypes(object):
     # resistances
     BHResist = 'BH Resist. [m-K/W]'
     BHEffResist = 'BH Eff. Resist. [m-K/W]'
+    BHIntResist = 'BH Internal Resist. [m-k/W]'
+    BHDCResist = 'BH Direct Coupling Resist. [m-k/W]'
     PipeResist = 'Pipe Resist. [m-K/W]'
 
     # heat pump
