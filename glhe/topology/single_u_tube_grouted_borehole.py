@@ -255,12 +255,12 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
     def calc_direct_coupling_resistance(self, temperature: float,
                                         flow_rate: float = None,
-                                        pipe_resist: float = None) -> float:
+                                        pipe_resist: float = None) -> tuple:
 
         r_a = self.calc_bh_total_internal_resistance(temperature, flow_rate, pipe_resist)
         r_b = self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
-        self.resist_bh_direct_coupling = (2 * r_a * 2 * r_b) / (4 * r_b - r_a)
+        self.resist_bh_direct_coupling = (4 * r_a * r_b) / (4 * r_b - r_a)
         return self.resist_bh_direct_coupling, r_b
 
     def update_beta(self, temperature: float, flow_rate: float = None, pipe_resist: float = None) -> float:

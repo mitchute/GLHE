@@ -126,52 +126,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16947, delta=tolerance)
 
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 4.0
-        inputs['grout-conductivity'] = 3.6
-        tst = self.add_instance(inputs)
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16152, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 3.0
-        inputs['grout-conductivity'] = 0.6
-        tst = self.add_instance(inputs)
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.32754, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 3.0
-        inputs['grout-conductivity'] = 1.2
-        tst = self.add_instance(inputs)
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23529, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 3.0
-        inputs['grout-conductivity'] = 1.8
-        tst = self.add_instance(inputs)
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20214, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 3.0
-        inputs['grout-conductivity'] = 2.4
-        tst = self.add_instance(inputs)
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18428, delta=tolerance)
-
         if sys.platform == 'linux':
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 4.0
+            inputs['grout-conductivity'] = 3.6
+            tst = self.add_instance(inputs)
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16152,
+                                   delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 3.0
+            inputs['grout-conductivity'] = 0.6
+            tst = self.add_instance(inputs)
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.32754,
+                                   delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 3.0
+            inputs['grout-conductivity'] = 1.2
+            tst = self.add_instance(inputs)
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23529,
+                                   delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 3.0
+            inputs['grout-conductivity'] = 1.8
+            tst = self.add_instance(inputs)
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20214,
+                                   delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 3.0
+            inputs['grout-conductivity'] = 2.4
+            tst = self.add_instance(inputs)
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18428,
+                                   delta=tolerance)
+
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 3.0
@@ -312,56 +317,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17456,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.45329,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.45329,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29701,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29701,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24310,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24310,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.21511,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.21511,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.19766,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.19766,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.04266667
             inputs['soil-conductivity'] = 4.0
@@ -554,61 +560,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20837,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44849,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44849,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33093,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.33093,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.28097,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.28097,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25194,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25194,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23252,
-                                   delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.23252,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.064
             inputs['soil-conductivity'] = 4.0
@@ -818,61 +825,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.27207,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35072,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35072,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24556,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24556,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20667,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20667,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18552,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18552,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17194,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17194,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 4.0
@@ -1082,61 +1090,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16558,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.79250,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.79250,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46254,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46254,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35062,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35062,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29359,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29359,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25871,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25871,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.07466667
             inputs['soil-conductivity'] = 4.0
@@ -1346,61 +1355,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.25189,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.61186,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.61186,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46146,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.46146,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39174,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39174,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34857,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34857,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31835,
-                                   delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.31835,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.16
             inputs['soil-conductivity'] = 4.0
@@ -1610,61 +1620,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39009,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35512,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.35512,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24806,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.24806,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20819,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.20819,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18641,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.18641,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17239,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.17239,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 4.0
@@ -1874,61 +1885,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.16394,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.99531,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.99531,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.56245,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.56245,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.41627,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.41627,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34215,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.34215,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29705,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.29705,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.10666667
             inputs['soil-conductivity'] = 4.0
@@ -2138,61 +2150,62 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.28175,
                                    delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.68527,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.68527,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.52300,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.52300,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44557,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.44557,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39656,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.39656,
+                               delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36169,
-                                   delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_total_internal_resistance(20, pipe_resist=0.05), 0.36169,
+                               delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.256
             inputs['soil-conductivity'] = 4.0
@@ -2445,37 +2458,37 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
         self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
         self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04861, delta=tolerance)
 
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 4.0
-        inputs['grout-conductivity'] = 3.0
-        tst = self.add_instance(inputs)
-        tst.pipe_1.resist_pipe = 0.05
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03965, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 4.0
-        inputs['grout-conductivity'] = 3.6
-        tst = self.add_instance(inputs)
-        tst.pipe_1.resist_pipe = 0.05
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03358, delta=tolerance)
-
-        inputs['radius'] = 0.048
-        inputs['shank-spacing'] = 0.032
-        inputs['soil-conductivity'] = 3.0
-        inputs['grout-conductivity'] = 0.6
-        tst = self.add_instance(inputs)
-        tst.pipe_1.resist_pipe = 0.05
-        self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
-        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17732, delta=tolerance)
-
         if sys.platform == 'linux':
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 4.0
+            inputs['grout-conductivity'] = 3.0
+            tst = self.add_instance(inputs)
+            tst.pipe_1.resist_pipe = 0.05
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03965, delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 4.0
+            inputs['grout-conductivity'] = 3.6
+            tst = self.add_instance(inputs)
+            tst.pipe_1.resist_pipe = 0.05
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03358, delta=tolerance)
+
+            inputs['radius'] = 0.048
+            inputs['shank-spacing'] = 0.032
+            inputs['soil-conductivity'] = 3.0
+            inputs['grout-conductivity'] = 0.6
+            tst = self.add_instance(inputs)
+            tst.pipe_1.resist_pipe = 0.05
+            self.assertAlmostEqual(tst.theta_1, 0.33333, delta=tolerance)
+            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.17732, delta=tolerance)
+
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 3.0
@@ -2646,56 +2659,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03373, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14218, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.14218, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07445, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07445, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05122, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05122, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03931, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03931, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.04266667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03200, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.04266667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.44444, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03200, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.04266667
             inputs['soil-conductivity'] = 4.0
@@ -2886,56 +2900,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02754, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06695, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06695, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04131, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04131, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03069, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03069, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02461, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02461, delta=tolerance)
 
-            inputs['radius'] = 0.048
-            inputs['shank-spacing'] = 0.064
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02061, delta=tolerance)
+        inputs['radius'] = 0.048
+        inputs['shank-spacing'] = 0.064
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.66667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02061, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.048
             inputs['shank-spacing'] = 0.064
             inputs['soil-conductivity'] = 4.0
@@ -3126,56 +3141,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 3.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.02069, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36382, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.36382, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18488, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.18488, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12489, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12489, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09471, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09471, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07647, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.16667, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.07647, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 4.0
@@ -3366,56 +3382,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06424, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26405, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.26405, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13316, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.13316, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08934, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08934, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06733, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06733, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.07466667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05407, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.07466667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.38889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05407, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.07466667
             inputs['soil-conductivity'] = 4.0
@@ -3606,56 +3623,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04551, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09055, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09055, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05854, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05854, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04486, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04486, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03684, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03684, delta=tolerance)
 
-            inputs['radius'] = 0.096
-            inputs['shank-spacing'] = 0.16
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03146, delta=tolerance)
+        inputs['radius'] = 0.096
+        inputs['shank-spacing'] = 0.16
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.83333, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03146, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.096
             inputs['shank-spacing'] = 0.16
             inputs['soil-conductivity'] = 4.0
@@ -3846,56 +3864,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 6.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03656, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47152, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.47152, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23870, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.23870, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16076, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16076, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.12160, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.032
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09798, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.032
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.11111, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.09798, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.032
             inputs['soil-conductivity'] = 4.0
@@ -4086,56 +4105,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08216, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32711, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.32711, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16421, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.16421, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10980, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10980, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08254, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.08254, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.10666667
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06615, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.10666667
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.37037, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06615, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.10666667
             inputs['soil-conductivity'] = 4.0
@@ -4326,56 +4346,57 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
             self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
             self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05547, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 0.6
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10481, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 0.6
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.10481, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.2
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06997, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.2
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.06997, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 1.8
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05467, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 1.8
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.05467, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 2.4
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04553, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 2.4
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.04553, delta=tolerance)
 
-            inputs['radius'] = 0.144
-            inputs['shank-spacing'] = 0.256
-            inputs['soil-conductivity'] = 4.0
-            inputs['grout-conductivity'] = 3.0
-            tst = self.add_instance(inputs)
-            tst.pipe_1.resist_pipe = 0.05
-            self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
-            self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
-            self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03930, delta=tolerance)
+        inputs['radius'] = 0.144
+        inputs['shank-spacing'] = 0.256
+        inputs['soil-conductivity'] = 4.0
+        inputs['grout-conductivity'] = 3.0
+        tst = self.add_instance(inputs)
+        tst.pipe_1.resist_pipe = 0.05
+        self.assertAlmostEqual(tst.theta_1, 0.88889, delta=tolerance)
+        self.assertAlmostEqual(tst.theta_2, 9.0, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_bh_grout_resistance(20, pipe_resist=0.05), 0.03930, delta=tolerance)
 
+        if sys.platform == 'linux':
             inputs['radius'] = 0.144
             inputs['shank-spacing'] = 0.256
             inputs['soil-conductivity'] = 4.0

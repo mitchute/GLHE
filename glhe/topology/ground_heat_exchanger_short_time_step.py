@@ -159,7 +159,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         if end_time > min_fls_time:
             lntts_lts = np.arange(lntts_start, lntts_end, step=0.1)
             times = np.exp(lntts_lts) * self.ts
-            g_lts = gt.gfunction.uniform_temperature(boreholes, times, self.soil.diffusivity)
+            g_lts = gt.gfunction.uniform_heat_extraction(boreholes, times, self.soil.diffusivity)
 
         # generate sts g-functions using radial-numerical model
         d_ave_bh = self.average_bh()

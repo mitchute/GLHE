@@ -13,23 +13,23 @@
   "borehole-definitions": [
     {
       "borehole-type": "single-grouted",
-      "diameter": 0.1,
+      "diameter": 0.114,
       "grout-def-name": "water grout",
       "length": 150,
       "name": "water filled",
-      "pipe-def-name": "26 mm SDR-11 HDPE",
-      "shank-spacing": 0.04222
+      "pipe-def-name": "40 mm PN10 HDPE",
+      "shank-spacing": 0.051333
     }
   ],
   "flow-profile": [
     {
       "flow-profile-type": "constant",
       "name": "constant flow",
-      "value": 0.4
+      "value": 0.3128
     }
   ],
   "fluid": {
-    "concentration": 20,
+    "concentration": 25,
     "fluid-type": "EA"
   },
   "ground-heat-exchanger": [
@@ -56,37 +56,37 @@
   ],
   "ground-temperature-model": {
     "ground-temperature-model-type": "constant",
-    "temperature": 8
+    "temperature": 8.3
   },
   "grout-definitions": [
     {
-      "conductivity": 2.5,
-      "density": 2500,
+      "conductivity": 11.1,
+      "density": 1000,
       "name": "water grout",
-      "specific-heat": 1560
+      "specific-heat": 4200
     }
   ],
   "pipe-definitions": [
     {
       "conductivity": 0.39,
       "density": 950,
-      "inner-diameter": 0.0218,
-      "name": "26 mm SDR-11 HDPE",
-      "outer-diameter": 0.0267,
+      "inner-diameter": 0.0326,
+      "name": "40 mm PN10 HDPE",
+      "outer-diameter": 0.04,
       "specific-heat": 1900
     }
   ],
   "simulation": {
-    "initial-temperature": 8,
+    "initial-temperature": 8.3,
     "name": "Basic GLHE",
     "runtime": 10800,
     "time-step": 3600
   },
   "soil": {
-    "conductivity": 4.5,
-    "density": 2500,
+    "conductivity": 3.5,
+    "density": 2000,
     "name": "dirt",
-    "specific-heat": 1000
+    "specific-heat": 1339
   },
   "swedish-heat-pump": [
     {

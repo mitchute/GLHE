@@ -60,9 +60,6 @@ class PlantLoop(object):
         # initialize plant loop components
         self.initialize_plant_loop_topology()
 
-        # log initial conditions
-        self.collect_outputs(0)
-
     def initialize_plant_loop_topology(self) -> None:
 
         for comp in self.ip.input_dict['topology']['demand-side']:
