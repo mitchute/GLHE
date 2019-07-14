@@ -60,7 +60,7 @@
   },
   "grout-definitions": [
     {
-      "conductivity": 11.1,
+      "conductivity": 3.5,
       "density": 1000,
       "name": "water grout",
       "specific-heat": 4200
@@ -70,7 +70,7 @@
     {
       "conductivity": 0.39,
       "density": 950,
-      "inner-diameter": 0.0326,
+      "inner-diameter": 0.03491,
       "name": "40 mm PN10 HDPE",
       "outer-diameter": 0.04,
       "specific-heat": 1900
