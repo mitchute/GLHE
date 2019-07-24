@@ -35,13 +35,15 @@ class ReportTypes(object):
     HtgElect = 'Electrical Usage for Heating [W]'
     WtrHtgElect = 'Electrical Usage for Water Heating [W]'
     HtgImmElect = 'Electrical Usage for Immersion Heater for Heating [W]'
-    WtrHtgImmElect = 'Electrical Usage for Immersion Heater fow Water Heating [W]'
+    WtrHtgImmElect = 'Electrical Usage for Immersion Heater for Water Heating [W]'
     HeatRateSrc = 'Source-side Heat Rate [W]'
     HeatRateLoad = 'Load-side Heat Rate [W]'
     HpElect = 'Total Electrical Usage for Heating and Water Heating [W]'
     ImmElect = 'Total Immersion Heater Usage for Heating and Water Heating [W]'
     HtgLoad = 'Heating Load [W]'
     WtrHtgLoad = 'Water Heating Load [W]'
+    HtgUnmet = 'Unmet Heating Load [W]'
+    WtrHtgUnmet = 'Unmet Water Heating Load [W]'
     COP = 'COP [-]'
 
     # non-dimensional numbers

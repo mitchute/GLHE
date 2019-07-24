@@ -234,7 +234,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
 
         if load == 0:
             # no load
-            rtf = available_rtf
+            rtf = 0
             htg = 0
             elec = 0
             heat_extraction = 0
@@ -313,5 +313,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgElect): self.wtr_htg_elec,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgImmElect): self.htg_imm_elec,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgImmElect): self.wtr_htg_imm_elec,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgUnmet): self.htg_unmet,
+                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgUnmet): self.wtr_htg_unmet,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ODT): self.odt,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.COP): self.cop}

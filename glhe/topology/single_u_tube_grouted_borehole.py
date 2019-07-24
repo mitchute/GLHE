@@ -35,7 +35,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             bh_def_inputs = {'length': inputs['average-borehole']['length'],
                              'diameter': inputs['average-borehole']['diameter'],
                              'shank-spacing': inputs['average-borehole']['shank-spacing'],
-                             'segments': 10}
+                             'segments': 1}
         else:
             bh_inputs = ip.get_definition_object('borehole', inputs['name'])
             bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
@@ -260,7 +260,13 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         r_a = self.calc_bh_total_internal_resistance(temperature, flow_rate, pipe_resist)
         r_b = self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
-        self.resist_bh_direct_coupling = (4 * r_a * r_b) / (4 * r_b - r_a)
+        r_12 = (4 * r_a * r_b) / (4 * r_b - r_a)
+
+        # reset if negative
+        if r_12 < 0:
+            r_12 = 70
+
+        self.resist_bh_direct_coupling = r_12
         return self.resist_bh_direct_coupling, r_b
 
     def update_beta(self, temperature: float, flow_rate: float = None, pipe_resist: float = None) -> float:
