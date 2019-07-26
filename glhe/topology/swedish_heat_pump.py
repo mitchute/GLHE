@@ -249,7 +249,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
             rtf = available_rtf
             htg = capacity
             elec = capacity / cop
-            imm_elec = load - capacity * available_rtf
+            imm_elec = load - capacity
             heat_extraction = capacity - elec
         else:
             # heating load cannot be met
