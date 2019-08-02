@@ -1,7 +1,6 @@
 import os
 import tempfile
 import unittest
-
 from math import log
 
 from glhe.input_processor.input_processor import InputProcessor
@@ -37,9 +36,40 @@ class TestPipe(unittest.TestCase):
 
         return Pipe(inputs['pipe'][0], ip, op)
 
+    def test_init(self):
+        tst = self.add_instance()
+        tol = 0.0001
+
+        # props
+        self.assertAlmostEqual(tst.conductivity, 0.389, delta=tol)
+        self.assertAlmostEqual(tst.density, 950, delta=tol)
+        self.assertAlmostEqual(tst.specific_heat, 1900, delta=tol)
+        self.assertAlmostEqual(tst.heat_capacity, 950 * 1900, delta=tol)
+        self.assertAlmostEqual(tst.diffusivity, 0.389 / (950 * 1900), delta=tol)
+
+        # geometry
+        self.assertAlmostEqual(tst.outer_diameter, 0.0334, delta=tol)
+        self.assertAlmostEqual(tst.inner_diameter, 0.0269, delta=tol)
+        self.assertAlmostEqual(tst.length, 100, delta=tol)
+        self.assertAlmostEqual(tst.outer_radius, 0.0334 / 2, delta=tol)
+        self.assertAlmostEqual(tst.inner_radius, 0.0269 / 2, delta=tol)
+        self.assertAlmostEqual(tst.wall_thickness, 0.00325, delta=tol)
+
+        # areas
+        self.assertAlmostEqual(tst.area_cr_outer, 8.761E-4, delta=tol)
+        self.assertAlmostEqual(tst.area_cr_inner, 5.628E-4, delta=tol)
+        self.assertAlmostEqual(tst.area_cr_pipe, 3.078E-4, delta=tol)
+        self.assertAlmostEqual(tst.area_s_outer, 10.4929, delta=tol)
+        self.assertAlmostEqual(tst.area_s_inner, 8.4508, delta=tol)
+
+        # volumes
+        self.assertAlmostEqual(tst.total_vol, 0.0876, delta=tol)
+        self.assertAlmostEqual(tst.fluid_vol, 0.0568, delta=tol)
+        self.assertAlmostEqual(tst.pipe_wall_vol, 0.0307, delta=tol)
+
     def test_calc_friction_factor(self):
         tst = self.add_instance()
-        tolerance = 0.00001
+        tol = 0.00001
 
         # laminar tests
         re = 100  # noqa: E126
@@ -53,13 +83,13 @@ class TestPipe(unittest.TestCase):
 
         # transitional tests
         re = 2000
-        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.034003503, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.034003503, delta=tol)
 
         re = 3000
-        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.033446219, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.033446219, delta=tol)
 
         re = 4000
-        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.03895358, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_friction_factor(re), 0.03895358, delta=tol)
 
         # turbulent tests
         re = 5000
@@ -79,10 +109,10 @@ class TestPipe(unittest.TestCase):
     def test_calc_convection_resistance(self):
         tst = self.add_instance()
         temp = 20
-        tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_conv_resist(0, temp), 0.13273, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_conv_resist(0.07, temp), 0.02645, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_conv_resist(2, temp), 0.00094, delta=tolerance)
+        tol = 0.00001
+        self.assertAlmostEqual(tst.calc_conv_resist(0, temp), 0.13273, delta=tol)
+        self.assertAlmostEqual(tst.calc_conv_resist(0.07, temp), 0.02645, delta=tol)
+        self.assertAlmostEqual(tst.calc_conv_resist(2, temp), 0.00094, delta=tol)
 
     def test_calc_resistance(self):
         tst = self.add_instance()

@@ -66,7 +66,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         # other inits
         self.friction_factor = 0
         self.resist_pipe = 0
-        self.conv_resist = 0
+        self.resist_conv = 0
         self.re = 0
 
         if 'number-cells' in inputs:
@@ -189,7 +189,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                                       inputs.flow_rate,
                                       self.outlet_temperature)
 
-    def plug_flow_outlet_temp(self, time):
+    def plug_flow_outlet_temp(self, time: int) -> float:
         """
         Simulation time for inlet temperature
 
@@ -232,7 +232,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.PipeResist): self.resist_pipe,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ReynoldsNo): self.re}
 
-    def m_dot_to_re(self, flow_rate, temp):
+    def m_dot_to_re(self, flow_rate, temp) -> float:
         """
         Convert mass flow rate to Reynolds number
 
@@ -243,7 +243,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.re = 4 * flow_rate / (self.fluid.get_mu(temp) * pi * self.inner_diameter)
         return self.re
 
-    def calc_friction_factor(self, re: float):
+    def calc_friction_factor(self, re: float) -> float:
         """
         Calculates the friction factor in smooth tubes
 
@@ -305,8 +305,8 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re, temperature)
-        self.conv_resist = 1 / (nu * pi * self.fluid.get_k(temperature))
-        return self.conv_resist
+        self.resist_conv = 1 / (nu * pi * self.fluid.get_k(temperature))
+        return self.resist_conv
 
     def calc_resist(self, flow_rate: float, temperature: float):
         """
