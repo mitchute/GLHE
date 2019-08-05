@@ -163,7 +163,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                 c = np.full(num_cells - 1, 0)
                 d = np.full(num_cells, v_n / dt) * self.cell_temps
                 if self.apply_transit_delay:
-                    self.inlet_temp_history(inlet_temp, t_sub + dt)
+                    self.log_inlet_temps(inlet_temp, t_sub + dt)
                     d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
                 else:
                     d[0] = inlet_temp
@@ -216,7 +216,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
                 return lin_interp(time, t_l, t_h, temp_l, temp_h)
 
-    def inlet_temp_history(self, inlet_temp: float, time: float):
+    def log_inlet_temps(self, inlet_temp: float, time: float):
         """
         Save inlet temp history for later use.
 
