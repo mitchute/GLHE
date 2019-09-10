@@ -363,6 +363,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
         Turbulent friction factor
 
+        Petukhov, B. S. (1970). Advances in Heat Transfer, volume 6, chapter Heat transfer and
+        friction in turbulent pipe flow with variable physical properties, pages 503–564.
+        Academic Press, Inc., New York, NY.
+
         :param re: Reynolds number
         :return: friction factor
         """
