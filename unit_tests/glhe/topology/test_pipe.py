@@ -127,6 +127,11 @@ class TestPipe(unittest.TestCase):
         tol = 0.1
         self.assertAlmostEqual(tst.calc_transit_time(0.1, 20), 567.3, delta=tol)
 
+    def test_mdot_to_re(self):
+        tst = self.add_instance()
+        tol = 0.1
+        self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 567.3, delta=tol)
+
     def test_simulate_time_step(self):
         tst = self.add_instance()
         tol = 0.01
