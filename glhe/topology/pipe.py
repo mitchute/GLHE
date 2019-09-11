@@ -275,13 +275,15 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
         Javed, S. and Spitler, J.D. 2017. 'Accuracy of borehole thermal resistance calculation methods
         for grouted single U-tube ground heat exchangers.' Applied Energy. 187: 790-806.
+
+        :return conduction resistance, K/(W/m)
         """
 
         return log(self.outer_diameter / self.inner_diameter) / (2 * pi * self.conductivity)
 
     def calc_conv_resist(self, flow_rate: float, temperature: float):
         """
-        Calculates the convection resistance using Gnielinski and Petukov, in [k/(W/m)]
+        Calculates the convection resistance using Gnielinski and Petukhov, in [k/(W/m)]
 
         Gnielinski, V. 1976. 'New equations for heat and mass transfer in turbulent pipe and channel flow.'
         International Chemical Engineering 16(1976), pp. 359-368.

@@ -18,7 +18,7 @@ class TestPipe(unittest.TestCase):
             'name': '32 mm sdr-11 hdpe',
             'outer-diameter': 0.0334,
             'inner-diameter': 0.0269,
-            'conductivity': 0.389,
+            'conductivity': 0.4,
             'density': 950,
             'specific-heat': 1900}],
             'fluid': {'fluid-type': 'water'},
@@ -41,11 +41,11 @@ class TestPipe(unittest.TestCase):
         tol = 0.0001
 
         # props
-        self.assertAlmostEqual(tst.conductivity, 0.389, delta=tol)
+        self.assertAlmostEqual(tst.conductivity, 0.4, delta=tol)
         self.assertAlmostEqual(tst.density, 950, delta=tol)
         self.assertAlmostEqual(tst.specific_heat, 1900, delta=tol)
         self.assertAlmostEqual(tst.heat_capacity, 950 * 1900, delta=tol)
-        self.assertAlmostEqual(tst.diffusivity, 0.389 / (950 * 1900), delta=tol)
+        self.assertAlmostEqual(tst.diffusivity, 0.4 / (950 * 1900), delta=tol)
 
         # geometry
         self.assertAlmostEqual(tst.outer_diameter, 0.0334, delta=tol)
@@ -104,7 +104,7 @@ class TestPipe(unittest.TestCase):
     def test_calc_conduction_resistance(self):
         tst = self.add_instance()
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_cond_resist(), 0.088549, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_cond_resist(), 0.0861146, delta=tolerance)
 
     def test_calc_convection_resistance(self):
         tst = self.add_instance()
@@ -118,9 +118,9 @@ class TestPipe(unittest.TestCase):
         tst = self.add_instance()
         temp = 20
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_resist(0, temp), 0.22128, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11500, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_resist(2, temp), 0.08948, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0, temp), 0.218852, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11256, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(2, temp), 0.08704, delta=tolerance)
 
     def test_calc_transit_time(self):
         tst = self.add_instance()
@@ -130,7 +130,7 @@ class TestPipe(unittest.TestCase):
     def test_mdot_to_re(self):
         tst = self.add_instance()
         tol = 0.1
-        self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 567.3, delta=tol)
+        self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 4725.7, delta=tol)
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
