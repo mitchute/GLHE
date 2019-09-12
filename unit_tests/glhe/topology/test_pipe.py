@@ -127,6 +127,33 @@ class TestPipe(unittest.TestCase):
         tol = 0.1
         self.assertAlmostEqual(tst.calc_transit_time(0.1, 20), 567.3, delta=tol)
 
+    def test_laminar_nusselt(self):
+        tst = self.add_instance()
+        tol = 0.01
+        self.assertAlmostEqual(tst.laminar_nusselt(), 4.01, delta=tol)
+
+    def test_turbulent_nusselt(self):
+        tst = self.add_instance()
+        tol = 0.01
+        self.assertAlmostEqual(tst.turbulent_nusselt(3000, 20), 18.39, delta=tol)
+        self.assertAlmostEqual(tst.turbulent_nusselt(10000, 20), 79.52, delta=tol)
+
+    def test_log_inlet_temps(self):
+        tst = self.add_instance()
+        self.assertEqual(tst.inlet_temps[0], 20)
+        self.assertEqual(tst.inlet_temps_times[0], 0)
+
+        self.assertEqual(len(tst.inlet_temps), 1)
+        self.assertEqual(len(tst.inlet_temps_times), 1)
+
+        tst.log_inlet_temps(25, 100)
+
+        self.assertEqual(tst.inlet_temps[1], 25)
+        self.assertEqual(tst.inlet_temps_times[1], 100)
+
+        self.assertEqual(len(tst.inlet_temps), 2)
+        self.assertEqual(len(tst.inlet_temps_times), 2)
+
     def test_mdot_to_re(self):
         tst = self.add_instance()
         tol = 0.1
