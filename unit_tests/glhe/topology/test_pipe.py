@@ -159,6 +159,15 @@ class TestPipe(unittest.TestCase):
         tol = 0.1
         self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 4725.7, delta=tol)
 
+    def test_plug_flow_outlet_temp(self):
+        tst = self.add_instance()
+        self.assertEqual(tst.plug_flow_outlet_temp(0), 20)
+
+        tst.log_inlet_temps(50, 50)
+        tst.log_inlet_temps(100, 100)
+
+        self.assertEqual(tst.plug_flow_outlet_temp(75), 75)
+
     def test_simulate_time_step(self):
         tst = self.add_instance()
         tol = 0.01

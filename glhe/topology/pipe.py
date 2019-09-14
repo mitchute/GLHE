@@ -197,7 +197,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :return: inlet temperature
         """
 
-        if time < 0:
+        if time <= 0:
             return self.inlet_temps[0]
 
         for idx, t_l in enumerate(self.inlet_temps_times):
