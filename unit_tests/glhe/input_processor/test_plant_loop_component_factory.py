@@ -153,8 +153,6 @@ class TestPLCompFactory(unittest.TestCase):
 
         # adding to debug travis
         g_path = d['ground-heat-exchanger'][0]['g-function-path']
-        print("Path: {}".format(g_path))
-        print("Path exists: {}".format(os.path.exists(os.path.exists(g_path))))
 
         temp_dir = tempfile.mkdtemp()
         temp_file = join(temp_dir, 'in.json')
