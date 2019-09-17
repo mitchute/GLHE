@@ -138,9 +138,6 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             # volume flow rate
             v_dot = m_dot / self.fluid.get_rho(inlet_temp)
 
-            # volume for plug-flow cell
-            # v_0 = tau_0 * v_dot
-
             # volume for ideal-mixed cells
             v_n = tau_n * v_dot
 
@@ -191,10 +188,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
     def plug_flow_outlet_temp(self, time: int) -> float:
         """
-        Simulation time for inlet temperature
+        Tracks the plug-flow outlet temperature
 
         :param time: simulation time
-        :return: inlet temperature
+        :return: outlet temperature
         """
 
         if time <= 0:
