@@ -152,12 +152,13 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
             steps = [dt] * num_sub_steps
             t_sub = time
+
+            # setup tri-diagonal equations
+            a = np.full(num_cells - 1, -v_dot)
+            b = np.full(num_cells, v_n / dt + v_dot)
+            b[0] = 1
+            c = np.full(num_cells - 1, 0)
             for _ in steps:
-                # setup tri-diagonal equations
-                a = np.full(num_cells - 1, -v_dot)
-                b = np.full(num_cells, v_n / dt + v_dot)
-                b[0] = 1
-                c = np.full(num_cells - 1, 0)
                 d = np.full(num_cells, v_n / dt) * self.cell_temps
                 if self.apply_transit_delay:
                     self.log_inlet_temps(inlet_temp, t_sub + dt)
