@@ -59,8 +59,10 @@ class BaseAgg(ABC):
     def get_g_value(self, time_step: int) -> float:
         pass  # pragma: no cover
 
+    @abstractmethod
     def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         pass  # pragma: no cover
 
+    @abstractmethod
     def get_q_prev(self) -> float:
         pass  # pragma: no cover

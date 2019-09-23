@@ -74,13 +74,13 @@ class SubHour(BaseAgg):
 
         return load_to_shift
 
-    def calc_temporal_superposition(self, time_step: int) -> float:
+    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> float:
         pass  # pragma: no cover
 
     def get_g_value(self, time_step: int) -> float:
         pass  # pragma: no cover
 
-    def get_g_b_value(self, time_step: int) -> float:
+    def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         pass  # pragma: no cover
 
     def get_q_prev(self) -> float:
