@@ -35,7 +35,6 @@ class TestSubHourMethod(unittest.TestCase):
 
         # no shift
         t = 900
-        tst.aggregate(t, 1)
         val = tst.aggregate(t, 1)
         self.assertEqual(val, 0)
 
