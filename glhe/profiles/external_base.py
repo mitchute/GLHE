@@ -1,5 +1,5 @@
 import pandas as pd
-from scipy.interpolate.interpolate import interp1d
+from scipy.interpolate import interp1d
 
 
 class ExternalBase(object):

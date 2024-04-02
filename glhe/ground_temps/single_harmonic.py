@@ -20,7 +20,6 @@ class SingleHarmonic(BaseGroundTemp):
 
     def get_temp(self, time: int, depth: float) -> float:
         term1 = -depth * sqrt(pi / (SEC_IN_YEAR * self.soil_diffusivity))
-        term2 = (2 * pi / SEC_IN_YEAR) * (  # noqa: E741
-                time - self.phase_shift - (depth / 2) * sqrt(
-                SEC_IN_YEAR / (pi * self.soil_diffusivity)))  # noqa: E741
+        coeff = (2 * pi / SEC_IN_YEAR)
+        term2 = coeff * (time - self.phase_shift - (depth / 2) * sqrt(SEC_IN_YEAR / (pi * self.soil_diffusivity)))
         return self.ave_ground_temp - self.amplitude * exp(term1) * cos(term2)

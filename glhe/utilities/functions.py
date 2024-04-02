@@ -4,8 +4,8 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from math import ceil, exp, factorial, floor
-from scipy.interpolate.interpolate import interp1d
-from scipy.interpolate.interpolate import interp2d
+from scipy.interpolate import interp1d
+from scipy.interpolate import RectBivariateSpline
 
 from glhe.utilities.constants import SEC_IN_HOUR
 
@@ -431,7 +431,7 @@ def load_interp2d(xz_data_path: str, y: list):
     for idx in range(1, num_series + 1):
         z.append(data[:, idx])
 
-    return interp2d(x, y, z)
+    return RectBivariateSpline(x, y, z)
 
 
 def resample_g_functions(lntts, g, lntts_interval=0.1):

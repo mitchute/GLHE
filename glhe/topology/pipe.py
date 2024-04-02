@@ -119,14 +119,14 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         if dt_tot > 0:
             re = self.m_dot_to_re(m_dot, inlet_temp)
             r_p = self.inner_radius
-            l = self.length
+            length = self.length
 
             # total transit time
             tau = self.calc_transit_time(m_dot, inlet_temp)
 
             # Rees Eq. 18
             # Peclet number
-            peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
+            peclet = 1 / (2 * r_p / length * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
 
             # Rees Eq. 17
             # transit time for ideal-mixed cells

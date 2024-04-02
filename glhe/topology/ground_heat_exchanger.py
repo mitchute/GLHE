@@ -50,7 +50,7 @@ class GroundHeatExchanger(SimulationEntryPoint):
             self.report_outputs = self.sts_ghe.report_outputs
 
         else:
-            raise ValueError("Simulation mode '{]' is not valid".format(self.sim_mode))  # pragma: no cover
+            raise ValueError(f"Simulation mode '{self.sim_mode}' is not valid")  # pragma: no cover
 
     def simulate_time_step(self, inputs: SimulationResponse):
         pass  # pragma: no cover

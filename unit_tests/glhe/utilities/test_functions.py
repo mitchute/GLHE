@@ -5,8 +5,8 @@ import unittest
 from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
-from scipy.interpolate.interpolate import interp1d
-from scipy.interpolate.interpolate import interp2d
+from scipy.interpolate import interp1d
+from scipy.interpolate import interp2d
 
 from glhe.utilities.functions import c_to_k
 from glhe.utilities.functions import hanby
