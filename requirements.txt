@@ -1,5 +1,6 @@
 CoolProp
 coverage
+coveralls
 jsonschema
 matplotlib
 numpy
