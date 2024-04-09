@@ -2,10 +2,9 @@ import os
 from abc import ABC, abstractmethod
 
 import numpy as np
-from scipy.interpolate import interp1d
 
-from glhe.utilities.functions import load_interp1d
-from glhe.utilities.functions import load_interp2d
+from glhe.utilities.functions import Interpolator1D, Interpolator1DFromFile
+from glhe.utilities.functions import Interpolator2DFromFile
 
 join = os.path.join
 norm = os.path.normpath
@@ -18,10 +17,10 @@ class BaseAgg(ABC):
         # g-function values
         if 'g-function-path' in inputs:
             path_g = norm(join(cwd, inputs['g-function-path']))
-            self.interp_g = load_interp1d(path_g)
+            self.interp_g = Interpolator1DFromFile(path_g)
         elif 'lntts' and 'g-values' in inputs:
             data_g = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
-            self.interp_g = interp1d(data_g[:, 0], data_g[:, 1], fill_value='extrapolate')
+            self.interp_g = Interpolator1D(data_g[:, 0], data_g[:, 1])
         else:
             raise KeyError('g-function data not found.')
 
@@ -29,12 +28,12 @@ class BaseAgg(ABC):
         self.interp_g_b = None
         if 'g_b-function-path' in inputs:
             if 'g_b-flow-rates' in inputs:
-                self.interp_g_b = load_interp2d(inputs['g_b-function-path'], inputs['g_b-flow-rates'])
+                self.interp_g_b = Interpolator2DFromFile(inputs['g_b-function-path'], inputs['g_b-flow-rates'])
             else:
-                self.interp_g_b = load_interp1d(inputs['g_b-function-path'])
+                self.interp_g_b = Interpolator1DFromFile(inputs['g_b-function-path'])
         elif 'lntts_b' and 'g_b-values' in inputs:
             data_g_b = np.transpose(np.array([inputs['lntts_b'], inputs['g_b-values']]))
-            self.interp_g_b = interp1d(data_g_b[:, 0], data_g_b[:, 1], fill_value='extrapolate')
+            self.interp_g_b = Interpolator1D(data_g_b[:, 0], data_g_b[:, 1])
 
         self.ts = inputs['time-scale']
 

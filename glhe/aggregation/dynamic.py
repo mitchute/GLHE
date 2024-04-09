@@ -105,13 +105,13 @@ class Dynamic(BaseAgg):
         dts = np.append(np.concatenate((self.dts, self.sub_hr.dts)), time_step)
         times = np.flipud(np.cumsum(np.flipud(dts)))[:-1]
         lntts = np.log(times / self.ts)
-        g = self.interp_g(lntts)
+        g = self.interp_g.interpolate(lntts)
 
         # convolution of delta_q and the g-function values
         if self.interp_g_b:
             # convolution for "g" and "g_b" g-functions
             if not flow_rate:
-                g_b = self.interp_g_b(lntts)
+                g_b = self.interp_g_b.interpolate(lntts)
             else:
                 g_b = np.flipud(self.interp_g_b(lntts, flow_rate))
             return float(np.dot(dq, g)), float(np.dot(dq, g_b))
@@ -121,14 +121,14 @@ class Dynamic(BaseAgg):
 
     def get_g_value(self, time_step: int) -> float:
         lntts = np.log(time_step / self.ts)
-        return float(self.interp_g(lntts))
+        return float(self.interp_g.interpolate(lntts))
 
     def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         lntts = np.log(time_step / self.ts)
         if not flow_rate:
-            return float(self.interp_g_b(lntts))
+            return float(self.interp_g_b.interpolate(lntts))
         else:
-            return float(self.interp_g_b(lntts, flow_rate))
+            return float(self.interp_g_b.interpolate(lntts, flow_rate))
 
     def get_q_prev(self) -> float:
         return float(self.sub_hr.energy[-1] / self.sub_hr.dts[-1])

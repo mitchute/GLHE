@@ -37,7 +37,7 @@ class NoAgg(BaseAgg):
         dts = np.append(self.dts, time_step)
         times = np.flipud(np.cumsum(np.flipud(dts)))[:-1]
         lntts = np.log(times / self.ts)
-        g = self.interp_g(lntts)
+        g = self.interp_g.interpolate(lntts)
 
         # convolution of delta_q and the g-function values
         if self.interp_g_b:
