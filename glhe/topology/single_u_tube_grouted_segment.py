@@ -1,5 +1,6 @@
-import numpy as np
 from math import pi
+
+import numpy as np
 from scipy.integrate import solve_ivp
 
 from glhe.input_processor.component_types import ComponentTypes

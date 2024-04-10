@@ -19,7 +19,7 @@ class ConstantLoad(SimulationEntryPoint):
         self.inlet_temp = ip.init_temp()
         self.outlet_temp = ip.init_temp()
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         self.inlet_temp = inputs.temperature
         flow_rate = inputs.flow_rate
 

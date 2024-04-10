@@ -11,8 +11,8 @@ from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThro
 from glhe.utilities.functions import merge_dicts
 
 
-class Location(object):
-    def __init__(self, x, y, z):
+class Location:
+    def __init__(self, x: int, y: int, z: int):
         self.x = x
         self.y = y
         self.z = z

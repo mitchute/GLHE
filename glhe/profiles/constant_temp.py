@@ -18,9 +18,9 @@ class ConstantTemp(SimulationEntryPoint):
 
         self.inlet_temperature = ip.init_temp()
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.temperature)
 
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.temperature}

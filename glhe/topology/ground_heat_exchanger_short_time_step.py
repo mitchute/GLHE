@@ -1,8 +1,8 @@
 import os
+from math import log, pi
 
 import numpy as np
 import pygfunction as gt
-from math import log, pi
 
 from glhe.aggregation.agg_factory import make_agg_method
 from glhe.input_processor.component_types import ComponentTypes
@@ -74,7 +74,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         self.outlet_temperature = ip.init_temp()
         self.bh_wall_temperature = ip.init_temp()
 
-    def average_bh(self):
+    def average_bh(self) -> dict:
         # local variables for later use
         ave_pipe_outer_dia = 0
         ave_pipe_inner_dia = 0
@@ -130,7 +130,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         return d
 
-    def generate_g(self):
+    def generate_g(self) -> None:
         # generate long time-step g-functions
         # these are Eskilson-type g-functions for computing the bh wall temperature rise
         # determine "average" bh
@@ -159,7 +159,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         if end_time > min_fls_time:
             lntts_lts = np.arange(lntts_start, lntts_end, step=0.1)
             times = np.exp(lntts_lts) * self.ts
-            g_lts = gt.gfunction.uniform_heat_extraction(boreholes, times, self.soil.diffusivity)
+            g_lts = gt.gfunction.uniform_heat_extraction(boreholes, times, self.soil.diffusivity)  # TODO: Deprecated
 
         # generate sts g-functions using radial-numerical model
         d_ave_bh = self.average_bh()
@@ -256,7 +256,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         write_arrays_to_csv(os.path.join(self.op.output_dir, 'g_b.csv'), [self.lntts_b, self.g_b])
 
-    def calc_bh_ave_length(self):
+    def calc_bh_ave_length(self) -> float:
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
         ave_length = 0
         count = 0
@@ -268,7 +268,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         return ave_length / count
 
-    def count_bhs(self):
+    def count_bhs(self) -> int:
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
         count = 0
         for path in self.paths:
@@ -291,6 +291,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         # TODO: update bh wall temp
         # self.bh_wall_temperature = self.soil.get_temp(time, self.h)
+        # TODO: figure out int/float discrepancy
         self.bh_wall_temperature = self.soil.get_temp(time, self.h) + self.calc_bh_wall_temp_rise(time, time_step)
 
         # TODO: distribute flow properly
@@ -319,7 +320,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         return SimulationResponse(inputs.time, inputs.time_step, flow, outlet_temp)
 
-    def get_heat_rate_bh(self):
+    def get_heat_rate_bh(self) -> float:
         bh_ht_rate = 0
         for path in self.paths:
             bh_ht_rate += path.get_heat_rate_bh()
@@ -345,10 +346,10 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         for path in self.paths:
             d = merge_dicts(d, path.report_outputs())
 
-        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHWallTemp): self.bh_wall_temperature}
+        d_self = {f'{self.Type}:{self.name}:{ReportTypes.HeatRate}': self.heat_rate,
+                  f'{self.Type}:{self.name}:{ReportTypes.HeatRateBH}': self.heat_rate_bh,
+                  f'{self.Type}:{self.name}:{ReportTypes.InletTemp}': self.inlet_temperature,
+                  f'{self.Type}:{self.name}:{ReportTypes.OutletTemp}': self.outlet_temperature,
+                  f'{self.Type}:{self.name}:{ReportTypes.BHWallTemp}': self.bh_wall_temperature}
 
         return merge_dicts(d, d_self)

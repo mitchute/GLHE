@@ -25,9 +25,9 @@ class ExternalTemps(ExternalBase, SimulationEntryPoint):
         # report variables
         self.outlet_temp = self.get_value(0)
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         self.outlet_temp = self.get_value(inputs.time + inputs.time_step)
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp)}

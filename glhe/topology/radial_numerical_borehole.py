@@ -1,12 +1,13 @@
-import numpy as np
 from math import log, sqrt
 from math import pi
+
+import numpy as np
 
 from glhe.utilities.constants import SEC_IN_DAY
 from glhe.utilities.functions import tdma_2
 
 
-class RadialCellType(object):
+class RadialCellType:
     FLUID = 1
     CONVECTION = 2
     PIPE = 3
@@ -14,7 +15,7 @@ class RadialCellType(object):
     SOIL = 5
 
 
-class RadialCell(object):
+class RadialCell:
     def __init__(self, inputs):
         self.type = inputs['type']
         self.inner_radius = inputs['inner-radius']
@@ -28,7 +29,7 @@ class RadialCell(object):
         self.volume = pi * (self.outer_radius ** 2 - self.inner_radius ** 2)
 
 
-class RadialNumericalBH(object):
+class RadialNumericalBH:
     """
      X. Xu and Jeffrey D. Spitler. 2006. 'Modeling of Vertical Ground Loop Heat Exchangers
      with Variable Convective Resistance and Thermal Mass of the Fluid.' in Proceedings of

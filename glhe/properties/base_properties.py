@@ -1,6 +1,6 @@
-class PropertiesBase(object):
+class PropertiesBase:
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: dict):
 
         if 'name' in inputs:
             if hasattr(self, 'name'):
@@ -14,8 +14,8 @@ class PropertiesBase(object):
         self.heat_capacity = self.calc_rho_cp()
         self.diffusivity = self.calc_alpha()
 
-    def calc_rho_cp(self):
+    def calc_rho_cp(self) -> float:
         return self.density * self.specific_heat
 
-    def calc_alpha(self):
+    def calc_alpha(self) -> float:
         return self.conductivity / (self.specific_heat * self.density)

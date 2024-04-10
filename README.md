@@ -4,9 +4,9 @@
 
 Docs are hosted [here](https://glhe.readthedocs.io/en/latest/) by [ReadTheDocs](https://readthedocs.org/)
 
-## Testing [![Build Status](https://travis-ci.org/mitchute/GLHE.svg?branch=master)](https://travis-ci.org/mitchute/GLHE)
+## Testing [![Run Tests](https://github.com/mitchute/GLHE/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/mitchute/GLHE/actions/workflows/unit_tests.yml)  [![Flake8](https://github.com/mitchute/GLHE/actions/workflows/flake8.yml/badge.svg)](https://github.com/mitchute/GLHE/actions/workflows/flake8.yml)
 
-Tests are run by [Travis-ci.org](https://travis-ci.org/mitchute/GLHE)
+Tests are run by [GitHub Actions](https://travis-ci.org/mitchute/GLHE)
 
 
 ## Coverage [![Coverage Status](https://coveralls.io/repos/github/mitchute/GLHE/badge.svg?branch=master)](https://coveralls.io/github/mitchute/GLHE?branch=master)

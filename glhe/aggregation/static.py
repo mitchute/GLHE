@@ -67,8 +67,9 @@ class Static(BaseAgg):
             return
         else:
             # aggregate
-            dts_flip = np.flipud(self.dts)
-            vals, idxs, cnts = np.unique(dts_flip, return_counts=True, return_index=True)
+            # TODO: The next two lines are showing as unused in Pycharm, is this IF block needed then?
+            # dts_flip = np.flipud(self.dts)
+            # vals, idxs, cnts = np.unique(dts_flip, return_counts=True, return_index=True)
             self.energy[-1] += e_1
 
             # numpy split will do a lot of work too
@@ -76,3 +77,15 @@ class Static(BaseAgg):
         # update times
         self.prev_update_time = time
         self.prev_update_time_hr = int(time / SEC_IN_HOUR)
+
+    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> float:
+        pass
+
+    def get_g_value(self, time_step: int) -> float:
+        pass
+
+    def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
+        pass
+
+    def get_q_prev(self) -> float:
+        pass

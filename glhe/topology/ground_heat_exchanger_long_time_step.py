@@ -81,7 +81,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.resist_b = 0
         self.resist_b_eff = 0
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         time = inputs.time
         dt = inputs.time_step
         flow_rate = inputs.flow_rate
@@ -140,7 +140,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         d = {}
         d = merge_dicts(d, self.ave_bh.report_outputs())
         d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,

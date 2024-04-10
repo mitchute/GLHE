@@ -1,7 +1,7 @@
 from collections import deque
+from math import ceil, log, pi, sqrt
 
 import numpy as np
-from math import ceil, log, pi, sqrt
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
@@ -119,14 +119,14 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         if dt_tot > 0:
             re = self.m_dot_to_re(m_dot, inlet_temp)
             r_p = self.inner_radius
-            l = self.length
+            length = self.length
 
             # total transit time
             tau = self.calc_transit_time(m_dot, inlet_temp)
 
             # Rees Eq. 18
             # Peclet number
-            peclet = 1 / (2 * r_p / l * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
+            peclet = 1 / (2 * r_p / length * (3.e7 * re ** -2.1 + 1.35 * re ** -0.125))
 
             # Rees Eq. 17
             # transit time for ideal-mixed cells
@@ -162,7 +162,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                 d = np.full(num_cells, v_n / dt) * self.cell_temps
                 if self.apply_transit_delay:
                     self.log_inlet_temps(inlet_temp, t_sub + dt)
-                    d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+                    d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)  # TODO: Several float/ndarray discrepancies
                 else:
                     d[0] = inlet_temp
 

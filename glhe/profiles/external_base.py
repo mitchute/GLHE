@@ -1,5 +1,5 @@
 import pandas as pd
-from scipy.interpolate.interpolate import interp1d
+from scipy.interpolate import interp1d
 
 
 class ExternalBase(object):
@@ -8,7 +8,7 @@ class ExternalBase(object):
 
         df = pd.read_csv(path, index_col=0, parse_dates=True)
         df['delta t'] = df.index.to_series().diff().dt.total_seconds()
-        df['delta t'].iloc[0] = 0
+        df['delta t'].iat[0] = 0
         x_range = df['delta t'].cumsum().tolist()
         y_range = df.iloc[:, col_num].tolist()
 
@@ -20,5 +20,5 @@ class ExternalBase(object):
 
         self._interp_values = interp1d(x_range, y_range)
 
-    def get_value(self, time):
+    def get_value(self, time) -> float:
         return float(self._interp_values(time % self.max_time))

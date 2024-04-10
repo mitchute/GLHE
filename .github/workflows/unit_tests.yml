@@ -1,0 +1,28 @@
+name: Run Tests
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  unit_tests:
+    strategy:
+      matrix:
+        os: [ windows-latest, macos-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.11'
+      - name: Install Pip Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Tests
+        run: coverage run -m pytest
+      - name: Coveralls
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

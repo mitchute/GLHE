@@ -19,7 +19,7 @@ class PulseLoad(SimulationEntryPoint):
         # report variables
         self.outlet_temp = 0
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
 
         if self.start_time <= inputs.time + inputs.time_step < self.end_time:
             flow_rate = inputs.flow_rate
@@ -36,6 +36,6 @@ class PulseLoad(SimulationEntryPoint):
             self.load = 0
             return inputs
 
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): float(self.load)}

@@ -1,11 +1,11 @@
 import json
-from typing import Union
+from math import ceil, exp, factorial, floor
+from typing import Callable, overload
 
 import numpy as np
 import pandas as pd
-from math import ceil, exp, factorial, floor
-from scipy.interpolate.interpolate import interp1d
-from scipy.interpolate.interpolate import interp2d
+from scipy.interpolate import RegularGridInterpolator
+from scipy.interpolate import interp1d
 
 from glhe.utilities.constants import SEC_IN_HOUR
 
@@ -25,7 +25,22 @@ def smoothing_function(x: float, a: float, b: float) -> float:
     return 1 / (1 + exp(-(x - a) / b))
 
 
-def k_to_c(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def k_to_c(x: int) -> int:
+    pass
+
+
+@overload
+def k_to_c(x: float) -> float:
+    pass
+
+
+@overload
+def k_to_c(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def k_to_c(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts Kelvin to Celsius
 
@@ -36,7 +51,22 @@ def k_to_c(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
     return x - 273.15
 
 
-def c_to_k(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def c_to_k(x: int) -> int:
+    pass
+
+
+@overload
+def c_to_k(x: float) -> float:
+    pass
+
+
+@overload
+def c_to_k(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def c_to_k(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts Celsius to Kelvin
 
@@ -47,7 +77,22 @@ def c_to_k(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
     return x + 273.15
 
 
-def sec_to_hr(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def sec_to_hr(x: int) -> int:
+    pass
+
+
+@overload
+def sec_to_hr(x: float) -> float:
+    pass
+
+
+@overload
+def sec_to_hr(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def sec_to_hr(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts seconds to hours
 
@@ -58,7 +103,22 @@ def sec_to_hr(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]
     return x / SEC_IN_HOUR
 
 
-def hr_to_sec(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def hr_to_sec(x: int) -> int:
+    pass
+
+
+@overload
+def hr_to_sec(x: float) -> float:
+    pass
+
+
+@overload
+def hr_to_sec(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def hr_to_sec(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts hours to seconds
 
@@ -69,7 +129,22 @@ def hr_to_sec(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]
     return x * SEC_IN_HOUR
 
 
-def kw_to_w(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def kw_to_w(x: int) -> int:
+    pass
+
+
+@overload
+def kw_to_w(x: float) -> float:
+    pass
+
+
+@overload
+def kw_to_w(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def kw_to_w(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts kW to W
 
@@ -80,7 +155,22 @@ def kw_to_w(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
     return x * 1000
 
 
-def w_to_kw(x: Union[int, float, np.ndarray]) -> Union[int, float, np.ndarray]:
+@overload
+def w_to_kw(x: int) -> int:
+    pass
+
+
+@overload
+def w_to_kw(x: float) -> float:
+    pass
+
+
+@overload
+def w_to_kw(x: np.ndarray) -> np.ndarray:
+    pass
+
+
+def w_to_kw(x: int | float | np.ndarray) -> int | float | np.ndarray:
     """
     Converts W to kW
 
@@ -165,21 +255,21 @@ def merge_dicts(d_root: dict, d_append: dict) -> dict:
     Return new dictionary with d_append added to d_root at the root level
 
     :param d_root: input dictionary
-    :param d_append: dictionary to append
+    :param d_append: the dictionary to append
     :return: combined dict
     """
 
     return {**d_root, **d_append}
 
 
-def runge_kutta_fourth_xy(rhs, h, x, y):
+def runge_kutta_fourth_xy(rhs: Callable[[float, float], float], h: float, x: float, y: float) -> float:
     """
     Solves one step using a fourth-order Runge-Kutta method. RHS expects both x and y variables.
 
     Moin, P. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
     Cambridge University Press. New York, New York.
 
-    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(x, y))
+    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g. dy/dx = f(x, y))
     :param h: step size
     :param x: step dimension
     :param y: output dimension
@@ -194,14 +284,14 @@ def runge_kutta_fourth_xy(rhs, h, x, y):
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
 
-def runge_kutta_fourth_x(rhs, h, x, y):
+def runge_kutta_fourth_x(rhs: Callable[[float], float], h: float, x: float, y: float) -> float:
     """
     Solves one step using a fourth-order Runge-Kutta method. RHS expects only the x variable.
 
     Moin, P. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
     Cambridge University Press. New York, New York.
 
-    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(x))
+    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g. dy/dx = f(x))
     :param h: step size
     :param x: step dimension
     :param y: output dimension
@@ -216,12 +306,12 @@ def runge_kutta_fourth_x(rhs, h, x, y):
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
 
-def runge_kutta_fourth_y(rhs, h, y):
+def runge_kutta_fourth_y(rhs: Callable[[float], float], h: float, y: float) -> float:
     """
     Solves one step using a fourth-order Runge-Kutta method. RHS expects only the y variable.
     Moin, P. 2010. Fundamentals of Engineering Numerical Analysis. 2nd ed.
     Cambridge University Press. New York, New York.
-    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g dy/dx = f(y))
+    :param rhs: "Right-hand Side" of the equation(s). Everything but the derivative. (e.g. dy/dx = f(y))
     :param h: step size
     :param y: output dimension
     :return:
@@ -235,8 +325,7 @@ def runge_kutta_fourth_y(rhs, h, y):
     return y + (k_1 + 2 * (k_2 + k_3) + k_4) / 6.0 * h
 
 
-def tdma_1(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
-           c: Union[list, np.ndarray], d: Union[list, np.ndarray]) -> np.ndarray:
+def tdma_1(a: list | np.ndarray, b: list | np.ndarray, c: list | np.ndarray, d: list | np.ndarray) -> np.ndarray:
     """
     Tri-diagonal matrix solver
 
@@ -271,8 +360,7 @@ def tdma_1(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
     return xc
 
 
-def tdma_2(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
-           c: Union[list, np.ndarray], d: Union[list, np.ndarray]) -> np.ndarray:
+def tdma_2(a: list | np.ndarray, b: list | np.ndarray, c: list | np.ndarray, d: list | np.ndarray) -> np.ndarray:
     """
     Tri-diagonal matrix solver
 
@@ -310,7 +398,22 @@ def tdma_2(a: Union[list, np.ndarray], b: Union[list, np.ndarray],
     return dc
 
 
-def lower_obj(x):
+@overload
+def lower_obj(x: list) -> list:
+    pass
+
+
+@overload
+def lower_obj(x: dict) -> dict:
+    pass
+
+
+@overload
+def lower_obj(x: str) -> str:
+    pass
+
+
+def lower_obj(x: list | dict | str) -> list | dict | str:
     """
     Lower cases objects, including nested objects.
 
@@ -334,7 +437,7 @@ def lower_obj(x):
         return d
     elif isinstance(x, str):
         return x.lower()
-    else:
+    else:  # TODO: Probably should complain about the unknown type?
         return x
 
 
@@ -365,7 +468,7 @@ def un_reverse_idx(length: int, reversed_idx: int) -> int:
     return length - 1 - reversed_idx
 
 
-def write_arrays_to_csv(path: str, arrays: Union[list, np.ndarray]) -> None:
+def write_arrays_to_csv(path: str, arrays: list | np.ndarray) -> None:
     _arrays = None
     if isinstance(arrays, list):
         _arrays = np.array(arrays)
@@ -377,61 +480,77 @@ def write_arrays_to_csv(path: str, arrays: Union[list, np.ndarray]) -> None:
     df.to_csv(path, header=False, index=False)
 
 
-def load_interp1d(data_path: str):
-    """
-    Setup 1D interpolation
+class Interpolator1D:
 
-    :param data_path: path to csv file with columnated data, e.g. 'x1,y1'
-    :return: initialized interp1d object
-    """
+    def __init__(self, x_data: np.ndarray, y_data: np.ndarray):  # TODO: Try to use pathlib internally everywhere
+        """
+        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
 
-    data = np.genfromtxt(data_path, delimiter=',')
-    _, num_col = data.shape
+        :param x_data: Numpy array of x-value floats
+        :param y_data: Numpy array of x-value floats
+        """
+        self.interp = interp1d(x_data, y_data, fill_value='extrapolate')
 
-    if num_col != 2:
-        raise ValueError("Number of columns in '{}' must be 2".format(data_path))
-
-    return interp1d(data[:, 0], data[:, 1], fill_value='extrapolate')
+    def interpolate(self, x: float) -> float:
+        return self.interp(x)
 
 
-def load_interp2d(xz_data_path: str, y: list):
-    """
-    Setup 2D interpolation
+class Interpolator1DFromFile(Interpolator1D):
+    def __init__(self, data_path: str):  # TODO: Try to use pathlib internally everywhere
+        """
+        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
 
-    Example:
-    x1, y1, z1, x2, y2, z2\n
-    1,   3,  5,  1,  4,  6\n
-    2,   3,  6,  2,  4,  7\n
-    3,   3   7,  3,  4,  8\n
+        :param data_path: path to csv file with columned data, e.g. 'x1,y1'
+        """
+        data = np.genfromtxt(data_path, delimiter=',')
+        _, num_col = data.shape
+        if num_col != 2:
+            raise ValueError("Number of columns in '{}' must be 2".format(data_path))
+        super().__init__(data[:, 0], data[:, 1])
 
-    xy_data_path will lead to a file such as:
 
-    1,5,6\n
-    2,6,7\n
-    3,7,8\n
+class Interpolator2DFromFile:
+    def __init__(self, xz_data_path: str, y: list):
+        """
+        2D interpolation class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
 
-    y will be: [3, 4]
+        Example data:
+        x1, y1, z1, x2, y2, z2
+        1,   3,  5,  1,  4,  6
+        2,   3,  6,  2,  4,  7
+        3,   3   7,  3,  4,  8
 
-    :param xz_data_path: path to csv file with columnated data, e.g. 'x1,z1,z2,...,zn'
-    :param y: list of *constant* values for the second independent variable
-    :return initialized interp2d instance
-    """
+        xy_data_path will lead to a file such as:
 
-    data = np.genfromtxt(xz_data_path, delimiter=',')
-    _, num_col = data.shape
+        1,5,6\n
+        2,6,7\n
+        3,7,8\n
 
-    num_series = num_col - 1
+        y will be: [3, 4]
 
-    # check to make sure number of columns and length of 'y' match
-    if num_series != len(y):
-        ValueError("Number of columns in '{}' inconsistent with 'y'".format(xz_data_path))
+        :param xz_data_path: path to csv file with columned data, e.g. 'x1,z1,z2,...,zn'
+        :param y: list of *constant* values for the second independent variable
+        """
 
-    x = data[:, 0]
-    z = []
-    for idx in range(1, num_series + 1):
-        z.append(data[:, idx])
+        data = np.genfromtxt(xz_data_path, delimiter=',')
+        _, num_col = data.shape
 
-    return interp2d(x, y, z)
+        num_series = num_col - 1
+
+        # check to make sure number of columns and length of 'y' match
+        if num_series != len(y):
+            ValueError("Number of columns in '{}' inconsistent with 'y'".format(xz_data_path))
+
+        x = data[:, 0]
+        z = np.ndarray(shape=(len(x), num_series))
+        for idx in range(num_series):
+            z[:, idx] = data[:, idx + 1]
+
+        self.interp = RegularGridInterpolator((x, y), z)
+
+    def interpolate(self, x: float, y: float) -> float:
+        x = self.interp((x, y))
+        return x.min()
 
 
 def resample_g_functions(lntts, g, lntts_interval=0.1):

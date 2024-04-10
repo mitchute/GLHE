@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 
+import datetime as dt
 import os
 import sys
-from typing import Union
-import datetime as dt
 
-from glhe.utilities.functions import merge_dicts
-from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
-from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
+from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
+from glhe.utilities.functions import merge_dicts
+from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
 
 
-class PlantLoop(object):
+class PlantLoop:
     Type = ComponentTypes.PlantLoop
 
-    def __init__(self, json_file_path: str) -> None:
+    def __init__(self, json_file_path: str):
         """
         Initialize the plant loop and all components on it.
 
@@ -76,23 +75,27 @@ class PlantLoop(object):
         current_sim_time = 0
 
         while True:
-            self.do_one_time_step(current_sim_time, self.time_step)
+            status = self.do_one_time_step(current_sim_time, self.time_step)
             current_sim_time += self.time_step
             self.collect_outputs(current_sim_time)
 
-            if current_sim_time >= self.end_sim_time:
+            if current_sim_time >= self.end_sim_time or not status:
                 break
 
         self.op.write_to_file()
 
-        print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
+        if status:
+            print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
+            with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
+                f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
+        else:
+            print('Simulation FAILED!')
+            with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
+                f.write('Simulation FAILED!\n')
 
-        with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
-            f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
+        return status
 
-        return True
-
-    def do_one_time_step(self, sim_time: Union[int, float], time_step: Union[int, float]):
+    def do_one_time_step(self, sim_time: int | float, time_step: int | float) -> bool:
         """
         Simulate one time step of the entire plant loop
         """
@@ -116,14 +119,14 @@ class PlantLoop(object):
         # supply outlet node
         self.supply_outlet_temp = response.temperature
 
-    def report_outputs(self):
+        return True  # TODO: Return something meaningful
 
-        d = {'{:s}:{:s}'.format(self.Type, 'Demand Inlet Temp. [C]'): self.demand_inlet_temp,
-             '{:s}:{:s}'.format(self.Type, 'Demand Outlet Temp. [C]'): self.demand_outlet_temp,
-             '{:s}:{:s}'.format(self.Type, 'Supply Inlet Temp. [C]'): self.supply_inlet_temp,
-             '{:s}:{:s}'.format(self.Type, 'Supply Outlet Temp. [C]'): self.supply_outlet_temp}
+    def report_outputs(self) -> dict:
 
-        return d
+        return {f'{self.Type}:Demand Inlet Temp. [C]': self.demand_inlet_temp,
+                f'{self.Type}:Demand Outlet Temp. [C]': self.demand_outlet_temp,
+                f'{self.Type}:Supply Inlet Temp. [C]': self.supply_inlet_temp,
+                f'{self.Type}:Supply Outlet Temp. [C]': self.supply_outlet_temp}
 
     def collect_outputs(self, sim_time):
 

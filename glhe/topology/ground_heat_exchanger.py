@@ -1,6 +1,8 @@
 from glhe.input_processor.component_types import ComponentTypes
+from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
 from glhe.utilities.functions import merge_dicts
@@ -9,7 +11,7 @@ from glhe.utilities.functions import merge_dicts
 class GroundHeatExchanger(SimulationEntryPoint):
     Type = ComponentTypes.GroundHeatExchanger
 
-    def __init__(self, inputs, ip, op):
+    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
@@ -50,7 +52,7 @@ class GroundHeatExchanger(SimulationEntryPoint):
             self.report_outputs = self.sts_ghe.report_outputs
 
         else:
-            raise ValueError("Simulation mode '{]' is not valid".format(self.sim_mode))  # pragma: no cover
+            raise ValueError(f"Simulation mode '{self.sim_mode}' is not valid")  # pragma: no cover
 
     def simulate_time_step(self, inputs: SimulationResponse):
         pass  # pragma: no cover

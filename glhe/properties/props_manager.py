@@ -3,13 +3,13 @@ from glhe.properties.base_properties import PropertiesBase
 from glhe.properties.fluid_properties import Fluid
 
 
-class PropsMGR(object):
+class PropsMGR:
 
     def __init__(self):
         self.fluid = None
         self.soil = None
 
-    def load_properties(self, inputs: dict) -> None:
+    def load_properties(self, inputs: dict):
         # TODO: pull this into the init structure
 
         """

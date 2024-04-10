@@ -26,7 +26,7 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
         self.load = self.get_value(0)
         self.outlet_temp = 0
 
-    def simulate_time_step(self, inputs: SimulationResponse):
+    def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
         flow_rate = inputs.flow_rate
 
         if flow_rate == 0:
@@ -41,6 +41,6 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
         self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
-    def report_outputs(self):
+    def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),
                 '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): float(self.load)}
