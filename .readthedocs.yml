@@ -1,13 +1,16 @@
-# Use the latest build image to get access to the most Python versions
+version: 2
+
+sphinx:
+  configuration: doc/readthedocs/sphinx/conf.py
+  builder: html
+
 build:
-    image: latest
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  apt_packages:
+    - doxygen
 
-# Must use 3.4+ to get the ABC modules
 python:
-    version: 3.6
-
-# Don't build any extra formats
-formats: []
-
-# You could potentially use a separate requirements file for doc-building - one that doesn't have CoolProp
-requirements_file: requirements.txt
+  install:
+    - requirements: requirements.txt
