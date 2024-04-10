@@ -10,3 +10,4 @@ scipy
 Sphinx
 pytest
 flake8
+wheel

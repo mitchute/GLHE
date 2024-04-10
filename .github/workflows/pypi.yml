@@ -1,0 +1,32 @@
+name: PyPIRelease
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+
+    - name: Set up Python
+      uses: actions/setup-python@v4.5.0
+      with:
+        python-version: 3.10
+
+    - name: Install Pip Dependencies
+      shell: bash
+      run: pip install -r requirements.txt
+
+    - name: Build the Wheel
+      shell: bash
+      run: python3 setup.py bdist_wheel sdist
+
+    - name: Deploy on Test PyPi
+      uses: pypa/gh-action-pypi-publish@v1.8.14
+      with:
+        user: __token__
+        password: ${{ secrets.TEST_PYPIPW }}
