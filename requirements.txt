@@ -11,3 +11,4 @@ Sphinx
 pytest
 flake8
 wheel
+sphinx-rtd-theme
