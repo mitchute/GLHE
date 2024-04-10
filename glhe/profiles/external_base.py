@@ -8,7 +8,7 @@ class ExternalBase(object):
 
         df = pd.read_csv(path, index_col=0, parse_dates=True)
         df['delta t'] = df.index.to_series().diff().dt.total_seconds()
-        df['delta t'].iloc[0] = 0
+        df['delta t'].iat[0] = 0
         x_range = df['delta t'].cumsum().tolist()
         y_range = df.iloc[:, col_num].tolist()
 

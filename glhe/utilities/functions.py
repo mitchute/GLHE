@@ -4,7 +4,8 @@ from typing import Callable, overload
 import numpy as np
 import pandas as pd
 from math import ceil, exp, factorial, floor
-from scipy.interpolate import interp1d, interp2d
+from scipy.interpolate import interp1d
+from scipy.interpolate import RegularGridInterpolator
 
 from glhe.utilities.constants import SEC_IN_HOUR
 
@@ -529,7 +530,6 @@ class Interpolator2DFromFile:
 
         :param xz_data_path: path to csv file with columned data, e.g. 'x1,z1,z2,...,zn'
         :param y: list of *constant* values for the second independent variable
-        :return initialized interp2d instance
         """
 
         data = np.genfromtxt(xz_data_path, delimiter=',')
@@ -542,14 +542,15 @@ class Interpolator2DFromFile:
             ValueError("Number of columns in '{}' inconsistent with 'y'".format(xz_data_path))
 
         x = data[:, 0]
-        z = []
-        for idx in range(1, num_series + 1):
-            z.append(data[:, idx])
+        z = np.ndarray(shape=(len(x), num_series))
+        for idx in range(num_series):
+            z[:, idx] = data[:, idx + 1]
 
-        self.interp = interp2d(x, y, z)
+        self.interp = RegularGridInterpolator((x, y), z)
 
     def interpolate(self, x: float, y: float) -> float:
-        return self.interp(x, y)
+        x = self.interp((x, y))
+        return x.min()
 
 
 def resample_g_functions(lntts, g, lntts_interval=0.1):
