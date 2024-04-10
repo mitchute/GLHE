@@ -1,7 +1,7 @@
 from collections import deque
+from math import ceil, log, pi, sqrt
 
 import numpy as np
-from math import ceil, log, pi, sqrt
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
@@ -162,7 +162,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
                 d = np.full(num_cells, v_n / dt) * self.cell_temps
                 if self.apply_transit_delay:
                     self.log_inlet_temps(inlet_temp, t_sub + dt)
-                    d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)
+                    d[0] = self.plug_flow_outlet_temp(t_sub + dt - tau_0)  # TODO: Several float/ndarray discrepancies
                 else:
                     d[0] = inlet_temp
 

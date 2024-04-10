@@ -1,9 +1,9 @@
-from typing import Union
-
+from glhe.input_processor.input_processor import InputProcessor
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
-def make_borehole(inputs, ip, op) -> Union[SingleUTubeGroutedBorehole]:
+def make_borehole(inputs: dict, ip: InputProcessor, op: OutputProcessor) -> SingleUTubeGroutedBorehole:
     bh_name = inputs['name']
     if 'average-borehole' not in inputs:
         comp_inputs = ip.get_definition_object('borehole', bh_name)

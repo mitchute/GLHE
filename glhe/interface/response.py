@@ -1,4 +1,4 @@
-class SimulationResponse(object):
+class SimulationResponse:
     def __init__(self, time: float, time_step: float, flow_rate: float, temperature: float,
                  bh_wall_temp: float = None, hp_src_heat_rate: float = None):
         self.time = time

@@ -1,6 +1,8 @@
 from glhe.input_processor.component_types import ComponentTypes
+from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
+from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
 from glhe.utilities.functions import merge_dicts
@@ -9,7 +11,7 @@ from glhe.utilities.functions import merge_dicts
 class Path(SimulationEntryPoint):
     Type = ComponentTypes.Path
 
-    def __init__(self, inputs, ip, op):
+    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
         SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
         self.op = op
@@ -32,7 +34,7 @@ class Path(SimulationEntryPoint):
         self.outlet_temperature = ip.init_temp()
         self.flow_rate = 0
 
-    def get_heat_rate_bh(self):
+    def get_heat_rate_bh(self) -> float:
         bh_ht_rate = 0
         for comp in self.components:
             if hasattr(comp, 'get_heat_rate_bh'):

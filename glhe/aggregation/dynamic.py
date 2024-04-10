@@ -1,5 +1,3 @@
-from typing import Union
-
 import numpy as np
 
 from glhe.aggregation.agg_types import AggregationTypes
@@ -92,7 +90,7 @@ class Dynamic(BaseAgg):
         # update time
         self.prev_update_time = time
 
-    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> Union[float, tuple]:
+    def calc_temporal_superposition(self, time_step: int, flow_rate: float = None) -> float | tuple[float, float]:
 
         # compute temporal superposition
         # this includes all thermal history before the present time

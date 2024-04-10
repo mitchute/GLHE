@@ -6,13 +6,13 @@ from glhe.properties.props_manager import PropsMGR
 from glhe.utilities.functions import load_json, lower_obj
 
 
-class InputProcessor(object):
+class InputProcessor:
 
-    def __init__(self, json_input_path: str) -> None:
+    def __init__(self, json_input_path: str):
         """
         Initialize the input processor, process input file, and store the input information.
 
-        :raises FileNotFoundError when input file not found.
+        :raises: FileNotFoundError when input file not found.
 
         :param json_input_path: input file path
         """
@@ -38,8 +38,8 @@ class InputProcessor(object):
 
         :param input_dict: input object
 
-        :raises ValidationError if the input object is not correct
-        :raises SchemaError is the schema is not correct
+        :raises: ValidationError if the input object is not correct
+        :raises: SchemaError is the schema is not correct
         """
 
         # shortcut

@@ -5,9 +5,9 @@ from os.path import join, normpath
 import pandas as pd
 
 
-class OutputProcessor(object):
+class OutputProcessor:
 
-    def __init__(self, output_dir: str, output_name: str) -> None:
+    def __init__(self, output_dir: str, output_name: str):
         """
         Output processor manages output data
         """
@@ -40,7 +40,7 @@ class OutputProcessor(object):
         self.df.to_csv(self.write_path)
 
     def convert_time_to_timestamp(self) -> None:
-        """"
+        """
         Convert the 'Elapsed Time' column to a standardized date/time format.
         """
         try:

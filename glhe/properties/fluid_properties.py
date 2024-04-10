@@ -1,5 +1,3 @@
-from typing import Union
-
 from CoolProp.CoolProp import PropsSI
 from numpy import arange
 from scipy.interpolate import interp1d
@@ -9,8 +7,8 @@ from glhe.properties.fluid_types import FluidType
 from glhe.utilities.functions import c_to_k, k_to_c
 
 
-class Fluid(object):
-    def __init__(self, inputs):
+class Fluid:
+    def __init__(self, inputs: dict):
         self.type = inputs['fluid-type'].upper()
         if self.type == "WATER":
             self.fluid_enum = FluidType.WATER
@@ -49,7 +47,7 @@ class Fluid(object):
         self.rho_cp_interp = interp1d(temps, rho_cp_vals)
 
     @staticmethod
-    def get_fluid_str(fluid_enum, concentration: Union[int, float]):
+    def get_fluid_str(fluid_enum, concentration: int | float) -> str:
         # Fluid definitions: http://www.coolprop.org/fluid_properties/Incompressibles.html#the-different-fluids
 
         def get_concentration(c, min_c, max_c):
@@ -69,7 +67,7 @@ class Fluid(object):
         elif fluid_enum == FluidType.PROPYLENE_GLYCOL:
             return "INCOMP::MPG[{:0.4f}]".format(get_concentration(concentration, 0.0, 0.6))
 
-    def calc_max_temp(self):
+    def calc_max_temp(self) -> float:
         """
         Determines the maximum temperature of the fluid. Not to exceed 100 deg C.
 
@@ -81,11 +79,11 @@ class Fluid(object):
         else:
             return PropsSI("T_MAX", self.fluid_str)
 
-    def calc_min_temp(self):
+    def calc_min_temp(self) -> float:
         """
         Determines the freezing point of the fluid.
 
-        :returns minimum fluid temperature, in Kelvin
+        :returns: minimum fluid temperature, in Kelvin
         """
 
         if self.fluid_enum == FluidType.WATER:
@@ -93,7 +91,7 @@ class Fluid(object):
         else:
             return PropsSI("T_FREEZE", self.fluid_str)
 
-    def get_cp(self, temperature: Union[int, float]):
+    def get_cp(self, temperature: int | float) -> float:
         """
         Looks up the fluid specific heat from the interpolation
 
@@ -103,7 +101,7 @@ class Fluid(object):
 
         return float(self.cp_interp(temperature))
 
-    def get_k(self, temperature: Union[int, float]):
+    def get_k(self, temperature: int | float) -> float:
         """
         Looks up the fluid conductivity from the interpolation
 
@@ -113,7 +111,7 @@ class Fluid(object):
 
         return float(self.k_interp(temperature))
 
-    def get_mu(self, temperature: Union[int, float]):
+    def get_mu(self, temperature: int | float) -> float:
         """
         Looks up the fluid viscosity from the interpolation
 
@@ -123,7 +121,7 @@ class Fluid(object):
 
         return float(self.mu_interp(temperature))
 
-    def get_pr(self, temperature: Union[int, float]):
+    def get_pr(self, temperature: int | float) -> float:
         """
         Looks up the fluid Prandtl number from the interpolation
 
@@ -133,7 +131,7 @@ class Fluid(object):
 
         return float(self.pr_interp(temperature))
 
-    def get_rho(self, temperature: Union[int, float]):
+    def get_rho(self, temperature: int | float) -> float:
         """
         Looks up the fluid density from the interpolation
 
@@ -143,7 +141,7 @@ class Fluid(object):
 
         return float(self.rho_interp(temperature))
 
-    def get_rho_cp(self, temperature: Union[int, float]):
+    def get_rho_cp(self, temperature: int | float) -> float:
         """
         Looks up the fluid volume-specific heat capacity from the interpolation
 
@@ -153,7 +151,7 @@ class Fluid(object):
 
         return float(self.rho_cp_interp(temperature))
 
-    def calc_conductivity(self, temperature: Union[int, float]):
+    def calc_conductivity(self, temperature: int | float) -> float:
         """
         Determines the fluid conductivity as a function of temperature, in Celsius.
 
@@ -163,7 +161,7 @@ class Fluid(object):
 
         return self.calc_property(FluidPropertyType.CONDUCTIVITY, temperature)
 
-    def calc_specific_heat(self, temperature: Union[int, float]):
+    def calc_specific_heat(self, temperature: int | float) -> float:
         """
         Determines the fluid specific heat as a function of temperature, in Celsius.
 
@@ -173,7 +171,7 @@ class Fluid(object):
 
         return self.calc_property(FluidPropertyType.SPECIFIC_HEAT, temperature)
 
-    def calc_density(self, temperature: Union[int, float]):
+    def calc_density(self, temperature: int | float) -> float:
         """
         Determines the fluid density as a function of temperature, in Celsius.
 
@@ -183,7 +181,7 @@ class Fluid(object):
 
         return self.calc_property(FluidPropertyType.DENSITY, temperature)
 
-    def calc_prandtl(self, temperature: Union[int, float]):
+    def calc_prandtl(self, temperature: int | float) -> float:
         """
         Determines the fluid Prandtl as a function of temperature, in Celsius.
 
@@ -193,7 +191,7 @@ class Fluid(object):
 
         return self.calc_property(FluidPropertyType.PRANDTL, temperature)
 
-    def calc_viscosity(self, temperature: Union[int, float]):
+    def calc_viscosity(self, temperature: int | float) -> float:
         """
         Determines the fluid viscosity as a function of temperature, in Celsius.
 
@@ -203,7 +201,7 @@ class Fluid(object):
 
         return self.calc_property(FluidPropertyType.VISCOSITY, temperature)
 
-    def calc_vol_heat_capacity(self, temperature: Union[int, float]):
+    def calc_vol_heat_capacity(self, temperature: int | float) -> float:
         """
         Determines the fluid volume-specific heat capacity as a function of temperature, in Celsius.
 
@@ -216,7 +214,7 @@ class Fluid(object):
 
         return rho * cp
 
-    def calc_property(self, prop_type, temperature: Union[int, float]):
+    def calc_property(self, prop_type, temperature: int | float) -> float:
         """
         Worker function to call the CoolProp library
 
@@ -234,7 +232,7 @@ class Fluid(object):
         try:
             return PropsSI(props[prop_type], 'T', c_to_k(temperature), 'P', self.pressure, self.fluid_str)
         except ValueError:  # pragma: no cover
-            # remove pragma once CoolProp get's its stuff together regarding supporting current wheels
+            # remove pragma once CoolProp gets its stuff together regarding supporting current wheels
             # https://github.com/CoolProp/CoolProp/issues/1699
             print("Temperature out of range. Fluid properties evaluated at the freezing point.")
             return PropsSI(props[prop_type], 'T', self.min_temp, 'P', self.pressure, self.fluid_str)

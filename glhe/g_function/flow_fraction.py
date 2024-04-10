@@ -3,7 +3,7 @@ from math import exp, log, pi, sin, sqrt
 from glhe.utilities.constants import gamma_const
 
 
-class FlowFraction(object):
+class FlowFraction:
 
     def __init__(self, inputs):
 
@@ -20,20 +20,20 @@ class FlowFraction(object):
 
         self.alpha_s = self.k_s / self.c_s
 
-    def calc_flow_fraction(self, sim_time, vol_flow_rate, bh_int_resist, bh_ave_resist):
+    def calc_flow_fraction(self, sim_time: float, vol_flow: float, bh_int_resist: float, bh_ave_resist: float) -> float:
         """
         Computes the flow fraction based on the method outlined in:
 
         Beier, R.A., M.S. Mitchell, J.D. Spitler, S. Javed. 2018. 'Validation of borehole heat
         exchanger models against multi-flow rate thermal response tests.' Geothermics 71, 55-68.
 
-        :return flow fraction
+        :return: flow fraction
         """
 
         # Define base variables
         t_i = sim_time
 
-        w = vol_flow_rate
+        w = vol_flow
 
         # Transit time
         t_tr = self.v_f / w
@@ -62,16 +62,16 @@ class FlowFraction(object):
 
         # Equations 11
         if 0.2 < psi <= 1.2:
-            tdsf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004  # pragma: no cover
+            td_sf_over_cd = -8.0554 * phi ** 3 + 3.8111 * phi ** 2 - 3.2585 * phi + 2.8004  # pragma: no cover
         elif 1.2 < phi <= 160:
-            tdsf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
+            td_sf_over_cd = -0.2662 * phi ** 4 + 3.5589 * phi ** 3 - 18.311 * phi ** 2 + 57.93 * phi - 6.1661
         elif 160 < phi <= 2E5:  # pragma: no cover
-            tdsf_over_cd = 12.506 * phi + 45.051  # pragma: no cover
+            td_sf_over_cd = 12.506 * phi + 45.051  # pragma: no cover
         else:
             raise ValueError  # pragma: no cover
 
         # Equation 12
-        t_sf_num = tdsf_over_cd * self.c_f * self.v_f
+        t_sf_num = td_sf_over_cd * self.c_f * self.v_f
         t_sf_den = 2 * pi * self.l_bh * self.k_s
         t_sf = t_sf_num / t_sf_den + self.t_i_minus_1
 
@@ -127,7 +127,16 @@ class FlowFraction(object):
         return f
 
     @staticmethod
-    def calc_soil_resist(sim_time, bh_resist, soil_cond, soil_diff):
+    def calc_soil_resist(sim_time: float, bh_resist: float, soil_cond: float, soil_diff: float) -> float:
+        """
+        Calculate soil resistance
+
+        :param sim_time: simulation time, in units
+        :param bh_resist: comment
+        :param soil_cond: comment
+        :param soil_diff: comment
+        :return: soil resistance
+        """
         part_1 = 2 / (4 * pi * soil_cond)
         part_2_num = 4 * soil_diff * sim_time
         if part_2_num == 0:

@@ -1,11 +1,11 @@
 import json
+from math import ceil, exp, factorial, floor
 from typing import Callable, overload
 
 import numpy as np
 import pandas as pd
-from math import ceil, exp, factorial, floor
-from scipy.interpolate import interp1d
 from scipy.interpolate import RegularGridInterpolator
+from scipy.interpolate import interp1d
 
 from glhe.utilities.constants import SEC_IN_HOUR
 

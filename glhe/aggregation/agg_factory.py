@@ -9,7 +9,7 @@ def make_agg_method(inputs: dict, ip: InputProcessor):
     """
     Factory method for creating load aggregation objects
 
-    :param inputs: load aggregation inputs
+    :param inputs: load aggregation input dictionary
     :param ip: input processor instance
     :return: load aggregation object
     """

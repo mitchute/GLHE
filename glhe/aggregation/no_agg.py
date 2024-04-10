@@ -6,12 +6,12 @@ from glhe.aggregation.base_agg import BaseAgg
 
 class NoAgg(BaseAgg):
     """
-    No aggregation. Just keep all of the values.
+    No aggregation. Just keep all the values.
     """
 
     Type = AggregationTypes.NO_AGG
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: dict):
         BaseAgg.__init__(self, inputs)
 
     def aggregate(self, time: int, energy: float):
@@ -27,7 +27,7 @@ class NoAgg(BaseAgg):
         # update time
         self.prev_update_time = time
 
-    def calc_temporal_superposition(self, time_step: int) -> float:
+    def calc_temporal_superposition(self, time_step: int, _: float = None) -> float:
         # compute temporal superposition
         # this includes all thermal history before the present time
         q = self.energy / self.dts
@@ -51,7 +51,7 @@ class NoAgg(BaseAgg):
     def get_g_value(self, time_step: int) -> float:
         pass  # pragma: no cover
 
-    def get_g_b_value(self, time_step: int) -> float:
+    def get_g_b_value(self, time_step: int, _: float = None) -> float:
         pass  # pragma: no cover
 
     def get_q_prev(self) -> float:

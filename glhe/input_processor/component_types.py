@@ -1,6 +1,6 @@
 class ComponentTypes(object):
     """
-    All simulatable component types
+    All simulate-able component types
     """
     BoreholeSingleUTubeGrouted = 'SingleUTubeBHGrouted'
     ConstantFlow = 'ConstantFlow'

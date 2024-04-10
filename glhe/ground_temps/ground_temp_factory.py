@@ -3,7 +3,7 @@ from glhe.ground_temps.single_harmonic import SingleHarmonic
 from glhe.ground_temps.two_harmonic import TwoHarmonic
 
 
-def make_ground_temp_model(inputs):
+def make_ground_temp_model(inputs: dict):
     """
     Factory method to make ground temperature model objects
 
@@ -19,4 +19,4 @@ def make_ground_temp_model(inputs):
     elif gtm_type == 'two-harmonic':
         return TwoHarmonic(inputs)
     else:
-        raise ValueError("Ground temperature model '{}' is not valid.".format(gtm_type))
+        raise ValueError(f"Ground temperature model '{gtm_type}' is not valid.")
