@@ -4,7 +4,8 @@ from setuptools import setup
 setup_py_file = Path(__file__).resolve()
 repo_root = setup_py_file.parent
 requirements_path = repo_root / 'requirements.txt'
-requirements = requirements_path.read_text().strip().splitlines()
+requirements_contents = requirements_path.read_text().split('# OPTIONAL #')[0]
+requirements = requirements_contents.strip().splitlines()
 
 setup(
     name='GLHE',

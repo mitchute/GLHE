@@ -2,9 +2,14 @@
 CoolProp
 jsonschema
 numpy
-pandas
 pygfunction
 scipy
+
+###### AFTER THIS LINE ARE OPTIONAL DEVELOPER DEPENDENCIES ######
+######### KEEP THE LINE SAYING "OPTIONAL" IN PLACE HERE #########
+######### IT IS USED BY SETUP.PY WHEN BUILDING PACKAGES #########
+
+# OPTIONAL #
 
 # Dependencies needed to build wheels for PyPi
 wheel
@@ -18,6 +23,7 @@ pytest
 flake8
 coverage
 coveralls
+pandas
 
 # Dependencies needed for running the extra validation studies and such
 matplotlib

@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime, timedelta
 import tempfile
 import unittest
 
@@ -23,14 +24,13 @@ class TestOutputProcessor(unittest.TestCase):
 
         tst.collect_output(d)
 
-        self.assertEqual(tst.df['foo'][0], 1)
-        self.assertEqual(tst.df['bar'][0], 2)
+        self.assertEqual(tst.output_data[0]['foo'], 1)
+        self.assertEqual(tst.output_data[0]['bar'], 2)
 
     def test_write_to_file(self):
         tst = self.add_instance()
 
-        d = {'foo': 1,
-             'bar': 2}
+        d = {'Elapsed Time [s]': 60, 'foo': 1, 'bar': 2}
 
         tst.collect_output(d)
         tst.write_to_file()
@@ -51,6 +51,11 @@ class TestOutputProcessor(unittest.TestCase):
 
     def test_convert_time_to_timestamp(self):
         tst = self.add_instance()
-        tst.df = pd.DataFrame({'Elapsed Time [s]': [0, 60, 120], 'Variable': [1, 2, 3]})
-        tst.convert_time_to_timestamp()
-        self.assertTrue(tst.df.index.name == 'Date/Time')
+        tst.output_data = [
+            {'Elapsed Time [s]': 0, 'Variable': 1},
+            {'Elapsed Time [s]': 60, 'Variable': 2},
+            {'Elapsed Time [s]': 120, 'Variable': 3},
+        ]
+        time_stamps = tst.convert_time_to_timestamp()
+        date_times = [datetime.strptime(ts, "%Y-%m-%d %H:%M:%S") for ts in time_stamps]
+        self.assertEqual(date_times[1] - date_times[0], timedelta(minutes=1))
