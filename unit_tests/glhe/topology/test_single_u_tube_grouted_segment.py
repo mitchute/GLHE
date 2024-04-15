@@ -4,7 +4,7 @@ import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
-from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
+from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment, TimeStepStructure
 from glhe.utilities.functions import write_json
 
 
@@ -62,12 +62,9 @@ class TestSingleUTubeGroutedSegment(unittest.TestCase):
 
     def test_simulate_time_step(self):
         tst = self.add_instance()
-        inputs = {'boundary-temperature': 20,
-                  'inlet-1-temp': 30,
-                  'inlet-2-temp': 25,
-                  'flow-rate': 0.2,
-                  'rb': 0.16,
-                  'dc-resist': 2.28}
+        inputs = TimeStepStructure(
+            flow_rate=0.2, inlet_temp_1=30.0, inlet_temp_2=25.0, boundary_temp=20.0, bh_resist=0.16, dc_resist=2.28
+        )
 
         ret_temps = tst.simulate_time_step(1, inputs)
 

@@ -1,14 +1,23 @@
+# Core library dependencies
 CoolProp
-coverage
-coveralls
 jsonschema
-matplotlib
 numpy
 pandas
 pygfunction
 scipy
+
+# Dependencies needed to build wheels for PyPi
+wheel
+
+# Dependencies for building documentation (for RTD)
 Sphinx
+sphinx-rtd-theme
+
+# Dependencies needed to assist in running linting, unit tests and coverage
 pytest
 flake8
-wheel
-sphinx-rtd-theme
+coverage
+coveralls
+
+# Dependencies needed for running the extra validation studies and such
+matplotlib

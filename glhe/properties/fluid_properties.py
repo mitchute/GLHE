@@ -1,10 +1,9 @@
 from CoolProp.CoolProp import PropsSI
 from numpy import arange
-from scipy.interpolate import interp1d
 
 from glhe.properties.fluid_property_types import FluidPropertyType
 from glhe.properties.fluid_types import FluidType
-from glhe.utilities.functions import c_to_k, k_to_c
+from glhe.utilities.functions import c_to_k, k_to_c, Interpolator1D
 
 
 class Fluid:
@@ -39,12 +38,12 @@ class Fluid:
         rho_vals = [self.calc_density(x) for x in temps]
         rho_cp_vals = [self.calc_vol_heat_capacity(x) for x in temps]
 
-        self.cp_interp = interp1d(temps, cp_vals)
-        self.k_interp = interp1d(temps, k_vals)
-        self.mu_interp = interp1d(temps, mu_vals)
-        self.pr_interp = interp1d(temps, pr_vals)
-        self.rho_interp = interp1d(temps, rho_vals)
-        self.rho_cp_interp = interp1d(temps, rho_cp_vals)
+        self.cp_interp = Interpolator1D(temps, cp_vals)
+        self.k_interp = Interpolator1D(temps, k_vals)
+        self.mu_interp = Interpolator1D(temps, mu_vals)
+        self.pr_interp = Interpolator1D(temps, pr_vals)
+        self.rho_interp = Interpolator1D(temps, rho_vals)
+        self.rho_cp_interp = Interpolator1D(temps, rho_cp_vals)
 
     @staticmethod
     def get_fluid_str(fluid_enum, concentration: int | float) -> str:
@@ -99,7 +98,7 @@ class Fluid:
         :returns fluid specific heat in [J/kg-K]
         """
 
-        return float(self.cp_interp(temperature))
+        return self.cp_interp.interpolate(temperature)
 
     def get_k(self, temperature: int | float) -> float:
         """
@@ -109,7 +108,7 @@ class Fluid:
         :return: fluid conductivity in [W/m-K]
         """
 
-        return float(self.k_interp(temperature))
+        return self.k_interp.interpolate(temperature)
 
     def get_mu(self, temperature: int | float) -> float:
         """
@@ -119,7 +118,7 @@ class Fluid:
         :return: fluid viscosity in [Pa-s]
         """
 
-        return float(self.mu_interp(temperature))
+        return self.mu_interp.interpolate(temperature)
 
     def get_pr(self, temperature: int | float) -> float:
         """
@@ -129,7 +128,7 @@ class Fluid:
         :return: fluid Prandtl number
         """
 
-        return float(self.pr_interp(temperature))
+        return self.pr_interp.interpolate(temperature)
 
     def get_rho(self, temperature: int | float) -> float:
         """
@@ -139,7 +138,7 @@ class Fluid:
         :return: fluid density in [kg/m^3]
         """
 
-        return float(self.rho_interp(temperature))
+        return self.rho_interp.interpolate(temperature)
 
     def get_rho_cp(self, temperature: int | float) -> float:
         """
@@ -149,7 +148,7 @@ class Fluid:
         :return: fluid volume-specific heat capacity in [J/m3-K]
         """
 
-        return float(self.rho_cp_interp(temperature))
+        return self.rho_cp_interp.interpolate(temperature)
 
     def calc_conductivity(self, temperature: int | float) -> float:
         """

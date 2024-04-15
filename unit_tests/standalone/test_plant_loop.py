@@ -4,7 +4,7 @@ import unittest
 
 from glhe.utilities.functions import load_json
 from glhe.utilities.functions import write_json
-from standalone.plant_loop import PlantLoop
+from glhe.standalone.plant_loop import PlantLoop
 
 norm = os.path.normpath
 join = os.path.join

@@ -482,7 +482,7 @@ def write_arrays_to_csv(path: str, arrays: list | np.ndarray) -> None:
 
 class Interpolator1D:
 
-    def __init__(self, x_data: np.ndarray, y_data: np.ndarray):  # TODO: Try to use pathlib internally everywhere
+    def __init__(self, x_data: np.ndarray, y_data: np.ndarray | list[float]):  # TODO: Use pathlib internally everywhere
         """
         1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
 

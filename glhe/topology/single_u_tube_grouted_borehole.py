@@ -6,7 +6,7 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
-from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment
+from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment, TimeStepStructure
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
 from glhe.utilities.functions import merge_dicts
 
@@ -313,10 +313,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         r_12, r_b = self.calc_direct_coupling_resistance(inlet_temp, flow_rate=flow_rate)
 
-        seg_inputs = {'boundary-temperature': bh_wall_temp,
-                      'rb': r_b,
-                      'flow-rate': flow_rate,
-                      'dc-resist': r_12}
+        seg_inputs = TimeStepStructure(boundary_temp=bh_wall_temp, bh_resist=r_b, flow_rate=flow_rate, dc_resist=r_12)
 
         self.pipe_1.simulate_time_step(SimulationResponse(time, time_step, flow_rate, inlet_temp))
 
@@ -325,13 +322,13 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             for idx, seg in enumerate(self.segments):
 
                 if idx == 0:
-                    seg_inputs['inlet-1-temp'] = self.pipe_1.outlet_temperature
-                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+                    seg_inputs.inlet_temp_1 = self.pipe_1.outlet_temperature
+                    seg_inputs.inlet_temp_2 = self.segments[idx + 1].get_outlet_2_temp()
                 elif idx == self.num_segments:
-                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
+                    seg_inputs.inlet_temp_1 = self.segments[idx - 1].get_outlet_1_temp()
                 else:
-                    seg_inputs['inlet-1-temp'] = self.segments[idx - 1].get_outlet_1_temp()
-                    seg_inputs['inlet-2-temp'] = self.segments[idx + 1].get_outlet_2_temp()
+                    seg_inputs.inlet_temp_1 = self.segments[idx - 1].get_outlet_1_temp()
+                    seg_inputs.inlet_temp_2 = self.segments[idx + 1].get_outlet_2_temp()
 
                 seg.simulate_time_step(time_step, seg_inputs)
 
@@ -363,12 +360,12 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         d = merge_dicts(d, self.pipe_1.report_outputs())
 
-        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_bh_ave,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHIntResist): self.resist_bh_total_internal,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHDCResist): self.resist_bh_direct_coupling}
+        d_self = {f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": self.heat_rate,
+                  f"{self.Type}:{self.name}:{ReportTypes.HeatRateBH}": self.heat_rate_bh,
+                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHResist}": self.resist_bh_ave,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHIntResist}": self.resist_bh_total_internal,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHDCResist}": self.resist_bh_direct_coupling}
 
         return merge_dicts(d, d_self)

@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 from math import pi
 
 import numpy as np
-from scipy.integrate import solve_ivp
+from scipy.integrate import RK45
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
@@ -9,21 +10,26 @@ from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 
 
-class SingleUTubeGroutedSegment(object):
+@dataclass
+class TimeStepStructure:
+    flow_rate: float = 0.0
+    inlet_temp_1: float = 0.0
+    inlet_temp_2: float = 0.0
+    boundary_temp: float = 0.0
+    bh_resist: float = 0.0
+    dc_resist: float = 0.0
+
+
+class SingleUTubeGroutedSegment:
     Type = ComponentTypes.SegmentSingleUTubeGrouted
 
     def __init__(self, inputs, ip, op):
         self.name = inputs['segment-name']
-        self.ip = ip
-        self.op = op
-
         self.fluid = ip.props_mgr.fluid
         self.soil = ip.props_mgr.soil
 
         if 'average-pipe' in inputs:
-
-            pipe_inputs = {'average-pipe': inputs['average-pipe'],
-                           'length': inputs['length']}
+            pipe_inputs = {'average-pipe': inputs['average-pipe'], 'length': inputs['length']}
         else:
             pipe_inputs = {'pipe-def-name': inputs['pipe-def-name'], 'length': inputs['length']}
 
@@ -79,8 +85,7 @@ class SingleUTubeGroutedSegment(object):
         return pi / 4 * self.diameter ** 2 * self.length
 
     def right_hand_side(self, _, y):
-        num_equations = self.num_equations
-        r = np.zeros(num_equations)
+        r = np.zeros(self.num_equations)
 
         dz = self.length
         t_b = self.boundary_temp
@@ -135,18 +140,27 @@ class SingleUTubeGroutedSegment(object):
     def get_outlet_2_temp(self):
         return self.y[1]
 
-    def simulate_time_step(self, time_step: int, inputs: dict) -> np.ndarray:
-        self.flow_rate = inputs['flow-rate']
-        self.inlet_temp_1 = inputs['inlet-1-temp']
-        self.inlet_temp_2 = inputs['inlet-2-temp']
-        self.boundary_temp = inputs['boundary-temperature']
-        self.bh_resist = inputs['rb']
-        self.dc_resist = inputs['dc-resist']
-        self.fluid_cp = self.fluid.get_cp(inputs['inlet-1-temp'])
-        self.fluid_heat_capacity = self.fluid.get_rho(inputs['inlet-1-temp']) * self.fluid_cp
+    def simulate_time_step(self, time_step: float, inputs: TimeStepStructure) -> np.ndarray:
+        """
+        Simulate a single time step for this segment.  Solves the equations simultaneously using
+        RK45 method.
+        Parameters
+        :param time_step: float Time step in seconds?
+        :param inputs: TimeStepStructure of data to begin this time step.
+        """
+        self.flow_rate = inputs.flow_rate
+        self.inlet_temp_1 = inputs.inlet_temp_1
+        self.inlet_temp_2 = inputs.inlet_temp_2
+        self.boundary_temp = inputs.boundary_temp
+        self.bh_resist = inputs.bh_resist
+        self.dc_resist = inputs.dc_resist
+        self.fluid_cp = self.fluid.get_cp(self.inlet_temp_1)
+        self.fluid_heat_capacity = self.fluid.get_rho(self.inlet_temp_1) * self.fluid_cp
 
-        ret = solve_ivp(self.right_hand_side, [0, time_step], self.y)
-        self.y = ret.y[:, -1]
+        solver = RK45(self.right_hand_side, 0, self.y, time_step)
+        while solver.status != 'finished':
+            solver.step()
+        self.y = solver.y
 
         # update report vars
         self.heat_rate_bh = self.get_heat_rate_bh()
@@ -155,8 +169,8 @@ class SingleUTubeGroutedSegment(object):
         return self.y
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg1): self.inlet_temp_1,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg1): self.outlet_temp_1,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp_Leg2): self.inlet_temp_2,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp_Leg2): self.outlet_temp_2,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateBH): self.heat_rate_bh}
+        return {f"{self.Type}:{self.name}:{ReportTypes.InletTemp_Leg1}": self.inlet_temp_1,
+                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp_Leg1}": self.outlet_temp_1,
+                f"{self.Type}:{self.name}:{ReportTypes.InletTemp_Leg2}": self.inlet_temp_2,
+                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp_Leg2}": self.outlet_temp_2,
+                f"{self.Type}:{self.name}:{ReportTypes.HeatRateBH}": self.heat_rate_bh}

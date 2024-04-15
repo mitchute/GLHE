@@ -148,5 +148,9 @@ class PlantLoop:
         self.op.collect_output(d)
 
 
-if __name__ == "__main__":
+def main():
     PlantLoop(sys.argv[1]).simulate()
+
+
+if __name__ == "__main__":
+    main()

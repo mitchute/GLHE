@@ -1,5 +1,6 @@
 import pandas as pd
-from scipy.interpolate import interp1d
+
+from glhe.utilities.functions import Interpolator1D
 
 
 class ExternalBase(object):
@@ -18,7 +19,7 @@ class ExternalBase(object):
         y_range.append(y_range[0])
         self.max_time = x_range[-1]
 
-        self._interp_values = interp1d(x_range, y_range)
+        self._interp_values = Interpolator1D(x_range, y_range)
 
     def get_value(self, time) -> float:
-        return float(self._interp_values(time % self.max_time))
+        return float(self._interp_values.interpolate(time % self.max_time))

@@ -1,5 +1,6 @@
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
+from glhe.topology.single_u_tube_grouted_segment import TimeStepStructure
 
 
 class SingleUTubePassThroughSegment(object):
@@ -16,8 +17,8 @@ class SingleUTubePassThroughSegment(object):
     def get_outlet_2_temp(self):
         return self.temperature
 
-    def simulate_time_step(self, _, inputs: dict):
-        self.temperature = inputs['inlet-1-temp']
+    def simulate_time_step(self, _, inputs: TimeStepStructure):
+        self.temperature = inputs.inlet_temp_1
 
     def report_outputs(self) -> dict:
         return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.temperature}
