@@ -1,14 +1,9 @@
-import os
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 import numpy as np
 
-from glhe.utilities.functions import Interpolator1D, Interpolator1DFromFile
-from glhe.utilities.functions import Interpolator2DFromFile
-
-join = os.path.join
-norm = os.path.normpath
-cwd = os.getcwd()
+from glhe.utilities.functions import InterpolatorBase, Interpolator1D, Interpolator1DFromFile, Interpolator2DFromFile
 
 
 class BaseAgg(ABC):
@@ -16,21 +11,26 @@ class BaseAgg(ABC):
     def __init__(self, inputs: dict):
         # g-function values
         if 'g-function-path' in inputs:
-            path_g = norm(join(cwd, inputs['g-function-path']))
-            self.interp_g = Interpolator1DFromFile(path_g)
+            p = Path(inputs['g-function-path'])
+            if not p.is_absolute():
+                p = Path.cwd() / inputs['g-function-path']
+            self.interp_g = Interpolator1DFromFile(p)
         elif 'lntts' and 'g-values' in inputs:
             data_g = np.transpose(np.array([inputs['lntts'], inputs['g-values']]))
-            self.interp_g = Interpolator1D(data_g[:, 0], data_g[:, 1])
+            self.interp_g: InterpolatorBase = Interpolator1D(data_g[:, 0], data_g[:, 1])
         else:
             raise KeyError('g-function data not found.')
 
         # g_b-function values
         self.interp_g_b = None
         if 'g_b-function-path' in inputs:
+            p = Path(inputs['g_b-function-path'])
+            if not p.is_absolute():
+                p = Path.cwd() / inputs['g_b-function-path']
             if 'g_b-flow-rates' in inputs:
-                self.interp_g_b = Interpolator2DFromFile(inputs['g_b-function-path'], inputs['g_b-flow-rates'])
+                self.interp_g_b: InterpolatorBase = Interpolator2DFromFile(p, inputs['g_b-flow-rates'])
             else:
-                self.interp_g_b = Interpolator1DFromFile(inputs['g_b-function-path'])
+                self.interp_g_b: InterpolatorBase = Interpolator1DFromFile(p)
         elif 'lntts_b' and 'g_b-values' in inputs:
             data_g_b = np.transpose(np.array([inputs['lntts_b'], inputs['g_b-values']]))
             self.interp_g_b = Interpolator1D(data_g_b[:, 0], data_g_b[:, 1])

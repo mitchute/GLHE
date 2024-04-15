@@ -1,7 +1,7 @@
 import os
+from pathlib import Path
 import tempfile
 import unittest
-from contextlib import contextmanager
 
 from jsonschema.exceptions import ValidationError
 
@@ -11,20 +11,15 @@ from glhe.utilities.functions import write_json
 
 class TestInputProcessor(unittest.TestCase):
 
-    @contextmanager
-    def assertNotRaise(self, exc_type):
-        try:
-            yield None
-        except exc_type:  # pragma: no cover
-            raise self.failureException('{} raised'.format(exc_type.__name__))  # pragma: no cover
-
     def run_validate(self, inputs):
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, inputs)
 
-        with self.assertNotRaise(ValidationError):
+        try:
             InputProcessor(temp_file)
+        except ValidationError:
+            self.fail('Input processor validation failed')
 
     def test_validate_pipe_definitions(self):
         d = {'pipe-definitions': [{
@@ -235,7 +230,8 @@ class TestInputProcessor(unittest.TestCase):
         self.assertEqual(test_count, schema_count)
 
     def test_file_not_found(self):
-        self.assertRaises(FileNotFoundError, lambda: InputProcessor('some path'))
+        with self.assertRaises(FileNotFoundError):
+            InputProcessor(Path('some path'))
 
     def test_validate_validation_error(self):
         d = {'soil': {'name': 'Some Rock',
@@ -252,9 +248,9 @@ class TestInputProcessor(unittest.TestCase):
              'name': 'my name',
              'length': 100}]}
 
-        temp_dir = tempfile.mkdtemp()
-        f_path = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        f_path = temp_dir / 'temp.json'
         write_json(f_path, d)
         ip = InputProcessor(f_path)
-        with self.assertRaises(KeyError) as _:
+        with self.assertRaises(KeyError):
             ip.get_definition_object('pipe-definitions', 'not-implemented')

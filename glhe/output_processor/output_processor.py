@@ -1,20 +1,19 @@
 import datetime as dt
-import os
-from os.path import join, normpath
+from pathlib import Path
 
 import pandas as pd
 
 
 class OutputProcessor:
 
-    def __init__(self, output_dir: str, output_name: str):
+    def __init__(self, output_dir: Path, output_name: str):
         """
         Output processor manages output data
         """
 
         self.output_dir = output_dir
         self.output_file = output_name
-        self.write_path = normpath(join(output_dir, output_name))
+        self.write_path = output_dir / output_name
         self.df = pd.DataFrame()
         self.idx_count = 0
 
@@ -33,11 +32,11 @@ class OutputProcessor:
         """
         Write the DataFrame holding the simulation data to a file.
         """
-        if os.path.exists(self.write_path):
-            os.remove(self.write_path)
+        if self.write_path.exists():
+            self.write_path.unlink()
 
         self.convert_time_to_timestamp()
-        self.df.to_csv(self.write_path)
+        self.df.to_csv(str(self.write_path))  # TODO: can probably just write it ourselves
 
     def convert_time_to_timestamp(self) -> None:
         """

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 from math import log
@@ -27,8 +27,8 @@ class TestPipe(unittest.TestCase):
                  'name': 'pipe 1',
                  'length': 100}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, inputs)
 
         ip = InputProcessor(temp_file)

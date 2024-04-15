@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -15,8 +15,8 @@ class TestFlowFactory(unittest.TestCase):
     def test_constant_flow(self):
         d = {'flow-profile': [{'flow-profile-type': 'constant', 'name': 'my name', 'value': 1}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 
@@ -27,17 +27,19 @@ class TestFlowFactory(unittest.TestCase):
         self.assertIsInstance(tst, ConstantFlow)
 
     def test_external_flow(self):
-        fpath = os.path.dirname(os.path.abspath(__file__))
-        rel_path = '../../../glhe/profiles/external_data/GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
+        dir_name = Path(__file__).parent
+        root_dir = dir_name.parent.parent.parent
+        data_folder = root_dir / 'glhe' / 'profiles' / 'external_data'
+        path = data_folder / 'GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
 
         d = {
             'flow-profile':
                 [{'flow-profile-type': 'external',
                   'name': 'my name',
-                  'path': os.path.join(fpath, rel_path)}]}
+                  'path': str(path)}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 
@@ -50,8 +52,8 @@ class TestFlowFactory(unittest.TestCase):
     def test_fail(self):
         d = {'flow-profile': [{'flow-profile-type': 'constant', 'name': 'my name', 'value': 1}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 

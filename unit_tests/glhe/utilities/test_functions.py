@@ -1,11 +1,11 @@
-import os
+from json import loads
+from pathlib import Path
 import tempfile
 import unittest
 
 from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
-from scipy.interpolate import interp2d
 
 from glhe.utilities.functions import c_to_k
 from glhe.utilities.functions import hanby
@@ -14,7 +14,6 @@ from glhe.utilities.functions import kw_to_w
 from glhe.utilities.functions import lin_interp
 from glhe.utilities.functions import Interpolator1DFromFile
 from glhe.utilities.functions import Interpolator2DFromFile
-from glhe.utilities.functions import load_json
 from glhe.utilities.functions import lower_obj
 from glhe.utilities.functions import merge_dicts
 from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
@@ -53,19 +52,19 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(num_ts_per_hour_to_sec_per_ts(1), 3600)
 
     def test_load_json(self):
-        temp_directory = tempfile.mkdtemp()
-        temp_json_file = os.path.join(temp_directory, 'temp.json')
-        with open(temp_json_file, 'w') as f:
+        temp_directory = Path(tempfile.mkdtemp())
+        temp_json_file = temp_directory / 'temp.json'
+        with temp_json_file.open('w') as f:
             f.write('{"key": "value", "key 2": 1}')
 
-        d = load_json(temp_json_file)
+        d = loads(temp_json_file.read_text())
 
         self.assertEqual(d["key"], "value")
         self.assertEqual(d["key 2"], 1)
 
     def test_write_json(self):
-        temp_directory = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_directory, 'temp.json')
+        temp_directory = Path(tempfile.mkdtemp())
+        temp_file = temp_directory / 'temp.json'
 
         d = {
             "key": "value",
@@ -73,7 +72,7 @@ class TestFunctions(unittest.TestCase):
         }
 
         write_json(temp_file, d)
-        loaded = load_json(temp_file)
+        loaded = loads(temp_file.read_text())
         self.assertEqual(d, loaded)
 
     def test_hanby(self):
@@ -217,9 +216,9 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(lin_interp(2, 0, 2, 0, 2), 2)
 
     def test_write_arrays_to_csv(self):
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = Path(tempfile.mkdtemp())
         file_name = 'out.csv'
-        path = os.path.join(temp_dir, file_name)
+        path = temp_dir / file_name
         a_1 = [1, 2, 3]
         a_2 = [4, 5, 6]
         write_arrays_to_csv(path, [a_1, a_2])
@@ -259,9 +258,9 @@ class TestInterp1D(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
-        f_path = os.path.join(temp_dir, 'temp.csv')
-        with open(f_path, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        f_path = temp_dir / 'temp.csv'
+        with f_path.open('w') as f:
             f.write('0,5\n')
             f.write('1,6\n')
             f.write('2,7\n')
@@ -280,9 +279,9 @@ class TestInterp2D(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
-        f_path = os.path.join(temp_dir, 'temp.csv')
-        with open(f_path, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        f_path = temp_dir / 'temp.csv'
+        with f_path.open('w') as f:
             f.write('0,5,8\n')
             f.write('1,6,9\n')
             f.write('2,7,10\n')

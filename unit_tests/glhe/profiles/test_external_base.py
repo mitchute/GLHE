@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -9,10 +9,10 @@ class TestExternalBase(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
-        temp_csv = os.path.join(temp_dir, 'temp.csv')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_csv = temp_dir / 'temp.csv'
 
-        with open(temp_csv, 'w') as f:
+        with temp_csv.open('w') as f:
             f.write(',b,c\n1/1/2018 0:00,1,4\n1/1/2018 0:02,2,3\n1/1/2018 0:04,3,6\n')
 
         return ExternalBase(temp_csv, 0)

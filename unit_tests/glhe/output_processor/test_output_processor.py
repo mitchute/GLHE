@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -11,7 +11,7 @@ class TestOutputProcessor(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = Path(tempfile.mkdtemp())
         temp_file_name = 'temp.csv'
         return OutputProcessor(temp_dir, temp_file_name)
 
@@ -36,7 +36,7 @@ class TestOutputProcessor(unittest.TestCase):
         tst.write_to_file()
 
         # check that the file was written
-        self.assertTrue(os.path.exists(tst.write_path))
+        self.assertTrue(tst.write_path.exists())
 
         # make sure the data comes out right
         df = pd.read_csv(tst.write_path)

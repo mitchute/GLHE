@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -17,14 +17,15 @@ class TestLoadFactory(unittest.TestCase):
 
     @staticmethod
     def add_instance(method):
-        fpath = os.path.dirname(os.path.abspath(__file__))
-        data_str = '../../../glhe/profiles/external_data/GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
-        data_path = os.path.normpath(os.path.join(fpath, data_str))
+        fpath = Path(__file__).parent
+        root = fpath.parent.parent.parent
+        data_dir = root / 'glhe' / 'profiles' / 'external_data'
+        data_path = data_dir / 'GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
         d = {'fluid': {'fluid-type': 'water'},
              'load-profile': [{'load-profile-type': method,
                                'value': 10,
                                'name': 'my name',
-                               'path': data_path,
+                               'path': str(data_path),
                                'start-time': 1,
                                'end-time': 10,
                                'amplitude': 100,
@@ -32,8 +33,8 @@ class TestLoadFactory(unittest.TestCase):
                                'period': 10,
                                'synthetic-method': 'symmetric'}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 
@@ -68,8 +69,8 @@ class TestLoadFactory(unittest.TestCase):
                                'value': 10,
                                'name': 'my name'}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 

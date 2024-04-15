@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -12,17 +12,15 @@ from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
 from glhe.topology.pipe import Pipe
 from glhe.utilities.functions import write_json
 
-join = os.path.join
-norm = os.path.normpath
-cwd = os.getcwd()
-
 
 class TestPLCompFactory(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        f_path = os.path.dirname(os.path.abspath(__file__))
-        d = {
+        f_path = Path(__file__).parent
+        root = f_path.parent.parent.parent
+        g_func_file = root / 'validation' / 'MFRTRT_EWT_g_functions' / 'EWT_experimental_g_functions.csv'
+        d: dict = {
             "borehole-definitions": [
                 {
                     "borehole-type": "single-grouted",
@@ -79,10 +77,8 @@ class TestPLCompFactory(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "enhanced",
-                    "g-function-path": norm(join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                                                 'EWT_experimental_g_functions.csv')),
-                    "g_b-function-path": norm(join(f_path, '..', '..', '..', 'validation', 'MFRTRT_EWT_g_functions',
-                                                   'EWT_experimental_g_functions.csv')),
+                    "g-function-path": str(g_func_file),
+                    "g_b-function-path": str(g_func_file),
                     "flow-paths": [
                         {
                             "name": "path 1",
@@ -151,9 +147,9 @@ class TestPLCompFactory(unittest.TestCase):
             }
         }
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = join(temp_dir, 'in.json')
-        d['simulation']['output-path'] = temp_dir
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'in.json'
+        d['simulation']['output-path'] = str(temp_dir)
         write_json(temp_file, d)
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')
