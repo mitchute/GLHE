@@ -492,7 +492,7 @@ class Interpolator1D(InterpolatorBase):
 
     def __init__(self, x_data: np.ndarray, y_data: np.ndarray | list[float]):
         """
-        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        1D Interpolation Class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         :param x_data: Numpy array of x-value floats
         :param y_data: Numpy array of x-value floats
@@ -506,7 +506,7 @@ class Interpolator1D(InterpolatorBase):
 class Interpolator1DFromFile(Interpolator1D):
     def __init__(self, data_path: Path):
         """
-        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        1D Interpolation Class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         :param data_path: path to csv file with columned data, e.g. 'x1,y1'
         """
@@ -520,7 +520,7 @@ class Interpolator1DFromFile(Interpolator1D):
 class Interpolator2DFromFile(InterpolatorBase):
     def __init__(self, xz_data_path: Path, y: list):
         """
-        2D interpolation class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        2D interpolation class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         Example data:
         x1, y1, z1, x2, y2, z2

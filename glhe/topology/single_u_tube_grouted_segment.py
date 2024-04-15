@@ -8,6 +8,7 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
 from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
+# from glhe.utilities.functions import runge_kutta_fourth_y
 
 
 @dataclass
@@ -160,6 +161,7 @@ class SingleUTubeGroutedSegment:
         solver = RK45(self.right_hand_side, 0, self.y, time_step)
         while solver.status != 'finished':
             solver.step()
+        # solver_2 = runge_kutta_fourth_y(self.right_hand_side, time_step, self.y)
         self.y = solver.y
 
         # update report vars
