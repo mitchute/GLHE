@@ -1,3 +1,4 @@
+import csv
 import json
 from abc import ABC, abstractmethod
 from math import ceil, exp, factorial, floor
@@ -5,7 +6,6 @@ from pathlib import Path
 from typing import Callable, overload
 
 import numpy as np
-import pandas as pd
 from scipy.interpolate import RegularGridInterpolator
 from scipy.interpolate import interp1d
 
@@ -476,10 +476,10 @@ def write_arrays_to_csv(path: Path, arrays: list | np.ndarray) -> None:
         _arrays = np.array(arrays)
     else:
         _arrays = arrays
-
-    df = pd.DataFrame.from_records(_arrays)
-    df = df.T
-    df.to_csv(str(path), header=False, index=False)
+    data = _arrays.T
+    with open(path, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
 
 
 class InterpolatorBase(ABC):
