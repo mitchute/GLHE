@@ -225,7 +225,7 @@ class TestFunctions(unittest.TestCase):
 
         with open(path, 'r') as f:
             for idx, line in enumerate(f):
-                tokens = line.split(',')
+                tokens = line.strip().split(',')
                 self.assertEqual(float(tokens[0]), a_1[idx])
                 self.assertEqual(float(tokens[1]), a_2[idx])
 
