@@ -1,8 +1,8 @@
 # Core library dependencies
-CoolProp
 jsonschema
 numpy
 pygfunction
+secondarycoolantprops
 scipy
 
 ###### AFTER THIS LINE ARE OPTIONAL DEVELOPER DEPENDENCIES ######

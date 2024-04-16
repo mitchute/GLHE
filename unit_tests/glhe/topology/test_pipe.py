@@ -110,16 +110,16 @@ class TestPipe(unittest.TestCase):
         tst = self.add_instance()
         temp = 20
         tol = 0.00001
-        self.assertAlmostEqual(tst.calc_conv_resist(0, temp), 0.13273, delta=tol)
-        self.assertAlmostEqual(tst.calc_conv_resist(0.07, temp), 0.02645, delta=tol)
+        self.assertAlmostEqual(tst.calc_conv_resist(0, temp), 0.13266, delta=tol)
+        self.assertAlmostEqual(tst.calc_conv_resist(0.07, temp), 0.02648, delta=tol)
         self.assertAlmostEqual(tst.calc_conv_resist(2, temp), 0.00094, delta=tol)
 
     def test_calc_resistance(self):
         tst = self.add_instance()
         temp = 20
         tolerance = 0.00001
-        self.assertAlmostEqual(tst.calc_resist(0, temp), 0.218852, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11256, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0, temp), 0.21877, delta=tolerance)
+        self.assertAlmostEqual(tst.calc_resist(0.07, temp), 0.11259, delta=tolerance)
         self.assertAlmostEqual(tst.calc_resist(2, temp), 0.08704, delta=tolerance)
 
     def test_calc_transit_time(self):
@@ -136,7 +136,7 @@ class TestPipe(unittest.TestCase):
         tst = self.add_instance()
         tol = 0.01
         self.assertAlmostEqual(tst.turbulent_nusselt(3000, 20), 18.39, delta=tol)
-        self.assertAlmostEqual(tst.turbulent_nusselt(10000, 20), 79.52, delta=tol)
+        self.assertAlmostEqual(tst.turbulent_nusselt(10000, 20), 79.50, delta=tol)
 
     def test_log_inlet_temps(self):
         tst = self.add_instance()
@@ -157,7 +157,7 @@ class TestPipe(unittest.TestCase):
     def test_mdot_to_re(self):
         tst = self.add_instance()
         tol = 0.1
-        self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 4725.7, delta=tol)
+        self.assertAlmostEqual(tst.m_dot_to_re(0.1, 20), 4723.7, delta=tol)
 
     def test_plug_flow_outlet_temp(self):
         tst = self.add_instance()

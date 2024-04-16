@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_temp import ConstantTemp

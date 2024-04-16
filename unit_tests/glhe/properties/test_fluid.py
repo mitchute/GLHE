@@ -1,126 +1,35 @@
 import unittest
 
+from scp.ethyl_alcohol import EthylAlcohol
+from scp.ethylene_glycol import EthyleneGlycol
+from scp.methyl_alcohol import MethylAlcohol
+from scp.propylene_glycol import PropyleneGlycol
+from scp.water import Water
+
 from glhe.properties.fluid_properties import Fluid
-from glhe.properties.fluid_types import FluidType
 
 
 class TestFluid(unittest.TestCase):
 
     def test_init(self):
         tst_w = Fluid({'fluid-type': 'water'})
-        self.assertEqual(tst_w.fluid_enum, FluidType.WATER)
-        self.assertEqual(tst_w.fluid_str, 'WATER')
+        self.assertTrue(isinstance(tst_w.fluid, Water))
 
         tst_ea = Fluid({'fluid-type': 'EA', 'concentration': 50})
-        self.assertEqual(tst_ea.fluid_enum, FluidType.ETHYL_ALCOHOL)
-        self.assertEqual(tst_ea.fluid_str, 'INCOMP::MEA[0.5000]')
+        self.assertTrue(isinstance(tst_ea.fluid, EthylAlcohol))
 
         tst_eg = Fluid({'fluid-type': 'EG', 'concentration': 50})
-        self.assertEqual(tst_eg.fluid_enum, FluidType.ETHYLENE_GLYCOL)
-        self.assertEqual(tst_eg.fluid_str, 'INCOMP::MEG[0.5000]')
+        self.assertTrue(isinstance(tst_eg.fluid, EthyleneGlycol))
+
+        tst_ma = Fluid({'fluid-type': 'MA', 'concentration': 50})
+        self.assertTrue(isinstance(tst_ma.fluid, MethylAlcohol))
 
         tst_pg = Fluid({'fluid-type': 'PG', 'concentration': 50})
-        self.assertEqual(tst_pg.fluid_enum, FluidType.PROPYLENE_GLYCOL)
-        self.assertEqual(tst_pg.fluid_str, 'INCOMP::MPG[0.5000]')
+        self.assertTrue(isinstance(tst_pg.fluid, PropyleneGlycol))
 
         self.assertRaises(ValueError, lambda: Fluid({'fluid-type': 'Not A Fluid', 'concentration': 0}))
 
     def test_cond(self):
-        """
-        Tests fluid conductivity calculations
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        # TODO: convert to fractional error
-        tolerance = 1E-2
-
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.calc_conductivity(20), 0.598, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_conductivity(40), 0.631, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_conductivity(60), 0.654, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_conductivity(80), 0.670, delta=tolerance)
-
-    def test_cp(self):
-        """
-        Tests fluid specific heat calculation routine
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        # TODO: convert to fractional error
-        tolerance = 4.0
-
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.calc_specific_heat(20), 4182, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_specific_heat(40), 4179, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_specific_heat(60), 4185, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_specific_heat(80), 4197, delta=tolerance)
-
-    def test_dens(self):
-        """
-        Tests fluid density calculation routine
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        # TODO: convert to fractional error
-        tolerance = 1.0
-
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.calc_density(20), 998.0, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_density(40), 992.1, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_density(60), 983.3, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_density(80), 971.8, delta=tolerance)
-
-    def test_pr(self):
-        """
-        Tests fluid Prandtl number calculations
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        # TODO: convert to fractional error
-        tolerance = 1E-1
-
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.calc_prandtl(20), 7.01, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_prandtl(40), 4.32, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_prandtl(60), 2.99, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_prandtl(80), 2.22, delta=tolerance)
-
-    def test_visc(self):
-        """
-        Tests fluid viscosity calculations
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        # TODO: convert to fractional error
-        tolerance = 1E-4
-
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.calc_viscosity(20), 1.002E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_viscosity(40), 0.653E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_viscosity(60), 0.467E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.calc_viscosity(80), 0.355E-3, delta=tolerance)
-
-    def test_get_k(self):
         """
         Tests fluid conductivity calculations
 
@@ -139,7 +48,7 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_k(60), 0.654, delta=tolerance)
         self.assertAlmostEqual(tst.get_k(80), 0.670, delta=tolerance)
 
-    def test_get_cp(self):
+    def test_cp(self):
         """
         Tests fluid specific heat calculation routine
 
@@ -158,7 +67,7 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_cp(60), 4185, delta=tolerance)
         self.assertAlmostEqual(tst.get_cp(80), 4197, delta=tolerance)
 
-    def test_get_rho(self):
+    def test_dens(self):
         """
         Tests fluid density calculation routine
 
@@ -177,41 +86,7 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_rho(60), 983.3, delta=tolerance)
         self.assertAlmostEqual(tst.get_rho(80), 971.8, delta=tolerance)
 
-    def test_get_rho_cp(self):
-        """
-        Tests fluid density and specific heat calculation routines
-
-        Reference values come from Cengel & Ghajar 2015
-
-        Cengel, Y.A., & Ghajar, A.J. 2015. Heat and Mass Transfer, Fundamentals and Applications.
-        McGraw-Hill. New York, New York.
-        """
-
-        tolerance = 0.01
-
-        tst = Fluid({'fluid-type': 'water'})
-
-        tst_val = tst.get_rho_cp(20)
-        ref_val = 998.0 * 4182
-        err_frac = (tst_val - ref_val) / ref_val
-        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
-
-        tst_val = tst.get_rho_cp(40)
-        ref_val = 992.1 * 4179
-        err_frac = (tst_val - ref_val) / ref_val
-        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
-
-        tst_val = tst.get_rho_cp(60)
-        ref_val = 983.3 * 4185
-        err_frac = (tst_val - ref_val) / ref_val
-        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
-
-        tst_val = tst.get_rho_cp(80)
-        ref_val = 971.8 * 4197
-        err_frac = (tst_val - ref_val) / ref_val
-        self.assertAlmostEqual(err_frac, 0, delta=tolerance)
-
-    def test_get_pr(self):
+    def test_pr(self):
         """
         Tests fluid Prandtl number calculations
 
@@ -230,7 +105,7 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_pr(60), 2.99, delta=tolerance)
         self.assertAlmostEqual(tst.get_pr(80), 2.22, delta=tolerance)
 
-    def test_get_mu(self):
+    def test_visc(self):
         """
         Tests fluid viscosity calculations
 
@@ -248,11 +123,3 @@ class TestFluid(unittest.TestCase):
         self.assertAlmostEqual(tst.get_mu(40), 0.653E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(60), 0.467E-3, delta=tolerance)
         self.assertAlmostEqual(tst.get_mu(80), 0.355E-3, delta=tolerance)
-
-    def test_get_fluid_str(self):
-        """
-        Tests whether the fluid string is correct
-        """
-
-        self.assertEqual(Fluid.get_fluid_str(FluidType.ETHYL_ALCOHOL, -0.1), 'INCOMP::MEA[0.0000]')
-        self.assertEqual(Fluid.get_fluid_str(FluidType.ETHYL_ALCOHOL, 0.8), 'INCOMP::MEA[0.6000]')
