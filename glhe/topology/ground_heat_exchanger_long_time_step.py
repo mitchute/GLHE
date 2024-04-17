@@ -21,8 +21,8 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.op = op
 
         # props instances
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        self.fluid = ip.fluid
+        self.soil = ip.soil
 
         # geometry and other config parameters needed externally
         self.h = inputs['length']

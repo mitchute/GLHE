@@ -29,7 +29,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.op = op
 
         # local fluids reference
-        self.fluid = self.ip.props_mgr.fluid
+        self.fluid = self.ip.fluid
 
         # input data
         self.max_htg_set_point = inputs['max-heating-set-point']

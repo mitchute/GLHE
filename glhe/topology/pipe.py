@@ -33,7 +33,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         PropertiesBase.__init__(self, pipe_props)
 
         # local fluids reference
-        self.fluid = self.ip.props_mgr.fluid
+        self.fluid = self.ip.fluid
 
         # key geometric parameters
         self.inner_diameter = pipe_props["inner-diameter"]

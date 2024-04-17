@@ -26,8 +26,8 @@ class SingleUTubeGroutedSegment:
 
     def __init__(self, inputs, ip, op):
         self.name = inputs['segment-name']
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        self.fluid = ip.fluid
+        self.soil = ip.soil
 
         if 'average-pipe' in inputs:
             pipe_inputs = {'average-pipe': inputs['average-pipe'], 'length': inputs['length']}

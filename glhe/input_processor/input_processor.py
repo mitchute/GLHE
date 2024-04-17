@@ -4,7 +4,9 @@ from pathlib import Path
 
 from jsonschema import SchemaError, ValidationError, validate
 
-from glhe.properties.props_manager import PropsMGR
+from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
+from glhe.properties.fluid_factory import get_fluid
+from glhe.properties.base_properties import PropertiesBase
 from glhe.utilities.functions import load_json, lower_obj
 
 
@@ -30,8 +32,20 @@ class InputProcessor:
         self.validate_inputs(self.input_dict)
 
         # load properties for later use
-        self.props_mgr = PropsMGR()
-        self.props_mgr.load_properties(self.input_dict)
+        try:
+            self.fluid = get_fluid(self.input_dict['fluid'])
+        except KeyError:
+            pass
+
+        try:
+            self.soil = PropertiesBase(self.input_dict['soil'])
+            try:
+                self.soil.get_temp = make_ground_temp_model(self.input_dict['ground-temperature-model']).get_temp
+            except KeyError:
+                pass
+
+        except KeyError:
+            pass
 
     @staticmethod
     def validate_inputs(input_dict: dict) -> None:

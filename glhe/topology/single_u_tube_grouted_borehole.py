@@ -26,8 +26,8 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.ip = ip
         self.op = op
 
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        self.fluid = ip.fluid
+        self.soil = ip.soil
 
         # get borehole definition data
         if 'average-borehole' in inputs:
