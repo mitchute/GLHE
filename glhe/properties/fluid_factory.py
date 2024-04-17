@@ -10,7 +10,6 @@ from scp.water import Water
 def get_fluid(inputs: dict) -> EthylAlcohol | EthyleneGlycol | MethylAlcohol | PropyleneGlycol | Water:
     fluid_type_str = inputs['fluid-type'].upper()
     if fluid_type_str == "WATER":
-        concentration = 0
         return Water()
     elif fluid_type_str == "EA":
         concentration = inputs['concentration'] / 100.0
