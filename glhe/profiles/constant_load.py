@@ -26,7 +26,7 @@ class ConstantLoad(SimulationEntryPoint):
         if flow_rate == 0:
             return inputs
 
-        specific_heat = self.ip.props_mgr.fluid.get_cp(self.inlet_temp)
+        specific_heat = self.ip.props_mgr.fluid.cp(self.inlet_temp)
         self.outlet_temp = self.load / (flow_rate * specific_heat) + self.inlet_temp
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 

@@ -37,7 +37,7 @@ class ExternalLoad(ExternalBase, SimulationEntryPoint):
         inlet_temp = inputs.temperature
 
         self.load = self.get_value(t + dt)
-        specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
+        specific_heat = self.ip.props_mgr.fluid.cp(inlet_temp)
         self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 

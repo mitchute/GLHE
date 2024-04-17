@@ -1,6 +1,6 @@
 from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.properties.base_properties import PropertiesBase
-from glhe.properties.fluid_properties import Fluid
+from glhe.properties.fluid_factory import get_fluid
 
 
 class PropsMGR:
@@ -36,7 +36,7 @@ class PropsMGR:
 
         :param inputs: fluid input dict
         """
-        self.fluid = Fluid(inputs)
+        self.fluid = get_fluid(inputs)
 
     def _add_soil_props_inst(self, inputs: dict) -> None:
         """

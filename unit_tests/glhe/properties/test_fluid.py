@@ -6,28 +6,28 @@ from scp.methyl_alcohol import MethylAlcohol
 from scp.propylene_glycol import PropyleneGlycol
 from scp.water import Water
 
-from glhe.properties.fluid_properties import Fluid
+from glhe.properties.fluid_factory import get_fluid
 
 
 class TestFluid(unittest.TestCase):
 
     def test_init(self):
-        tst_w = Fluid({'fluid-type': 'water'})
-        self.assertTrue(isinstance(tst_w.fluid, Water))
+        tst_w = get_fluid({'fluid-type': 'water'})
+        self.assertTrue(isinstance(tst_w, Water))
 
-        tst_ea = Fluid({'fluid-type': 'EA', 'concentration': 50})
-        self.assertTrue(isinstance(tst_ea.fluid, EthylAlcohol))
+        tst_ea = get_fluid({'fluid-type': 'EA', 'concentration': 50})
+        self.assertTrue(isinstance(tst_ea, EthylAlcohol))
 
-        tst_eg = Fluid({'fluid-type': 'EG', 'concentration': 50})
-        self.assertTrue(isinstance(tst_eg.fluid, EthyleneGlycol))
+        tst_eg = get_fluid({'fluid-type': 'EG', 'concentration': 50})
+        self.assertTrue(isinstance(tst_eg, EthyleneGlycol))
 
-        tst_ma = Fluid({'fluid-type': 'MA', 'concentration': 50})
-        self.assertTrue(isinstance(tst_ma.fluid, MethylAlcohol))
+        tst_ma = get_fluid({'fluid-type': 'MA', 'concentration': 50})
+        self.assertTrue(isinstance(tst_ma, MethylAlcohol))
 
-        tst_pg = Fluid({'fluid-type': 'PG', 'concentration': 50})
-        self.assertTrue(isinstance(tst_pg.fluid, PropyleneGlycol))
+        tst_pg = get_fluid({'fluid-type': 'PG', 'concentration': 50})
+        self.assertTrue(isinstance(tst_pg, PropyleneGlycol))
 
-        self.assertRaises(ValueError, lambda: Fluid({'fluid-type': 'Not A Fluid', 'concentration': 0}))
+        self.assertRaises(ValueError, lambda: get_fluid({'fluid-type': 'Not A Fluid', 'concentration': 0}))
 
     def test_cond(self):
         """
@@ -42,11 +42,11 @@ class TestFluid(unittest.TestCase):
         # TODO: convert to fractional error
         tolerance = 1E-2
 
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.get_k(20), 0.598, delta=tolerance)
-        self.assertAlmostEqual(tst.get_k(40), 0.631, delta=tolerance)
-        self.assertAlmostEqual(tst.get_k(60), 0.654, delta=tolerance)
-        self.assertAlmostEqual(tst.get_k(80), 0.670, delta=tolerance)
+        tst = get_fluid({'fluid-type': 'water'})
+        self.assertAlmostEqual(tst.k(20), 0.598, delta=tolerance)
+        self.assertAlmostEqual(tst.k(40), 0.631, delta=tolerance)
+        self.assertAlmostEqual(tst.k(60), 0.654, delta=tolerance)
+        self.assertAlmostEqual(tst.k(80), 0.670, delta=tolerance)
 
     def test_cp(self):
         """
@@ -61,11 +61,11 @@ class TestFluid(unittest.TestCase):
         # TODO: convert to fractional error
         tolerance = 4.0
 
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.get_cp(20), 4182, delta=tolerance)
-        self.assertAlmostEqual(tst.get_cp(40), 4179, delta=tolerance)
-        self.assertAlmostEqual(tst.get_cp(60), 4185, delta=tolerance)
-        self.assertAlmostEqual(tst.get_cp(80), 4197, delta=tolerance)
+        tst = get_fluid({'fluid-type': 'water'})
+        self.assertAlmostEqual(tst.cp(20), 4182, delta=tolerance)
+        self.assertAlmostEqual(tst.cp(40), 4179, delta=tolerance)
+        self.assertAlmostEqual(tst.cp(60), 4185, delta=tolerance)
+        self.assertAlmostEqual(tst.cp(80), 4197, delta=tolerance)
 
     def test_dens(self):
         """
@@ -80,11 +80,11 @@ class TestFluid(unittest.TestCase):
         # TODO: convert to fractional error
         tolerance = 1.0
 
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.get_rho(20), 998.0, delta=tolerance)
-        self.assertAlmostEqual(tst.get_rho(40), 992.1, delta=tolerance)
-        self.assertAlmostEqual(tst.get_rho(60), 983.3, delta=tolerance)
-        self.assertAlmostEqual(tst.get_rho(80), 971.8, delta=tolerance)
+        tst = get_fluid({'fluid-type': 'water'})
+        self.assertAlmostEqual(tst.rho(20), 998.0, delta=tolerance)
+        self.assertAlmostEqual(tst.rho(40), 992.1, delta=tolerance)
+        self.assertAlmostEqual(tst.rho(60), 983.3, delta=tolerance)
+        self.assertAlmostEqual(tst.rho(80), 971.8, delta=tolerance)
 
     def test_pr(self):
         """
@@ -99,11 +99,11 @@ class TestFluid(unittest.TestCase):
         # TODO: convert to fractional error
         tolerance = 1E-1
 
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.get_pr(20), 7.01, delta=tolerance)
-        self.assertAlmostEqual(tst.get_pr(40), 4.32, delta=tolerance)
-        self.assertAlmostEqual(tst.get_pr(60), 2.99, delta=tolerance)
-        self.assertAlmostEqual(tst.get_pr(80), 2.22, delta=tolerance)
+        tst = get_fluid({'fluid-type': 'water'})
+        self.assertAlmostEqual(tst.pr(20), 7.01, delta=tolerance)
+        self.assertAlmostEqual(tst.pr(40), 4.32, delta=tolerance)
+        self.assertAlmostEqual(tst.pr(60), 2.99, delta=tolerance)
+        self.assertAlmostEqual(tst.pr(80), 2.22, delta=tolerance)
 
     def test_visc(self):
         """
@@ -118,8 +118,8 @@ class TestFluid(unittest.TestCase):
         # TODO: convert to fractional error
         tolerance = 1E-4
 
-        tst = Fluid({'fluid-type': 'water'})
-        self.assertAlmostEqual(tst.get_mu(20), 1.002E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.get_mu(40), 0.653E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.get_mu(60), 0.467E-3, delta=tolerance)
-        self.assertAlmostEqual(tst.get_mu(80), 0.355E-3, delta=tolerance)
+        tst = get_fluid({'fluid-type': 'water'})
+        self.assertAlmostEqual(tst.mu(20), 1.002E-3, delta=tolerance)
+        self.assertAlmostEqual(tst.mu(40), 0.653E-3, delta=tolerance)
+        self.assertAlmostEqual(tst.mu(60), 0.467E-3, delta=tolerance)
+        self.assertAlmostEqual(tst.mu(80), 0.355E-3, delta=tolerance)

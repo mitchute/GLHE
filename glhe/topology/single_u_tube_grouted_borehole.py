@@ -247,7 +247,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.h / (self.fluid.get_cp(temperature) * flow_rate)) ** 2
+        pt_2 = (self.h / (self.fluid.cp(temperature) * flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -337,7 +337,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         # update report variables
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = self.pipe_2.outlet_temperature
-        cp = self.fluid.get_cp(inlet_temp)
+        cp = self.fluid.cp(inlet_temp)
         self.heat_rate = flow_rate * cp * (inlet_temp - self.outlet_temperature)
         self.heat_rate_bh = self.get_heat_rate_bh()
 

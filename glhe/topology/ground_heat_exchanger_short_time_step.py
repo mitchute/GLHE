@@ -168,8 +168,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
                  'diameter': d_ave_bh['diameter'],
                  'borehole-resistance': d_ave_bh['borehole-resistance'],
                  'convection-resistance': d_ave_bh['pipe-conv-resistance'],
-                 'fluid-specific-heat': self.fluid.get_cp(20),
-                 'fluid-density': self.fluid.get_rho(20),
+                 'fluid-specific-heat': self.fluid.cp(20),
+                 'fluid-density': self.fluid.rho(20),
                  'pipe-conductivity': d_ave_bh['pipe-conductivity'],
                  'pipe-specific-heat': d_ave_bh['pipe-specific-heat'],
                  'pipe-density': d_ave_bh['pipe-density'],
@@ -219,7 +219,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         g_b = []
 
         for t in times:
-            cp = self.fluid.get_cp(temperature)
+            cp = self.fluid.cp(temperature)
             temperature = temperature + q_tot / (flow_rate * cp)
             response = SimulationResponse(t, dt, flow_rate, temperature)
             temperature = self.simulate_time_step(response).temperature
@@ -235,7 +235,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         end_time = self.ip.input_dict['simulation']['runtime']
         while err > 0.02:
             t += dt
-            cp = self.fluid.get_cp(temperature)
+            cp = self.fluid.cp(temperature)
             temperature = temperature + q_tot / (flow_rate * cp)
             response = SimulationResponse(t, dt, flow_rate, temperature)
             temperature = self.simulate_time_step(response).temperature
@@ -306,7 +306,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         # update report variables
         # TODO: generalize first-law computations everywhere
-        cp = self.fluid.get_cp(inlet_temp)
+        cp = self.fluid.cp(inlet_temp)
         self.heat_rate = flow * cp * (inlet_temp - outlet_temp)
         self.heat_rate_bh = self.get_heat_rate_bh()
         self.inlet_temperature = inputs.temperature
@@ -333,7 +333,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         for r in responses:
             temp = r.temperature
             m_dot = r.flow_rate
-            cp = self.fluid.get_cp(temp)
+            cp = self.fluid.cp(temp)
             sum_mdot_cp_temp += m_dot * cp * temp
             sum_mdot += m_dot
             sum_cp += cp
