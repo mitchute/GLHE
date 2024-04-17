@@ -4,7 +4,6 @@ import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.pulse_load import PulseLoad
 from glhe.utilities.functions import write_json
 
@@ -26,9 +25,8 @@ class TestImpulseLoad(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        return PulseLoad(d['load-profile'][0], ip, op)
+        return PulseLoad(d['load-profile'][0], ip)
 
     def test_simulate_time_step(self):
         tst = self.add_instance()

@@ -4,7 +4,6 @@ import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.external_flow import ExternalFlow
 from glhe.utilities.functions import write_json
 
@@ -21,9 +20,8 @@ class TestExternalFlow(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ExternalFlow(d['flow-profile'][0], ip, op)
+        return ExternalFlow(d['flow-profile'][0], ip)
 
     def test_get_value(self):
         dir_name = Path(__file__).parent

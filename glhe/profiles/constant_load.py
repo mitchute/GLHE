@@ -2,18 +2,16 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 
 
 class ConstantLoad(SimulationEntryPoint):
     Type = ComponentTypes.ConstantLoad
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+    def __init__(self, inputs: dict, ip: InputProcessor):
         SimulationEntryPoint.__init__(self, inputs)
         self.load = inputs['value']
         self.ip = ip
-        self.op = op
 
         # report variables
         self.inlet_temp = ip.init_temp()

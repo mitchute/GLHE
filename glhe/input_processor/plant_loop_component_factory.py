@@ -16,15 +16,15 @@ def make_plant_loop_component(comp: dict, ip: InputProcessor, op: OutputProcesso
     inputs = ip.get_definition_object(comp_type, comp_name)
 
     if comp_type == 'flow-profile':
-        return make_flow_profile(inputs, ip, op)
+        return make_flow_profile(inputs, ip)
     elif comp_type == 'load-profile':
-        return make_load_profile(inputs, ip, op)
+        return make_load_profile(inputs, ip)
     elif comp_type == 'ground-heat-exchanger':
         return GroundHeatExchanger(inputs, ip, op)
     elif comp_type == 'pipe':
         return Pipe(inputs, ip, op)
     elif comp_type == 'temperature-profile':
-        return make_temp_profile(inputs, ip, op)
+        return make_temp_profile(inputs, ip)
     elif comp_type == 'swedish-heat-pump':
         return SwedishHP(inputs, ip, op)
     else:

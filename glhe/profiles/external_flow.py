@@ -2,7 +2,6 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.profiles.external_base import ExternalBase
 
@@ -10,7 +9,7 @@ from glhe.profiles.external_base import ExternalBase
 class ExternalFlow(ExternalBase, SimulationEntryPoint):
     Type = ComponentTypes.ExternalFlow
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+    def __init__(self, inputs: dict, ip: InputProcessor):
 
         if 'column' in inputs:
             col_num = inputs['column']
@@ -20,7 +19,6 @@ class ExternalFlow(ExternalBase, SimulationEntryPoint):
         ExternalBase.__init__(self, inputs['path'], col_num=col_num)
         SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
-        self.op = op
 
         # report variables
         self.flow_rate = self.get_value(0)
