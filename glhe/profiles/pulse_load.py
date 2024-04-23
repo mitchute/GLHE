@@ -8,13 +8,12 @@ from glhe.output_processor.report_types import ReportTypes
 class PulseLoad(SimulationEntryPoint):
     Type = ComponentTypes.PulseLoad
 
-    def __init__(self, inputs, ip, op):
+    def __init__(self, inputs, ip):
         SimulationEntryPoint.__init__(self, inputs)
         self.load = inputs['value']
         self.start_time = inputs['start-time']
         self.end_time = inputs['end-time']
         self.ip = ip
-        self.op = op
 
         # report variables
         self.outlet_temp = 0
@@ -29,7 +28,7 @@ class PulseLoad(SimulationEntryPoint):
 
             inlet_temp = inputs.temperature
 
-            specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
+            specific_heat = self.ip.fluid.cp(inlet_temp)
             self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
             return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
         else:

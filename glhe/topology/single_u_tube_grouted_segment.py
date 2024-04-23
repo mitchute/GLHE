@@ -26,8 +26,8 @@ class SingleUTubeGroutedSegment:
 
     def __init__(self, inputs, ip, op):
         self.name = inputs['segment-name']
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        self.fluid = ip.fluid
+        self.soil = ip.soil
 
         if 'average-pipe' in inputs:
             pipe_inputs = {'average-pipe': inputs['average-pipe'], 'length': inputs['length']}
@@ -155,8 +155,8 @@ class SingleUTubeGroutedSegment:
         self.boundary_temp = inputs.boundary_temp
         self.bh_resist = inputs.bh_resist
         self.dc_resist = inputs.dc_resist
-        self.fluid_cp = self.fluid.get_cp(self.inlet_temp_1)
-        self.fluid_heat_capacity = self.fluid.get_rho(self.inlet_temp_1) * self.fluid_cp
+        self.fluid_cp = self.fluid.cp(self.inlet_temp_1)
+        self.fluid_heat_capacity = self.fluid.rho(self.inlet_temp_1) * self.fluid_cp
 
         solver = RK45(self.right_hand_side, 0, self.y, time_step)
         while solver.status != 'finished':

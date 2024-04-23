@@ -74,15 +74,15 @@ class TestInputProcessor(unittest.TestCase):
 
         self.run_validate(d)
 
-        d = {'fluid': {'fluid-type': 'EA', 'concentration': 100}}
+        d = {'fluid': {'fluid-type': 'EA', 'concentration': 60}}
 
         self.run_validate(d)
 
-        d = {'fluid': {'fluid-type': 'EG', 'concentration': 100}}
+        d = {'fluid': {'fluid-type': 'EG', 'concentration': 60}}
 
         self.run_validate(d)
 
-        d = {'fluid': {'fluid-type': 'PG', 'concentration': 100}}
+        d = {'fluid': {'fluid-type': 'PG', 'concentration': 60}}
 
         self.run_validate(d)
 

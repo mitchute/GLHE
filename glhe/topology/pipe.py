@@ -33,7 +33,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         PropertiesBase.__init__(self, pipe_props)
 
         # local fluids reference
-        self.fluid = self.ip.props_mgr.fluid
+        self.fluid = self.ip.fluid
 
         # key geometric parameters
         self.inner_diameter = pipe_props["inner-diameter"]
@@ -88,7 +88,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :param temperature: temperature, C
         :return: transit time, s
         """
-        v_dot = flow_rate / self.fluid.get_rho(temperature)
+        v_dot = flow_rate / self.fluid.rho(temperature)
         return self.fluid_vol / v_dot
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
@@ -136,7 +136,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             tau_0 = tau - num_cells * tau_n
 
             # volume flow rate
-            v_dot = m_dot / self.fluid.get_rho(inlet_temp)
+            v_dot = m_dot / self.fluid.rho(inlet_temp)
 
             # volume for ideal-mixed cells
             v_n = tau_n * v_dot
@@ -238,7 +238,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :param temp: temperature, C
         :return: Reynolds number
         """
-        self.re = 4 * flow_rate / (self.fluid.get_mu(temp) * pi * self.inner_diameter)
+        self.re = 4 * flow_rate / (self.fluid.mu(temp) * pi * self.inner_diameter)
         return self.re
 
     def calc_friction_factor(self, re: float) -> float:
@@ -305,7 +305,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re, temperature)
-        self.resist_conv = 1 / (nu * pi * self.fluid.get_k(temperature))
+        self.resist_conv = 1 / (nu * pi * self.fluid.k(temperature))
         return self.resist_conv
 
     def calc_resist(self, flow_rate: float, temperature: float):
@@ -344,7 +344,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
 
         f = self.calc_friction_factor(re)
-        pr = self.fluid.get_pr(temperature)
+        pr = self.fluid.pr(temperature)
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
     @staticmethod

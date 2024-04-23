@@ -6,7 +6,6 @@ from math import pi
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.sinusoid_load import SinusoidLoad
 from glhe.utilities.functions import write_json
 
@@ -28,9 +27,8 @@ class TestSinusoidLoad(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        return SinusoidLoad(d['load-profile'][0], ip, op)
+        return SinusoidLoad(d['load-profile'][0], ip)
 
     def test_simulate_time_step(self):
         tol = 0.01

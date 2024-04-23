@@ -3,7 +3,6 @@ import tempfile
 import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.external_load import ExternalLoad
 from glhe.profiles.load_factory import make_load_profile
@@ -39,9 +38,8 @@ class TestLoadFactory(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        return make_load_profile(d['load-profile'][0], ip, op)
+        return make_load_profile(d['load-profile'][0], ip)
 
     def test_factory_constant(self):
         tst = self.add_instance('constant')
@@ -75,9 +73,8 @@ class TestLoadFactory(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        make_load_profile(d['load-profile'][0], ip, op)
+        make_load_profile(d['load-profile'][0], ip)
 
         with self.assertRaises(ValueError) as _:
-            make_load_profile({'load-profile-type': 'not-a-method'}, ip, op)
+            make_load_profile({'load-profile-type': 'not-a-method'}, ip)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 
 from glhe.aggregation.agg_types import AggregationTypes

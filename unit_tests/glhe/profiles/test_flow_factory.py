@@ -3,7 +3,6 @@ import tempfile
 import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_flow import ConstantFlow
 from glhe.profiles.external_flow import ExternalFlow
 from glhe.profiles.flow_factory import make_flow_profile
@@ -21,9 +20,8 @@ class TestFlowFactory(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        tst = make_flow_profile(d['flow-profile'][0], ip, op)
+        tst = make_flow_profile(d['flow-profile'][0], ip)
         self.assertIsInstance(tst, ConstantFlow)
 
     def test_external_flow(self):
@@ -44,9 +42,8 @@ class TestFlowFactory(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        tst = make_flow_profile(d['flow-profile'][0], ip, op)
+        tst = make_flow_profile(d['flow-profile'][0], ip)
         self.assertIsInstance(tst, ExternalFlow)
 
     def test_fail(self):
@@ -58,7 +55,6 @@ class TestFlowFactory(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
         with self.assertRaises(ValueError) as _:
-            make_flow_profile({'flow-profile-type': 'not-a-type'}, ip, op)
+            make_flow_profile({'flow-profile-type': 'not-a-type'}, ip)

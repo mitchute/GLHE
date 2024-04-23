@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 from glhe.input_processor.input_processor import InputProcessor
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_temp import ConstantTemp
 from glhe.profiles.external_temps import ExternalTemps
 
 
-def make_temp_profile(inputs: dict, ip: InputProcessor, op: OutputProcessor) -> ExternalTemps | ConstantTemp:
+def make_temp_profile(inputs: dict, ip: InputProcessor) -> ExternalTemps | ConstantTemp:
     temp_profile_type = inputs['temperature-profile-type']
     if temp_profile_type == 'constant':
-        return ConstantTemp(inputs, ip, op)
+        return ConstantTemp(inputs, ip)
     elif temp_profile_type == 'external':
-        return ExternalTemps(inputs, ip, op)
+        return ExternalTemps(inputs, ip)
     else:
         raise ValueError(f"Temperature profile '{temp_profile_type}' is not valid.")

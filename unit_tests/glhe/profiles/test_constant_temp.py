@@ -4,7 +4,6 @@ import unittest
 
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.constant_temp import ConstantTemp
 from glhe.utilities.functions import write_json
 
@@ -21,9 +20,8 @@ class TestConstantFlow(unittest.TestCase):
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
-        op = OutputProcessor(temp_dir, 'out.csv')
 
-        return ConstantTemp(d['temperature-profile'][0], ip, op)
+        return ConstantTemp(d['temperature-profile'][0], ip)
 
     def test_simulate_time_step(self):
         tst = self.add_instance()

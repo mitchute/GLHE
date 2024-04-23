@@ -6,7 +6,6 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 
 
@@ -78,10 +77,9 @@ class SyntheticBase(object):
 class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
     Type = ComponentTypes.SyntheticLoad
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
+    def __init__(self, inputs: dict, ip: InputProcessor):
         SimulationEntryPoint.__init__(self, inputs)
         self.ip = ip
-        self.op = op
 
         # report variables
         self.load = 0
@@ -121,7 +119,7 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
         inlet_temp = inputs.temperature
 
         self.load = self.get_value(t + dt)
-        specific_heat = self.ip.props_mgr.fluid.get_cp(inlet_temp)
+        specific_heat = self.ip.fluid.cp(inlet_temp)
         self.outlet_temp = self.load / (flow_rate * specific_heat) + inlet_temp
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 

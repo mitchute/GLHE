@@ -29,7 +29,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.op = op
 
         # local fluids reference
-        self.fluid = self.ip.props_mgr.fluid
+        self.fluid = self.ip.fluid
 
         # input data
         self.max_htg_set_point = inputs['max-heating-set-point']
@@ -283,7 +283,7 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.hp_rtf = self.wtr_htg_rtf + self.htg_rtf
         self.heat_extraction = -self.wtr_htg_heat_extraction - self.htg_heat_extraction
 
-        cp = self.fluid.get_cp(inlet_temp)
+        cp = self.fluid.cp(inlet_temp)
         outlet_temp = inlet_temp + self.heat_extraction / (flow_rate * cp)
         response = SimulationResponse(time, dt, flow_rate, outlet_temp, hp_src_heat_rate=self.heat_extraction)
 

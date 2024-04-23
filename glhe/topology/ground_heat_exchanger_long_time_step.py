@@ -21,8 +21,8 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.op = op
 
         # props instances
-        self.fluid = ip.props_mgr.fluid
-        self.soil = ip.props_mgr.soil
+        self.fluid = ip.fluid
+        self.soil = ip.soil
 
         # geometry and other config parameters needed externally
         self.h = inputs['length']
@@ -113,7 +113,7 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         c_2 = (self.c_0 * g + resist_b * g_b)
 
-        cp = self.fluid.get_cp(inlet_temp)
+        cp = self.fluid.cp(inlet_temp)
         c_3 = (flow_rate_path * cp) / self.h
 
         q_prev = self.load_agg.get_q_prev()
