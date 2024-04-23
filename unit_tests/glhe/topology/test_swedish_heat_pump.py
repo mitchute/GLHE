@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -14,9 +14,9 @@ class TestSwedishHP(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = Path(tempfile.mkdtemp())
 
-        with open(os.path.join(temp_dir, 'temp.csv'), 'w') as f:
+        with (temp_dir / 'temp.csv').open('w') as f:
             f.write('Date/Time,Heating Loads (W),Water Heating Loads (W),Outdoor Air Temperature (C)\n')
             f.write('1/1/2019 0:00,751.231087,0,4\n')
             f.write('1/1/2019 1:00,609.682528,60.515364,5.3\n')
@@ -51,14 +51,14 @@ class TestSwedishHP(unittest.TestCase):
                                          'outdoor-air-temperature-at-max-heating-set-point': -10,
                                          'outdoor-air-temperature-at-min-heating-set-point': 20,
                                          'immersion-heater-capacity': 7000,
-                                         'load-data-path': os.path.join(temp_dir, 'temp.csv'),
+                                         'load-data-path': str(temp_dir / 'temp.csv'),
                                          'capacity-coefficients': [8.536666667, -0.007266667,
                                                                    -0.00084, 0.263666667],
                                          'coefficient-of-performance-coefficients': [7.641839817, -0.075098454,
                                                                                      -0.000208441, 0.109423218],
                                          }]}
 
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, inputs)
 
         ip = InputProcessor(temp_file)
@@ -70,7 +70,7 @@ class TestSwedishHP(unittest.TestCase):
         tst = self.add_instance()
         self.assertIsInstance(tst, SwedishHP)
 
-    def test_set_htg_exft(self):
+    def test_set_htg_exiting_ft(self):
         tst = self.add_instance()
         tol = 0.001
         # checked against JDS VBA code

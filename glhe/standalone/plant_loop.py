@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime as dt
-import os
+from pathlib import Path
 import sys
 
 from glhe.input_processor.component_types import ComponentTypes
@@ -16,7 +16,7 @@ from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
 class PlantLoop:
     Type = ComponentTypes.PlantLoop
 
-    def __init__(self, json_file_path: str):
+    def __init__(self, json_file_path: Path):
         """
         Initialize the plant loop and all components on it.
 
@@ -30,11 +30,11 @@ class PlantLoop:
 
         try:
             # setup output processor
-            self.op = OutputProcessor(self.ip.input_dict['simulation']['output-path'],
-                                      self.ip.input_dict['simulation']['output-csv-name'])
+            output_path = Path(self.ip.input_dict['simulation']['output-path'])
+            self.op = OutputProcessor(output_path, self.ip.input_dict['simulation']['output-csv-name'])
         except KeyError:
             # paths were not provided. apply default paths.
-            self.op = OutputProcessor(os.getcwd(), 'out.csv')
+            self.op = OutputProcessor(Path.cwd(), 'out.csv')
 
         # init plant-level variables
         self.demand_inlet_temp = self.ip.input_dict['simulation']['initial-temperature']
@@ -86,11 +86,11 @@ class PlantLoop:
 
         if status:
             print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
-            with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
+            with open('{}.txt'.format(self.op.output_dir / self.op.output_file[:-4]), 'w+') as f:
                 f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
         else:
             print('Simulation FAILED!')
-            with open('{}.txt'.format(os.path.join(self.op.output_dir, self.op.output_file[:-4])), 'w+') as f:
+            with open('{}.txt'.format(self.op.output_dir / self.op.output_file[:-4]), 'w+') as f:
                 f.write('Simulation FAILED!\n')
 
         return status
@@ -148,5 +148,13 @@ class PlantLoop:
         self.op.collect_output(d)
 
 
+def main():
+    p = Path(sys.argv[1])
+    if not p.is_absolute():
+        p = Path.cwd() / p
+    loop = PlantLoop(p)
+    loop.simulate()
+
+
 if __name__ == "__main__":
-    PlantLoop(sys.argv[1]).simulate()
+    main()

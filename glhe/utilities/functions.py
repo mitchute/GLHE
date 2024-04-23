@@ -1,9 +1,11 @@
+import csv
 import json
+from abc import ABC, abstractmethod
 from math import ceil, exp, factorial, floor
+from pathlib import Path
 from typing import Callable, overload
 
 import numpy as np
-import pandas as pd
 from scipy.interpolate import RegularGridInterpolator
 from scipy.interpolate import interp1d
 
@@ -218,8 +220,8 @@ def load_json(input_path: str) -> dict:
     return json.loads(json_blob)
 
 
-def write_json(write_path: str, input_dict: dict, indent: int = 2) -> None:
-    with open(write_path, 'w') as f:
+def write_json(write_path: Path, input_dict: dict, indent: int = 2) -> None:
+    with write_path.open('w') as f:
         f.write(json.dumps(input_dict, sort_keys=True, indent=indent, separators=(',', ': ')))
 
 
@@ -468,51 +470,57 @@ def un_reverse_idx(length: int, reversed_idx: int) -> int:
     return length - 1 - reversed_idx
 
 
-def write_arrays_to_csv(path: str, arrays: list | np.ndarray) -> None:
+def write_arrays_to_csv(path: Path, arrays: list | np.ndarray) -> None:
     _arrays = None
     if isinstance(arrays, list):
         _arrays = np.array(arrays)
     else:
         _arrays = arrays
+    data = _arrays.T
+    with open(path, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
 
-    df = pd.DataFrame.from_records(_arrays)
-    df = df.T
-    df.to_csv(path, header=False, index=False)
+
+class InterpolatorBase(ABC):
+    @abstractmethod
+    def interpolate(self, *args: list[float]) -> float:
+        pass
 
 
-class Interpolator1D:
+class Interpolator1D(InterpolatorBase):
 
-    def __init__(self, x_data: np.ndarray, y_data: np.ndarray):  # TODO: Try to use pathlib internally everywhere
+    def __init__(self, x_data: np.ndarray, y_data: np.ndarray | list[float]):
         """
-        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        1D Interpolation Class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         :param x_data: Numpy array of x-value floats
         :param y_data: Numpy array of x-value floats
         """
         self.interp = interp1d(x_data, y_data, fill_value='extrapolate')
 
-    def interpolate(self, x: float) -> float:
-        return self.interp(x)
+    def interpolate(self, *args: list[float]) -> float:
+        return self.interp(args[0])
 
 
 class Interpolator1DFromFile(Interpolator1D):
-    def __init__(self, data_path: str):  # TODO: Try to use pathlib internally everywhere
+    def __init__(self, data_path: Path):
         """
-        1D Interpolation Class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        1D Interpolation Class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         :param data_path: path to csv file with columned data, e.g. 'x1,y1'
         """
-        data = np.genfromtxt(data_path, delimiter=',')
+        data = np.genfromtxt(str(data_path), delimiter=',')
         _, num_col = data.shape
         if num_col != 2:
             raise ValueError("Number of columns in '{}' must be 2".format(data_path))
         super().__init__(data[:, 0], data[:, 1])
 
 
-class Interpolator2DFromFile:
-    def __init__(self, xz_data_path: str, y: list):
+class Interpolator2DFromFile(InterpolatorBase):
+    def __init__(self, xz_data_path: Path, y: list):
         """
-        2D interpolation class, currently a wrapper for scipy interpolator, but soon just a simple interpolator
+        2D interpolation class, currently a wrapper for sci py interpolator, but soon just a simple interpolator
 
         Example data:
         x1, y1, z1, x2, y2, z2
@@ -532,7 +540,7 @@ class Interpolator2DFromFile:
         :param y: list of *constant* values for the second independent variable
         """
 
-        data = np.genfromtxt(xz_data_path, delimiter=',')
+        data = np.genfromtxt(str(xz_data_path), delimiter=',')
         _, num_col = data.shape
 
         num_series = num_col - 1
@@ -548,9 +556,9 @@ class Interpolator2DFromFile:
 
         self.interp = RegularGridInterpolator((x, y), z)
 
-    def interpolate(self, x: float, y: float) -> float:
-        x = self.interp((x, y))
-        return x.min()
+    def interpolate(self, *args: list[float]) -> float:
+        x = self.interp(args)
+        return x.min()  # just want to get the first item, this works fine, but could do better
 
 
 def resample_g_functions(lntts, g, lntts_interval=0.1):

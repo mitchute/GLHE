@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -12,11 +12,11 @@ from glhe.utilities.functions import write_json
 class TestExternalFlow(unittest.TestCase):
 
     @staticmethod
-    def add_instance(path):
-        d = {'flow-profile': [{'flow-profile-type': 'external', 'name': 'my name', 'path': path}]}
+    def add_instance(path: Path):
+        d = {'flow-profile': [{'flow-profile-type': 'external', 'name': 'my name', 'path': str(path)}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 
@@ -26,18 +26,19 @@ class TestExternalFlow(unittest.TestCase):
         return ExternalFlow(d['flow-profile'][0], ip, op)
 
     def test_get_value(self):
-        dir_name = os.path.dirname(__file__)
-        relative_path = '../../../glhe/profiles/external_data/GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
-        path = os.path.normpath(os.path.join(dir_name, relative_path))
+        dir_name = Path(__file__).parent
+        root_dir = dir_name.parent.parent.parent
+        data_folder = root_dir / 'glhe' / 'profiles' / 'external_data'
+        path = data_folder / 'GSHP-GLHE_USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.csv'
         tst = self.add_instance(path)
         self.assertEqual(tst.get_value(0), 0)
         self.assertEqual(tst.get_value(10 * 3600), 1)
         self.assertEqual(tst.get_value(8759 * 3600), 0)
 
     def test_start_end_points(self):
-        temp_dir = tempfile.mkdtemp()
-        temp_data = os.path.join(temp_dir, 'temp_data.csv')
-        with open(temp_data, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_data = temp_dir / 'temp_data.csv'
+        with temp_data.open('w') as f:
             f.write('Date/Time, Meas. Total Power [W], mdot [kg/s]\n'
                     '2018-01-01 00:00:00, 1, 1\n'
                     '2018-01-01 01:00:00, 2, 2\n'
@@ -53,9 +54,9 @@ class TestExternalFlow(unittest.TestCase):
         self.assertEqual(tst.get_value(3.0 * 3600), 4.0)
 
     def test_repeated_points(self):
-        temp_dir = tempfile.mkdtemp()
-        temp_data = os.path.join(temp_dir, 'temp_data.csv')
-        with open(temp_data, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_data = temp_dir / 'temp_data.csv'
+        with temp_data.open('w') as f:
             f.write('Date/Time, Meas. Total Power [W], mdot [kg/s]\n'
                     '2018-01-01 00:00:00, 1, 1\n'
                     '2018-01-01 01:00:00, 2, 2\n'
@@ -76,9 +77,9 @@ class TestExternalFlow(unittest.TestCase):
         self.assertEqual(tst.get_value(12.0 * 3600), 1.0)
 
     def test_simulate_time_step(self):
-        temp_dir = tempfile.mkdtemp()
-        temp_data = os.path.join(temp_dir, 'temp_data.csv')
-        with open(temp_data, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_data = temp_dir / 'temp_data.csv'
+        with temp_data.open('w') as f:
             f.write('Date/Time, Meas. Total Power [W], mdot [kg/s]\n'
                     '2018-01-01 00:00:00, 1, 1\n'
                     '2018-01-01 01:00:00, 2, 2\n'
@@ -93,9 +94,9 @@ class TestExternalFlow(unittest.TestCase):
         self.assertEqual(res.temperature, 10)
 
     def test_report_outputs(self):
-        temp_dir = tempfile.mkdtemp()
-        temp_data = os.path.join(temp_dir, 'temp_data.csv')
-        with open(temp_data, 'w') as f:
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_data = temp_dir / 'temp_data.csv'
+        with temp_data.open('w') as f:
             f.write('Date/Time, Meas. Total Power [W], mdot [kg/s]\n'
                     '2018-01-01 00:00:00, 1, 1\n'
                     '2018-01-01 01:00:00, 2, 2\n'

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -20,8 +20,8 @@ class TestImpulseLoad(unittest.TestCase):
                                'start-time': 0,
                                'end-time': 200}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 

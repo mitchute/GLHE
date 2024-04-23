@@ -1,4 +1,6 @@
+from json import loads
 import os
+from pathlib import Path
 
 from jsonschema import SchemaError, ValidationError, validate
 
@@ -8,7 +10,7 @@ from glhe.utilities.functions import load_json, lower_obj
 
 class InputProcessor:
 
-    def __init__(self, json_input_path: str):
+    def __init__(self, json_input_path: Path):
         """
         Initialize the input processor, process input file, and store the input information.
 
@@ -18,11 +20,11 @@ class InputProcessor:
         """
 
         # check if file exists
-        if not os.path.exists(json_input_path):
-            raise FileNotFoundError("Input file: '{}' does not exist.".format(json_input_path))
+        if not json_input_path.exists():
+            raise FileNotFoundError(f"Input file: '{json_input_path}' does not exist.")
 
         # load the input file
-        self.input_dict = lower_obj(load_json(json_input_path))
+        self.input_dict: dict = lower_obj(loads(json_input_path.read_text()))
 
         # validate the inputs
         self.validate_inputs(self.input_dict)

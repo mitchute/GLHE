@@ -63,13 +63,14 @@ class Static(BaseAgg):
             # store whatever rolls off of the sub-hourly method
 
             # need to think about this
+            # TODO: If this is returning early, what about the prev_update_time assignments below?
             self.energy[-1] += e_1
             return
         else:
             # aggregate
             # TODO: The next two lines are showing as unused in Pycharm, is this IF block needed then?
             # dts_flip = np.flipud(self.dts)
-            # vals, idxs, cnts = np.unique(dts_flip, return_counts=True, return_index=True)
+            # vals, indexes, counts = np.unique(dts_flip, return_counts=True, return_index=True)
             self.energy[-1] += e_1
 
             # numpy split will do a lot of work too

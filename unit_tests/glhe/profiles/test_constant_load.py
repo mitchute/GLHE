@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -16,8 +16,8 @@ class TestConstantLoad(unittest.TestCase):
         d = {'fluid': {'fluid-type': 'water'},
              'load-profile': [{'load-profile-type': 'constant', 'name': 'my name', 'value': 4000}]}
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
 
         write_json(temp_file, d)
 

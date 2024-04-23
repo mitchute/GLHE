@@ -48,6 +48,7 @@ class NoAgg(BaseAgg):
             # convolution for "g" g-functions only
             return float(np.dot(dq, g))
 
+    # TODO: Should these abstract methods be populated to do anything? If not, should they actually be abstract methods?
     def get_g_value(self, time_step: int) -> float:
         pass  # pragma: no cover
 

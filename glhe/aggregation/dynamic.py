@@ -23,16 +23,14 @@ class Dynamic(BaseAgg):
         self.sub_hr = SubHour(inputs)
 
         # set expansion rate. apply default if needed.
-        try:
+        self.exp_rate = 1.62
+        if 'expansion-rate' in inputs:
             self.exp_rate = inputs['expansion-rate']
-        except KeyError:  # pragma: no cover
-            self.exp_rate = 1.62  # pragma: no cover
 
         # set the number of bins per level. apply default if needed.
-        try:
+        self.bins_per_level = 9
+        if 'number-bins-per-level' in inputs:
             self.bins_per_level = inputs['number-bins-per-level']
-        except KeyError:  # pragma: no cover
-            self.bins_per_level = 9  # pragma: no cover
 
         # total simulation runtime to make available for method
         run_time = inputs['runtime']
@@ -47,17 +45,13 @@ class Dynamic(BaseAgg):
         t = SEC_IN_HOUR
 
         # initialize the dynamic method
-        initialized = False
-        while not initialized:
+        while True:
             for _ in range(self.bins_per_level):
                 t += dt
                 self.energy = np.insert(self.energy, 0, 0)
                 self.dts = np.insert(self.dts, 0, dt)
-
                 if t >= run_time:
-                    initialized = True
-                    break
-
+                    return
             dt *= self.exp_rate
 
     def aggregate(self, time: int, energy: float):
@@ -111,7 +105,8 @@ class Dynamic(BaseAgg):
             if not flow_rate:
                 g_b = self.interp_g_b.interpolate(lntts)
             else:
-                g_b = np.flipud(self.interp_g_b(lntts, flow_rate))
+                # TODO: This is not covered by tests, and may need adjusting the interpolator class to work properly
+                g_b = np.flipud(self.interp_g_b.interpolate(lntts, flow_rate))
             return float(np.dot(dq, g)), float(np.dot(dq, g_b))
         else:
             # convolution for "g" g-functions only
@@ -119,14 +114,11 @@ class Dynamic(BaseAgg):
 
     def get_g_value(self, time_step: int) -> float:
         lntts = np.log(time_step / self.ts)
-        return float(self.interp_g.interpolate(lntts))
+        return self.interp_g.interpolate(lntts)
 
     def get_g_b_value(self, time_step: int, flow_rate: float = None) -> float:
         lntts = np.log(time_step / self.ts)
-        if not flow_rate:
-            return float(self.interp_g_b.interpolate(lntts))
-        else:
-            return float(self.interp_g_b.interpolate(lntts, flow_rate))
+        return self.interp_g_b.interpolate(lntts, flow_rate)
 
     def get_q_prev(self) -> float:
         return float(self.sub_hr.energy[-1] / self.sub_hr.dts[-1])

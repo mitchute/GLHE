@@ -1,4 +1,4 @@
-import os
+from pathlib import Path as PythonPath
 import tempfile
 import unittest
 
@@ -7,14 +7,11 @@ from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.path import Path
 from glhe.utilities.functions import write_json
 
-join = os.path.join
-norm = os.path.normpath
-
 
 class TestPath(unittest.TestCase):
 
     def setUp(self):
-        self.this_file_directory = os.path.dirname(os.path.realpath(__file__))
+        self.this_file_directory = PythonPath(__file__).parent
 
     @staticmethod
     def add_instance():
@@ -100,8 +97,8 @@ class TestPath(unittest.TestCase):
             }
         }
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = norm(join(temp_dir, 'temp.json'))
+        temp_dir = PythonPath(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, d)
         ip = InputProcessor(temp_file)
         op = OutputProcessor(temp_dir, 'out.csv')

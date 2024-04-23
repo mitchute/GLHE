@@ -7,11 +7,11 @@ class BaseGroundTemp(ABC):
     """
 
     @abstractmethod
-    def get_temp(self, time: int, depth: float):
+    def get_temp(self, time: int, depth: float) -> float:
         """
          Getter method for ground temperatures
 
-        :param time: time for ground temperature [s]
+        :param time: time for ground temperature [s]  # TODO: Should we use float instead of int for time?
         :param depth: depth for ground temperature [m]
         :return: ground temperature [C]
         """

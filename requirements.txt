@@ -1,14 +1,29 @@
+# Core library dependencies
 CoolProp
-coverage
-coveralls
 jsonschema
-matplotlib
 numpy
-pandas
 pygfunction
 scipy
+
+###### AFTER THIS LINE ARE OPTIONAL DEVELOPER DEPENDENCIES ######
+######### KEEP THE LINE SAYING "OPTIONAL" IN PLACE HERE #########
+######### IT IS USED BY SETUP.PY WHEN BUILDING PACKAGES #########
+
+# OPTIONAL #
+
+# Dependencies needed to build wheels for PyPi
+wheel
+
+# Dependencies for building documentation (for RTD)
 Sphinx
+sphinx-rtd-theme
+
+# Dependencies needed to assist in running linting, unit tests and coverage
 pytest
 flake8
-wheel
-sphinx-rtd-theme
+coverage
+coveralls
+pandas
+
+# Dependencies needed for running the extra validation studies and such
+matplotlib

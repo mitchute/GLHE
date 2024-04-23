@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -13,18 +13,22 @@ class TestExternalTemps(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        temp_dir = tempfile.mkdtemp()
-        temp_data = os.path.join(temp_dir, 'temp_data.csv')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_data = temp_dir / 'temp_data.csv'
 
-        with open(temp_data, 'w') as f:
+        with temp_data.open('w') as f:
             f.write('Date/Time, Meas. Total Power [W], mdot [kg/s], temperature[C]\n'
                     '2018-01-01 00:00:00, 1, 1, 1\n'
                     '2018-01-01 01:00:00, 2, 2, 2\n'
                     '2018-01-01 02:00:00, 3, 3, 3\n'
                     '2018-01-01 03:00:00, 4, 4, 4\n')
 
-        d = {'temperature-profile': [{'temperature-profile-type': 'external', 'name': 'my name', 'path': temp_data}]}
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        d = {
+            'temperature-profile': [
+                {'temperature-profile-type': 'external', 'name': 'my name', 'path': str(temp_data)}
+            ]
+        }
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)

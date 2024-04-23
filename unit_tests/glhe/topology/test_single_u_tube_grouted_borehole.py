@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import sys
 import tempfile
 import unittest
@@ -58,8 +58,8 @@ class TestSingleUTubeGroutedBorehole(unittest.TestCase):
                 'specific-heat': 1000}]
         }
 
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)

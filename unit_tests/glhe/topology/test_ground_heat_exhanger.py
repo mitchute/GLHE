@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import tempfile
 import unittest
 
@@ -12,7 +12,7 @@ class TestGroundHeatExchanger(unittest.TestCase):
 
     @staticmethod
     def add_instance():
-        f_path = os.path.dirname(os.path.abspath(__file__))
+        f_path = Path(__file__).parent
         d = {
             "borehole-definitions": [
                 {
@@ -70,8 +70,8 @@ class TestGroundHeatExchanger(unittest.TestCase):
                 {
                     "name": "GHE 1",
                     "simulation-mode": "enhanced",
-                    "g-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_LTS', 'g.csv'),
-                    "g_b-function-path": os.path.join(f_path, '..', '..', '..', 'validation', 'MFRTRT_LTS', 'g_b.csv'),
+                    "g-function-path": str(f_path.parent.parent.parent / 'validation' / 'MFRTRT_LTS' / 'g.csv'),
+                    "g_b-function-path": str(f_path.parent.parent.parent / 'validation' / 'MFRTRT_LTS' / 'g_b.csv'),
                     "flow-paths": [
                         {
                             "name": "path 1",
@@ -131,8 +131,8 @@ class TestGroundHeatExchanger(unittest.TestCase):
                 "specific-heat": 880
             }
         }
-        temp_dir = tempfile.mkdtemp()
-        temp_file = os.path.join(temp_dir, 'temp.json')
+        temp_dir = Path(tempfile.mkdtemp())
+        temp_file = temp_dir / 'temp.json'
         write_json(temp_file, d)
 
         ip = InputProcessor(temp_file)
