@@ -93,7 +93,7 @@ class PlantLoop:
                 f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
         else:
             print('Simulation FAILED!')
-            with txt_file.open( 'w+') as f:
+            with txt_file.open('w+') as f:
                 f.write('Simulation FAILED!\n')
 
         return status

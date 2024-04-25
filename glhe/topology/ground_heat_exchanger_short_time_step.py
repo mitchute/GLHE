@@ -1,4 +1,3 @@
-import os
 from math import log, pi
 
 import numpy as np
