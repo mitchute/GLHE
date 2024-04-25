@@ -63,8 +63,8 @@ class Path(SimulationEntryPoint):
         for comp in self.components:
             d = merge_dicts(d, comp.report_outputs())
 
-        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature}
+        d_self = {f"{self.Type}:{self.name}:{ReportTypes.FlowRate}": self.flow_rate,
+                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature}
 
         return merge_dicts(d, d_self)

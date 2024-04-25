@@ -21,7 +21,7 @@ class ExternalBase(object):
         last_timestamp = None
 
         # Open CSV file and read data
-        with open(file_path, 'r') as csvfile:
+        with file_path.open('r') as csvfile:
             csvreader = csv.reader(csvfile)
             next(csvreader)  # Read header
 

@@ -86,13 +86,14 @@ class PlantLoop:
 
         self.op.write_to_file()
 
+        txt_file = self.op.output_dir / (self.op.output_file[:-4] + 'txt')
         if status:
             print('Simulation time: {}'.format(dt.datetime.now() - self.start_time))
-            with open('{}.txt'.format(self.op.output_dir / self.op.output_file[:-4]), 'w+') as f:
+            with txt_file.open('w+') as f:
                 f.write('Simulation time: {}\n'.format(dt.datetime.now() - self.start_time))
         else:
             print('Simulation FAILED!')
-            with open('{}.txt'.format(self.op.output_dir / self.op.output_file[:-4]), 'w+') as f:
+            with txt_file.open( 'w+') as f:
                 f.write('Simulation FAILED!\n')
 
         return status

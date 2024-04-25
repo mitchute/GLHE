@@ -141,13 +141,11 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
 
     def report_outputs(self) -> dict:
-        d = {}
-        d = merge_dicts(d, self.ave_bh.report_outputs())
-        d_self = {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): self.heat_rate,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHWallTemp): self.bh_wall_temperature,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHResist): self.resist_b,
-                  '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.BHEffResist): self.resist_b_eff}
-
+        d = self.ave_bh.report_outputs()
+        d_self = {f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": self.heat_rate,
+                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHWallTemp}": self.bh_wall_temperature,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHResist}": self.resist_b,
+                  f"{self.Type}:{self.name}:{ReportTypes.BHEffResist}": self.resist_b_eff}
         return merge_dicts(d, d_self)

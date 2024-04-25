@@ -37,10 +37,7 @@ class SyntheticBase(object):
     def q_1(self, t):
         term_1 = self._a * np.sin(np.pi * (t - self._b) / 12)
         term_2 = np.sin(self._f * np.pi * (t - self._b) / 8760)
-
-        result = term_1 * term_2
-
-        return result
+        return term_1 * term_2
 
     def q_2(self, t):
         term_1 = (168 - self._c) / 168
@@ -48,23 +45,14 @@ class SyntheticBase(object):
         for i in range(1, 4):
             term_2 += (np.cos(i * np.pi * self._c / 84) - 1) * \
                       (np.sin(i * np.pi * (t - self._b) / 84)) / (i * np.pi)
-
-        result = term_1 + term_2
-
-        return result
+        return term_1 + term_2
 
     def floor(self, t):
-        result = np.floor(self._f * (t - self._b) / 8760)
-
-        return result
+        return np.floor(self._f * (t - self._b) / 8760)
 
     def signum(self, t):
         term_1 = np.cos(self._f * np.pi * (t - self._g) / 4380) + self._e
-
-        if term_1 >= 0:
-            return 1
-        else:
-            return -1
+        return 1 if term_1 >= 0 else -1
 
     def get_value(self, time):
         q_1 = self.q_1(time)
@@ -124,5 +112,5 @@ class SyntheticLoad(SyntheticBase, SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): float(self.load)}
+        return {f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": float(self.outlet_temp),
+                f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": float(self.load)}

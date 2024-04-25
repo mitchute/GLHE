@@ -100,10 +100,10 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
 
         Skoglund, T, and P. Dejmek. 2007. 'A dynamic object-oriented model for efficient
         simulation of fluid dispersion in turbulent flow with varying fluid properties.'
-        Chem. Eng. Sci.. 62: 2168-2178.
+        Chem. Eng. Sci. 62: 2168-2178.
 
-        Bischoff, K.B., and O. Levenspiel. 1962. 'Fluid dispersion--generalization and comparision
-        of mathematical models--II; Comparison of models.' Chem. Eng. Sci.. 17: 257-264.
+        Bischoff, K.B., and O. Levenspiel. 1962. 'Fluid dispersion--generalization and comparison
+        of mathematical models--II; Comparison of models.' Chem. Eng. Sci. 17: 257-264.
 
         :param inputs: inlet conditions
         :return: outlet conditions
@@ -226,9 +226,9 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.inlet_temps_times.append(time)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.PipeResist): self.resist_pipe,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ReynoldsNo): self.re}
+        return {f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
+                f"{self.Type}:{self.name}:{ReportTypes.PipeResist}": self.resist_pipe,
+                f"{self.Type}:{self.name}:{ReportTypes.ReynoldsNo}": self.re}
 
     def m_dot_to_re(self, flow_rate, temp) -> float:
         """
@@ -274,7 +274,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         Javed, S. and Spitler, J.D. 2017. 'Accuracy of borehole thermal resistance calculation methods
         for grouted single U-tube ground heat exchangers.' Applied Energy. 187: 790-806.
 
-        :return conduction resistance, K/(W/m)
+        :return: conduction resistance, K/(W/m)
         """
 
         return log(self.outer_diameter / self.inner_diameter) / (2 * pi * self.conductivity)

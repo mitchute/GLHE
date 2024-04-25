@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 
 from glhe.input_processor.component_types import ComponentTypes
@@ -40,9 +42,10 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         self.imm_htr_capacity = inputs['immersion-heater-capacity']
         self.c_capacity = np.array(inputs['capacity-coefficients'])
         self.c_cop = np.array(inputs['coefficient-of-performance-coefficients'])
-        self.htg_loads = ExternalBase(inputs['load-data-path'], 0)
-        self.wtr_htg_loads = ExternalBase(inputs['load-data-path'], 1)
-        self.oda_temps = ExternalBase(inputs['load-data-path'], 2)
+        p = Path(inputs['load-data-path'])
+        self.htg_loads = ExternalBase(p, 0)
+        self.wtr_htg_loads = ExternalBase(p, 1)
+        self.oda_temps = ExternalBase(p, 2)
         self.odt = self.oda_temps.get_value(0)
 
         # report variables
@@ -298,22 +301,22 @@ class SwedishHP(PropertiesBase, SimulationEntryPoint):
         return response
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): self.flow_rate,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.outlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateSrc): self.heat_extraction,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRateLoad): self.htg_tot,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ImmElect): self.imm_elec_tot,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgLoad): self.htg_load,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgLoad): self.wtr_htg_load,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.RTF): self.hp_rtf,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgRTF): self.htg_rtf,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgRTF): self.wtr_htg_rtf,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgElect): self.htg_elec,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgElect): self.wtr_htg_elec,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgImmElect): self.htg_imm_elec,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgImmElect): self.wtr_htg_imm_elec,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HtgUnmet): self.htg_unmet,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.WtrHtgUnmet): self.wtr_htg_unmet,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.ODT): self.odt,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.COP): self.cop}
+        return {f"{self.Type}:{self.name}:{ReportTypes.FlowRate}": self.flow_rate,
+                f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
+                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
+                f"{self.Type}:{self.name}:{ReportTypes.HeatRateSrc}": self.heat_extraction,
+                f"{self.Type}:{self.name}:{ReportTypes.HeatRateLoad}": self.htg_tot,
+                f"{self.Type}:{self.name}:{ReportTypes.ImmElect}": self.imm_elec_tot,
+                f"{self.Type}:{self.name}:{ReportTypes.HtgLoad}": self.htg_load,
+                f"{self.Type}:{self.name}:{ReportTypes.WtrHtgLoad}": self.wtr_htg_load,
+                f"{self.Type}:{self.name}:{ReportTypes.RTF}": self.hp_rtf,
+                f"{self.Type}:{self.name}:{ReportTypes.HtgRTF}": self.htg_rtf,
+                f"{self.Type}:{self.name}:{ReportTypes.WtrHtgRTF}": self.wtr_htg_rtf,
+                f"{self.Type}:{self.name}:{ReportTypes.HtgElect}": self.htg_elec,
+                f"{self.Type}:{self.name}:{ReportTypes.WtrHtgElect}": self.wtr_htg_elec,
+                f"{self.Type}:{self.name}:{ReportTypes.HtgImmElect}": self.htg_imm_elec,
+                f"{self.Type}:{self.name}:{ReportTypes.WtrHtgImmElect}": self.wtr_htg_imm_elec,
+                f"{self.Type}:{self.name}:{ReportTypes.HtgUnmet}": self.htg_unmet,
+                f"{self.Type}:{self.name}:{ReportTypes.WtrHtgUnmet}": self.wtr_htg_unmet,
+                f"{self.Type}:{self.name}:{ReportTypes.ODT}": self.odt,
+                f"{self.Type}:{self.name}:{ReportTypes.COP}": self.cop}

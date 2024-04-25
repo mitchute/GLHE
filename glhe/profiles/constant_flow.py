@@ -17,4 +17,4 @@ class ConstantFlow(SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, self.flow_rate, inputs.temperature)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.FlowRate): float(self.flow_rate)}
+        return {f"{self.Type}:{self.name}:{ReportTypes.FlowRate}": float(self.flow_rate)}
