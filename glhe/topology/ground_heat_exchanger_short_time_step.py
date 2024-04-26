@@ -1,4 +1,3 @@
-import os
 from math import log, pi
 
 import numpy as np
@@ -185,8 +184,8 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         rn_model = RadialNumericalBH(d_sts)
         lntts_sts, g_sts = rn_model.calc_sts_g_functions(final_time=min_fls_time, calculate_at_bh_wall=True)
 
-        write_arrays_to_csv(os.path.join(self.op.output_dir, 'sts.csv'), [lntts_sts, g_sts])
-        write_arrays_to_csv(os.path.join(self.op.output_dir, 'lts.csv'), [lntts_lts, g_lts])
+        write_arrays_to_csv(self.op.output_dir / 'sts.csv', [lntts_sts, g_sts])
+        write_arrays_to_csv(self.op.output_dir / 'lts.csv', [lntts_lts, g_lts])
 
         # merge the lists together
         # TODO: check if smoothing is needed between the two different g-functions
@@ -196,7 +195,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         # insert a point at a very small time so the interpolation doesn't go off the rails
         self.lntts = np.insert(self.lntts, 0, log(30 / self.ts))
         self.g = np.insert(self.g, 0, 0)
-        write_arrays_to_csv(os.path.join(self.op.output_dir, 'g.csv'), [self.lntts, self.g])
+        write_arrays_to_csv(self.op.output_dir / 'g.csv', [self.lntts, self.g])
 
     def generate_g_b(self, flow_rate=0.5):
 
@@ -254,7 +253,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
 
         self.lntts_b, self.g_b = resample_g_functions(lntts_b, g_b, lntts_interval=0.1)
 
-        write_arrays_to_csv(os.path.join(self.op.output_dir, 'g_b.csv'), [self.lntts_b, self.g_b])
+        write_arrays_to_csv(self.op.output_dir / 'g_b.csv', [self.lntts_b, self.g_b])
 
     def calc_bh_ave_length(self) -> float:
         valid_bh_types = [ComponentTypes.BoreholeSingleUTubeGrouted]
@@ -321,10 +320,7 @@ class GroundHeatExchangerSTS(SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, flow, outlet_temp)
 
     def get_heat_rate_bh(self) -> float:
-        bh_ht_rate = 0
-        for path in self.paths:
-            bh_ht_rate += path.get_heat_rate_bh()
-        return bh_ht_rate
+        return sum([p.get_heat_rate_bh() for p in self.paths])
 
     def mix_paths(self, responses: list) -> float:
         sum_mdot_cp_temp = 0

@@ -19,5 +19,5 @@ class ConstantTemp(SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.temperature)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.InletTemp): self.inlet_temperature,
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.temperature}
+        return {f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
+                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.temperature}

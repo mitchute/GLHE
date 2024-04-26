@@ -21,4 +21,4 @@ class SingleUTubePassThroughSegment(object):
         self.temperature = inputs.inlet_temp_1
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): self.temperature}
+        return {f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.temperature}

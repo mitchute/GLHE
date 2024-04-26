@@ -37,5 +37,5 @@ class SinusoidLoad(SimulationEntryPoint):
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temp)
 
     def report_outputs(self) -> dict:
-        return {'{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.OutletTemp): float(self.outlet_temp),
-                '{:s}:{:s}:{:s}'.format(self.Type, self.name, ReportTypes.HeatRate): float(self.load)}
+        return {f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": float(self.outlet_temp),
+                f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": float(self.load)}
