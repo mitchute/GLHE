@@ -7,26 +7,26 @@ from math import cos, sin
 from numpy import arange, array
 from numpy.linalg import solve as lin_alg_solve
 
-from glhe.utilities.functions import c_to_k
-from glhe.utilities.functions import hanby
-from glhe.utilities.functions import hr_to_sec
-from glhe.utilities.functions import kw_to_w
-from glhe.utilities.functions import lin_interp
-from glhe.utilities.functions import Interpolator1DFromFile
-from glhe.utilities.functions import Interpolator2DFromFile
-from glhe.utilities.functions import lower_obj
-from glhe.utilities.functions import merge_dicts
-from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
-from glhe.utilities.functions import resample_g_functions
-from glhe.utilities.functions import runge_kutta_fourth_x
-from glhe.utilities.functions import runge_kutta_fourth_xy
-from glhe.utilities.functions import runge_kutta_fourth_y
-from glhe.utilities.functions import sec_to_hr
-from glhe.utilities.functions import smoothing_function
-from glhe.utilities.functions import tdma_1
-from glhe.utilities.functions import tdma_2
-from glhe.utilities.functions import write_arrays_to_csv
-from glhe.utilities.functions import write_json
+from glhe.functions import c_to_k
+from glhe.functions import hanby
+from glhe.functions import hr_to_sec
+from glhe.functions import kw_to_w
+from glhe.functions import lin_interp
+from glhe.functions import Interpolator1DFromFile
+from glhe.functions import Interpolator2DFromFile
+from glhe.functions import lower_obj
+from glhe.functions import merge_dicts
+from glhe.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.functions import resample_g_functions
+from glhe.functions import runge_kutta_fourth_x
+from glhe.functions import runge_kutta_fourth_xy
+from glhe.functions import runge_kutta_fourth_y
+from glhe.functions import sec_to_hr
+from glhe.functions import smoothing_function
+from glhe.functions import tdma_1
+from glhe.functions import tdma_2
+from glhe.functions import write_arrays_to_csv
+from glhe.functions import write_json
 
 
 class TestFunctions(unittest.TestCase):

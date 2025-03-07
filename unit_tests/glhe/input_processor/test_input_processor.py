@@ -6,7 +6,7 @@ import unittest
 from jsonschema.exceptions import ValidationError
 
 from glhe.input_processor.input_processor import InputProcessor
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestInputProcessor(unittest.TestCase):

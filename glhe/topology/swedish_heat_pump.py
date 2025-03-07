@@ -8,8 +8,8 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
 from glhe.profiles.external_base import ExternalBase
 from glhe.properties.base_properties import PropertiesBase
-from glhe.utilities.functions import kw_to_w
-from glhe.utilities.functions import lin_interp
+from glhe.functions import kw_to_w
+from glhe.functions import lin_interp
 
 
 class SwedishHP(PropertiesBase, SimulationEntryPoint):

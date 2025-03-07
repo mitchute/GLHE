@@ -9,7 +9,7 @@ from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.borehole_factory import make_borehole
 from glhe.topology.cross_ghe import CrossGHE
-from glhe.utilities.functions import merge_dicts
+from glhe.functions import merge_dicts
 
 
 class GroundHeatExchangerLTS(SimulationEntryPoint):

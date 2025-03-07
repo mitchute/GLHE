@@ -10,7 +10,7 @@ from glhe.profiles.constant_load import ConstantLoad
 from glhe.profiles.constant_temp import ConstantTemp
 from glhe.topology.ground_heat_exchanger import GroundHeatExchanger
 from glhe.topology.pipe import Pipe
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestPLCompFactory(unittest.TestCase):

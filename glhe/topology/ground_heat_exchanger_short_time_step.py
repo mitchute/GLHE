@@ -13,10 +13,10 @@ from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.borehole_factory import make_borehole
 from glhe.topology.path import Path
 from glhe.topology.radial_numerical_borehole import RadialNumericalBH
-from glhe.utilities.constants import SEC_IN_DAY
-from glhe.utilities.functions import merge_dicts
-from glhe.utilities.functions import resample_g_functions
-from glhe.utilities.functions import write_arrays_to_csv
+from glhe.constants import SEC_IN_DAY
+from glhe.functions import merge_dicts
+from glhe.functions import resample_g_functions
+from glhe.functions import write_arrays_to_csv
 
 
 class GroundHeatExchangerSTS(SimulationEntryPoint):

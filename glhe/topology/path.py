@@ -5,7 +5,7 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.output_processor.report_types import ReportTypes
 from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
-from glhe.utilities.functions import merge_dicts
+from glhe.functions import merge_dicts
 
 
 class Path(SimulationEntryPoint):

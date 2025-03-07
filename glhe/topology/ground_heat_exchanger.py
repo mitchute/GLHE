@@ -5,7 +5,7 @@ from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.ground_heat_exchanger_long_time_step import GroundHeatExchangerLTS
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
-from glhe.utilities.functions import merge_dicts
+from glhe.functions import merge_dicts
 
 
 class GroundHeatExchanger(SimulationEntryPoint):

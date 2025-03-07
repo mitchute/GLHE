@@ -6,7 +6,7 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.profiles.constant_flow import ConstantFlow
 from glhe.profiles.external_flow import ExternalFlow
 from glhe.profiles.flow_factory import make_flow_profile
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestFlowFactory(unittest.TestCase):

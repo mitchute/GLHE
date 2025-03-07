@@ -5,7 +5,7 @@ import unittest
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.profiles.constant_flow import ConstantFlow
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestConstantFlow(unittest.TestCase):

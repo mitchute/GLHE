@@ -8,7 +8,7 @@ from glhe.properties.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment, TimeStepStructure
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
-from glhe.utilities.functions import merge_dicts
+from glhe.functions import merge_dicts
 
 
 class Location:

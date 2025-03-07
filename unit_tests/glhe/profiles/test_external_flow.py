@@ -5,7 +5,7 @@ import unittest
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.profiles.external_flow import ExternalFlow
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestExternalFlow(unittest.TestCase):

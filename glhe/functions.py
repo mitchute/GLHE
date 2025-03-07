@@ -11,7 +11,7 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 from scipy.interpolate import interp1d
 
-from glhe.utilities.constants import SEC_IN_HOUR
+from glhe.constants import SEC_IN_HOUR
 
 
 def smoothing_function(x: float, a: float, b: float) -> float:

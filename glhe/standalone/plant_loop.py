@@ -11,8 +11,8 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.input_processor.plant_loop_component_factory import make_plant_loop_component
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
-from glhe.utilities.functions import merge_dicts
-from glhe.utilities.functions import num_ts_per_hour_to_sec_per_ts
+from glhe.functions import merge_dicts
+from glhe.functions import num_ts_per_hour_to_sec_per_ts
 
 
 class PlantLoop:

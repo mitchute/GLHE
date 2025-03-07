@@ -5,7 +5,7 @@ import unittest
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.ground_heat_exchanger_short_time_step import GroundHeatExchangerSTS
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestGroundHeatExchangerShortTimeStep(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 
-import glhe.utilities.constants as c
+import glhe.constants as c
 
 
 class TestConstants(unittest.TestCase):

@@ -9,7 +9,7 @@ from glhe.profiles.load_factory import make_load_profile
 from glhe.profiles.pulse_load import PulseLoad
 from glhe.profiles.sinusoid_load import SinusoidLoad
 from glhe.profiles.synthetic_load import SyntheticLoad
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestLoadFactory(unittest.TestCase):

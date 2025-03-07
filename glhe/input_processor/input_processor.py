@@ -7,7 +7,7 @@ from jsonschema import SchemaError, ValidationError, validate
 from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.properties.fluid_factory import get_fluid
 from glhe.properties.base_properties import PropertiesBase
-from glhe.utilities.functions import load_json, lower_obj
+from glhe.functions import load_json, lower_obj
 
 
 class InputProcessor:

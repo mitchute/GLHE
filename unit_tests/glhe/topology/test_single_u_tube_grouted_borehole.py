@@ -7,7 +7,7 @@ from glhe.input_processor.input_processor import InputProcessor
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 
 
 class TestSingleUTubeGroutedBorehole(unittest.TestCase):

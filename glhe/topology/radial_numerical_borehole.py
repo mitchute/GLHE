@@ -3,8 +3,8 @@ from math import pi
 
 import numpy as np
 
-from glhe.utilities.constants import SEC_IN_DAY
-from glhe.utilities.functions import tdma_2
+from glhe.constants import SEC_IN_DAY
+from glhe.functions import tdma_2
 
 
 class RadialCellType:

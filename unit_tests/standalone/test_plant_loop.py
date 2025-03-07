@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from glhe.utilities.functions import write_json
+from glhe.functions import write_json
 from glhe.standalone.plant_loop import PlantLoop
 
 

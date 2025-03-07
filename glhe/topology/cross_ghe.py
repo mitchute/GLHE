@@ -2,7 +2,7 @@ from glhe.aggregation.dynamic import Dynamic
 from glhe.input_processor.input_processor import InputProcessor
 from glhe.output_processor.output_processor import OutputProcessor
 from glhe.profiles.external_base import ExternalBase
-from glhe.utilities.functions import merge_dicts
+from glhe.functions import merge_dicts
 
 
 class CrossGHE:

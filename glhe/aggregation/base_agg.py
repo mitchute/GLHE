@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 
-from glhe.utilities.functions import InterpolatorBase, Interpolator1D, Interpolator1DFromFile, Interpolator2DFromFile
+from glhe.functions import InterpolatorBase, Interpolator1D, Interpolator1DFromFile, Interpolator2DFromFile
 
 
 class BaseAgg(ABC):
