@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import numpy as np
 
-from glhe.aggregation.agg_types import AggregationTypes
 from glhe.aggregation.base_agg import BaseAgg
 from glhe.aggregation.sub_hourly import SubHour
 from glhe.utilities.constants import SEC_IN_HOUR
@@ -15,8 +14,6 @@ class Dynamic(BaseAgg):
     Claesson, J. and Javed, S. 2011. 'A load-aggregation method to calculate extraction temperatures
     of borehole heat exchangers.' ASHRAE Winter Conference, Chicago, IL. Jan. 21-25, 2012.
     """
-
-    Type = AggregationTypes.DYNAMIC
 
     def __init__(self, inputs: dict):
         BaseAgg.__init__(self, inputs)
