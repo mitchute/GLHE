@@ -4,7 +4,7 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
-from glhe.properties.base_properties import PropertiesBase
+from glhe.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment, TimeStepStructure
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment

@@ -7,7 +7,7 @@ from glhe.input_processor.component_types import ComponentTypes
 from glhe.interface.entry import SimulationEntryPoint
 from glhe.interface.response import SimulationResponse
 from glhe.output_processor.report_types import ReportTypes
-from glhe.properties.base_properties import PropertiesBase
+from glhe.base_properties import PropertiesBase
 from glhe.functions import lin_interp
 from glhe.functions import smoothing_function
 from glhe.functions import tdma_1

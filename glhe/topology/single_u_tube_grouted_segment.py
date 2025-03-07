@@ -6,7 +6,7 @@ from scipy.integrate import RK45
 
 from glhe.input_processor.component_types import ComponentTypes
 from glhe.output_processor.report_types import ReportTypes
-from glhe.properties.base_properties import PropertiesBase
+from glhe.base_properties import PropertiesBase
 from glhe.topology.pipe import Pipe
 # from glhe.utilities.functions import runge_kutta_fourth_y
 

@@ -3,10 +3,11 @@ import os
 from pathlib import Path
 
 from jsonschema import SchemaError, ValidationError, validate
+from scp.water import Water
 
 from glhe.ground_temps.ground_temp_factory import make_ground_temp_model
 from glhe.properties.fluid_factory import get_fluid
-from glhe.properties.base_properties import PropertiesBase
+from glhe.base_properties import PropertiesBase
 from glhe.functions import load_json, lower_obj
 
 
@@ -33,7 +34,7 @@ class InputProcessor:
 
         # load properties for later use
         try:
-            self.fluid = get_fluid(self.input_dict['fluid'])
+            self.fluid = Water()
         except KeyError:
             pass
 
