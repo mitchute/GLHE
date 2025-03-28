@@ -1,14 +1,11 @@
 from math import log, pi
 
-from glhe.input_processor.component_types import ComponentTypes
-from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import SimulationResponse
-from glhe.output_processor.report_types import ReportTypes
-from glhe.base_properties import PropertiesBase
+from glhe.functions import get_definition_object, init_temp
+from glhe.simulation import SimulationEntryPoint, SimulationResponse
+from glhe.properties import PropertiesBase, fluid, soil
 from glhe.topology.pipe import Pipe
 from glhe.topology.single_u_tube_grouted_segment import SingleUTubeGroutedSegment, TimeStepStructure
 from glhe.topology.single_u_tube_pass_through_segment import SingleUTubePassThroughSegment
-from glhe.functions import merge_dicts
 
 
 class Location:
@@ -19,26 +16,26 @@ class Location:
 
 
 class SingleUTubeGroutedBorehole(SimulationEntryPoint):
-    Type = ComponentTypes.BoreholeSingleUTubeGrouted
 
-    def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs)
-        self.ip = ip
-        self.op = op
-
-        self.fluid = ip.fluid
-        self.soil = ip.soil
+    def __init__(self, all_inputs, ghe_inputs):
+        SimulationEntryPoint.__init__(self, all_inputs)
 
         # get borehole definition data
-        if 'average-borehole' in inputs:
+        if 'average-borehole' in ghe_inputs:
             bh_inputs = {'location': {'x': 0, 'y': 0, 'z': 0}}
-            bh_def_inputs = {'length': inputs['average-borehole']['length'],
-                             'diameter': inputs['average-borehole']['diameter'],
-                             'shank-spacing': inputs['average-borehole']['shank-spacing'],
+            bh_def_inputs = {'length': ghe_inputs['average-borehole']['length'],
+                             'diameter': ghe_inputs['average-borehole']['diameter'],
+                             'shank-spacing': ghe_inputs['average-borehole']['shank-spacing'],
                              'segments': 1}
+            grout_inputs = {'name': "Grout",
+                            'conductivity': ghe_inputs['average-borehole']['grout-conductivity'],
+                            'density': ghe_inputs['average-borehole']['grout-density'],
+                            'specific-heat': ghe_inputs['average-borehole']['grout-specific-heat']}
         else:
-            bh_inputs = ip.get_definition_object('borehole', inputs['name'])
-            bh_def_inputs = ip.get_definition_object('borehole-definitions', bh_inputs['borehole-def-name'])
+            bh_name = "bh 1"  # TODO: Get this programmatically
+            bh_inputs = get_definition_object(all_inputs, 'borehole', bh_name)
+            bh_def_inputs = get_definition_object(all_inputs, 'borehole-definitions', bh_inputs['borehole-def-name'])
+            grout_inputs = get_definition_object(all_inputs, 'grout-definitions', bh_def_inputs['grout-def-name'])
 
         # init geometry
         self.h = bh_def_inputs['length']
@@ -48,35 +45,26 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
 
         # bh location
         self.location = Location(bh_inputs['location']['x'], bh_inputs['location']['y'], bh_inputs['location']['z'])
-
-        # init grout
-        if 'average-borehole' in inputs:
-            grout_inputs = {'conductivity': inputs['average-borehole']['grout-conductivity'],
-                            'density': inputs['average-borehole']['grout-density'],
-                            'specific-heat': inputs['average-borehole']['grout-specific-heat']}
-        else:
-            grout_inputs = ip.get_definition_object('grout-definitions', bh_def_inputs['grout-def-name'])
-
         self.grout = PropertiesBase(grout_inputs)
 
         # init pipes
         self.num_pipes = 2
-        if 'average-borehole' in inputs:
-            pipe_inputs = {'average-pipe': {'inner-diameter': inputs['average-borehole']['pipe-inner-diameter'],
-                                            'outer-diameter': inputs['average-borehole']['pipe-outer-diameter'],
-                                            'conductivity': inputs['average-borehole']['pipe-conductivity'],
-                                            'density': inputs['average-borehole']['pipe-density'],
-                                            'specific-heat': inputs['average-borehole']['pipe-specific-heat']},
-                           'length': inputs['average-borehole']['length']}
+        if 'average-borehole' in ghe_inputs:
+            pipe_inputs = {'average-pipe': {'inner-diameter': ghe_inputs['average-borehole']['pipe-inner-diameter'],
+                                            'outer-diameter': ghe_inputs['average-borehole']['pipe-outer-diameter'],
+                                            'conductivity': ghe_inputs['average-borehole']['pipe-conductivity'],
+                                            'density': ghe_inputs['average-borehole']['pipe-density'],
+                                            'specific-heat': ghe_inputs['average-borehole']['pipe-specific-heat']},
+                           'length': ghe_inputs['average-borehole']['length']}
         else:
             pipe_inputs = {'pipe-def-name': bh_def_inputs['pipe-def-name'], 'length': self.h}
 
         pipe_inputs['length'] = pipe_inputs['length']
 
-        pipe_inputs['name'] = '{}: Pipe 1'.format(inputs['name'])
-        self.pipe_1 = Pipe(pipe_inputs, ip, op)
-        pipe_inputs['name'] = '{}: Pipe 2'.format(inputs['name'])
-        self.pipe_2 = Pipe(pipe_inputs, ip, op)
+        pipe_inputs['name'] = '{}: Pipe 1'.format(ghe_inputs['name'])
+        self.pipe_1 = Pipe(all_inputs, pipe_inputs)
+        pipe_inputs['name'] = '{}: Pipe 2'.format(ghe_inputs['name'])
+        self.pipe_2 = Pipe(all_inputs, pipe_inputs)
         self.pipe_2.apply_transit_delay = False
 
         if 'number-iterations' in bh_def_inputs:
@@ -92,16 +80,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         else:
             self.num_segments = 1
         seg_length = self.h / self.num_segments
-        if 'average-borehole' in inputs:
+        if 'average-borehole' in ghe_inputs:
             seg_inputs = {'length': seg_length,
                           'diameter': self.diameter,
-                          'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
+                          'segment-name': 'BH:{}:Seg:0'.format(ghe_inputs['name']),
                           'average-grout': grout_inputs,
                           'average-pipe': pipe_inputs['average-pipe']}
         else:
             seg_inputs = {'length': seg_length,
                           'diameter': self.diameter,
-                          'segment-name': 'BH:{}:Seg:0'.format(inputs['name']),
+                          'segment-name': 'BH:{}:Seg:0'.format(ghe_inputs['name']),
                           'grout-def-name': bh_def_inputs['grout-def-name'],
                           'pipe-def-name': bh_def_inputs['pipe-def-name']}
 
@@ -111,14 +99,14 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             seg_inputs['grout-fraction'] = 0.5
 
         for idx in range(self.num_segments):
-            seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], idx + 1)
-            self.segments.append(SingleUTubeGroutedSegment(seg_inputs, ip, op))
+            seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(ghe_inputs['name'], idx + 1)
+            self.segments.append(SingleUTubeGroutedSegment(all_inputs, seg_inputs))
 
         # final segment is a pass-through segment that connects the U-tube nodes
-        seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(inputs['name'], self.num_segments + 1)
-        self.segments.append(SingleUTubePassThroughSegment(seg_inputs, ip, op))
+        seg_inputs['segment-name'] = 'BH:{}:Seg:{}'.format(ghe_inputs['name'], self.num_segments + 1)
+        self.segments.append(SingleUTubePassThroughSegment())
 
-        # multipole method parameters
+        # multi-pole method parameters
         self.resist_bh_ave = None
         self.resist_bh_total_internal = None
         self.resist_bh_grout = None
@@ -127,16 +115,16 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.theta_1 = self.shank_space / (2 * self.radius)
         self.theta_2 = self.radius / self.pipe_1.outer_radius
         self.theta_3 = 1 / (2 * self.theta_1 * self.theta_2)
-        sigma_num = self.grout.conductivity - self.soil.conductivity
-        sigma_den = self.grout.conductivity + self.soil.conductivity
+        sigma_num = self.grout.conductivity - soil.conductivity
+        sigma_den = self.grout.conductivity + soil.conductivity
         self.sigma = sigma_num / sigma_den
         self.beta = None
 
         # report variables
         self.heat_rate = 0
         self.heat_rate_bh = 0
-        self.inlet_temperature = ip.init_temp()
-        self.outlet_temperature = ip.init_temp()
+        self.inlet_temperature = init_temp()
+        self.outlet_temperature = init_temp()
 
     def calc_bh_average_resistance(self, temperature: float,
                                    flow_rate: float = None,
@@ -247,7 +235,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         self.calc_bh_average_resistance(temperature, flow_rate, pipe_resist)
 
         pt_1 = 1 / (3 * self.resist_bh_total_internal)
-        pt_2 = (self.h / (self.fluid.cp(temperature) * flow_rate)) ** 2
+        pt_2 = (self.h / (fluid.cp(temperature) * flow_rate)) ** 2
         resist_short_circuiting = pt_1 * pt_2
 
         self.resist_bh_effective = self.resist_bh_ave + resist_short_circuiting
@@ -337,7 +325,7 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
         # update report variables
         self.inlet_temperature = inlet_temp
         self.outlet_temperature = self.pipe_2.outlet_temperature
-        cp = self.fluid.cp(inlet_temp)
+        cp = fluid.cp(inlet_temp)
         self.heat_rate = flow_rate * cp * (inlet_temp - self.outlet_temperature)
         self.heat_rate_bh = self.get_heat_rate_bh()
 
@@ -352,20 +340,3 @@ class SingleUTubeGroutedBorehole(SimulationEntryPoint):
             if hasattr(seg, 'heat_rate_bh'):
                 bh_ht_rate += seg.heat_rate_bh
         return bh_ht_rate
-
-    def report_outputs(self) -> dict:
-        d = {}
-        for seg in self.segments:
-            d = merge_dicts(d, seg.report_outputs())
-
-        d = merge_dicts(d, self.pipe_1.report_outputs())
-
-        d_self = {f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": self.heat_rate,
-                  f"{self.Type}:{self.name}:{ReportTypes.HeatRateBH}": self.heat_rate_bh,
-                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHResist}": self.resist_bh_ave,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHIntResist}": self.resist_bh_total_internal,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHDCResist}": self.resist_bh_direct_coupling}
-
-        return merge_dicts(d, d_self)

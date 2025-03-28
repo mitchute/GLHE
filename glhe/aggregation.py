@@ -11,7 +11,8 @@ class BaseAgg:
     def __init__(self, inputs: dict):
         # g-function values
         if 'g-function-path' in inputs:
-            p = Path(inputs['g-function-path'])
+            # TODO: Get from inputs p = Path(inputs['g-function-path'])
+            p = Path('/home/edwin/Projects/GLHE/validation/MFRTRT_EWT_g_functions/EWT_experimental_g_functions.csv')
             if not p.is_absolute():
                 p = Path.cwd() / inputs['g-function-path']
             self.interp_g = Interpolator1DFromFile(p)
@@ -23,6 +24,7 @@ class BaseAgg:
 
         # g_b-function values
         self.interp_g_b = None
+        inputs['g_b-function-path'] = '/home/edwin/Projects/GLHE/validation/MFRTRT_LTS/g_b.csv'
         if 'g_b-function-path' in inputs:
             p = Path(inputs['g_b-function-path'])
             if not p.is_absolute():
@@ -140,7 +142,7 @@ class Dynamic(BaseAgg):
             self.bins_per_level = inputs['number-bins-per-level']
 
         # total simulation runtime to make available for method
-        run_time = inputs['runtime']
+        run_time = 14400  # TODO: Get from inputs inputs['runtime']
 
         # time step for method
         # starts at 1 hr steps

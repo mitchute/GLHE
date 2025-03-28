@@ -14,6 +14,23 @@ from scipy.interpolate import interp1d
 from glhe.constants import SEC_IN_HOUR
 
 
+def init_temp():
+    """
+    Initial temperature for all temperature variables. Valid at t=0.
+
+    :return: Initial temperature
+    """
+    return 20  # TODO: Use something from inputs
+
+
+def get_definition_object(inputs: dict, obj_type_to_find: str, obj_name: str):
+    for obj_type in inputs:
+        if obj_type_to_find == obj_type:
+            for obj in inputs[obj_type_to_find]:
+                if obj['name'] == obj_name:
+                    return obj
+
+
 def smoothing_function(x: float, a: float, b: float) -> float:
     """
     Sigmoid smoothing function

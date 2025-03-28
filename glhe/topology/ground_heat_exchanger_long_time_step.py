@@ -1,70 +1,58 @@
 from math import pi
 
-from glhe.aggregation.agg_factory import make_agg_method
-from glhe.input_processor.component_types import ComponentTypes
-from glhe.input_processor.input_processor import InputProcessor
-from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
-from glhe.output_processor.report_types import ReportTypes
-from glhe.topology.borehole_factory import make_borehole
-from glhe.topology.cross_ghe import CrossGHE
-from glhe.functions import merge_dicts
+from glhe.aggregation import Dynamic
+from glhe.simulation import SimulationEntryPoint, SimulationResponse
+from glhe.functions import merge_dicts, init_temp
+from glhe.properties import fluid, soil
+from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
 
 
 class GroundHeatExchangerLTS(SimulationEntryPoint):
-    Type = ComponentTypes.GroundHeatExchangerLTS
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        SimulationEntryPoint.__init__(self, inputs)
-        self.ip = ip
-        self.op = op
-
-        # props instances
-        self.fluid = ip.fluid
-        self.soil = ip.soil
+    def __init__(self, all_inputs: dict, ghe_inputs: dict):
+        SimulationEntryPoint.__init__(self, ghe_inputs)
 
         # geometry and other config parameters needed externally
-        self.h = inputs['length']
-        self.num_bh = inputs['number-boreholes']
-        self.num_paths = len(inputs['flow-paths'])
+        self.h = ghe_inputs['length']
+        self.num_bh = ghe_inputs['number-boreholes']
+        self.num_paths = len(ghe_inputs['flow-paths'])
 
         # load aggregation method
-        ts = self.h ** 2 / (9 * self.soil.diffusivity)
-        la_inputs = merge_dicts(inputs['load-aggregation'], {'g-function-path': inputs['g-function-path'],
-                                                             'g_b-function-path': inputs['g_b-function-path'],
+        ts = self.h ** 2 / (9 * soil.diffusivity)
+        la_inputs = merge_dicts(ghe_inputs['load-aggregation'], {'g-function-path': ghe_inputs['g-function-path'],
+                                                             # TODO: Need this? 'g_b-function-path': ghe_inputs['g_b-function-path'],
                                                              'time-scale': ts})
 
-        if 'g_b-flow-rates' in inputs:
-            la_inputs['g_b-flow-rates'] = inputs['g_b-flow-rates']
-        self.load_agg = make_agg_method(la_inputs, ip)
+        if 'g_b-flow-rates' in ghe_inputs:
+            la_inputs['g_b-flow-rates'] = ghe_inputs['g_b-flow-rates']
+        self.load_agg = Dynamic(la_inputs)
 
         # average borehole
-        d_ave_bh = {'average-borehole': inputs['average-borehole'],
+        d_ave_bh = {'average-borehole': ghe_inputs['average-borehole'],
                     'name': 'average-borehole',
                     'borehole-type': 'single-grouted'}
-        self.ave_bh = make_borehole(d_ave_bh, ip, op)
+        self.ave_bh = SingleUTubeGroutedBorehole(all_inputs, d_ave_bh)
 
         self.cross_ghe_present = False
         self.cross_ghe = []
-        if 'cross-loads' in inputs:
-            self.cross_ghe_present = True
-            for x_ghe in inputs['cross-loads']:
-                d_x = {'load-aggregation': merge_dicts(inputs['load-aggregation'],
-                                                       {'g-function-path': x_ghe['g-function-path'],
-                                                        'time-scale': ts}),
-                       'load-data-path': x_ghe['load-data-path'],
-                       'start-time': x_ghe['start-time'],
-                       'length': x_ghe['length']}
-                if 'number-of-instances' in x_ghe:
-                    num_duplicates = x_ghe['number-of-instances']
-                else:
-                    num_duplicates = 1
-                for idx in range(num_duplicates):
-                    self.cross_ghe.append(CrossGHE(d_x, ip, op))
+        # if 'cross-loads' in inputs:  # TODO: Is this going to be supported
+        #     self.cross_ghe_present = True
+        #     for x_ghe in inputs['cross-loads']:
+        #         d_x = {'load-aggregation': merge_dicts(inputs['load-aggregation'],
+        #                                                {'g-function-path': x_ghe['g-function-path'],
+        #                                                 'time-scale': ts}),
+        #                'load-data-path': x_ghe['load-data-path'],
+        #                'start-time': x_ghe['start-time'],
+        #                'length': x_ghe['length']}
+        #         if 'number-of-instances' in x_ghe:
+        #             num_duplicates = x_ghe['number-of-instances']
+        #         else:
+        #             num_duplicates = 1
+        #         for idx in range(num_duplicates):
+        #             self.cross_ghe.append(CrossGHE(d_x, ip, op))
 
         # method constants
-        k_s = self.soil.conductivity
+        k_s = soil.conductivity
         self.c_0 = 1 / (2 * pi * k_s)
 
         # heat rate (W/m)
@@ -75,9 +63,9 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         # report variables
         self.heat_rate = 0
-        self.inlet_temperature = ip.init_temp()
-        self.outlet_temperature = ip.init_temp()
-        self.bh_wall_temperature = ip.init_temp()
+        self.inlet_temperature = init_temp()
+        self.outlet_temperature = init_temp()
+        self.bh_wall_temperature = init_temp()
         self.resist_b = 0
         self.resist_b_eff = 0
 
@@ -113,12 +101,12 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
 
         c_2 = (self.c_0 * g + resist_b * g_b)
 
-        cp = self.fluid.cp(inlet_temp)
+        cp = fluid.cp(inlet_temp)
         c_3 = (flow_rate_path * cp) / self.h
 
         q_prev = self.load_agg.get_q_prev()
 
-        soil_temp = self.soil.get_temp(time, self.h)
+        soil_temp = soil.get_temp(time, self.h)
         outlet_temp = (soil_temp + c_2 * c_3 * inlet_temp - c_2 * q_prev + c_1) / (1 + c_2 * c_3)
 
         # total heat transfer rate (W)
@@ -139,13 +127,3 @@ class GroundHeatExchangerLTS(SimulationEntryPoint):
         self.resist_b_eff = self.ave_bh.calc_bh_effective_resistance_uhf(temperature=inlet_temp, flow_rate=flow_rate)
 
         return SimulationResponse(inputs.time, inputs.time_step, inputs.flow_rate, self.outlet_temperature)
-
-    def report_outputs(self) -> dict:
-        d = self.ave_bh.report_outputs()
-        d_self = {f"{self.Type}:{self.name}:{ReportTypes.HeatRate}": self.heat_rate,
-                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHWallTemp}": self.bh_wall_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHResist}": self.resist_b,
-                  f"{self.Type}:{self.name}:{ReportTypes.BHEffResist}": self.resist_b_eff}
-        return merge_dicts(d, d_self)

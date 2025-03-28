@@ -3,43 +3,34 @@ from math import ceil, log, pi, sqrt
 
 import numpy as np
 
-from glhe.input_processor.component_types import ComponentTypes
-from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import SimulationResponse
-from glhe.output_processor.report_types import ReportTypes
-from glhe.base_properties import PropertiesBase
+from glhe.functions import get_definition_object
+from glhe.functions import init_temp
+from glhe.simulation import SimulationEntryPoint, SimulationResponse
+from glhe.properties import PropertiesBase, fluid
 from glhe.functions import lin_interp
 from glhe.functions import smoothing_function
 from glhe.functions import tdma_1
 
 
 class Pipe(PropertiesBase, SimulationEntryPoint):
-    Type = ComponentTypes.Pipe
 
-    def __init__(self, inputs, ip, op):
-        SimulationEntryPoint.__init__(self, inputs)
-
-        # input/output processor
-        self.ip = ip
-        self.op = op
+    def __init__(self, all_inputs: dict, pipe_inputs: dict):
+        SimulationEntryPoint.__init__(self, all_inputs)
 
         # load the properties from the definitions
-        if 'average-pipe' in inputs:
-            pipe_props = inputs['average-pipe']
+        if 'average-pipe' in pipe_inputs:
+            pipe_props = pipe_inputs['average-pipe']
         else:
-            pipe_props = ip.get_definition_object('pipe-definitions', inputs['pipe-def-name'])
+            pipe_props = get_definition_object(all_inputs, 'pipe-definitions', pipe_inputs['pipe-def-name'])
 
         # init the properties
         PropertiesBase.__init__(self, pipe_props)
 
-        # local fluids reference
-        self.fluid = self.ip.fluid
-
         # key geometric parameters
         self.inner_diameter = pipe_props["inner-diameter"]
         self.outer_diameter = pipe_props["outer-diameter"]
-        self.length = inputs['length']
-        self.init_temp = self.ip.init_temp()
+        self.length = pipe_inputs['length']
+        self.init_temp = init_temp()
 
         # include transit delay effects
         self.apply_transit_delay = True
@@ -69,16 +60,16 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.resist_conv = 0
         self.re = 0
 
-        if 'number-cells' in inputs:
-            self.num_pipe_cells = inputs['number-cells']
+        if 'number-cells' in pipe_inputs:
+            self.num_pipe_cells = pipe_inputs['number-cells']
         else:
             # recommendation by Skoglund
             self.num_pipe_cells = 16
 
-        self.cell_temps = np.full(self.num_pipe_cells, ip.init_temp())
-        self.inlet_temps = deque([ip.init_temp()])
+        self.cell_temps = np.full(self.num_pipe_cells, init_temp())
+        self.inlet_temps = deque([init_temp()])
         self.inlet_temps_times = deque([0.0])
-        self.outlet_temperature = ip.init_temp()
+        self.outlet_temperature = init_temp()
 
     def calc_transit_time(self, flow_rate: float, temperature: float) -> float:
         """
@@ -88,7 +79,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :param temperature: temperature, C
         :return: transit time, s
         """
-        v_dot = flow_rate / self.fluid.rho(temperature)
+        v_dot = flow_rate / fluid.rho(temperature)
         return self.fluid_vol / v_dot
 
     def simulate_time_step(self, inputs: SimulationResponse) -> SimulationResponse:
@@ -136,7 +127,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             tau_0 = tau - num_cells * tau_n
 
             # volume flow rate
-            v_dot = m_dot / self.fluid.rho(inlet_temp)
+            v_dot = m_dot / fluid.rho(inlet_temp)
 
             # volume for ideal-mixed cells
             v_n = tau_n * v_dot
@@ -225,11 +216,6 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         self.inlet_temps.append(inlet_temp)
         self.inlet_temps_times.append(time)
 
-    def report_outputs(self) -> dict:
-        return {f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature,
-                f"{self.Type}:{self.name}:{ReportTypes.PipeResist}": self.resist_pipe,
-                f"{self.Type}:{self.name}:{ReportTypes.ReynoldsNo}": self.re}
-
     def m_dot_to_re(self, flow_rate, temp) -> float:
         """
         Convert mass flow rate to Reynolds number
@@ -238,7 +224,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         :param temp: temperature, C
         :return: Reynolds number
         """
-        self.re = 4 * flow_rate / (self.fluid.mu(temp) * pi * self.inner_diameter)
+        self.re = 4 * flow_rate / (fluid.mu(temp) * pi * self.inner_diameter)
         return self.re
 
     def calc_friction_factor(self, re: float) -> float:
@@ -305,7 +291,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
             nu = (1 - sigma) * nu_low + sigma * nu_high
         else:
             nu = self.turbulent_nusselt(re, temperature)
-        self.resist_conv = 1 / (nu * pi * self.fluid.k(temperature))
+        self.resist_conv = 1 / (nu * pi * fluid.k(temperature))
         return self.resist_conv
 
     def calc_resist(self, flow_rate: float, temperature: float):
@@ -344,7 +330,7 @@ class Pipe(PropertiesBase, SimulationEntryPoint):
         """
 
         f = self.calc_friction_factor(re)
-        pr = self.fluid.pr(temperature)
+        pr = fluid.pr(temperature)
         return (f / 8) * (re - 1000) * pr / (1 + 12.7 * (f / 8) ** 0.5 * (pr ** (2 / 3) - 1))
 
     @staticmethod

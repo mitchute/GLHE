@@ -1,7 +1,4 @@
-from glhe.ground_temps.base import BaseGroundTemp
-
-
-class Constant(BaseGroundTemp):
+class Constant:
     """
     Constant ground temperature model.
     """

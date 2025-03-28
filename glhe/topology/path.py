@@ -1,37 +1,40 @@
-from glhe.input_processor.component_types import ComponentTypes
-from glhe.input_processor.input_processor import InputProcessor
-from glhe.interface.entry import SimulationEntryPoint
-from glhe.interface.response import SimulationResponse
-from glhe.output_processor.output_processor import OutputProcessor
-from glhe.output_processor.report_types import ReportTypes
-from glhe.topology.ground_heat_exchanger_component_factory import make_ghe_component
-from glhe.functions import merge_dicts
+from glhe.functions import init_temp, get_definition_object
+from glhe.simulation import SimulationEntryPoint, SimulationResponse
+from glhe.topology.single_u_tube_grouted_borehole import SingleUTubeGroutedBorehole
+from glhe.topology.pipe import Pipe
 
 
 class Path(SimulationEntryPoint):
-    Type = ComponentTypes.Path
 
-    def __init__(self, inputs: dict, ip: InputProcessor, op: OutputProcessor):
-        SimulationEntryPoint.__init__(self, inputs)
-        self.ip = ip
-        self.op = op
+    def __init__(self, all_inputs: dict, ghe_inputs: dict):
+        SimulationEntryPoint.__init__(self, all_inputs)
 
         # valid components which can exist on the path
         valid_comp_types = ['borehole', 'pipe']
 
         # init all components on the path
         self.components = []
-        for comp in inputs['components']:
+        for comp in ghe_inputs['components']:
             comp_type = comp['comp-type']
-            if comp_type in valid_comp_types:
-                self.components.append(make_ghe_component(comp, ip, op))
-            else:
-                raise KeyError("Component type: '{}' is not "
-                               "supported by the {} object.".format(comp_type, self.Type))  # pragma: no cover
+            assert comp_type in valid_comp_types
+            comp_name = comp['name']
+            if comp_type == 'pipe':
+                inputs = get_definition_object(ghe_inputs, comp_type, comp_name)
+                self.components.append(Pipe(inputs))
+            elif comp_type == 'borehole':
+                bh_name = comp['name']
+                if 'average-borehole' not in ghe_inputs:
+                    comp_inputs = get_definition_object(all_inputs, 'borehole', bh_name)
+                    def_inputs = get_definition_object(all_inputs, 'borehole-definitions', comp_inputs['borehole-def-name'])
+                    bh_type = def_inputs['borehole-type']
+                else:
+                    bh_type = ghe_inputs['borehole-type']
+                assert(bh_type == 'single-grouted')
+                self.components.append(SingleUTubeGroutedBorehole(all_inputs, ghe_inputs))
 
         # report variables
-        self.inlet_temperature = ip.init_temp()
-        self.outlet_temperature = ip.init_temp()
+        self.inlet_temperature = init_temp()
+        self.outlet_temperature = init_temp()
         self.flow_rate = 0
 
     def get_heat_rate_bh(self) -> float:
@@ -57,14 +60,3 @@ class Path(SimulationEntryPoint):
         self.inlet_temperature = inputs.temperature
         self.outlet_temperature = response.temperature
         return response
-
-    def report_outputs(self) -> dict:
-        d = {}
-        for comp in self.components:
-            d = merge_dicts(d, comp.report_outputs())
-
-        d_self = {f"{self.Type}:{self.name}:{ReportTypes.FlowRate}": self.flow_rate,
-                  f"{self.Type}:{self.name}:{ReportTypes.InletTemp}": self.inlet_temperature,
-                  f"{self.Type}:{self.name}:{ReportTypes.OutletTemp}": self.outlet_temperature}
-
-        return merge_dicts(d, d_self)

@@ -1,14 +1,13 @@
+import sys
 from dataclasses import dataclass
 from math import pi
 
 import numpy as np
 from scipy.integrate import RK45
 
-from glhe.input_processor.component_types import ComponentTypes
-from glhe.output_processor.report_types import ReportTypes
-from glhe.base_properties import PropertiesBase
+from glhe.functions import get_definition_object, init_temp
+from glhe.properties import PropertiesBase, fluid
 from glhe.topology.pipe import Pipe
-# from glhe.utilities.functions import runge_kutta_fourth_y
 
 
 @dataclass
@@ -22,42 +21,40 @@ class TimeStepStructure:
 
 
 class SingleUTubeGroutedSegment:
-    Type = ComponentTypes.SegmentSingleUTubeGrouted
 
-    def __init__(self, inputs, ip, op):
-        self.name = inputs['segment-name']
-        self.fluid = ip.fluid
-        self.soil = ip.soil
+    def __init__(self, all_inputs, segment_inputs):
+        self.name = segment_inputs['segment-name']
 
-        if 'average-pipe' in inputs:
-            pipe_inputs = {'average-pipe': inputs['average-pipe'], 'length': inputs['length']}
+        if 'average-pipe' in segment_inputs:
+            segment_inputs = {'average-pipe': segment_inputs['average-pipe'], 'length': segment_inputs['length']}
         else:
-            pipe_inputs = {'pipe-def-name': inputs['pipe-def-name'], 'length': inputs['length']}
+            segment_inputs = {'pipe-def-name': segment_inputs['pipe-def-name'], 'length': segment_inputs['length']}
 
         self.num_pipes = 2
-        self.pipe = Pipe(pipe_inputs, ip, op)
+        self.pipe = Pipe(all_inputs, segment_inputs)
 
-        if 'average-grout' in inputs:
-            grout_inputs = inputs['average-grout']
+        if 'average-grout' in segment_inputs:
+            grout_inputs = segment_inputs['average-grout']
         else:
-            grout_inputs = ip.get_definition_object('grout-definitions', inputs['grout-def-name'])
+            grout_def_name = "standard grout"  # TODO: Get from inputs
+            grout_inputs = get_definition_object(all_inputs, 'grout-definitions', grout_def_name)
 
         self.grout = PropertiesBase(grout_inputs)
 
-        if 'grout-fraction' in inputs:
-            self.grout_frac = inputs['grout-fraction']
+        if 'grout-fraction' in segment_inputs:
+            self.grout_frac = segment_inputs['grout-fraction']
         else:
             self.grout_frac = 0.5
 
-        self.length = inputs['length']
-        self.diameter = inputs['diameter']
+        self.length = segment_inputs['length']
+        self.diameter = 0.114  # TODO: Get from inputs  segment_inputs['diameter']
         self.grout_vol = self.calc_grout_volume()
 
         # four-node model
         self.num_equations = 5
 
         # computed node temperatures
-        self.y = np.full((self.num_equations,), ip.init_temp())
+        self.y = np.full((self.num_equations,), init_temp())
 
         # time variables
         self.time = 0
@@ -67,13 +64,13 @@ class SingleUTubeGroutedSegment:
         self.dc_resist = 0
         self.fluid_cp = 0
         self.fluid_heat_capacity = 0
-        self.boundary_temp = ip.init_temp()
+        self.boundary_temp = init_temp()
 
         # report variables
-        self.inlet_temp_1 = ip.init_temp()
-        self.inlet_temp_2 = ip.init_temp()
-        self.outlet_temp_1 = ip.init_temp()
-        self.outlet_temp_2 = ip.init_temp()
+        self.inlet_temp_1 = init_temp()
+        self.inlet_temp_2 = init_temp()
+        self.outlet_temp_1 = init_temp()
+        self.outlet_temp_2 = init_temp()
         self.heat_rate_bh = 0
 
     def calc_grout_volume(self):
@@ -155,11 +152,12 @@ class SingleUTubeGroutedSegment:
         self.boundary_temp = inputs.boundary_temp
         self.bh_resist = inputs.bh_resist
         self.dc_resist = inputs.dc_resist
-        self.fluid_cp = self.fluid.cp(self.inlet_temp_1)
-        self.fluid_heat_capacity = self.fluid.rho(self.inlet_temp_1) * self.fluid_cp
+        self.fluid_cp = fluid.cp(self.inlet_temp_1)
+        self.fluid_heat_capacity = fluid.rho(self.inlet_temp_1) * self.fluid_cp
 
         solver = RK45(self.right_hand_side, 0, self.y, time_step)
         while solver.status != 'finished':
+            # print(solver.t, file=sys.stderr)
             solver.step()
         # solver_2 = runge_kutta_fourth_y(self.right_hand_side, time_step, self.y)
         self.y = solver.y
@@ -169,10 +167,3 @@ class SingleUTubeGroutedSegment:
         self.outlet_temp_1 = self.get_outlet_1_temp()
         self.outlet_temp_2 = self.get_outlet_2_temp()
         return self.y
-
-    def report_outputs(self) -> dict:
-        return {f"{self.Type}:{self.name}:{ReportTypes.InletTemp_Leg1}": self.inlet_temp_1,
-                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp_Leg1}": self.outlet_temp_1,
-                f"{self.Type}:{self.name}:{ReportTypes.InletTemp_Leg2}": self.inlet_temp_2,
-                f"{self.Type}:{self.name}:{ReportTypes.OutletTemp_Leg2}": self.outlet_temp_2,
-                f"{self.Type}:{self.name}:{ReportTypes.HeatRateBH}": self.heat_rate_bh}
